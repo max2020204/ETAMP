@@ -68,22 +68,36 @@ namespace ETAMP.Validate
         /// <param name="etamp">The ETAMP token as a string to be verified.</param>
         public bool VerifyETAMP(string etamp)
         {
-            EtampModel etampModel = JsonConvert.DeserializeObject<EtampModel>(etamp);
-            JwtSecurityTokenHandler token = new JwtSecurityTokenHandler();
-            var data = token.ReadJwtToken(etampModel.Token).Payload.ToDictionary();
-            if (data["messageId"].ToString() != etampModel.Id.ToString())
+            if (string.IsNullOrEmpty(etamp))
             {
                 return false;
             }
-            if (!VerifyData(etampModel.Token, Convert.FromBase64String(etampModel.SignatureToken)))
+            EtampModel? etampModel = JsonConvert.DeserializeObject<EtampModel>(etamp);
+            if (etampModel == null)
             {
                 return false;
             }
-            if (!VerifyData($"{etampModel.Id}{etampModel.Version}{etampModel.Token}{etampModel.UpdateType}{etampModel.SignatureToken}"
-                , Convert.FromBase64String(etampModel.SignatureMessage)))
+
+            JwtSecurityTokenHandler tokenHandler = new JwtSecurityTokenHandler();
+            var tokenData = tokenHandler.ReadJwtToken(etampModel.Token).Payload.ToDictionary();
+            if (tokenData["messageId"].ToString() != etampModel.Id.ToString())
             {
                 return false;
             }
+
+            byte[] signatureTokenBytes = Convert.FromBase64String(etampModel.SignatureToken);
+            if (!VerifyData(etampModel.Token, signatureTokenBytes))
+            {
+                return false;
+            }
+
+            string verificationString = $"{etampModel.Id}{etampModel.Version}{etampModel.Token}{etampModel.UpdateType}{etampModel.SignatureToken}";
+            byte[] signatureMessageBytes = Convert.FromBase64String(etampModel.SignatureMessage);
+            if (!VerifyData(verificationString, signatureMessageBytes))
+            {
+                return false;
+            }
+
             return true;
         }
     }
