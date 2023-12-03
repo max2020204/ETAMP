@@ -1,6 +1,6 @@
 ﻿namespace ETAMP.Services.Interfaces
 {
-    public interface IVerifyWrapper
+    public interface IVerifyWrapper : IDisposable
     {
         bool VerifyData(string data, string signature);
 

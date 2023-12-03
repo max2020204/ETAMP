@@ -2,6 +2,7 @@
 using ETAMP.Models;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
+using System.Diagnostics.CodeAnalysis;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
@@ -150,6 +151,12 @@ namespace ETAMP
         private string SignData(string data)
         {
             return Convert.ToBase64String(Ecdsa.SignData(Encoding.UTF8.GetBytes(data), HashAlgorithm));
+        }
+
+        [ExcludeFromCodeCoverage]
+        public void Dispose()
+        {
+            Ecdsa.Dispose();
         }
     }
 }

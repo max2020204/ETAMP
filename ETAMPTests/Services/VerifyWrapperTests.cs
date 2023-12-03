@@ -1,5 +1,4 @@
-﻿using ETAMP.Services;
-using System.Security.Cryptography;
+﻿using System.Security.Cryptography;
 using System.Text;
 using Xunit;
 
@@ -45,6 +44,7 @@ namespace ETAMP.Services.Tests
             var result = _verifyWrapper.VerifyData(Encoding.UTF8.GetBytes(_data), Convert.ToBase64String(sign));
             Assert.True(result);
         }
+
         [Fact]
         public void VerifyData_WithIncorrectSignature_ReturnsFalse()
         {

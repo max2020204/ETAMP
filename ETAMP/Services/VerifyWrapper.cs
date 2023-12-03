@@ -1,4 +1,5 @@
 ﻿using ETAMP.Services.Interfaces;
+using System.Diagnostics.CodeAnalysis;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -84,6 +85,7 @@ namespace ETAMP.Services
             _ecdsa = ecdsa;
             _algorithm = algorithm;
         }
+
         /// <summary>
         /// Verifies the given data against the specified signature.
         /// </summary>
@@ -122,6 +124,12 @@ namespace ETAMP.Services
         public virtual bool VerifyData(byte[] data, string signature)
         {
             return _ecdsa.VerifyData(data, Convert.FromBase64String(signature), _algorithm);
+        }
+
+        [ExcludeFromCodeCoverage]
+        public virtual void Dispose()
+        {
+            _ecdsa?.Dispose();
         }
     }
 }

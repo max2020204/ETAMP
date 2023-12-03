@@ -1,5 +1,4 @@
-﻿using ETAMP.Validate;
-using ETAMP.Models;
+﻿using ETAMP.Models;
 using ETAMP.Services;
 using ETAMP.Services.Interfaces;
 using ETAMPTests.Validate;
