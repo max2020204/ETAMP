@@ -1,4 +1,5 @@
-﻿using ETAMP.Models;
+﻿using ETAMP.Interfaces;
+using ETAMP.Models;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using System.IdentityModel.Tokens.Jwt;
@@ -8,7 +9,7 @@ using System.Text;
 
 namespace ETAMP
 {
-    public class Etamp
+    public class Etamp : IEtamp
     {
         /// <summary>
         /// Gets the elliptic curve used in cryptographic operations. Defaults to NIST P-521 curve if not specified.
@@ -99,13 +100,13 @@ namespace ETAMP
         /// <param name="signToken">Indicates whether the token should be signed. Default is true.</param>
         /// <param name="version">The version of the ETAMP. Default is 1.0.</param>
         /// <typeparam name="T">The type of the payload inherited of BasePaylaod.</typeparam>
-        public string CreateETAMP<T>(string updateType, T payload, bool signToken = true, double version = 1.0) where T : BasePaylaod
+        public virtual string CreateETAMP<T>(string updateType, T payload, bool signToken = true, double version = 1.0) where T : BasePaylaod
         {
-            string messageId = Guid.NewGuid().ToString();
-            string token = CreateEtampData(messageId, payload, signToken);
+            Guid messageId = Guid.NewGuid();
+            string token = CreateEtampData(messageId.ToString(), payload, signToken);
             string signatureToken = SignData(token);
             string signMessage = SignData($"{messageId}{version}{token}{updateType}{signatureToken}");
-            var etamp = new
+            EtampModel etamp = new()
             {
                 Id = messageId,
                 Version = version,
@@ -113,6 +114,30 @@ namespace ETAMP
                 UpdateType = updateType,
                 SignatureToken = signatureToken,
                 SignatureMessage = signMessage
+            };
+            return JsonConvert.SerializeObject(etamp);
+        }
+
+        /// <summary>
+        /// Creates an ETAMP token with a unique message ID and payload. This version of the method does not include a signature.
+        /// Constructs an ETAMP object with the essential data without signing it.
+        /// </summary>
+        /// <param name="updateType">The type of update this ETAMP represents.</param>
+        /// <param name="payload">The payload to be included in the ETAMP token.</param>
+        /// <param name="signToken">Indicates whether the token should be signed. This parameter is present for compatibility but not used in this method. Default is true.</param>
+        /// <param name="version">The version of the ETAMP. Default is 1.0.</param>
+        /// <typeparam name="T">The type of the payload inherited from BasePayload.</typeparam>
+        /// <returns>A JSON-serialized string representation of the ETAMP object without a signature.</returns>
+        public virtual string CreateETAMPWithoutSignature<T>(string updateType, T payload, bool signToken = true, double version = 1.0) where T : BasePaylaod
+        {
+            Guid messageId = Guid.NewGuid();
+            string token = CreateEtampData(messageId.ToString(), payload, signToken);
+            EtampModel etamp = new()
+            {
+                Id = messageId,
+                Version = version,
+                Token = token,
+                UpdateType = updateType
             };
             return JsonConvert.SerializeObject(etamp);
         }
