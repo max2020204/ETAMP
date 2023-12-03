@@ -1,3 +1,4 @@
+[![NuGet version (ETAMP)](https://img.shields.io/nuget/v/ETAMP.svg?style=flat-square)](https://www.nuget.org/packages/ETAMP/)
 # ETAMP Protocol - Detailed Overview
 
 ## Introduction to ETAMP
