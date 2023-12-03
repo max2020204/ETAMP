@@ -1,65 +1,55 @@
-# ETAMP Protocol Documentation
+# ETAMP Protocol - Detailed Overview
 
-## Overview
-ETAMP (Encrypted Token And Message Protocol) is a lightweight .NET library designed for enhancing message and transaction security within applications. It incorporates advanced cryptographic techniques, including JWT (JSON Web Tokens), ECDSA (Elliptic Curve Digital Signature Algorithm), and optional ECDH (Elliptic Curve Diffie-Hellman) encryption, to provide robust protection against unauthorized access and data tampering. Ideal for systems requiring secure data transmission, ETAMP is easy to integrate and ensures the highest levels of data integrity and confidentiality.
+## Introduction to ETAMP
+ETAMP (Encrypted Token and Message Protocol) is a sophisticated .NET library designed to create and validate encrypted tokens and messages. This protocol leverages the robustness of elliptic curve cryptography (ECC) standards, ensuring high security in digital communications. ETAMP is particularly valuable for its ability to generate signed tokens with user-defined payloads, making it an ideal solution for secure data transmission over networks. The tokens are verifiable for both integrity and authenticity, providing a secure means of data exchange.
 
----
+## Installation Process
+1. **NuGet Package Installation**: ETAMP can be seamlessly integrated into your .NET projects via the NuGet package manager. To install, simply execute the command:
+    ```shell
+    Install-Package ETAMP
+    ```
+    This command fetches and installs the latest version of the ETAMP library into your project.
 
-## Key Components
+## Creating ETAMP Tokens
 
-### `Etamp` Class
-The `Etamp` class is the core of the ETAMP protocol, handling the creation and signing of secure tokens.
+1. **Instantiation of the ETAMP Class**: Begin by creating an instance of the `Etamp` class. This class may be configured with optional parameters such as ECDsa instances, elliptic curves, signature algorithms, and hash algorithms for customized cryptographic settings.
+    ```csharp
+    var etamp = new Etamp();
+    ```
+2. **Defining a Payload**: Define a custom payload class by inheriting from `BasePayload`. Add properties to this class as per your data requirements. For example, to create an order token:
+    ```csharp
+    public class Order : BasePayload {
+       public string ItemName { get; set; }
+       public decimal Price { get; set; }
+    }
+    ```
+3. **Token Generation**: Generate a signed ETAMP token by calling the `CreateETAMP` method. This method requires parameters such as update type, payload instance, signature flag, and version.
+    ```csharp
+    string token = etamp.CreateETAMP("order", new Order(), true, 1.0);
+    ```
+    To generate an unsigned token, use `CreateETAMPWithoutSignature` method.
 
-#### Properties
-- **`Curve`**: The elliptic curve used in cryptographic operations, defaulting to the NIST P-521 curve.
-- **`HashAlgorithm`**: The hash algorithm used for cryptographic signatures, defaulting to SHA-512.
-- **`SecurityAlgorithm`**: The JWT security algorithm, defaulting to EcdsaSha512Signature.
-- **`PrivateKey`**: The private key in PEM format, generated from the ECDSA object.
-- **`PublicKey`**: The public key in PEM format, extracted from the ECDSA object.
-- **`Ecdsa`**: The instance of the elliptic curve digital signature algorithm used for cryptographic operations.
+## Validating ETAMP Tokens
 
-#### Methods
-- **`CreateETAMP<T>`**: Creates an ETAMP token with a unique message ID, payload, and optional signature.
+1. **Token Validation Setup**: Instantiate a `ValidateToken` object by passing an instance of `VerifyWrapper`, which in turn encapsulates an `EcdsaWrapper`.
+    ```csharp
+    var validator = new ValidateToken(new VerifyWrapper(new EcdsaWrapper()));
+    ```
+2. **Token Verification**: Use the `VerifyETAMP` method to validate the token's authenticity.
+    ```csharp
+    bool valid = validator.VerifyETAMP(token);
+    ```
+    For comprehensive validation including JWT claims and lifetime, utilize the `FullVerify` methods.
 
-### `ValidateToken` Class
-The `ValidateToken` class is responsible for verifying the authenticity and integrity of ETAMP tokens.
+## Cryptographic Components
 
-#### Methods
-- **`VerifyData`**: Verifies the given data against a specified signature.
-- **`VerifyETAMP`**: Verifies the integrity and authenticity of an ETAMP token.
+- The `EcdsaWrapper` factory class is used to create ECDsa instances for cryptographic operations.
+- Custom implementations of `IVerifyWrapper` handle the cryptographic verification process.
+- The architecture supports custom curves, keys, algorithms, and extensions for a tailored cryptographic solution.
 
----
+## Additional Features
 
-## Usage Guidelines
-
-### Creating an ETAMP Token
-1. Instantiate the `Etamp` Class**: Create an `Etamp` object, optionally specifying the ECDSA, elliptic curve, security algorithm, and hash algorithm.
-   ```csharp
-   var etamp = new Etamp();
-   ```
-2. Generate a Token: Call `CreateETAMP` method with the required payload and update type.
-   ```csharp
-   var token = etamp.CreateETAMP("UpdateType", payload, true, 1.0);
-   ```
-## Verifying an ETAMP Token
-1. Instantiate the ValidateToken Class: Create a ValidateToken object with the ECDSA instance and hash algorithm.
-   ```csharp
-   var validator = new ValidateToken(ecdsa, HashAlgorithmName.SHA512);
-   ```
-2. Verify the Token: Use VerifyETAMP to validate the integrity and authenticity of the token.
-   ```csharp
-   bool isValid = validator.VerifyETAMP(token);
-   ```
-## Best Practices
-
-- **Secure Key Management**: Ensure the secure storage and handling of private keys.
-- **Regular Key Rotation**: Periodically rotate keys to maintain security.
-- **Validation**: Always validate tokens before processing their content.
-- **Error Handling**: Implement robust error handling to manage potential cryptographic errors.
-
-## Advanced Features
-
-- **Custom Curves**: While NIST P-521 is the default, ETAMP supports custom curves for specific requirements.
-- **Flexible Hashing**: SHA-512 is the default hashing algorithm, but ETAMP can be configured to use other hash functions.
-- **Extensibility**: ETAMP is designed to be extendable and can be adapted to include additional cryptographic mechanisms as needed.
-   
+- ETAMP includes lightweight validation methods focusing exclusively on cryptographic checks.
+- It offers methods for verifying JWT properties like lifetime, issuer, and audience.
+- The flexible architecture of ETAMP allows for the integration of custom extensions.
+- The protocol supports integration with hardware security modules for enhanced security, making it suitable for high-security applications.
