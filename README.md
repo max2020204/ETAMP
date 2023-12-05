@@ -1,6 +1,9 @@
 [![NuGet version (ETAMP)](https://img.shields.io/nuget/v/ETAMP.svg?style=flat-square)](https://www.nuget.org/packages/ETAMP/)
 # ETAMP Protocol - Detailed Overview
 
+## [ETAMP in ChatGPT](https://chat.openai.com/g/g-GUGWcZ5gR-encrypted-token-and-message-protocol)
+## [ETAMP Documentation](https://blackdreams-organization.gitbook.io/etamp/)
+## [Nuget](https://www.nuget.org/packages/ETAMP/)
 ## Introduction to ETAMP
 ETAMP (Encrypted Token and Message Protocol) is a sophisticated .NET library designed to create and validate encrypted tokens and messages. This protocol leverages the robustness of elliptic curve cryptography (ECC) standards, ensuring high security in digital communications. ETAMP is particularly valuable for its ability to generate signed tokens with user-defined payloads, making it an ideal solution for secure data transmission over networks. The tokens are verifiable for both integrity and authenticity, providing a secure means of data exchange.
 
