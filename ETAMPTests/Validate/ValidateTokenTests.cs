@@ -1,6 +1,7 @@
 ﻿using ETAMP.Models;
 using ETAMP.Services;
 using ETAMP.Services.Interfaces;
+using ETAMPTests.Models;
 using ETAMPTests.Validate;
 using Microsoft.IdentityModel.Tokens;
 using Moq;
@@ -14,6 +15,8 @@ namespace ETAMP.Validate.Tests
 {
     public class ValidateTokenTests
     {
+        private readonly Etamp _etamp;
+        private readonly Data _data;
         private readonly ECDsa _ecdsa;
         private ValidateToken _token;
         private readonly Mock<IVerifyWrapper> _verifyWrapperMock;
@@ -23,6 +26,18 @@ namespace ETAMP.Validate.Tests
         public ValidateTokenTests()
         {
             _ecdsa = ECDsa.Create();
+
+            _etamp = new Etamp();
+            _data = new Data()
+            {
+                Audience = "Someone",
+                Expires = DateTime.UtcNow.AddDays(10),
+                IssuedAt = DateTime.UtcNow,
+                Issuer = "Me",
+                JTI = Guid.NewGuid(),
+                Surname = "Bill",
+                Name = "Alex"
+            };
             _verifyWrapperMock = new Mock<IVerifyWrapper>();
             _jwtSecurityTokenHandler = new Mock<JwtSecurityTokenHandler>();
             _testableValidateToken = new TestableValidateToken(_verifyWrapperMock.Object);
@@ -48,6 +63,15 @@ namespace ETAMP.Validate.Tests
         {
             bool result = _token.VerifyETAMP($"{{Id:\"{Guid.NewGuid()}\", Token: \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c\"}}");
             Assert.False(result);
+        }
+
+        [Fact]
+        public void VerifyETAMP_WithRealData_ReturnTrue()
+        {
+            string etamp = _etamp.CreateETAMP("Message", _data);
+            ValidateToken validate = new ValidateToken(new VerifyWrapper(_etamp.Ecdsa, _etamp.HashAlgorithm));
+            bool result = validate.VerifyETAMP(etamp);
+            Assert.True(result);
         }
 
         [Fact]
@@ -94,6 +118,22 @@ namespace ETAMP.Validate.Tests
         }
 
         [Fact]
+        public async Task FullVerify_WithRealData_ReturnTrue()
+        {
+            string etamp = _etamp.CreateETAMP("Message", _data, false);
+            ValidateToken validate = new ValidateToken(new VerifyWrapper(_etamp.Ecdsa, _etamp.HashAlgorithm));
+            bool result = await validate.FullVerify(etamp, _data.Audience, _data.Issuer);
+            Assert.True(result);
+        }
+        [Fact]
+        public async Task FullVerifyWithTokenSignature_WithRealData_ReturnTrue()
+        {
+            string etamp = _etamp.CreateETAMP("Message", _data);
+            ValidateToken validate = new ValidateToken(new VerifyWrapper(_etamp.Ecdsa, _etamp.HashAlgorithm));
+            bool result = await validate.FullVerify(etamp, _data.Audience, _data.Issuer);
+            Assert.True(result);
+        }
+        [Fact]
         public async Task FullVerifyWithTokenSignature_IncorrectInput_ReturnFalse()
         {
             string id = "bf4e7e00-aa07-42a7-825c-da6178119d2b";
@@ -139,16 +179,6 @@ namespace ETAMP.Validate.Tests
                It.IsAny<string>(), It.IsAny<ECDsa>());
             Assert.False(result);
         }
-
-        [Fact]
-        public async Task FullVerify_WithCorrectInputEtampAudienceIssure_ReturnTrue()
-        {
-            _testableValidateToken = TestableValidateToken();
-            var result = await _testableValidateToken.FullVerify("{}", It.IsAny<string>(), It.IsAny<string>());
-
-            Assert.True(result);
-        }
-
         [Fact]
         public async Task FullVerifyWithTokenSignature_WithCorrectPublicKey_ReturnTrue()
         {
@@ -219,15 +249,14 @@ namespace ETAMP.Validate.Tests
         }
 
         [Fact]
-        public async Task VerifyLifeTime_WithExpiredToken_ReturnsFalse()
+        public async Task VerifyLifeTime_WithCorrectToken_ReturnsTrue()
         {
-            var token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
-            _jwtSecurityTokenHandler.Setup(handler => handler.ValidateTokenAsync(token, It.IsAny<TokenValidationParameters>()))
-                .ReturnsAsync(new TokenValidationResult { IsValid = false });
-            _token = new ValidateToken(_verifyWrapperMock.Object, _jwtSecurityTokenHandler.Object);
+            string etamp = _etamp.CreateETAMP("message", _data);
+            string token = JsonConvert.DeserializeObject<EtampModel>(etamp).Token;
+            _token = new ValidateToken(new VerifyWrapper(_etamp.Ecdsa, _etamp.HashAlgorithm));
             var result = await _token.VerifyLifeTime(token);
 
-            Assert.False(result);
+            Assert.True(result);
         }
 
         [Fact]

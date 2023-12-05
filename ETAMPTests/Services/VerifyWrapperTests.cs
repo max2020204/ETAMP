@@ -13,7 +13,7 @@ namespace ETAMP.Services.Tests
         public VerifyWrapperTests()
         {
             _verifyWrapper = new VerifyWrapper(new EcdsaWrapper(), HashAlgorithmName.SHA256);
-            ECDsa ecdsa = _verifyWrapper.Ecdsa;
+            ECDsa ecdsa = _verifyWrapper.ECDsa;
             sign = ecdsa.SignData(Encoding.UTF8.GetBytes(_data), HashAlgorithmName.SHA256);
         }
 
@@ -58,7 +58,7 @@ namespace ETAMP.Services.Tests
         {
             VerifyWrapper verifyWrapper = new VerifyWrapper(new EcdsaWrapper(), ECCurve.NamedCurves.nistP521, HashAlgorithmName.SHA256);
             Assert.NotNull(verifyWrapper);
-            Assert.Equal(521, verifyWrapper.Ecdsa.KeySize);
+            Assert.Equal(521, verifyWrapper.ECDsa.KeySize);
         }
 
         [Fact()]
@@ -70,7 +70,7 @@ namespace ETAMP.Services.Tests
                                                                    .Replace("\n", "");
             VerifyWrapper verifyWrapper = new VerifyWrapper(new EcdsaWrapper(), publicKey, ECCurve.NamedCurves.nistP521, HashAlgorithmName.SHA256);
             Assert.NotNull(verifyWrapper);
-            Assert.Equal(521, verifyWrapper.Ecdsa.KeySize);
+            Assert.Equal(521, verifyWrapper.ECDsa.KeySize);
         }
 
         [Fact()]
@@ -82,7 +82,7 @@ namespace ETAMP.Services.Tests
                                                                    .Replace("\n", "");
             VerifyWrapper verifyWrapper = new VerifyWrapper(new EcdsaWrapper(), Convert.FromBase64String(publicKey), ECCurve.NamedCurves.nistP521, HashAlgorithmName.SHA256);
             Assert.NotNull(verifyWrapper);
-            Assert.Equal(521, verifyWrapper.Ecdsa.KeySize);
+            Assert.Equal(521, verifyWrapper.ECDsa.KeySize);
         }
     }
 }

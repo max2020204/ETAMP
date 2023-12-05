@@ -9,7 +9,7 @@ namespace ETAMP.Services
     {
         private ECDsa _ecdsa;
 
-        public ECDsa Ecdsa
+        public ECDsa ECDsa
         {
             get { return _ecdsa; }
         }

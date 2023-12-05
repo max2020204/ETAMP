@@ -79,9 +79,9 @@ namespace ETAMP
                 Claims = claimsDictionary,
                 Subject = new ClaimsIdentity(new[]
                 {
-                new Claim("MessageId", messageId),
-                new Claim("Timestamp", DateTimeOffset.UtcNow.ToString())
-            }),
+                    new Claim("MessageId", messageId),
+                    new Claim("Timestamp", DateTimeOffset.UtcNow.ToString())
+                }),
             };
 
             if (signature)
