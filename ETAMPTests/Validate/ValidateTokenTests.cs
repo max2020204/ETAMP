@@ -1,4 +1,5 @@
-﻿using ETAMP.Models;
+﻿using ETAMP.Validate;
+using ETAMP.Models;
 using ETAMP.Services;
 using ETAMP.Services.Interfaces;
 using ETAMPTests.Models;
@@ -288,6 +289,22 @@ namespace ETAMP.Validate.Tests
 
             var result = _token.VerifyETAMP(etamp);
             Assert.False(result);
+        }
+
+        [Fact()]
+        public async Task FullVerifyWithTokenSignature_WithIncorrectData_ReturnFalse()
+        {
+            bool result = await _token.FullVerifyWithTokenSignature("{}", It.IsAny<string>(), It.IsAny<string>());
+            Assert.False(result);
+        }
+
+        [Fact()]
+        public async Task FullVerifyWithTokenSignatureTest_WithCorrectData_ReturnTrue()
+        {
+            string etamp = _etamp.CreateETAMP("Message", _data);
+            ValidateToken validate = new ValidateToken(new VerifyWrapper(_etamp.Ecdsa, _etamp.HashAlgorithm));
+            bool result = await validate.FullVerifyWithTokenSignature(etamp, _data.Audience, _data.Issuer);
+            Assert.True(result);
         }
     }
 }
