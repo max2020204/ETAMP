@@ -1,7 +1,6 @@
 [![NuGet version (ETAMP)](https://img.shields.io/nuget/v/ETAMP.svg?style=flat-square)](https://www.nuget.org/packages/ETAMP/)
 # ETAMP Protocol - Detailed Overview
 
-## [ETAMP in ChatGPT](https://chat.openai.com/g/g-GUGWcZ5gR-encrypted-token-and-message-protocol)
 ## [ETAMP Documentation](https://blackdreams-organization.gitbook.io/etamp/)
 ## [Nuget](https://www.nuget.org/packages/ETAMP/)
 ## Introduction to ETAMP
