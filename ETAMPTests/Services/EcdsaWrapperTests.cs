@@ -33,7 +33,7 @@ namespace ETAMP.Services.Tests
             }
         }
 
-        [Fact()]
+        [Fact]
         public void CreateECDsa_WithValidPublickey_ReturnSameResult()
         {
             using (ECDsa ecdsa = ECDsa.Create(ECCurve.NamedCurves.nistP521))
@@ -52,7 +52,7 @@ namespace ETAMP.Services.Tests
             }
         }
 
-        [Fact()]
+        [Fact]
         public void CreateECDsa_WithValidPublickeyInbytes_ReturnSameResult()
         {
             using (ECDsa ecdsa = ECDsa.Create(ECCurve.NamedCurves.nistP521))

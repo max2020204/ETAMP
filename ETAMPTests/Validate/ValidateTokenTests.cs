@@ -1,5 +1,4 @@
-﻿using ETAMP.Validate;
-using ETAMP.Models;
+﻿using ETAMP.Models;
 using ETAMP.Services;
 using ETAMP.Services.Interfaces;
 using ETAMPTests.Models;
@@ -126,6 +125,7 @@ namespace ETAMP.Validate.Tests
             bool result = await validate.FullVerify(etamp, _data.Audience, _data.Issuer);
             Assert.True(result);
         }
+
         [Fact]
         public async Task FullVerifyWithTokenSignature_WithRealData_ReturnTrue()
         {
@@ -134,6 +134,7 @@ namespace ETAMP.Validate.Tests
             bool result = await validate.FullVerify(etamp, _data.Audience, _data.Issuer);
             Assert.True(result);
         }
+
         [Fact]
         public async Task FullVerifyWithTokenSignature_IncorrectInput_ReturnFalse()
         {
@@ -180,6 +181,7 @@ namespace ETAMP.Validate.Tests
                It.IsAny<string>(), It.IsAny<ECDsa>());
             Assert.False(result);
         }
+
         [Fact]
         public async Task FullVerifyWithTokenSignature_WithCorrectPublicKey_ReturnTrue()
         {
@@ -201,7 +203,7 @@ namespace ETAMP.Validate.Tests
             Assert.False(result);
         }
 
-        [Fact()]
+        [Fact]
         public async Task FullVerifyWithTokenSignature_WithCorrectData_ReturenTrue()
         {
             ECDsa ecdsa = ECDsa.Create(ECCurve.NamedCurves.nistP256);
@@ -211,7 +213,7 @@ namespace ETAMP.Validate.Tests
             Assert.True(result);
         }
 
-        [Fact()]
+        [Fact]
         public async Task FullVerifyLite_WithIncorrectData_ReturnFalse()
         {
             var result = await _token.FullVerifyLite("", ECDsa.Create());
@@ -219,7 +221,7 @@ namespace ETAMP.Validate.Tests
             Assert.False(result);
         }
 
-        [Fact()]
+        [Fact]
         public async Task FullVerifyLite_WithCorrectData_ReturnTrue()
         {
             _testableValidateToken = TestableValidateToken();
@@ -227,7 +229,7 @@ namespace ETAMP.Validate.Tests
             Assert.True(result);
         }
 
-        [Fact()]
+        [Fact]
         public async Task FullVerifyLite_WithCurvePublicKeyIncorrectEtamp_ReturnFalse()
         {
             var result = await _token.FullVerifyLite("", ECCurve.NamedCurves.nistP256, "", new EcdsaWrapper());
@@ -235,7 +237,7 @@ namespace ETAMP.Validate.Tests
             Assert.False(result);
         }
 
-        [Fact()]
+        [Fact]
         public async Task FullVerifyLite_WithCorrectCurvePublickey_ReturnTrue()
         {
             _testableValidateToken = TestableValidateToken();
@@ -282,7 +284,7 @@ namespace ETAMP.Validate.Tests
             return new TestableValidateToken(_verifyWrapperMock.Object, _jwtSecurityTokenHandler.Object);
         }
 
-        [Fact()]
+        [Fact]
         public void VerifyETAMP_WithEmptyGuid_ReturnFalse()
         {
             string etamp = $"{{Id:\"{Guid.Empty}\"}}";
@@ -291,14 +293,14 @@ namespace ETAMP.Validate.Tests
             Assert.False(result);
         }
 
-        [Fact()]
+        [Fact]
         public async Task FullVerifyWithTokenSignature_WithIncorrectData_ReturnFalse()
         {
             bool result = await _token.FullVerifyWithTokenSignature("{}", It.IsAny<string>(), It.IsAny<string>());
             Assert.False(result);
         }
 
-        [Fact()]
+        [Fact]
         public async Task FullVerifyWithTokenSignatureTest_WithCorrectData_ReturnTrue()
         {
             string etamp = _etamp.CreateETAMP("Message", _data);

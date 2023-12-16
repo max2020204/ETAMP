@@ -53,7 +53,7 @@ namespace ETAMP.Services.Tests
             Assert.False(result);
         }
 
-        [Fact()]
+        [Fact]
         public void VerifyWrapper_WithCustomCurve_ReturnCorrect()
         {
             VerifyWrapper verifyWrapper = new VerifyWrapper(new EcdsaWrapper(), ECCurve.NamedCurves.nistP521, HashAlgorithmName.SHA256);
@@ -61,7 +61,7 @@ namespace ETAMP.Services.Tests
             Assert.Equal(521, verifyWrapper.ECDsa.KeySize);
         }
 
-        [Fact()]
+        [Fact]
         public void VerifyWrapper_WithPublickeyAndCustomCurve_ReturnCorrect()
         {
             ECDsa ecdsa = ECDsa.Create();
@@ -73,7 +73,7 @@ namespace ETAMP.Services.Tests
             Assert.Equal(521, verifyWrapper.ECDsa.KeySize);
         }
 
-        [Fact()]
+        [Fact]
         public void VerifyWrapper_WithPublickeyInBytesAndCustomCurve_ReturnCorrect()
         {
             ECDsa ecdsa = ECDsa.Create();

@@ -13,6 +13,7 @@ namespace ETAMP.Validate
     {
         private readonly IVerifyWrapper _verifyWrapper;
         private readonly JwtSecurityTokenHandler _jwtSecurityTokenHandler;
+
         /// <summary>
         /// Initializes a new instance of the ValidateToken class with a specified verification wrapper.
         /// This constructor sets up the class with a default JwtSecurityTokenHandler and uses the provided IVerifyWrapper
@@ -95,7 +96,7 @@ namespace ETAMP.Validate
             IdentityModelEventSource.ShowPII = true;
             IdentityModelEventSource.LogCompleteSecurityArtifact = true;
             TokenValidationResult result = await _jwtSecurityTokenHandler.ValidateTokenAsync(model.Token,
-               CreateTokenValidationParameters(audience, issuer));
+              TokenValidationParameters(audience, issuer));
             if (result.IsValid)
             {
                 return true;
@@ -125,7 +126,7 @@ namespace ETAMP.Validate
             {
                 ecdsa.ImportSubjectPublicKeyInfo(Convert.FromBase64String(publicKey), out _);
                 TokenValidationResult result = await _jwtSecurityTokenHandler.ValidateTokenAsync(model.Token,
-                    CreateTokenValidationParametersWithSignature(audience, issuer, new ECDsaSecurityKey(ecdsa)));
+                    TokenValidationParametersWithSignature(audience, issuer, new ECDsaSecurityKey(ecdsa)));
                 if (result.IsValid)
                 {
                     return true;
@@ -152,17 +153,18 @@ namespace ETAMP.Validate
                 return false;
             }
             TokenValidationResult result = await _jwtSecurityTokenHandler.ValidateTokenAsync(model.Token,
-                CreateTokenValidationParametersWithSignature(audience, issuer, new ECDsaSecurityKey(ecdsa)));
+                TokenValidationParametersWithSignature(audience, issuer, new ECDsaSecurityKey(ecdsa)));
             if (result.IsValid)
             {
                 return true;
             }
             throw result.Exception;
         }
+
         /// <summary>
-        /// Asynchronously verifies an ETAMP with its associated JWT token signature. The method first attempts to 
-        /// verify and deserialize the provided ETAMP. If successful, it then validates the JWT token extracted 
-        /// from the ETAMP, ensuring its integrity and authenticity. The token validation is performed using ECDSA 
+        /// Asynchronously verifies an ETAMP with its associated JWT token signature. The method first attempts to
+        /// verify and deserialize the provided ETAMP. If successful, it then validates the JWT token extracted
+        /// from the ETAMP, ensuring its integrity and authenticity. The token validation is performed using ECDSA
         /// signing with audience and issuer claims.
         /// </summary>
         /// <param name="etamp">The ETAMP string to be validated.</param>
@@ -177,7 +179,7 @@ namespace ETAMP.Validate
                 return false;
             }
             TokenValidationResult result = await _jwtSecurityTokenHandler.ValidateTokenAsync(model.Token,
-                CreateTokenValidationParametersWithSignature(audience, issuer, new ECDsaSecurityKey(_verifyWrapper.ECDsa)));
+                TokenValidationParametersWithSignature(audience, issuer, new ECDsaSecurityKey(_verifyWrapper.ECDsa)));
             if (result.IsValid)
             {
                 return true;
@@ -204,7 +206,7 @@ namespace ETAMP.Validate
             using (ECDsa ecdsa = ecdsaWrapper.CreateECDsa(publicKey, curve))
             {
                 TokenValidationResult result = await _jwtSecurityTokenHandler.ValidateTokenAsync(model.Token,
-                    CreateTokenValidationParametersWithSignature(new ECDsaSecurityKey(ecdsa)));
+                    TokenValidationParametersWithSignature(new ECDsaSecurityKey(ecdsa)));
                 if (result.IsValid)
                 {
                     return true;
@@ -227,7 +229,7 @@ namespace ETAMP.Validate
                 return false;
             }
             TokenValidationResult result = await _jwtSecurityTokenHandler.ValidateTokenAsync(model.Token,
-                CreateTokenValidationParametersWithSignature(securityKey: new ECDsaSecurityKey(ecdsa)));
+                TokenValidationParametersWithSignature(securityKey: new ECDsaSecurityKey(ecdsa)));
             if (result.IsValid)
             {
                 return true;
@@ -264,7 +266,7 @@ namespace ETAMP.Validate
             throw result.Exception;
         }
 
-        private TokenValidationParameters CreateTokenValidationParameters(string audience, string issuer)
+        private TokenValidationParameters TokenValidationParameters(string audience, string issuer)
         {
             var parameters = new TokenValidationParameters
             {
@@ -278,7 +280,8 @@ namespace ETAMP.Validate
             };
             return parameters;
         }
-        private TokenValidationParameters CreateTokenValidationParametersWithSignature(string audience, string issuer, ECDsaSecurityKey securityKey)
+
+        private TokenValidationParameters TokenValidationParametersWithSignature(string audience, string issuer, ECDsaSecurityKey securityKey)
         {
             var parameters = new TokenValidationParameters
             {
@@ -292,7 +295,8 @@ namespace ETAMP.Validate
             };
             return parameters;
         }
-        private TokenValidationParameters CreateTokenValidationParametersWithSignature(ECDsaSecurityKey securityKey)
+
+        private TokenValidationParameters TokenValidationParametersWithSignature(ECDsaSecurityKey securityKey)
         {
             var parameters = new TokenValidationParameters
             {
@@ -304,6 +308,7 @@ namespace ETAMP.Validate
             };
             return parameters;
         }
+
         private bool VerifyAndDeserializeETAMP(string etamp, out EtampModel model)
         {
             if (!VerifyETAMP(etamp))
