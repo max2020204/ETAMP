@@ -1,5 +1,4 @@
-﻿using ETAMP.Services.Compares;
-using ETAMP.Models;
+﻿using ETAMP.Models;
 using Xunit;
 
 namespace ETAMP.Services.Compares.Tests
@@ -7,10 +6,12 @@ namespace ETAMP.Services.Compares.Tests
     public class EtampCompareTests
     {
         private readonly EtampCompare _etampCompare;
+
         public EtampCompareTests()
         {
             _etampCompare = new EtampCompare();
         }
+
         [Fact]
         public void EqualsTest_WithSameModel_True()
         {
@@ -33,6 +34,7 @@ namespace ETAMP.Services.Compares.Tests
             var result = _etampCompare.Equals(model, model1);
             Assert.True(result);
         }
+
         [Fact]
         public void EqualsTest_WithDiffrentToken_True()
         {
@@ -64,18 +66,21 @@ namespace ETAMP.Services.Compares.Tests
             var result = _etampCompare.Equals(model, model1);
             Assert.True(result);
         }
+
         [Fact]
         public void EqualsTest_BothNull_True()
         {
             var result = _etampCompare.Equals(null, null);
             Assert.True(result);
         }
+
         [Fact]
         public void EqualsTest_SecondNotNull_True()
         {
             var result = _etampCompare.Equals(null, new EtampModel());
             Assert.False(result);
         }
+
         [Fact]
         public void EqualsTest_FirstNotNull_True()
         {
@@ -86,23 +91,23 @@ namespace ETAMP.Services.Compares.Tests
         [Fact]
         public void GetHashCode_IdenticalObjects_SameHashCode()
         {
-            var model1 = new EtampModel 
-            { 
-                Id = Guid.NewGuid(), 
-                Version = 1.0, 
-                Token = "Token1", 
-                UpdateType = "Type1", 
-                SignatureToken = "SigToken1", 
-                SignatureMessage = "SigMessage1" 
+            var model1 = new EtampModel
+            {
+                Id = Guid.NewGuid(),
+                Version = 1.0,
+                Token = "Token1",
+                UpdateType = "Type1",
+                SignatureToken = "SigToken1",
+                SignatureMessage = "SigMessage1"
             };
-            var model2 = new EtampModel 
-            { 
-                Id = model1.Id, 
-                Version = model1.Version, 
-                Token = model1.Token, 
-                UpdateType = model1.UpdateType, 
-                SignatureToken = model1.SignatureToken, 
-                SignatureMessage = model1.SignatureMessage 
+            var model2 = new EtampModel
+            {
+                Id = model1.Id,
+                Version = model1.Version,
+                Token = model1.Token,
+                UpdateType = model1.UpdateType,
+                SignatureToken = model1.SignatureToken,
+                SignatureMessage = model1.SignatureMessage
             };
 
             int hash1 = _etampCompare.GetHashCode(model1);
