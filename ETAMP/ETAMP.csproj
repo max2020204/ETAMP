@@ -5,6 +5,7 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -13,17 +14,22 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <None Update="Etamp.png">
-	    <Pack>True</Pack>
-	    <PackagePath>\</PackagePath>
-	  </None>
+		<None Update="Etamp.png">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+		</None>
+		<None Include="README.md">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+		</None>
 	</ItemGroup>
 
 	<PropertyGroup>
 		<PackageId>ETAMP</PackageId>
 		<Version>1.1.5</Version>
 		<Authors>Maksym Nikitiuk</Authors>
-		<Description>ETAMP (Encrypted Token And Message Protocol) is a lightweight .NET library designed for enhancing message and transaction security within applications. It incorporates advanced cryptographic techniques, including JWT (JSON Web Tokens), ECDSA (Elliptic Curve Digital Signature Algorithm), and optional ECDH (Elliptic Curve Diffie-Hellman) encryption, to provide robust protection against unauthorized access and data tampering. Ideal for systems requiring secure data transmission, ETAMP is easy to integrate and ensures the highest levels of data integrity and confidentiality.
+		<Description>
+			ETAMP (Encrypted Token And Message Protocol) is a lightweight .NET library designed for enhancing message and transaction security within applications. It incorporates advanced cryptographic techniques, including JWT (JSON Web Tokens), ECDSA (Elliptic Curve Digital Signature Algorithm), and optional ECDH (Elliptic Curve Diffie-Hellman) encryption, to provide robust protection against unauthorized access and data tampering. Ideal for systems requiring secure data transmission, ETAMP is easy to integrate and ensures the highest levels of data integrity and confidentiality.
 		</Description>
 		<Title>ETAMP</Title>
 		<PackageProjectUrl></PackageProjectUrl>
