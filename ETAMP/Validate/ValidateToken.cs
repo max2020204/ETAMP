@@ -53,20 +53,24 @@ namespace ETAMP.Validate
             {
                 return false;
             }
-            var tokenData = _jwtSecurityTokenHandler.ReadJwtToken(etampModel.Token).Payload.ToDictionary();
+            var tokenData = _jwtSecurityTokenHandler.ReadJwtToken(etampModel?.Token).Payload.ToDictionary();
 
-            if (!tokenData.ContainsKey("MessageId") || tokenData["MessageId"].ToString() != etampModel.Id.ToString())
+            if (!tokenData.ContainsKey("MessageId") || tokenData["MessageId"].ToString() != etampModel?.Id.ToString())
             {
                 return false;
             }
-            if (!ValidateSignature(etampModel.Token, etampModel.SignatureToken))
+            if (etampModel?.SignatureToken != null && etampModel?.Token != null && !ValidateSignature(etampModel?.Token, etampModel?.SignatureToken))
             {
                 return false;
             }
-            string verificationString = $"{etampModel.Id}{etampModel.Version}{etampModel.Token}{etampModel.UpdateType}{etampModel.SignatureToken}";
-            if (!ValidateSignature(verificationString, etampModel.SignatureMessage))
+
+            if (etampModel != null)
             {
-                return false;
+                string verificationString = $"{etampModel.Id}{etampModel.Version}{etampModel.Token}{etampModel.UpdateType}{etampModel.SignatureToken}";
+                if (etampModel.SignatureMessage != null && !ValidateSignature(verificationString, etampModel.SignatureMessage))
+                {
+                    return false;
+                }
             }
 
             return true;
@@ -252,9 +256,9 @@ namespace ETAMP.Validate
                 ValidateAudience = false,
                 ValidateLifetime = true,
                 ValidateIssuerSigningKey = false,
-                SignatureValidator = (token, parameters) =>
+                SignatureValidator = (encodedString, parameters) =>
                 {
-                    return new JwtSecurityToken(token);
+                    return new JwtSecurityToken(encodedString);
                 }
             };
 
