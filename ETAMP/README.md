@@ -18,7 +18,7 @@ ETAMP (Encrypted Token and Message Protocol) is a comprehensive .NET library tai
 Install ETAMP via NuGet Package Manager:
 ```shell
 Install-Package ETAMP
-
+```
 ## Usage Examples
 
 ### Creating ETAMP Tokens
