@@ -1,58 +1,53 @@
 [![NuGet version (ETAMP)](https://img.shields.io/nuget/v/ETAMP.svg?style=flat-square)](https://www.nuget.org/packages/ETAMP/)
-# ETAMP Protocol - Detailed Overview
+# ETAMP Protocol - Encrypted Token and Message Protocol
 
 ## [ETAMP Documentation](https://blackdreams-organization.gitbook.io/etamp/)
-## [Nuget](https://www.nuget.org/packages/ETAMP/)
-## Introduction to ETAMP
-ETAMP (Encrypted Token and Message Protocol) is a sophisticated .NET library designed to create and validate encrypted tokens and messages. This protocol leverages the robustness of elliptic curve cryptography (ECC) standards, ensuring high security in digital communications. ETAMP is particularly valuable for its ability to generate signed tokens with user-defined payloads, making it an ideal solution for secure data transmission over networks. The tokens are verifiable for both integrity and authenticity, providing a secure means of data exchange.
+## [NuGet Package](https://www.nuget.org/packages/ETAMP/)
 
-## Installation Process
-1. **NuGet Package Installation**: ETAMP can be seamlessly integrated into your .NET projects via the NuGet package manager. To install, simply execute the command:
-    ```shell
-    Install-Package ETAMP
-    ```
-    This command fetches and installs the latest version of the ETAMP library into your project.
+## Introduction
+ETAMP (Encrypted Token and Message Protocol) is a comprehensive .NET library tailored for secure message and token encryption and validation. Utilizing the power of elliptic curve cryptography (ECC), ETAMP offers a robust solution for ensuring the security of digital communication. The library is designed with flexibility in mind, allowing for the generation of customizable signed tokens and secure message transmissions.
 
-## Creating ETAMP Tokens
+## Features
+- **Advanced Cryptography**: Leverages ECC for digital signatures, ensuring high-security standards.
+- **Token Generation**: Create signed or unsigned tokens with user-defined payloads, suitable for various secure data transmission needs.
+- **Token Validation**: Robust methods to validate the authenticity and integrity of tokens.
+- **JWT Integration**: Supports JSON Web Tokens (JWT) with claims validation for integrity and lifetime verification.
+- **Customization**: Flexible architecture supports custom curves, keys, and algorithms.
 
-1. **Instantiation of the ETAMP Class**: Begin by creating an instance of the `Etamp` class. This class may be configured with optional parameters such as ECDsa instances, elliptic curves, signature algorithms, and hash algorithms for customized cryptographic settings.
-    ```csharp
-    var etamp = new Etamp();
-    ```
-2. **Defining a Payload**: Define a custom payload class by inheriting from `BasePayload`. Add properties to this class as per your data requirements. For example, to create an order token:
-    ```csharp
-    public class Order : BasePayload {
-       public string ItemName { get; set; }
-       public decimal Price { get; set; }
-    }
-    ```
-3. **Token Generation**: Generate a signed ETAMP token by calling the `CreateETAMP` method. This method requires parameters such as update type, payload instance, signature flag, and version.
-    ```csharp
-    string token = etamp.CreateETAMP("order", new Order(), true, 1.0);
-    ```
-    To generate an unsigned token, use `CreateETAMPWithoutSignature` method.
+## Installation
+Install ETAMP via NuGet Package Manager:
+```shell
+Install-Package ETAMP
 
-## Validating ETAMP Tokens
+## Usage Examples
 
-1. **Token Validation Setup**: Instantiate a `ValidateToken` object by passing an instance of `VerifyWrapper`, which in turn encapsulates an `EcdsaWrapper`.
-    ```csharp
-    var validator = new ValidateToken(new VerifyWrapper(new EcdsaWrapper()));
-    ```
-2. **Token Verification**: Use the `VerifyETAMP` method to validate the token's authenticity.
-    ```csharp
-    bool valid = validator.VerifyETAMP(token);
-    ```
-    For comprehensive validation including JWT claims and lifetime, utilize the `FullVerify` methods.
+### Creating ETAMP Tokens
+```csharp
+var etamp = new Etamp();
+
+public class Order : BasePayload {
+    public string ItemName { get; set; }
+    public decimal Price { get; set; }
+}
+
+string token = etamp.CreateETAMP("order", new Order(), true, 1.0);
+```
+
+### Validating ETAMP Tokens
+```csharp
+var validator = new ValidateToken(new VerifyWrapper(new EcdsaWrapper()));
+bool valid = validator.VerifyETAMP(token);
+```
 
 ## Cryptographic Components
-
-- The `EcdsaWrapper` factory class is used to create ECDsa instances for cryptographic operations.
-- Custom implementations of `IVerifyWrapper` handle the cryptographic verification process.
-- The architecture supports custom curves, keys, algorithms, and extensions for a tailored cryptographic solution.
+- **EcdsaWrapper**: A factory class for creating ECDsa instances.
+- **VerifyWrapper**: Handles cryptographic verification processes.
+- **Flexible Security**: Supports integration with hardware security modules.
 
 ## Additional Features
+- Lightweight validation methods focusing on cryptographic checks.
+- Methods for verifying JWT properties like lifetime, issuer, and audience.
+- Integrates seamlessly with existing .NET applications.
 
-- ETAMP includes lightweight validation methods focusing exclusively on cryptographic checks.
-- It offers methods for verifying JWT properties like lifetime, issuer, and audience.
-- The flexible architecture of ETAMP allows for the integration of custom extensions.
-- The protocol supports integration with hardware security modules for enhanced security, making it suitable for high-security applications.
+## Contributing
+Contributions are welcome! If you're interested in contributing, please feel free to submit pull requests or open issues for bugs and feature requests.
