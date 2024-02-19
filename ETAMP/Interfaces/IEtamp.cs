@@ -3,7 +3,7 @@ using System.Security.Cryptography;
 
 namespace ETAMP.Interfaces
 {
-    public interface IEtamp : IDisposable
+    public interface IETAMP : IDisposable
     {
         ECCurve Curve { get; }
         ECDsa Ecdsa { get; }

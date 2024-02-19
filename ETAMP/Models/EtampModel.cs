@@ -1,6 +1,6 @@
 ﻿namespace ETAMP.Models
 {
-    public class EtampModel
+    public class ETAMPModel
     {
         public Guid Id { get; set; }
         public double Version { get; set; }

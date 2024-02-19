@@ -15,7 +15,7 @@ namespace ETAMP.Validate.Tests
 {
     public class ValidateTokenTests
     {
-        private readonly Etamp _etamp;
+        private readonly ETAMP _etamp;
         private readonly Data _data;
         private readonly ECDsa _ecdsa;
         private ValidateToken _token;
@@ -27,7 +27,7 @@ namespace ETAMP.Validate.Tests
         {
             _ecdsa = ECDsa.Create();
 
-            _etamp = new Etamp();
+            _etamp = new ETAMP();
             _data = new Data()
             {
                 Audience = "Someone",
@@ -103,7 +103,7 @@ namespace ETAMP.Validate.Tests
             double version = 1;
             string updateType = "Message";
             string signMessage = Convert.ToBase64String(_ecdsa.SignData(Encoding.UTF8.GetBytes($"{id}{version}{token}{updateType}{signToken}"), HashAlgorithmName.SHA256));
-            EtampModel model = new EtampModel()
+            ETAMPModel model = new ETAMPModel()
             {
                 Id = Guid.Parse(id),
                 Token = token,
@@ -144,7 +144,7 @@ namespace ETAMP.Validate.Tests
             double version = 1;
             string updateType = "Message";
             string signMessage = Convert.ToBase64String(_ecdsa.SignData(Encoding.UTF8.GetBytes($"{id}{version}{token}{updateType}{signToken}"), HashAlgorithmName.SHA256));
-            EtampModel model = new EtampModel()
+            ETAMPModel model = new ETAMPModel()
             {
                 Id = Guid.Parse(id),
                 Token = token,
@@ -255,7 +255,7 @@ namespace ETAMP.Validate.Tests
         public async Task VerifyLifeTime_WithCorrectToken_ReturnsTrue()
         {
             string etamp = _etamp.CreateETAMP("message", _data);
-            string token = JsonConvert.DeserializeObject<EtampModel>(etamp).Token;
+            string token = JsonConvert.DeserializeObject<ETAMPModel>(etamp).Token;
             _token = new ValidateToken(new VerifyWrapper(_etamp.Ecdsa, _etamp.HashAlgorithm));
             var result = await _token.VerifyLifeTime(token);
 

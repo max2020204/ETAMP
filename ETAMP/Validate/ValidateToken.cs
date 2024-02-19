@@ -48,26 +48,26 @@ namespace ETAMP.Validate
             {
                 return false;
             }
-            EtampModel? etampModel = JsonConvert.DeserializeObject<EtampModel>(etamp);
-            if (etampModel?.Id == Guid.Empty)
+            ETAMPModel? ETAMPModel = JsonConvert.DeserializeObject<ETAMPModel>(etamp);
+            if (ETAMPModel?.Id == Guid.Empty)
             {
                 return false;
             }
-            var tokenData = _jwtSecurityTokenHandler.ReadJwtToken(etampModel?.Token).Payload.ToDictionary();
+            var tokenData = _jwtSecurityTokenHandler.ReadJwtToken(ETAMPModel?.Token).Payload.ToDictionary();
 
-            if (!tokenData.ContainsKey("MessageId") || tokenData["MessageId"].ToString() != etampModel?.Id.ToString())
+            if (!tokenData.ContainsKey("MessageId") || tokenData["MessageId"].ToString() != ETAMPModel?.Id.ToString())
             {
                 return false;
             }
-            if (etampModel?.SignatureToken != null && etampModel?.Token != null && !ValidateSignature(etampModel?.Token, etampModel?.SignatureToken))
+            if (ETAMPModel?.SignatureToken != null && ETAMPModel?.Token != null && !ValidateSignature(ETAMPModel?.Token, ETAMPModel?.SignatureToken))
             {
                 return false;
             }
 
-            if (etampModel != null)
+            if (ETAMPModel != null)
             {
-                string verificationString = $"{etampModel.Id}{etampModel.Version}{etampModel.Token}{etampModel.UpdateType}{etampModel.SignatureToken}";
-                if (etampModel.SignatureMessage != null && !ValidateSignature(verificationString, etampModel.SignatureMessage))
+                string verificationString = $"{ETAMPModel.Id}{ETAMPModel.Version}{ETAMPModel.Token}{ETAMPModel.UpdateType}{ETAMPModel.SignatureToken}";
+                if (ETAMPModel.SignatureMessage != null && !ValidateSignature(verificationString, ETAMPModel.SignatureMessage))
                 {
                     return false;
                 }
@@ -83,7 +83,7 @@ namespace ETAMP.Validate
 
         /// <summary>
         /// Fully verifies an ETAMP using JWT token.
-        /// This method first checks the validity of the ETAMP, then deserializes it into an EtampModel,
+        /// This method first checks the validity of the ETAMP, then deserializes it into an ETAMPModel,
         /// and finally validates the JWT token using provided audience and issuer parameters.
         /// </summary>
         /// <param name="etamp">The ETAMP string to be validated.</param>
@@ -93,7 +93,7 @@ namespace ETAMP.Validate
         /// <exception cref="Exception">Throws an exception if token validation fails.</exception>
         public virtual async Task<bool> FullVerify(string etamp, string audience, string issuer)
         {
-            if (!VerifyAndDeserializeETAMP(etamp, out EtampModel model))
+            if (!VerifyAndDeserializeETAMP(etamp, out ETAMPModel model))
             {
                 return false;
             }
@@ -110,7 +110,7 @@ namespace ETAMP.Validate
 
         /// <summary>
         /// Fully verifies an ETAMP using a JWT token with an ECDSA signature.
-        /// This method first checks the validity of the ETAMP, deserializes it into an EtampModel,
+        /// This method first checks the validity of the ETAMP, deserializes it into an ETAMPModel,
         /// and then validates the JWT token using the provided audience, issuer, ECDSA curve, and public key.
         /// </summary>
         /// <param name="etamp">The ETAMP string to be validated.</param>
@@ -122,7 +122,7 @@ namespace ETAMP.Validate
         /// <exception cref="Exception">Throws an exception if token validation fails.</exception>
         public virtual async Task<bool> FullVerifyWithTokenSignature(string etamp, string audience, string issuer, ECCurve curve, string publicKey)
         {
-            if (!VerifyAndDeserializeETAMP(etamp, out EtampModel model))
+            if (!VerifyAndDeserializeETAMP(etamp, out ETAMPModel model))
             {
                 return false;
             }
@@ -141,7 +141,7 @@ namespace ETAMP.Validate
 
         /// <summary>
         /// Performs a complete verification of an ETAMP using a JWT token with ECDSA signing.
-        /// This method validates the ETAMP, deserializes it into an EtampModel, and then checks the JWT token's integrity
+        /// This method validates the ETAMP, deserializes it into an ETAMPModel, and then checks the JWT token's integrity
         /// and authenticity using the default ECDSA instance and hash algorithm.
         /// </summary>
         /// <param name="etamp">The ETAMP string to be validated.</param>
@@ -152,7 +152,7 @@ namespace ETAMP.Validate
 
         public virtual async Task<bool> FullVerifyWithTokenSignature(string etamp, string audience, string issuer, ECDsa ecdsa)
         {
-            if (!VerifyAndDeserializeETAMP(etamp, out EtampModel model))
+            if (!VerifyAndDeserializeETAMP(etamp, out ETAMPModel model))
             {
                 return false;
             }
@@ -178,7 +178,7 @@ namespace ETAMP.Validate
         /// <exception cref="Exception">Throws an exception if JWT token validation fails.</exception>
         public virtual async Task<bool> FullVerifyWithTokenSignature(string etamp, string audience, string issuer)
         {
-            if (!VerifyAndDeserializeETAMP(etamp, out EtampModel model))
+            if (!VerifyAndDeserializeETAMP(etamp, out ETAMPModel model))
             {
                 return false;
             }
@@ -193,7 +193,7 @@ namespace ETAMP.Validate
 
         /// <summary>
         /// Performs a lightweight verification of an ETAMP using a JWT token with ECDSA signing.
-        /// This method checks the ETAMP's validity, deserializes it into an EtampModel, and then validates the JWT token
+        /// This method checks the ETAMP's validity, deserializes it into an ETAMPModel, and then validates the JWT token
         /// focusing primarily on the signature's integrity and the token's lifetime, using a custom ECDSA curve and public key.
         /// </summary>
         /// <param name="etamp">The ETAMP string to be validated.</param>
@@ -202,7 +202,7 @@ namespace ETAMP.Validate
         /// <returns>True if the ETAMP and JWT token are valid, false otherwise.</returns>
         public virtual async Task<bool> FullVerifyLite(string etamp, ECCurve curve, string publicKey, IEcdsaWrapper ecdsaWrapper)
         {
-            if (!VerifyAndDeserializeETAMP(etamp, out EtampModel model))
+            if (!VerifyAndDeserializeETAMP(etamp, out ETAMPModel model))
             {
                 return false;
             }
@@ -221,14 +221,14 @@ namespace ETAMP.Validate
 
         /// <summary>
         /// Performs a lightweight verification of an ETAMP using a JWT token with ECDSA signing.
-        /// This method checks the ETAMP's validity, deserializes it into an EtampModel, and then validates the JWT token
+        /// This method checks the ETAMP's validity, deserializes it into an ETAMPModel, and then validates the JWT token
         /// focusing primarily on the signature's integrity and the token's lifetime, using the default ECDSA instance and hash algorithm.
         /// </summary>
         /// <param name="etamp">The ETAMP string to be validated.</param>
         /// <returns>True if the ETAMP and JWT token are valid, false otherwise.</returns>
         public virtual async Task<bool> FullVerifyLite(string etamp, ECDsa ecdsa)
         {
-            if (!VerifyAndDeserializeETAMP(etamp, out EtampModel model))
+            if (!VerifyAndDeserializeETAMP(etamp, out ETAMPModel model))
             {
                 return false;
             }
@@ -313,7 +313,7 @@ namespace ETAMP.Validate
             return parameters;
         }
 
-        private bool VerifyAndDeserializeETAMP(string etamp, out EtampModel model)
+        private bool VerifyAndDeserializeETAMP(string etamp, out ETAMPModel model)
         {
             if (!VerifyETAMP(etamp))
             {
@@ -321,7 +321,7 @@ namespace ETAMP.Validate
                 return false;
             }
 
-            model = JsonConvert.DeserializeObject<EtampModel>(etamp);
+            model = JsonConvert.DeserializeObject<ETAMPModel>(etamp);
             return true;
         }
     }

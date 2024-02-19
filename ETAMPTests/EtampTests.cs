@@ -10,7 +10,7 @@ namespace ETAMP.Tests
 {
     public class EtampTests
     {
-        private Etamp? _etamp;
+        private ETAMP? _etamp;
         private readonly Data _data;
 
         public EtampTests()
@@ -33,13 +33,13 @@ namespace ETAMP.Tests
         [InlineData("nistP521")]
         public void CreateETAMPWithSignature_GetEqualResult(string curve)
         {
-            _etamp = new Etamp(curve: ECCurve.CreateFromFriendlyName(curve));
+            _etamp = new ETAMP(curve: ECCurve.CreateFromFriendlyName(curve));
             string updateType = "Message";
             double version = 2;
 
             string result = _etamp.CreateETAMP(updateType, _data, true, version);
 
-            var etamp = JsonConvert.DeserializeObject<EtampModel>(result);
+            var etamp = JsonConvert.DeserializeObject<ETAMPModel>(result);
             JwtSecurityTokenHandler handler = new JwtSecurityTokenHandler();
             var payload = handler.ReadJwtToken(etamp.Token).Payload.ToDictionary();
 
@@ -55,13 +55,13 @@ namespace ETAMP.Tests
         [InlineData("nistP521")]
         public void CreateETAMPWithoutSignatureAndWithTokenSignature_GetEqualResult(string curve)
         {
-            _etamp = new Etamp(curve: ECCurve.CreateFromFriendlyName(curve));
+            _etamp = new ETAMP(curve: ECCurve.CreateFromFriendlyName(curve));
             string updateType = "Message";
             double version = 2;
 
             string result = _etamp.CreateETAMPWithoutSignature(updateType, _data, true, version);
 
-            var etamp = JsonConvert.DeserializeObject<EtampModel>(result);
+            var etamp = JsonConvert.DeserializeObject<ETAMPModel>(result);
             JwtSecurityTokenHandler handler = new JwtSecurityTokenHandler();
             var payload = handler.ReadJwtToken(etamp.Token).Payload.ToDictionary();
 
@@ -79,13 +79,13 @@ namespace ETAMP.Tests
         [InlineData("nistP521")]
         public void CreateETAMPWithoutSignatureAndWithoutTokenSignature_GetEqualResult(string curve)
         {
-            _etamp = new Etamp(curve: ECCurve.CreateFromFriendlyName(curve));
+            _etamp = new ETAMP(curve: ECCurve.CreateFromFriendlyName(curve));
             string updateType = "Message";
             double version = 2;
 
             string result = _etamp.CreateETAMPWithoutSignature(updateType, _data, false, version);
 
-            var etamp = JsonConvert.DeserializeObject<EtampModel>(result);
+            var etamp = JsonConvert.DeserializeObject<ETAMPModel>(result);
             JwtSecurityTokenHandler handler = new JwtSecurityTokenHandler();
             var payload = handler.ReadJwtToken(etamp.Token).Payload.ToDictionary();
 
@@ -100,14 +100,14 @@ namespace ETAMP.Tests
         [Fact]
         public void CreateETAMP_ReturnPrivateKey()
         {
-            _etamp = new Etamp();
+            _etamp = new ETAMP();
             Assert.NotNull(_etamp.PrivateKey);
         }
 
         [Fact]
         public void CreateETAMP_ReturnPublicKey()
         {
-            _etamp = new Etamp();
+            _etamp = new ETAMP();
             Assert.NotNull(_etamp.PublicKey);
         }
 
@@ -115,7 +115,7 @@ namespace ETAMP.Tests
         public void CreateETAMPWithEcdsaParametr_ReturnPrivateKey()
         {
             ECDsa eCDsa = ECDsa.Create();
-            _etamp = new Etamp(eCDsa);
+            _etamp = new ETAMP(eCDsa);
             Assert.NotNull(_etamp.PrivateKey);
         }
 
@@ -123,14 +123,14 @@ namespace ETAMP.Tests
         public void CreateETAMPWithEcdsaParametr_ReturnPublicKey()
         {
             ECDsa eCDsa = ECDsa.Create();
-            _etamp = new Etamp(eCDsa);
+            _etamp = new ETAMP(eCDsa);
             Assert.NotNull(_etamp.PublicKey);
         }
 
         [Fact]
         public void CreateETAMP_ReturnCurve()
         {
-            _etamp = new Etamp();
+            _etamp = new ETAMP();
             Assert.Equal(ECCurve.NamedCurves.nistP521.Oid.FriendlyName, _etamp.Curve.Oid.FriendlyName);
         }
 
@@ -140,7 +140,7 @@ namespace ETAMP.Tests
         public void CreateETAMP_ReturnHashAlgorithm(string hashAlgorithmName)
         {
             var hashAlgorithm = new HashAlgorithmName(hashAlgorithmName);
-            _etamp = new Etamp(hash: hashAlgorithm);
+            _etamp = new ETAMP(hash: hashAlgorithm);
             Assert.Equal(hashAlgorithm, _etamp.HashAlgorithm);
         }
 
@@ -148,7 +148,7 @@ namespace ETAMP.Tests
         [InlineData(SecurityAlgorithms.EcdhEs)]
         public void CreateETAMP_ReturnSecurityAlgorithm(string securityAlgorthm)
         {
-            _etamp = new Etamp(securityAlgorthm: securityAlgorthm);
+            _etamp = new ETAMP(securityAlgorthm: securityAlgorthm);
             Assert.NotNull(_etamp.SecurityAlgorithm);
             Assert.Equal(_etamp.SecurityAlgorithm, securityAlgorthm);
         }
@@ -156,7 +156,7 @@ namespace ETAMP.Tests
         [Fact]
         public void CreateETAMP_ReturnEcdsa()
         {
-            _etamp = new Etamp();
+            _etamp = new ETAMP();
             Assert.NotNull(_etamp.Ecdsa);
         }
 
@@ -164,7 +164,7 @@ namespace ETAMP.Tests
         public void CreateETAMPWithParametr_ReturnEcdsa()
         {
             ECDsa eCDsa = ECDsa.Create();
-            _etamp = new Etamp(eCDsa);
+            _etamp = new ETAMP(eCDsa);
             Assert.NotNull(_etamp.Ecdsa);
         }
     }

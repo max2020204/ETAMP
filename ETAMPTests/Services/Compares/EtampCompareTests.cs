@@ -5,17 +5,17 @@ namespace ETAMP.Services.Compares.Tests
 {
     public class EtampCompareTests
     {
-        private readonly EtampCompare _etampCompare;
+        private readonly ETAMPCompare _etampCompare;
 
         public EtampCompareTests()
         {
-            _etampCompare = new EtampCompare();
+            _etampCompare = new ETAMPCompare();
         }
 
         [Fact]
         public void EqualsTest_WithSameModel_True()
         {
-            EtampModel model = new()
+            ETAMPModel model = new()
             {
                 Id = Guid.Empty,
                 Version = 1,
@@ -23,7 +23,7 @@ namespace ETAMP.Services.Compares.Tests
                 SignatureToken = "SomeSignatureToken",
                 SignatureMessage = "SomeSignatureMessage"
             };
-            EtampModel model1 = new()
+            ETAMPModel model1 = new()
             {
                 Id = Guid.Empty,
                 Version = 1,
@@ -38,7 +38,7 @@ namespace ETAMP.Services.Compares.Tests
         [Fact]
         public void EqualsTest_WithDiffrentToken_True()
         {
-            EtampModel model = new()
+            ETAMPModel model = new()
             {
                 Id = Guid.NewGuid(),
                 Version = 1,
@@ -46,7 +46,7 @@ namespace ETAMP.Services.Compares.Tests
                 SignatureToken = "SomeSignatureToken",
                 SignatureMessage = "SomeSignatureMessage"
             };
-            EtampModel model1 = new()
+            ETAMPModel model1 = new()
             {
                 Id = Guid.NewGuid(),
                 Version = 1,
@@ -61,8 +61,8 @@ namespace ETAMP.Services.Compares.Tests
         [Fact]
         public void EqualsTest_BothNew_True()
         {
-            EtampModel model = new();
-            EtampModel model1 = new();
+            ETAMPModel model = new();
+            ETAMPModel model1 = new();
             var result = _etampCompare.Equals(model, model1);
             Assert.True(result);
         }
@@ -77,21 +77,21 @@ namespace ETAMP.Services.Compares.Tests
         [Fact]
         public void EqualsTest_SecondNotNull_True()
         {
-            var result = _etampCompare.Equals(null, new EtampModel());
+            var result = _etampCompare.Equals(null, new ETAMPModel());
             Assert.False(result);
         }
 
         [Fact]
         public void EqualsTest_FirstNotNull_True()
         {
-            var result = _etampCompare.Equals(new EtampModel(), null);
+            var result = _etampCompare.Equals(new ETAMPModel(), null);
             Assert.False(result);
         }
 
         [Fact]
         public void GetHashCode_IdenticalObjects_SameHashCode()
         {
-            var model1 = new EtampModel
+            var model1 = new ETAMPModel
             {
                 Id = Guid.NewGuid(),
                 Version = 1.0,
@@ -100,7 +100,7 @@ namespace ETAMP.Services.Compares.Tests
                 SignatureToken = "SigToken1",
                 SignatureMessage = "SigMessage1"
             };
-            var model2 = new EtampModel
+            var model2 = new ETAMPModel
             {
                 Id = model1.Id,
                 Version = model1.Version,
@@ -120,8 +120,8 @@ namespace ETAMP.Services.Compares.Tests
         [Fact]
         public void GetHashCode_DifferentObjects_DifferentHashCode()
         {
-            var model1 = new EtampModel { Id = Guid.NewGuid(), Version = 1.0, Token = "Token1", UpdateType = "Type1", SignatureToken = "SigToken1", SignatureMessage = "SigMessage1" };
-            var model2 = new EtampModel { Id = Guid.NewGuid(), Version = 2.0, Token = "Token2", UpdateType = "Type2", SignatureToken = "SigToken2", SignatureMessage = "SigMessage2" };
+            var model1 = new ETAMPModel { Id = Guid.NewGuid(), Version = 1.0, Token = "Token1", UpdateType = "Type1", SignatureToken = "SigToken1", SignatureMessage = "SigMessage1" };
+            var model2 = new ETAMPModel { Id = Guid.NewGuid(), Version = 2.0, Token = "Token2", UpdateType = "Type2", SignatureToken = "SigToken2", SignatureMessage = "SigMessage2" };
 
             int hash1 = _etampCompare.GetHashCode(model1);
             int hash2 = _etampCompare.GetHashCode(model2);
@@ -132,8 +132,8 @@ namespace ETAMP.Services.Compares.Tests
         [Fact]
         public void GetHashCode_NullProperties_HandledGracefully()
         {
-            var compare = new EtampCompare();
-            var model = new EtampModel { Id = Guid.NewGuid(), Version = 0, Token = null, UpdateType = null, SignatureToken = null, SignatureMessage = null };
+            var compare = new ETAMPCompare();
+            var model = new ETAMPModel { Id = Guid.NewGuid(), Version = 0, Token = null, UpdateType = null, SignatureToken = null, SignatureMessage = null };
 
             Exception ex = Record.Exception(() => compare.GetHashCode(model));
             Assert.Null(ex);

@@ -10,7 +10,10 @@ using System.Text;
 
 namespace ETAMP
 {
-    public class Etamp : IEtamp
+    /// <summary>
+    /// Provides functionalities for creating and managing ETAMP (Encrypted Token And Message Protocol) tokens.
+    /// </summary>
+    public class ETAMP : IETAMP
     {
         /// <summary>
         /// Gets the elliptic curve used in cryptographic operations. Defaults to NIST P-521 curve if not specified.
@@ -43,14 +46,14 @@ namespace ETAMP
         public ECDsa Ecdsa { get; }
 
         /// <summary>
-        /// Initializes a new instance of the Etamp class with specified ECDSA, elliptic curve, security algorithm, and hash algorithm.
+        /// Initializes a new instance of the <see cref="ETAMP"/> class with specified ECDSA, elliptic curve, security algorithm, and hash algorithm.
         /// Sets up the cryptographic parameters and generates the private and public keys in PEM format.
         /// </summary>
         /// <param name="ecdsa">The ECDSA instance to use. If null, a new instance will be created.</param>
         /// <param name="curve">The elliptic curve to use. Defaults to NIST P-521 curve if not specified.</param>
         /// <param name="securityAlgorithm">The security algorithm for JWT. Defaults to EcdsaSha512Signature.</param>
         /// <param name="hash">The hash algorithm to use. Default is SHA-512.</param>
-        public Etamp(ECDsa? ecdsa = null, ECCurve curve = default, string securityAlgorthm = SecurityAlgorithms.EcdsaSha512Signature, HashAlgorithmName hash = default)
+        public ETAMP(ECDsa? ecdsa = null, ECCurve curve = default, string securityAlgorthm = SecurityAlgorithms.EcdsaSha512Signature, HashAlgorithmName hash = default)
         {
             Curve = curve.IsNamed == default ? ECCurve.NamedCurves.nistP521 : curve;
             HashAlgorithm = hash == default ? HashAlgorithmName.SHA512 : hash;
@@ -100,14 +103,15 @@ namespace ETAMP
         /// <param name="payload">The payload to be included in the ETAMP token.</param>
         /// <param name="signToken">Indicates whether the token should be signed. Default is true.</param>
         /// <param name="version">The version of the ETAMP. Default is 1.0.</param>
-        /// <typeparam name="T">The type of the payload inherited of BasePaylaod.</typeparam>
+        /// <typeparam name="T">The type of the payload inherited from BasePayload.</typeparam>
+        /// <returns>A JSON-serialized string representation of the ETAMP object.</returns>
         public virtual string CreateETAMP<T>(string updateType, T payload, bool signToken = true, double version = 1.0) where T : BasePaylaod
         {
             Guid messageId = Guid.NewGuid();
             string token = CreateEtampData(messageId.ToString(), payload, signToken);
             string signatureToken = SignData(token);
             string signMessage = SignData($"{messageId}{version}{token}{updateType}{signatureToken}");
-            EtampModel etamp = new()
+            ETAMPModel etamp = new()
             {
                 Id = messageId,
                 Version = version,
@@ -133,7 +137,7 @@ namespace ETAMP
         {
             Guid messageId = Guid.NewGuid();
             string token = CreateEtampData(messageId.ToString(), payload, signToken);
-            EtampModel etamp = new()
+            ETAMPModel etamp = new()
             {
                 Id = messageId,
                 Version = version,
@@ -148,13 +152,17 @@ namespace ETAMP
         /// Returns the base64-encoded signature.
         /// </summary>
         /// <param name="data">The data to be signed.</param>
+        /// <returns>The base64-encoded signature of the data.</returns>
         private string SignData(string data)
         {
             return Convert.ToBase64String(Ecdsa.SignData(Encoding.UTF8.GetBytes(data), HashAlgorithm));
         }
 
+        /// <summary>
+        /// Disposes the ECDSA instance and releases all resources used by the ETAMP.
+        /// </summary>
         [ExcludeFromCodeCoverage]
-        public void Dispose()
+        public virtual void Dispose()
         {
             Ecdsa.Dispose();
         }

@@ -3,7 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace ETAMP.Services.Compares
 {
-    public class EtampCompare : IEqualityComparer<EtampModel>
+    public class ETAMPCompare : IEqualityComparer<ETAMPModel>
     {
         /// <summary>
         /// Compares two etamp models by their parameters.
@@ -11,7 +11,7 @@ namespace ETAMP.Services.Compares
         /// <param name="x">First etamp to compare</param>
         /// <param name="y">Second etamp to compare</param>
         /// <returns>Boolean if there are same</returns>
-        public bool Equals(EtampModel? x, EtampModel? y)
+        public bool Equals(ETAMPModel? x, ETAMPModel? y)
         {
             if (x == null && y == null)
             {
@@ -37,7 +37,7 @@ namespace ETAMP.Services.Compares
             return states.TrueForAll(t => t);
         }
 
-        public int GetHashCode([DisallowNull] EtampModel obj)
+        public int GetHashCode([DisallowNull] ETAMPModel obj)
         {
             return HashCode.Combine(obj.Id, obj.Version, obj.Token, obj.UpdateType, obj.SignatureToken, obj.SignatureMessage);
         }
