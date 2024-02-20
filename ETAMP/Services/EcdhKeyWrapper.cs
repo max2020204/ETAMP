@@ -67,19 +67,6 @@ namespace ETAMP.Services
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="EcdhKeyWrapper"/> class using a specified algorithm name.
-        /// This constructor generates a new ECDH key pair using the specified algorithm.
-        /// the keys in PEM format.
-        /// </summary>
-        /// <param name="algName">The name of the algorithm to use.</param>
-        public EcdhKeyWrapper(string algName)
-        {
-            _ecdh = ECDiffieHellman.Create(algName);
-            _privateKey = _ecdh.ExportECPrivateKeyPem();
-            _publicKey = _ecdh.ExportSubjectPublicKeyInfoPem();
-        }
-
-        /// <summary>
         /// Initializes a new instance of the <see cref="EcdhKeyWrapper"/> class using a specified elliptic curve.
         /// This constructor generates a new ECDH key pair based on the specified curve.
         /// the keys in PEM format.
@@ -158,10 +145,17 @@ namespace ETAMP.Services
         /// <summary>
         /// Derives a shared secret key material using the public key of another party.
         /// </summary>
-        /// <param name="otherPartyPublicKey">The byte array containing the other party's public key.</param>
+        /// <param name="otherPartyPublicKey">The byte array containing the other party's public key.
+        /// Cannot be null.</param>
         /// <returns>The derived shared secret key material.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when the provided public key is null.</exception>
         public virtual byte[] DeriveKey(byte[] otherPartyPublicKey)
         {
+            if (otherPartyPublicKey == null)
+            {
+                throw new ArgumentNullException(nameof(otherPartyPublicKey), "Public key cannot be null.");
+            }
+
             using (var otherPartyEcdh = ECDiffieHellmanCngPublicKey.FromByteArray(otherPartyPublicKey, CngKeyBlobFormat.EccPublicBlob))
             {
                 return _ecdh.DeriveKeyMaterial(otherPartyEcdh);

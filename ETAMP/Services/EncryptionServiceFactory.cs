@@ -27,7 +27,7 @@ namespace ETAMP.Services
         /// </summary>
         /// <param name="name">The name of the encryption service to be registered.</param>
         /// <param name="serviceCreator">The function used to create an instance of the encryption service.</param>
-        public void RegisterEncryptionService(string name, Func<IEncryptionService> serviceCreator)
+        public virtual void RegisterEncryptionService(string name, Func<IEncryptionService> serviceCreator)
         {
             Services[name] = serviceCreator;
         }
@@ -38,7 +38,7 @@ namespace ETAMP.Services
         /// <param name="name">The name of the encryption service to create.</param>
         /// <returns>An instance of the encryption service.</returns>
         /// <exception cref="ArgumentException">Thrown when an unsupported encryption service name is provided.</exception>
-        public IEncryptionService CreateEncryptionService(string name)
+        public virtual IEncryptionService CreateEncryptionService(string name)
         {
             if (Services.TryGetValue(name, out var serviceCreator))
             {

@@ -4,12 +4,12 @@ namespace ETAMP.Interfaces
 {
     public interface IETAMPEncryption : IETAMP
     {
-        string EnryptETAMPToken(string jsonEtamp);
+        string EncryptETAMPToken(string jsonEtamp);
 
-        ETAMPEncrypted EnryptETAMP(string jsonEtamp);
+        ETAMPEncrypted EncryptETAMP(string jsonEtamp);
 
-        string CreateEnryptETAMPToken<T>(string updateType, T payload, bool signToken = true, double version = 1) where T : BasePaylaod;
+        string CreateEncryptETAMPToken<T>(string updateType, T payload, bool signToken = true, double version = 1) where T : BasePaylaod;
 
-        ETAMPEncrypted CreateEnryptETAMP<T>(string updateType, T payload, bool signToken = true, double version = 1) where T : BasePaylaod;
+        ETAMPEncrypted CreateEncryptETAMP<T>(string updateType, T payload, bool signToken = true, double version = 1) where T : BasePaylaod;
     }
 }

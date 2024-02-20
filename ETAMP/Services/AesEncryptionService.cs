@@ -8,7 +8,6 @@ namespace ETAMP.Services
     /// </summary>
     public class AesEncryptionService : IAesEncryptionService
     {
-        private readonly string? _algName;
         private byte[] _iv;
 
         /// <summary>
@@ -36,26 +35,6 @@ namespace ETAMP.Services
         }
 
         /// <summary>
-        /// Initializes a new instance of the AesEncryptionService class with a specific algorithm name.
-        /// </summary>
-        /// <param name="algName">The algorithm name for the AES encryption.</param>
-        public AesEncryptionService(string algName)
-        {
-            _algName = algName;
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the AesEncryptionService class with a specific algorithm name and IV.
-        /// </summary>
-        /// <param name="algName">The algorithm name for the AES encryption.</param>
-        /// <param name="iv">The initialization vector (IV) to use for encryption and decryption.</param>
-        public AesEncryptionService(string algName, byte[] iv)
-        {
-            _algName = algName;
-            _iv = iv;
-        }
-
-        /// <summary>
         /// Encrypts the specified data using the AES algorithm.
         /// </summary>
         /// <param name="dataToEncrypt">The data to encrypt.</param>
@@ -68,7 +47,7 @@ namespace ETAMP.Services
                 throw new ArgumentNullException(nameof(dataToEncrypt));
             if (key == null)
                 throw new ArgumentNullException(nameof(key));
-            using (var aes = Aes.Create(_algName))
+            using (var aes = Aes.Create())
             {
                 aes.Key = key;
                 _iv = aes.IV;
@@ -97,7 +76,7 @@ namespace ETAMP.Services
                 throw new ArgumentNullException(nameof(key));
             if (IV == null)
                 throw new InvalidOperationException("IV is not set.");
-            using (var aes = Aes.Create(_algName))
+            using (var aes = Aes.Create())
             {
                 aes.Key = key;
                 aes.IV = IV;

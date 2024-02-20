@@ -17,11 +17,7 @@ namespace ETAMP.Services.Compares
             {
                 return true;
             }
-            if (x == null && y != null)
-            {
-                return false;
-            }
-            if (x != null && y == null)
+            if (x == null || y == null)
             {
                 return false;
             }

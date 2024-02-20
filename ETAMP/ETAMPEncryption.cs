@@ -15,20 +15,54 @@ namespace ETAMP
         /// <summary>
         /// Initializes a new instance of the <see cref="ETAMPEncryption"/> class.
         /// </summary>
-        /// <param name="eciesEncryptionService">The ECIES encryption service used for encrypting tokens.</param>
+        /// <param name="eciesEncryptionService">The ECIES encryption service used for encrypting tokens and messages.</param>
         public ETAMPEncryption(IEciesEncryptionService eciesEncryptionService)
         {
             _eciesEncryptionService = eciesEncryptionService;
         }
 
         /// <summary>
+        /// Deserializes the given JSON string into an ETAMP model and validates it.
+        /// </summary>
+        /// <param name="jsonEtamp">The JSON string representation of an ETAMP model.</param>
+        /// <returns>The deserialized ETAMP model.</returns>
+        /// <exception cref="ArgumentException">Thrown if the input string is null, empty, or not in a valid JSON format.</exception>
+        /// <exception cref="InvalidOperationException">Thrown if the deserialized ETAMP model is null.</exception>
+        private ETAMPModel DeserializeETAMPModel(string jsonEtamp)
+        {
+            if (string.IsNullOrEmpty(jsonEtamp))
+            {
+                throw new ArgumentException("JSON ETAMP cannot be null or empty", nameof(jsonEtamp));
+            }
+
+            ETAMPModel? model;
+            try
+            {
+                model = JsonConvert.DeserializeObject<ETAMPModel>(jsonEtamp);
+            }
+            catch (JsonException ex)
+            {
+                throw new ArgumentException("Invalid JSON ETAMP format", nameof(jsonEtamp), ex);
+            }
+
+            if (model == null)
+            {
+                throw new InvalidOperationException("Deserialized ETAMP model is null");
+            }
+
+            return model;
+        }
+
+        /// <summary>
         /// Encrypts an ETAMP token represented as a JSON string.
         /// </summary>
-        /// <param name="jsonEtamp">The JSON representation of the ETAMP token to encrypt.</param>
+        /// <param name="jsonEtamp">The JSON representation of the ETAMP token to encrypt.
+        /// Must be a valid JSON and cannot be null or empty.</param>
         /// <returns>The encrypted ETAMP token as a JSON string.</returns>
-        public string EnryptETAMPToken(string jsonEtamp)
+        public virtual string EncryptETAMPToken(string jsonEtamp)
         {
-            ETAMPModel model = JsonConvert.DeserializeObject<ETAMPModel>(jsonEtamp);
+            ETAMPModel model = DeserializeETAMPModel(jsonEtamp);
+
             model.Token = _eciesEncryptionService.Encrypt(model.Token);
             return JsonConvert.SerializeObject(model);
         }
@@ -36,11 +70,13 @@ namespace ETAMP
         /// <summary>
         /// Encrypts an ETAMP message represented as a JSON string and returns an encrypted ETAMP object.
         /// </summary>
-        /// <param name="jsonEtamp">The JSON representation of the ETAMP message to encrypt.</param>
+        /// <param name="jsonEtamp">The JSON representation of the ETAMP message to encrypt.
+        /// Must be a valid JSON and cannot be null or empty.</param>
         /// <returns>An instance of <see cref="ETAMPEncrypted"/> containing the encrypted ETAMP message.</returns>
-        public ETAMPEncrypted EnryptETAMP(string jsonEtamp)
+        public virtual ETAMPEncrypted EncryptETAMP(string jsonEtamp)
         {
-            ETAMPModel model = JsonConvert.DeserializeObject<ETAMPModel>(jsonEtamp);
+            ETAMPModel model = DeserializeETAMPModel(jsonEtamp);
+
             model.Token = _eciesEncryptionService.Encrypt(model.Token);
             return new ETAMPEncrypted
             {
@@ -59,11 +95,10 @@ namespace ETAMP
         /// <param name="version">The version of the ETAMP protocol.</param>
         /// <typeparam name="T">The type of the payload.</typeparam>
         /// <returns>The encrypted ETAMP token as a JSON string.</returns>
-
-        public string CreateEnryptETAMPToken<T>(string updateType, T payload, bool signToken = true, double version = 1) where T : BasePaylaod
+        public virtual string CreateEncryptETAMPToken<T>(string updateType, T payload, bool signToken = true, double version = 1) where T : BasePaylaod
         {
             string token = CreateETAMP(updateType, payload, signToken, version);
-            return EnryptETAMPToken(token);
+            return EncryptETAMPToken(token);
         }
 
         /// <summary>
@@ -75,12 +110,12 @@ namespace ETAMP
         /// <param name="version">The version of the ETAMP protocol.</param>
         /// <typeparam name="T">The type of the payload.</typeparam>
         /// <returns>An instance of <see cref="ETAMPEncrypted"/> containing the encrypted ETAMP message.</returns>
-        public ETAMPEncrypted CreateEnryptETAMP<T>(string updateType, T payload, bool signToken = true, double version = 1) where T : BasePaylaod
+        public virtual ETAMPEncrypted CreateEncryptETAMP<T>(string updateType, T payload, bool signToken = true, double version = 1) where T : BasePaylaod
         {
             string token = CreateETAMP(updateType, payload, signToken, version);
             return new ETAMPEncrypted
             {
-                ETAMP = EnryptETAMPToken(token),
+                ETAMP = EncryptETAMPToken(token),
                 PrivateKey = _eciesEncryptionService.EcdhKeyWrapper.PrivateKey,
                 PublicKey = _eciesEncryptionService.EcdhKeyWrapper.PublicKey
             };
