@@ -1,7 +1,7 @@
-﻿using ETAMP.Services.Interfaces;
+﻿using ETAMP.Wrapper.Interfaces;
 using System.Security.Cryptography;
 
-namespace ETAMP.Validate.Interfaces
+namespace ETAMP.Services.Interfaces
 {
     public interface IValidateToken
     {

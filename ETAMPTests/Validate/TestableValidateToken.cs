@@ -1,5 +1,5 @@
-﻿using ETAMP.Services.Interfaces;
-using ETAMP.Validate;
+﻿using ETAMP.Services;
+using ETAMP.Wrapper.Interfaces;
 using System.IdentityModel.Tokens.Jwt;
 
 namespace ETAMPTests.Validate

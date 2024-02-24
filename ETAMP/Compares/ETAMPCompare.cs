@@ -1,7 +1,7 @@
 ﻿using ETAMP.Models;
 using System.Diagnostics.CodeAnalysis;
 
-namespace ETAMP.Services.Compares
+namespace ETAMP.Compares
 {
     public class ETAMPCompare : IEqualityComparer<ETAMPModel>
     {

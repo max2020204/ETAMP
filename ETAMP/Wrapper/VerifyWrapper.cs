@@ -1,9 +1,9 @@
-﻿using ETAMP.Services.Interfaces;
+﻿using ETAMP.Wrapper.Interfaces;
 using System.Diagnostics.CodeAnalysis;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace ETAMP.Services
+namespace ETAMP.Wrapper
 {
     public class VerifyWrapper : IVerifyWrapper
     {

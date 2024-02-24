@@ -1,6 +1,6 @@
 ﻿using System.Security.Cryptography;
 
-namespace ETAMP.Services.Interfaces
+namespace ETAMP.Wrapper.Interfaces
 {
     public interface IEcdsaWrapper
     {

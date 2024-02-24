@@ -1,13 +1,13 @@
 ﻿using ETAMP.Models;
 using ETAMP.Services.Interfaces;
-using ETAMP.Validate.Interfaces;
+using ETAMP.Wrapper.Interfaces;
 using Microsoft.IdentityModel.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Cryptography;
 
-namespace ETAMP.Validate
+namespace ETAMP.Services
 {
     public class ValidateToken : IValidateToken
     {

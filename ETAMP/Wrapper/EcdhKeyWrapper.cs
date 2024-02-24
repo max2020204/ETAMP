@@ -1,7 +1,7 @@
-﻿using ETAMP.Services.Interfaces;
+﻿using ETAMP.Wrapper.Interfaces;
 using System.Security.Cryptography;
 
-namespace ETAMP.Services
+namespace ETAMP.Wrapper
 {
     /// <summary>
     /// Provides a wrapper for Elliptic Curve Diffie-Hellman (ECDH) key exchange functionality.

@@ -1,4 +1,5 @@
-﻿using System.Security.Cryptography;
+﻿using ETAMP.Wrapper;
+using System.Security.Cryptography;
 using Xunit;
 
 namespace ETAMP.Services.Tests

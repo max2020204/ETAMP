@@ -45,9 +45,13 @@ namespace ETAMP
                 throw new ArgumentException("Invalid JSON ETAMP format", nameof(jsonEtamp), ex);
             }
 
-            if (model == null)
+            if (model == null || string.IsNullOrEmpty(model.Token) ||
+                string.IsNullOrEmpty(model.UpdateType) ||
+                string.IsNullOrEmpty(model.SignatureToken) ||
+                string.IsNullOrEmpty(model.SignatureMessage) ||
+                model.Id == Guid.Empty)
             {
-                throw new InvalidOperationException("Deserialized ETAMP model is null");
+                throw new InvalidOperationException("Deserialized ETAMP model is invalid: it is either null, has empty/missing fields, or contains invalid values.");
             }
 
             return model;
@@ -110,15 +114,20 @@ namespace ETAMP
         /// <param name="version">The version of the ETAMP protocol.</param>
         /// <typeparam name="T">The type of the payload.</typeparam>
         /// <returns>An instance of <see cref="ETAMPEncrypted"/> containing the encrypted ETAMP message.</returns>
-        public virtual ETAMPEncrypted CreateEncryptETAMP<T>(string updateType, T payload, bool signToken = true, double version = 1) where T : BasePaylaod
+        public virtual ETAMPEncrypted CreateEncryptETAMPFull<T>(string updateType, T payload, bool signToken = true, double version = 1) where T : BasePaylaod
         {
             string token = CreateETAMP(updateType, payload, signToken, version);
-            return new ETAMPEncrypted
-            {
-                ETAMP = EncryptETAMPToken(token),
-                PrivateKey = _eciesEncryptionService.EcdhKeyWrapper.PrivateKey,
-                PublicKey = _eciesEncryptionService.EcdhKeyWrapper.PublicKey
-            };
+            return EncryptETAMP(token);
+        }
+
+        public string CreateEncryptETAMPWithoutSignature<T>(string updateType, T payload, bool signToken = true, double version = 1) where T : BasePaylaod
+        {
+            return EncryptETAMPToken(CreateETAMPWithoutSignature(updateType, payload, signToken, version));
+        }
+
+        public ETAMPEncrypted CreateEncryptETAMPWithoutSignatureFull<T>(string updateType, T payload, bool signToken = true, double version = 1) where T : BasePaylaod
+        {
+            return EncryptETAMP(CreateETAMPWithoutSignature(updateType, payload, signToken, version));
         }
     }
 }

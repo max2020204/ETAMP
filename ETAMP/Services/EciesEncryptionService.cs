@@ -1,4 +1,5 @@
 ﻿using ETAMP.Services.Interfaces;
+using ETAMP.Wrapper.Interfaces;
 using System.Text;
 
 namespace ETAMP.Services

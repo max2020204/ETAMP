@@ -1,6 +1,7 @@
 ﻿using ETAMP.Models;
 using ETAMP.Services;
-using ETAMP.Services.Interfaces;
+using ETAMP.Wrapper;
+using ETAMP.Wrapper.Interfaces;
 using ETAMPTests.Models;
 using ETAMPTests.Validate;
 using Microsoft.IdentityModel.Tokens;

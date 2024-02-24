@@ -1,7 +1,7 @@
-﻿using ETAMP.Services.Interfaces;
+﻿using ETAMP.Wrapper.Interfaces;
 using System.Security.Cryptography;
 
-namespace ETAMP.Services
+namespace ETAMP.Wrapper
 {
     /// <summary>
     /// A factory class for creating cryptographic objects such as ECDsa and JwtSecurityTokenHandler.

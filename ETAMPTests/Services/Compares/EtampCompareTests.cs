@@ -1,4 +1,5 @@
-﻿using ETAMP.Models;
+﻿using ETAMP.Compares;
+using ETAMP.Models;
 using Xunit;
 
 namespace ETAMP.Services.Compares.Tests

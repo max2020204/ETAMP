@@ -1,4 +1,6 @@
-﻿namespace ETAMP.Services.Interfaces
+﻿using ETAMP.Wrapper.Interfaces;
+
+namespace ETAMP.Services.Interfaces
 {
     public interface IEciesEncryptionService
     {
