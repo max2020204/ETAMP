@@ -3,7 +3,7 @@ using System.Security.Cryptography;
 using System.Text;
 using Xunit;
 
-namespace ETAMP.Services.Tests
+namespace ETAMPTests.Wrapper
 {
     public class VerifyWrapperTests
     {

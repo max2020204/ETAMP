@@ -2,7 +2,7 @@
 using ETAMP.Wrapper.Interfaces;
 using System.IdentityModel.Tokens.Jwt;
 
-namespace ETAMPTests.Validate
+namespace ETAMPTests.Services
 {
     internal class TestableValidateToken : ValidateToken
     {

@@ -1,8 +1,7 @@
-﻿using ETAMP.Wrapper;
-using System.Security.Cryptography;
+﻿using System.Security.Cryptography;
 using Xunit;
 
-namespace ETAMP.Services.Tests
+namespace ETAMP.Wrapper.Tests
 {
     public class EcdsaWrapperTests
     {
@@ -14,7 +13,7 @@ namespace ETAMP.Services.Tests
         }
 
         [Fact]
-        public void CreateECDsaTest_ReturnNotNull()
+        public void CreateDefaultECDsa_ShouldReturnNonNullInstance()
         {
             var result = _wrapper.CreateECDsa();
             Assert.NotNull(result);
@@ -24,7 +23,7 @@ namespace ETAMP.Services.Tests
         [InlineData("nistP256", 256)]
         [InlineData("nistP384", 384)]
         [InlineData("nistP521", 521)]
-        public void CreateECDsa_WithValidCurve_ReturnsECDsaInstance(string curve, int size)
+        public void CreateECDsa_UsingSpecifiedCurve_ShouldReturnInstanceWithCorrectKeySize(string curve, int size)
         {
             ECCurve ecCurve = ECCurve.CreateFromFriendlyName(curve);
             using (var ecdsa = _wrapper.CreateECDsa(ecCurve))
@@ -35,7 +34,7 @@ namespace ETAMP.Services.Tests
         }
 
         [Fact]
-        public void CreateECDsa_WithValidPublickey_ReturnSameResult()
+        public void CreateECDsa_FromPemPublicKey_ShouldCorrectlyImportPublicKey()
         {
             using (ECDsa ecdsa = ECDsa.Create(ECCurve.NamedCurves.nistP521))
             {
@@ -54,7 +53,7 @@ namespace ETAMP.Services.Tests
         }
 
         [Fact]
-        public void CreateECDsa_WithValidPublickeyInbytes_ReturnSameResult()
+        public void CreateECDsa_FromPublicKeyBytes_ShouldCorrectlyImportPublicKey()
         {
             using (ECDsa ecdsa = ECDsa.Create(ECCurve.NamedCurves.nistP521))
             {
@@ -70,6 +69,52 @@ namespace ETAMP.Services.Tests
                                                                     .Replace("\n", ""), publicKey);
                 Assert.Equal(result.KeySize, 521);
             }
+        }
+
+        [Fact]
+        public void StripPEMFormatting_FromPrivateKey_ShouldReturnBase64String()
+        {
+            ECDsa ecdsa = ECDsa.Create();
+            string key = ecdsa.ExportECPrivateKeyPem();
+            string clearKey = key.Replace("-----BEGIN PRIVATE KEY-----", "")
+                             .Replace("-----END PRIVATE KEY-----", "")
+                             .Replace("\n", "")
+                             .Replace("\r", "");
+            string result = _wrapper.ClearPEMPrivateKey(key);
+            Assert.Equal(clearKey, result);
+        }
+
+        [Fact]
+        public void StripPEMFormatting_FromPublicKey_ShouldReturnBase64String()
+        {
+            ECDsa ecdsa = ECDsa.Create();
+            string key = ecdsa.ExportSubjectPublicKeyInfoPem();
+            string clearKey = key.Replace("-----BEGIN PUBLIC KEY-----", "")
+                            .Replace("-----END PUBLIC KEY-----", "")
+                            .Replace("\n", "")
+                            .Replace("\r", "");
+            string result = _wrapper.ClearPEMPublicKey(key);
+            Assert.Equal(clearKey, result);
+        }
+
+        [Fact]
+        public void ImportECDsa_FromPemPrivateKey_ShouldCorrectlyImportPrivateKey()
+        {
+            ECDsa ecdsa = ECDsa.Create(ECCurve.NamedCurves.nistP521);
+            string key = ecdsa.ExportPkcs8PrivateKeyPem();
+            ECDsa result = _wrapper.ImportECDsa(key, ECCurve.NamedCurves.nistP521);
+
+            Assert.Equal(ecdsa.ExportECPrivateKeyPem(), result.ExportECPrivateKeyPem());
+        }
+
+        [Fact]
+        public void CreateECDsa_FromBase64PublicKey_ShouldCorrectlyImportPublicKey()
+        {
+            ECDsa ecdsa = ECDsa.Create(ECCurve.NamedCurves.nistP521);
+            string key = ecdsa.ExportSubjectPublicKeyInfoPem();
+            ECDsa result = _wrapper.CreateECDsa(key, ECCurve.NamedCurves.nistP521);
+
+            Assert.Equal(ecdsa.ExportSubjectPublicKeyInfoPem(), result.ExportSubjectPublicKeyInfoPem());
         }
     }
 }

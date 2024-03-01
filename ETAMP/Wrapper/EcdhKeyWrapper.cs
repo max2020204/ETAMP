@@ -62,7 +62,7 @@ namespace ETAMP.Wrapper
         public EcdhKeyWrapper()
         {
             _ecdh = ECDiffieHellman.Create();
-            _privateKey = _ecdh.ExportECPrivateKeyPem();
+            _privateKey = _ecdh.ExportPkcs8PrivateKeyPem();
             _publicKey = _ecdh.ExportSubjectPublicKeyInfoPem();
         }
 
@@ -75,7 +75,7 @@ namespace ETAMP.Wrapper
         public EcdhKeyWrapper(ECCurve curve)
         {
             _ecdh = ECDiffieHellman.Create(curve);
-            _privateKey = _ecdh.ExportECPrivateKeyPem();
+            _privateKey = _ecdh.ExportPkcs8PrivateKeyPem();
             _publicKey = _ecdh.ExportSubjectPublicKeyInfoPem();
         }
 
@@ -88,7 +88,7 @@ namespace ETAMP.Wrapper
         public EcdhKeyWrapper(ECParameters parameters)
         {
             _ecdh = ECDiffieHellman.Create(parameters);
-            _privateKey = _ecdh.ExportECPrivateKeyPem();
+            _privateKey = _ecdh.ExportPkcs8PrivateKeyPem();
             _publicKey = _ecdh.ExportSubjectPublicKeyInfoPem();
         }
 
@@ -156,10 +156,8 @@ namespace ETAMP.Wrapper
                 throw new ArgumentNullException(nameof(otherPartyPublicKey), "Public key cannot be null.");
             }
 
-            using (var otherPartyEcdh = ECDiffieHellmanCngPublicKey.FromByteArray(otherPartyPublicKey, CngKeyBlobFormat.EccPublicBlob))
-            {
-                return _ecdh.DeriveKeyMaterial(otherPartyEcdh);
-            }
+            using ECDiffieHellmanPublicKey otherPartyEcdh = ECDiffieHellmanCngPublicKey.FromByteArray(otherPartyPublicKey, CngKeyBlobFormat.EccPublicBlob);
+            return _ecdh.DeriveKeyMaterial(otherPartyEcdh);
         }
 
         /// <summary>

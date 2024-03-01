@@ -47,16 +47,13 @@ namespace ETAMP.Services
                 throw new ArgumentNullException(nameof(dataToEncrypt));
             if (key == null)
                 throw new ArgumentNullException(nameof(key));
-            using (var aes = Aes.Create())
-            {
-                aes.Key = key;
-                _iv = aes.IV;
 
-                using (var encryptor = aes.CreateEncryptor())
-                {
-                    return encryptor.TransformFinalBlock(dataToEncrypt, 0, dataToEncrypt.Length);
-                }
-            }
+            using Aes aes = Aes.Create();
+            aes.Key = key;
+            _iv = aes.IV;
+
+            using ICryptoTransform encryptor = aes.CreateEncryptor();
+            return encryptor.TransformFinalBlock(dataToEncrypt, 0, dataToEncrypt.Length);
         }
 
         /// <summary>
@@ -76,16 +73,13 @@ namespace ETAMP.Services
                 throw new ArgumentNullException(nameof(key));
             if (IV == null)
                 throw new InvalidOperationException("IV is not set.");
-            using (var aes = Aes.Create())
-            {
-                aes.Key = key;
-                aes.IV = IV;
 
-                using (var decryptor = aes.CreateDecryptor())
-                {
-                    return decryptor.TransformFinalBlock(dataToDecrypt, 0, dataToDecrypt.Length);
-                }
-            }
+            using Aes aes = Aes.Create();
+            aes.Key = key;
+            aes.IV = IV;
+
+            using ICryptoTransform decryptor = aes.CreateDecryptor();
+            return decryptor.TransformFinalBlock(dataToDecrypt, 0, dataToDecrypt.Length);
         }
     }
 }

@@ -70,6 +70,10 @@ namespace ETAMP.Wrapper
         /// <returns>A new instance of ECDsa configured with the specified public key and curve.</returns>
         public virtual ECDsa CreateECDsa(string publicKey, ECCurve curve)
         {
+            if (publicKey.Contains("-"))
+            {
+                publicKey = ClearPEMPublicKey(publicKey);
+            }
             ECDsa ecdsa = ECDsa.Create(curve);
             ecdsa.ImportSubjectPublicKeyInfo(Convert.FromBase64String(publicKey), out _);
             return ecdsa;
@@ -115,6 +119,10 @@ namespace ETAMP.Wrapper
         /// <returns>A new instance of ECDsa configured with the specified private key and curve.</returns>
         public ECDsa ImportECDsa(string privateKey, ECCurve curve)
         {
+            if (privateKey.Contains("-"))
+            {
+                privateKey = ClearPEMPrivateKey(privateKey);
+            }
             ECDsa ecdsa = ECDsa.Create(curve);
             ecdsa.ImportPkcs8PrivateKey(Convert.FromBase64String(privateKey), out _);
             return ecdsa;

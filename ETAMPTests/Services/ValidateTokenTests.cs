@@ -3,7 +3,6 @@ using ETAMP.Services;
 using ETAMP.Wrapper;
 using ETAMP.Wrapper.Interfaces;
 using ETAMPTests.Models;
-using ETAMPTests.Validate;
 using Microsoft.IdentityModel.Tokens;
 using Moq;
 using Newtonsoft.Json;
@@ -12,11 +11,11 @@ using System.Security.Cryptography;
 using System.Text;
 using Xunit;
 
-namespace ETAMP.Validate.Tests
+namespace ETAMPTests.Services
 {
     public class ValidateTokenTests
     {
-        private readonly ETAMP _etamp;
+        private readonly ETAMP.ETAMP _etamp;
         private readonly Data _data;
         private readonly ECDsa _ecdsa;
         private ValidateToken _token;
@@ -28,7 +27,7 @@ namespace ETAMP.Validate.Tests
         {
             _ecdsa = ECDsa.Create();
 
-            _etamp = new ETAMP();
+            _etamp = new ETAMP.ETAMP();
             _data = new Data()
             {
                 Audience = "Someone",

@@ -42,8 +42,10 @@ namespace ETAMP.Services
 
         public virtual string Encrypt(string message)
         {
-            if (EcdhKeyWrapper.KeyExchanger == null)
-                throw new InvalidOperationException("KeyExchanger is null. The ECDH key wrapper must be initialized with key material.");
+            if (EcdhKeyWrapper.KeyExchanger == null || EcdhKeyWrapper.KeyExchanger.Length == 0)
+            {
+                throw new InvalidOperationException("KeyExchanger is null or empty. The ECDH key wrapper must be initialized with key material.");
+            }
             byte[] secretKey = EcdhKeyWrapper.KeyExchanger;
             byte[] encryptedMessage = EncryptionService.Encrypt(Encoding.UTF8.GetBytes(message), secretKey);
 
@@ -59,10 +61,19 @@ namespace ETAMP.Services
         /// <returns>The decrypted message.</returns>
         /// <exception cref="FormatException">Thrown if the encrypted message is not in a valid base64 format.</exception>
         /// <exception cref="InvalidOperationException">Thrown if the key exchanger is not initialized.</exception>
-
         public virtual string Decrypt(string encryptedMessageBase64, byte[] publicKey)
         {
-            byte[] encryptedMessage = Convert.FromBase64String(encryptedMessageBase64);
+            if (EcdhKeyWrapper.KeyExchanger == null || EcdhKeyWrapper.KeyExchanger.Length == 0)
+                throw new InvalidOperationException("KeyExchanger is null. The ECDH key wrapper must be initialized with key material.");
+            byte[] encryptedMessage;
+            try
+            {
+                encryptedMessage = Convert.FromBase64String(encryptedMessageBase64);
+            }
+            catch (FormatException ex)
+            {
+                throw new FormatException("The encrypted message is not in a valid Base64 format.", ex);
+            }
             byte[] secretKey = EcdhKeyWrapper.DeriveKey(publicKey);
 
             byte[] decryptedMessage = EncryptionService.Decrypt(encryptedMessage, secretKey);

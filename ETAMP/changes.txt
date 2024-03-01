@@ -1,0 +1,1244 @@
+diff --git a/ETAMP/ETAMP.csproj b/ETAMP/ETAMP.csproj
+index 6c8a4cb..edffa51 100644
+--- a/ETAMP/ETAMP.csproj
++++ b/ETAMP/ETAMP.csproj
+@@ -10,7 +10,7 @@
+ 
+ 	<ItemGroup>
+ 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+-		<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.3.1" />
++		<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.4.0" />
+ 	</ItemGroup>
+ 
+ 	<ItemGroup>
+diff --git a/ETAMP/ETAMPEncryption.cs b/ETAMP/ETAMPEncryption.cs
+index f400b3c..88b486b 100644
+--- a/ETAMP/ETAMPEncryption.cs
++++ b/ETAMP/ETAMPEncryption.cs
+@@ -7,13 +7,14 @@ namespace ETAMP
+ {
+     /// <summary>
+     /// Provides encryption functionalities for ETAMP (Encrypted Token And Message Protocol) using ECIES (Elliptic Curve Integrated Encryption Scheme).
++    /// This class is responsible for encrypting ETAMP tokens and messages, utilizing ECIES for secure encryption processes.
+     /// </summary>
+     public class ETAMPEncryption : ETAMP, IETAMPEncryption
+     {
+         private readonly IEciesEncryptionService _eciesEncryptionService;
+ 
+         /// <summary>
+-        /// Initializes a new instance of the <see cref="ETAMPEncryption"/> class.
++        /// Initializes a new instance of the <see cref="ETAMPEncryption"/> class with a specified ECIES encryption service.
+         /// </summary>
+         /// <param name="eciesEncryptionService">The ECIES encryption service used for encrypting tokens and messages.</param>
+         public ETAMPEncryption(IEciesEncryptionService eciesEncryptionService)
+@@ -22,12 +23,12 @@ namespace ETAMP
+         }
+ 
+         /// <summary>
+-        /// Deserializes the given JSON string into an ETAMP model and validates it.
++        /// Deserializes the given JSON string into an ETAMP model and validates it for completeness and correctness.
+         /// </summary>
+         /// <param name="jsonEtamp">The JSON string representation of an ETAMP model.</param>
+-        /// <returns>The deserialized ETAMP model.</returns>
++        /// <returns>The deserialized and validated ETAMP model.</returns>
+         /// <exception cref="ArgumentException">Thrown if the input string is null, empty, or not in a valid JSON format.</exception>
+-        /// <exception cref="InvalidOperationException">Thrown if the deserialized ETAMP model is null.</exception>
++        /// <exception cref="InvalidOperationException">Thrown if the deserialized ETAMP model is null or contains invalid data.</exception>
+         private ETAMPModel DeserializeETAMPModel(string jsonEtamp)
+         {
+             if (string.IsNullOrEmpty(jsonEtamp))
+@@ -47,8 +48,6 @@ namespace ETAMP
+ 
+             if (model == null || string.IsNullOrEmpty(model.Token) ||
+                 string.IsNullOrEmpty(model.UpdateType) ||
+-                string.IsNullOrEmpty(model.SignatureToken) ||
+-                string.IsNullOrEmpty(model.SignatureMessage) ||
+                 model.Id == Guid.Empty)
+             {
+                 throw new InvalidOperationException("Deserialized ETAMP model is invalid: it is either null, has empty/missing fields, or contains invalid values.");
+@@ -58,11 +57,10 @@ namespace ETAMP
+         }
+ 
+         /// <summary>
+-        /// Encrypts an ETAMP token represented as a JSON string.
++        /// Encrypts an ETAMP token represented as a JSON string, ensuring the token is securely encrypted using the ECIES scheme.
+         /// </summary>
+-        /// <param name="jsonEtamp">The JSON representation of the ETAMP token to encrypt.
+-        /// Must be a valid JSON and cannot be null or empty.</param>
+-        /// <returns>The encrypted ETAMP token as a JSON string.</returns>
++        /// <param name="jsonEtamp">The JSON representation of the ETAMP token to encrypt. Must be a valid JSON and cannot be null or empty.</param>
++        /// <returns>The encrypted ETAMP token as a JSON string, ready for secure transmission.</returns>
+         public virtual string EncryptETAMPToken(string jsonEtamp)
+         {
+             ETAMPModel model = DeserializeETAMPModel(jsonEtamp);
+@@ -72,11 +70,10 @@ namespace ETAMP
+         }
+ 
+         /// <summary>
+-        /// Encrypts an ETAMP message represented as a JSON string and returns an encrypted ETAMP object.
++        /// Encrypts an ETAMP message represented as a JSON string, returning an encrypted ETAMP object that includes both the encrypted message and the necessary cryptographic keys.
+         /// </summary>
+-        /// <param name="jsonEtamp">The JSON representation of the ETAMP message to encrypt.
+-        /// Must be a valid JSON and cannot be null or empty.</param>
+-        /// <returns>An instance of <see cref="ETAMPEncrypted"/> containing the encrypted ETAMP message.</returns>
++        /// <param name="jsonEtamp">The JSON representation of the ETAMP message to encrypt. Must be a valid JSON and cannot be null or empty.</param>
++        /// <returns>An instance of <see cref="ETAMPEncrypted"/> containing the encrypted ETAMP message along with the public and private keys.</returns>
+         public virtual ETAMPEncrypted EncryptETAMP(string jsonEtamp)
+         {
+             ETAMPModel model = DeserializeETAMPModel(jsonEtamp);
+@@ -91,12 +88,12 @@ namespace ETAMP
+         }
+ 
+         /// <summary>
+-        /// Creates and encrypts an ETAMP token with the specified update type and payload.
++        /// Creates and encrypts an ETAMP token with the specified update type and payload, optionally signing the token.
+         /// </summary>
+         /// <param name="updateType">The update type of the ETAMP token.</param>
+         /// <param name="payload">The payload to be included in the ETAMP token.</param>
+         /// <param name="signToken">Indicates whether the token should be signed.</param>
+-        /// <param name="version">The version of the ETAMP protocol.</param>
++        /// <param name="version">The version of the ETAMP protocol to use.</param>
+         /// <typeparam name="T">The type of the payload.</typeparam>
+         /// <returns>The encrypted ETAMP token as a JSON string.</returns>
+         public virtual string CreateEncryptETAMPToken<T>(string updateType, T payload, bool signToken = true, double version = 1) where T : BasePaylaod
+@@ -106,25 +103,45 @@ namespace ETAMP
+         }
+ 
+         /// <summary>
+-        /// Creates and encrypts an ETAMP message with the specified update type and payload, returning an encrypted ETAMP object.
++        /// Creates and encrypts an ETAMP message with the specified update type and payload, returning an encrypted ETAMP object, optionally signing the message.
+         /// </summary>
+         /// <param name="updateType">The update type of the ETAMP message.</param>
+         /// <param name="payload">The payload to be included in the ETAMP message.</param>
+         /// <param name="signToken">Indicates whether the message should be signed.</param>
+-        /// <param name="version">The version of the ETAMP protocol.</param>
++        /// <param name="version">The version of the ETAMP protocol to use.</param>
+         /// <typeparam name="T">The type of the payload.</typeparam>
+-        /// <returns>An instance of <see cref="ETAMPEncrypted"/> containing the encrypted ETAMP message.</returns>
++        /// <returns>An instance of <see cref="ETAMPEncrypted"/> containing the encrypted ETAMP message along with the public and private keys.</returns>
+         public virtual ETAMPEncrypted CreateEncryptETAMPFull<T>(string updateType, T payload, bool signToken = true, double version = 1) where T : BasePaylaod
+         {
+             string token = CreateETAMP(updateType, payload, signToken, version);
+             return EncryptETAMP(token);
+         }
+ 
++        /// <summary>
++        /// Creates and encrypts an ETAMP token without signing it, with the specified update type and payload.
++        /// This method is ideal for scenarios where digital signature is not required for the ETAMP token.
++        /// </summary>
++        /// <param name="updateType">The update type of the ETAMP token.</param>
++        /// <param name="payload">The payload to be included in the ETAMP token.</param>
++        /// <param name="signToken">This parameter is ignored as the token will not be signed.</param>
++        /// <param name="version">The version of the ETAMP protocol to use.</param>
++        /// <typeparam name="T">The type of the payload.</typeparam>
++        /// <returns>The encrypted ETAMP token as a JSON string, without a digital signature.</returns>
+         public string CreateEncryptETAMPWithoutSignature<T>(string updateType, T payload, bool signToken = true, double version = 1) where T : BasePaylaod
+         {
+             return EncryptETAMPToken(CreateETAMPWithoutSignature(updateType, payload, signToken, version));
+         }
+ 
++        /// <summary>
++        /// Creates and encrypts an ETAMP message without signing it, with the specified update type and payload, returning an encrypted ETAMP object.
++        /// This method is suitable for use cases where digital signature is not necessary for the ETAMP message.
++        /// </summary>
++        /// <param name="updateType">The update type of the ETAMP message.</param>
++        /// <param name="payload">The payload to be included in the ETAMP message.</param>
++        /// <param name="signToken">This parameter is ignored as the message will not be signed.</param>
++        /// <param name="version">The version of the ETAMP protocol to use.</param>
++        /// <typeparam name="T">The type of the payload.</typeparam>
++        /// <returns>An instance of <see cref="ETAMPEncrypted"/> containing the encrypted ETAMP message, without a digital signature.</returns>
+         public ETAMPEncrypted CreateEncryptETAMPWithoutSignatureFull<T>(string updateType, T payload, bool signToken = true, double version = 1) where T : BasePaylaod
+         {
+             return EncryptETAMP(CreateETAMPWithoutSignature(updateType, payload, signToken, version));
+diff --git a/ETAMP/Services/AesEncryptionService.cs b/ETAMP/Services/AesEncryptionService.cs
+index 44fcd34..8616e8d 100644
+--- a/ETAMP/Services/AesEncryptionService.cs
++++ b/ETAMP/Services/AesEncryptionService.cs
+@@ -47,16 +47,13 @@ namespace ETAMP.Services
+                 throw new ArgumentNullException(nameof(dataToEncrypt));
+             if (key == null)
+                 throw new ArgumentNullException(nameof(key));
+-            using (var aes = Aes.Create())
+-            {
+-                aes.Key = key;
+-                _iv = aes.IV;
+ 
+-                using (var encryptor = aes.CreateEncryptor())
+-                {
+-                    return encryptor.TransformFinalBlock(dataToEncrypt, 0, dataToEncrypt.Length);
+-                }
+-            }
++            using Aes aes = Aes.Create();
++            aes.Key = key;
++            _iv = aes.IV;
++
++            using ICryptoTransform encryptor = aes.CreateEncryptor();
++            return encryptor.TransformFinalBlock(dataToEncrypt, 0, dataToEncrypt.Length);
+         }
+ 
+         /// <summary>
+@@ -76,16 +73,13 @@ namespace ETAMP.Services
+                 throw new ArgumentNullException(nameof(key));
+             if (IV == null)
+                 throw new InvalidOperationException("IV is not set.");
+-            using (var aes = Aes.Create())
+-            {
+-                aes.Key = key;
+-                aes.IV = IV;
+ 
+-                using (var decryptor = aes.CreateDecryptor())
+-                {
+-                    return decryptor.TransformFinalBlock(dataToDecrypt, 0, dataToDecrypt.Length);
+-                }
+-            }
++            using Aes aes = Aes.Create();
++            aes.Key = key;
++            aes.IV = IV;
++
++            using ICryptoTransform decryptor = aes.CreateDecryptor();
++            return decryptor.TransformFinalBlock(dataToDecrypt, 0, dataToDecrypt.Length);
+         }
+     }
+ }
+\ No newline at end of file
+diff --git a/ETAMP/Services/EciesEncryptionService.cs b/ETAMP/Services/EciesEncryptionService.cs
+index 87cce32..c0fab15 100644
+--- a/ETAMP/Services/EciesEncryptionService.cs
++++ b/ETAMP/Services/EciesEncryptionService.cs
+@@ -42,8 +42,10 @@ namespace ETAMP.Services
+ 
+         public virtual string Encrypt(string message)
+         {
+-            if (EcdhKeyWrapper.KeyExchanger == null)
+-                throw new InvalidOperationException("KeyExchanger is null. The ECDH key wrapper must be initialized with key material.");
++            if (EcdhKeyWrapper.KeyExchanger == null || EcdhKeyWrapper.KeyExchanger.Length == 0)
++            {
++                throw new InvalidOperationException("KeyExchanger is null or empty. The ECDH key wrapper must be initialized with key material.");
++            }
+             byte[] secretKey = EcdhKeyWrapper.KeyExchanger;
+             byte[] encryptedMessage = EncryptionService.Encrypt(Encoding.UTF8.GetBytes(message), secretKey);
+ 
+@@ -59,10 +61,19 @@ namespace ETAMP.Services
+         /// <returns>The decrypted message.</returns>
+         /// <exception cref="FormatException">Thrown if the encrypted message is not in a valid base64 format.</exception>
+         /// <exception cref="InvalidOperationException">Thrown if the key exchanger is not initialized.</exception>
+-
+         public virtual string Decrypt(string encryptedMessageBase64, byte[] publicKey)
+         {
+-            byte[] encryptedMessage = Convert.FromBase64String(encryptedMessageBase64);
++            if (EcdhKeyWrapper.KeyExchanger == null || EcdhKeyWrapper.KeyExchanger.Length == 0)
++                throw new InvalidOperationException("KeyExchanger is null. The ECDH key wrapper must be initialized with key material.");
++            byte[] encryptedMessage;
++            try
++            {
++                encryptedMessage = Convert.FromBase64String(encryptedMessageBase64);
++            }
++            catch (FormatException ex)
++            {
++                throw new FormatException("The encrypted message is not in a valid Base64 format.", ex);
++            }
+             byte[] secretKey = EcdhKeyWrapper.DeriveKey(publicKey);
+ 
+             byte[] decryptedMessage = EncryptionService.Decrypt(encryptedMessage, secretKey);
+diff --git a/ETAMP/Wrapper/EcdhKeyWrapper.cs b/ETAMP/Wrapper/EcdhKeyWrapper.cs
+index 919882d..658c08f 100644
+--- a/ETAMP/Wrapper/EcdhKeyWrapper.cs
++++ b/ETAMP/Wrapper/EcdhKeyWrapper.cs
+@@ -62,7 +62,7 @@ namespace ETAMP.Wrapper
+         public EcdhKeyWrapper()
+         {
+             _ecdh = ECDiffieHellman.Create();
+-            _privateKey = _ecdh.ExportECPrivateKeyPem();
++            _privateKey = _ecdh.ExportPkcs8PrivateKeyPem();
+             _publicKey = _ecdh.ExportSubjectPublicKeyInfoPem();
+         }
+ 
+@@ -75,7 +75,7 @@ namespace ETAMP.Wrapper
+         public EcdhKeyWrapper(ECCurve curve)
+         {
+             _ecdh = ECDiffieHellman.Create(curve);
+-            _privateKey = _ecdh.ExportECPrivateKeyPem();
++            _privateKey = _ecdh.ExportPkcs8PrivateKeyPem();
+             _publicKey = _ecdh.ExportSubjectPublicKeyInfoPem();
+         }
+ 
+@@ -88,7 +88,7 @@ namespace ETAMP.Wrapper
+         public EcdhKeyWrapper(ECParameters parameters)
+         {
+             _ecdh = ECDiffieHellman.Create(parameters);
+-            _privateKey = _ecdh.ExportECPrivateKeyPem();
++            _privateKey = _ecdh.ExportPkcs8PrivateKeyPem();
+             _publicKey = _ecdh.ExportSubjectPublicKeyInfoPem();
+         }
+ 
+@@ -156,10 +156,8 @@ namespace ETAMP.Wrapper
+                 throw new ArgumentNullException(nameof(otherPartyPublicKey), "Public key cannot be null.");
+             }
+ 
+-            using (var otherPartyEcdh = ECDiffieHellmanCngPublicKey.FromByteArray(otherPartyPublicKey, CngKeyBlobFormat.EccPublicBlob))
+-            {
+-                return _ecdh.DeriveKeyMaterial(otherPartyEcdh);
+-            }
++            using ECDiffieHellmanPublicKey otherPartyEcdh = ECDiffieHellmanCngPublicKey.FromByteArray(otherPartyPublicKey, CngKeyBlobFormat.EccPublicBlob);
++            return _ecdh.DeriveKeyMaterial(otherPartyEcdh);
+         }
+ 
+         /// <summary>
+diff --git a/ETAMP/Wrapper/EcdsaWrapper.cs b/ETAMP/Wrapper/EcdsaWrapper.cs
+index 57a7bb3..ada8a40 100644
+--- a/ETAMP/Wrapper/EcdsaWrapper.cs
++++ b/ETAMP/Wrapper/EcdsaWrapper.cs
+@@ -70,6 +70,10 @@ namespace ETAMP.Wrapper
+         /// <returns>A new instance of ECDsa configured with the specified public key and curve.</returns>
+         public virtual ECDsa CreateECDsa(string publicKey, ECCurve curve)
+         {
++            if (publicKey.Contains("-"))
++            {
++                publicKey = ClearPEMPublicKey(publicKey);
++            }
+             ECDsa ecdsa = ECDsa.Create(curve);
+             ecdsa.ImportSubjectPublicKeyInfo(Convert.FromBase64String(publicKey), out _);
+             return ecdsa;
+@@ -115,6 +119,10 @@ namespace ETAMP.Wrapper
+         /// <returns>A new instance of ECDsa configured with the specified private key and curve.</returns>
+         public ECDsa ImportECDsa(string privateKey, ECCurve curve)
+         {
++            if (privateKey.Contains("-"))
++            {
++                privateKey = ClearPEMPrivateKey(privateKey);
++            }
+             ECDsa ecdsa = ECDsa.Create(curve);
+             ecdsa.ImportPkcs8PrivateKey(Convert.FromBase64String(privateKey), out _);
+             return ecdsa;
+diff --git a/ETAMP/Wrapper/SignWrapper.cs b/ETAMP/Wrapper/SignWrapper.cs
+index 53895c8..af3d641 100644
+--- a/ETAMP/Wrapper/SignWrapper.cs
++++ b/ETAMP/Wrapper/SignWrapper.cs
+@@ -6,17 +6,35 @@ using System.Text;
+ 
+ namespace ETAMP.Wrapper
+ {
+-    internal class SignWrapper : ISignWrapper
++    /// <summary>
++    /// Provides functionality for signing data using Elliptic Curve Digital Signature Algorithm (ECDsa).
++    /// </summary>
++    /// <remarks>
++    /// This class allows for the creation of digital signatures using ECDsa, supporting multiple initializations
++    /// including from a private key, an <see cref="ECDsa"/> instance, or an <see cref="IEcdsaWrapper"/> for custom
++    /// implementation scenarios. It supports signing byte arrays, streams, and JSON representations of specific models.
++    /// </remarks>
++    public class SignWrapper : ISignWrapper
+     {
+         private readonly ECDsa _ecdsa;
+         private readonly HashAlgorithmName _algorithmName;
+ 
++        /// <summary>
++        /// Initializes a new instance of the <see cref="SignWrapper"/> class using an existing <see cref="ECDsa"/> instance.
++        /// </summary>
++        /// <param name="ecdsa">The ECDsa instance for signing.</param>
++        /// <param name="algorithmName">The hash algorithm to use for signing.</param>
+         public SignWrapper(ECDsa ecdsa, HashAlgorithmName algorithmName)
+         {
+             _ecdsa = ecdsa;
+             _algorithmName = algorithmName;
+         }
+ 
++        /// <summary>
++        /// Initializes a new instance of the <see cref="SignWrapper"/> class using a private key.
++        /// </summary>
++        /// <param name="privateKey">The private key in PKCS#8 format as a base64-encoded string.</param>
++        /// <param name="algorithmName">The hash algorithm to use for signing.</param>
+         public SignWrapper(string privateKey, HashAlgorithmName algorithmName)
+         {
+             _ecdsa = ECDsa.Create();
+@@ -24,28 +42,57 @@ namespace ETAMP.Wrapper
+             _algorithmName = algorithmName;
+         }
+ 
++        /// <summary>
++        /// Initializes a new instance of the <see cref="SignWrapper"/> class using an <see cref="IEcdsaWrapper"/> for importing keys, a private key, and a curve.
++        /// </summary>
++        /// <param name="ecdsaWrapper">The wrapper for ECDsa operations.</param>
++        /// <param name="privateKey">The private key as a string.</param>
++        /// <param name="curve">The elliptic curve to use.</param>
++        /// <param name="algorithmName">The hash algorithm to use for signing.</param>
+         public SignWrapper(IEcdsaWrapper ecdsaWrapper, string privateKey, ECCurve curve, HashAlgorithmName algorithmName)
+         {
+             _ecdsa = ecdsaWrapper.ImportECDsa(privateKey, curve);
+             _algorithmName = algorithmName;
+         }
+ 
++        /// <summary>
++        /// Initializes a new instance of the <see cref="SignWrapper"/> class using an <see cref="IEcdsaWrapper"/> for importing keys, a private key as a byte array, and a curve.
++        /// </summary>
++        /// <param name="ecdsaWrapper">The wrapper for ECDsa operations.</param>
++        /// <param name="privateKey">The private key as a byte array.</param>
++        /// <param name="curve">The elliptic curve to use.</param>
++        /// <param name="algorithmName">The hash algorithm to use for signing.</param>
+         public SignWrapper(IEcdsaWrapper ecdsaWrapper, byte[] privateKey, ECCurve curve, HashAlgorithmName algorithmName)
+         {
+             _ecdsa = ecdsaWrapper.ImportECDsa(privateKey, curve);
+             _algorithmName = algorithmName;
+         }
+ 
++        /// <summary>
++        /// Signs the specified data using the initialized ECDsa instance and algorithm.
++        /// </summary>
++        /// <param name="data">The data to sign as a byte array.</param>
++        /// <returns>The digital signature as a byte array.</returns>
+         public byte[] Sign(byte[] data)
+         {
+             return _ecdsa.SignData(data, _algorithmName);
+         }
+ 
++        /// <summary>
++        /// Signs the specified data from a stream using the initialized ECDsa instance and algorithm.
++        /// </summary>
++        /// <param name="data">The data stream to sign.</param>
++        /// <returns>The digital signature as a byte array.</returns>
+         public byte[] Sign(Stream data)
+         {
+             return _ecdsa.SignData(data, _algorithmName);
+         }
+ 
++        /// <summary>
++        /// Signs a JSON representation of an ETAMP model, updating its signature fields.
++        /// </summary>
++        /// <param name="jsonEtamp">The JSON string representing the ETAMP model to sign.</param>
++        /// <returns>A JSON string of the ETAMP model with updated signature fields.</returns>
+         public string SignEtamp(string jsonEtamp)
+         {
+             ETAMPModel etamp = JsonConvert.DeserializeObject<ETAMPModel>(jsonEtamp);
+@@ -54,6 +101,11 @@ namespace ETAMP.Wrapper
+             return JsonConvert.SerializeObject(etamp);
+         }
+ 
++        /// <summary>
++        /// Signs an ETAMP model, updating its signature fields.
++        /// </summary>
++        /// <param name="etamp">The ETAMP model to sign.</param>
++        /// <returns>A JSON string of the ETAMP model with updated signature fields.</returns>
+         public string SignEtampModel(ETAMPModel etamp)
+         {
+             etamp.SignatureToken = Convert.ToBase64String(Sign(Encoding.UTF8.GetBytes(etamp.Token)));
+diff --git a/ETAMPTests/ETAMPEncryptionTests.cs b/ETAMPTests/ETAMPEncryptionTests.cs
+index 2fb5ad8..3d9d501 100644
+--- a/ETAMPTests/ETAMPEncryptionTests.cs
++++ b/ETAMPTests/ETAMPEncryptionTests.cs
+@@ -1,5 +1,9 @@
+-∩╗┐using ETAMP.Services.Interfaces;
++∩╗┐using ETAMP.Models;
++using ETAMP.Services.Interfaces;
++using ETAMP.Wrapper;
+ using Moq;
++using Newtonsoft.Json;
++using System.Text;
+ using Xunit;
+ 
+ namespace ETAMP.Tests
+@@ -47,9 +51,103 @@ namespace ETAMP.Tests
+         public void EncryptETAMPToken_ReturnsETAMPModel_WhenJsonIsValid()
+         {
+             string json = "{\"Id\":\"b9d4279f-d44c-4cf0-8d6b-5cacaf38b47a\",\"Version\":2,\"Token\":\"ca7bc2f1-5d63-4c4e-b16f-612b19fb4ed4\",\"UpdateType\":\"Type5\",\"SignatureToken\":\"786cbb80-abd2-4f7d-88e9-5292cfbc8ec1\",\"SignatureMessage\":\"Message3\"}";
++            _eciesEncryptionService.Setup(x => x.EcdhKeyWrapper).Returns(new EcdhKeyWrapper());
+             var result = _encryption.EncryptETAMPToken(json);
+             Assert.NotNull(result);
+             Assert.IsType<string>(result);
+         }
++
++        [Fact]
++        public void CreateEncryptETAMPToken_ReturnsEncryptedToken_WhenPayloadIsValid()
++        {
++            var updateType = "UpdateType";
++            var payload = new BasePaylaod();
++            var version = 1.0;
++            var signToken = true;
++
++            _eciesEncryptionService.Setup(s => s.Encrypt(It.IsAny<string>())).Returns("encrypted token");
++
++            var result = _encryption.CreateEncryptETAMPToken(updateType, payload, signToken, version);
++
++            Assert.NotNull(result);
++            Assert.IsType<string>(result);
++            Assert.Contains("encrypted token", result);
++        }
++
++        [Fact]
++        public void EncryptETAMP_ReturnsEncryptedETAMP_WhenJsonIsValid()
++        {
++            string json = "{\"Id\":\"7fc2ce0c-834b-4569-b93f-891396f3e700\",\"Version\":1,\"Token\":\"b170beb5-5a39-4e60-a5f8-4bb81734aa89\",\"UpdateType\":\"Type2\",\"SignatureToken\":\"5e58df89-3aea-49f8-8dc9-ee5cb2f1566e\",\"SignatureMessage\":\"Message49\"}";
++
++            _eciesEncryptionService.Setup(s => s.Encrypt(It.IsAny<string>())).Returns("encrypted message");
++            _eciesEncryptionService.Setup(x => x.EcdhKeyWrapper).Returns(new EcdhKeyWrapper());
++
++            var result = _encryption.EncryptETAMP(json);
++
++            Assert.NotNull(result);
++            Assert.IsType<ETAMPEncrypted>(result);
++        }
++
++        [Fact]
++        public void CreateEncryptETAMPWithoutSignature_ReturnsEncryptedToken_WhenPayloadIsValid()
++        {
++            var updateType = "UpdateType1";
++            var payload = new BasePaylaod();
++            var version = 1.0;
++            var expectedEncryptedToken = "encryptedToken";
++
++            _eciesEncryptionService.Setup(s => s.Encrypt(It.IsAny<string>())).Returns(expectedEncryptedToken);
++
++            var result = _encryption.CreateEncryptETAMPWithoutSignature(updateType, payload, signToken: false, version);
++            ETAMPModel model = JsonConvert.DeserializeObject<ETAMPModel>(result);
++
++            Assert.NotNull(model);
++            Assert.Equal(model.Token, expectedEncryptedToken);
++        }
++
++        [Fact]
++        public void CreateEncryptETAMPWithoutSignatureFull_ReturnsEncryptedETAMP_WhenPayloadIsValid()
++        {
++            var eciesMock = new Mock<IEciesEncryptionService>();
++            var encryptionService = new ETAMPEncryption(eciesMock.Object);
++            var updateType = "UpdateType2";
++            var payload = new BasePaylaod();
++            var version = 1.0;
++            var expectedEncryptedToken = "encryptedToken";
++
++            eciesMock.Setup(s => s.Encrypt(It.IsAny<string>())).Returns(expectedEncryptedToken);
++            eciesMock.Setup(s => s.EcdhKeyWrapper).Returns(new EcdhKeyWrapper());
++
++            var result = encryptionService.CreateEncryptETAMPWithoutSignatureFull(updateType, payload, signToken: false, version);
++
++            Assert.NotNull(result);
++            Assert.IsType<ETAMPEncrypted>(result);
++        }
++
++        [Fact]
++        public void CreateEncryptETAMPFull_ReturnsEncryptedETAMPObject_WhenPayloadIsValid()
++        {
++            var updateType = "UpdateType1";
++            var payload = new BasePaylaod();
++            var version = 1.0;
++            var signToken = true;
++
++            var expectedEncryptedToken = "encryptedToken";
++            var expectedPublicKey = "publicKey";
++            var expectedPrivateKey = "privateKey";
++
++            _eciesEncryptionService.Setup(s => s.Encrypt(It.IsAny<string>())).Returns(expectedEncryptedToken);
++            _eciesEncryptionService.Setup(s => s.EcdhKeyWrapper.PublicKey).Returns(Convert.ToBase64String(Encoding.UTF8.GetBytes(expectedPublicKey)));
++            _eciesEncryptionService.Setup(s => s.EcdhKeyWrapper.PrivateKey).Returns(Convert.ToBase64String(Encoding.UTF8.GetBytes(expectedPrivateKey)));
++
++            var result = _encryption.CreateEncryptETAMPFull(updateType, payload, signToken, version);
++            ETAMPModel model = JsonConvert.DeserializeObject<ETAMPModel>(result.ETAMP);
++
++            Assert.NotNull(result);
++            Assert.IsType<ETAMPEncrypted>(result);
++            Assert.Equal(expectedEncryptedToken, model.Token);
++            Assert.Equal(expectedPublicKey, Encoding.UTF8.GetString(Convert.FromBase64String(result.PublicKey)));
++            Assert.Equal(expectedPrivateKey, Encoding.UTF8.GetString(Convert.FromBase64String(result.PrivateKey)));
++        }
+     }
+ }
+\ No newline at end of file
+diff --git a/ETAMPTests/ETAMPTests.csproj b/ETAMPTests/ETAMPTests.csproj
+index b84b28a..2303af2 100644
+--- a/ETAMPTests/ETAMPTests.csproj
++++ b/ETAMPTests/ETAMPTests.csproj
+@@ -1,4 +1,4 @@
+-<Project Sdk="Microsoft.NET.Sdk">
++∩╗┐<Project Sdk="Microsoft.NET.Sdk">
+ 
+   <PropertyGroup>
+     <TargetFramework>net8.0</TargetFramework>
+@@ -12,9 +12,10 @@
+   <ItemGroup>
+     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.9.0" />
+     <PackageReference Include="Moq" Version="4.20.70" />
+-    <PackageReference Include="MSTest.TestAdapter" Version="3.2.1" />
+-    <PackageReference Include="MSTest.TestFramework" Version="3.2.1" />
+-    <PackageReference Include="coverlet.collector" Version="6.0.0" />
++    <PackageReference Include="coverlet.collector" Version="6.0.1">
++      <PrivateAssets>all</PrivateAssets>
++      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
++    </PackageReference>
+     <PackageReference Include="xunit" Version="2.7.0" />
+     <PackageReference Include="xunit.runner.visualstudio" Version="2.5.7">
+       <PrivateAssets>all</PrivateAssets>
+diff --git a/ETAMPTests/Services/Compares/EtampCompareTests.cs b/ETAMPTests/Services/Compares/EtampCompareTests.cs
+deleted file mode 100644
+index d5da2ef..0000000
+--- a/ETAMPTests/Services/Compares/EtampCompareTests.cs
++++ /dev/null
+@@ -1,143 +0,0 @@
+-∩╗┐using ETAMP.Compares;
+-using ETAMP.Models;
+-using Xunit;
+-
+-namespace ETAMP.Services.Compares.Tests
+-{
+-    public class EtampCompareTests
+-    {
+-        private readonly ETAMPCompare _etampCompare;
+-
+-        public EtampCompareTests()
+-        {
+-            _etampCompare = new ETAMPCompare();
+-        }
+-
+-        [Fact]
+-        public void EqualsTest_WithSameModel_True()
+-        {
+-            ETAMPModel model = new()
+-            {
+-                Id = Guid.Empty,
+-                Version = 1,
+-                Token = "SomeToken",
+-                SignatureToken = "SomeSignatureToken",
+-                SignatureMessage = "SomeSignatureMessage"
+-            };
+-            ETAMPModel model1 = new()
+-            {
+-                Id = Guid.Empty,
+-                Version = 1,
+-                Token = "SomeToken",
+-                SignatureToken = "SomeSignatureToken",
+-                SignatureMessage = "SomeSignatureMessage"
+-            };
+-            var result = _etampCompare.Equals(model, model1);
+-            Assert.True(result);
+-        }
+-
+-        [Fact]
+-        public void EqualsTest_WithDiffrentToken_True()
+-        {
+-            ETAMPModel model = new()
+-            {
+-                Id = Guid.NewGuid(),
+-                Version = 1,
+-                Token = "SomeToken1",
+-                SignatureToken = "SomeSignatureToken",
+-                SignatureMessage = "SomeSignatureMessage"
+-            };
+-            ETAMPModel model1 = new()
+-            {
+-                Id = Guid.NewGuid(),
+-                Version = 1,
+-                Token = "SomeToken",
+-                SignatureToken = "SomeSignatureToken",
+-                SignatureMessage = "SomeSignatureMessage"
+-            };
+-            var result = _etampCompare.Equals(model, model1);
+-            Assert.False(result);
+-        }
+-
+-        [Fact]
+-        public void EqualsTest_BothNew_True()
+-        {
+-            ETAMPModel model = new();
+-            ETAMPModel model1 = new();
+-            var result = _etampCompare.Equals(model, model1);
+-            Assert.True(result);
+-        }
+-
+-        [Fact]
+-        public void EqualsTest_BothNull_True()
+-        {
+-            var result = _etampCompare.Equals(null, null);
+-            Assert.True(result);
+-        }
+-
+-        [Fact]
+-        public void EqualsTest_SecondNotNull_True()
+-        {
+-            var result = _etampCompare.Equals(null, new ETAMPModel());
+-            Assert.False(result);
+-        }
+-
+-        [Fact]
+-        public void EqualsTest_FirstNotNull_True()
+-        {
+-            var result = _etampCompare.Equals(new ETAMPModel(), null);
+-            Assert.False(result);
+-        }
+-
+-        [Fact]
+-        public void GetHashCode_IdenticalObjects_SameHashCode()
+-        {
+-            var model1 = new ETAMPModel
+-            {
+-                Id = Guid.NewGuid(),
+-                Version = 1.0,
+-                Token = "Token1",
+-                UpdateType = "Type1",
+-                SignatureToken = "SigToken1",
+-                SignatureMessage = "SigMessage1"
+-            };
+-            var model2 = new ETAMPModel
+-            {
+-                Id = model1.Id,
+-                Version = model1.Version,
+-                Token = model1.Token,
+-                UpdateType = model1.UpdateType,
+-                SignatureToken = model1.SignatureToken,
+-                SignatureMessage = model1.SignatureMessage
+-            };
+-
+-            int hash1 = _etampCompare.GetHashCode(model1);
+-            int hash2 = _etampCompare.GetHashCode(model2);
+-
+-            // Assert
+-            Assert.Equal(hash1, hash2);
+-        }
+-
+-        [Fact]
+-        public void GetHashCode_DifferentObjects_DifferentHashCode()
+-        {
+-            var model1 = new ETAMPModel { Id = Guid.NewGuid(), Version = 1.0, Token = "Token1", UpdateType = "Type1", SignatureToken = "SigToken1", SignatureMessage = "SigMessage1" };
+-            var model2 = new ETAMPModel { Id = Guid.NewGuid(), Version = 2.0, Token = "Token2", UpdateType = "Type2", SignatureToken = "SigToken2", SignatureMessage = "SigMessage2" };
+-
+-            int hash1 = _etampCompare.GetHashCode(model1);
+-            int hash2 = _etampCompare.GetHashCode(model2);
+-
+-            Assert.NotEqual(hash1, hash2);
+-        }
+-
+-        [Fact]
+-        public void GetHashCode_NullProperties_HandledGracefully()
+-        {
+-            var compare = new ETAMPCompare();
+-            var model = new ETAMPModel { Id = Guid.NewGuid(), Version = 0, Token = null, UpdateType = null, SignatureToken = null, SignatureMessage = null };
+-
+-            Exception ex = Record.Exception(() => compare.GetHashCode(model));
+-            Assert.Null(ex);
+-        }
+-    }
+-}
+\ No newline at end of file
+diff --git a/ETAMPTests/Services/EcdsaWrapperTests.cs b/ETAMPTests/Services/EcdsaWrapperTests.cs
+deleted file mode 100644
+index 09c210d..0000000
+--- a/ETAMPTests/Services/EcdsaWrapperTests.cs
++++ /dev/null
+@@ -1,75 +0,0 @@
+-∩╗┐using ETAMP.Wrapper;
+-using System.Security.Cryptography;
+-using Xunit;
+-
+-namespace ETAMP.Services.Tests
+-{
+-    public class EcdsaWrapperTests
+-    {
+-        private readonly EcdsaWrapper _wrapper;
+-
+-        public EcdsaWrapperTests()
+-        {
+-            _wrapper = new EcdsaWrapper();
+-        }
+-
+-        [Fact]
+-        public void CreateECDsaTest_ReturnNotNull()
+-        {
+-            var result = _wrapper.CreateECDsa();
+-            Assert.NotNull(result);
+-        }
+-
+-        [Theory]
+-        [InlineData("nistP256", 256)]
+-        [InlineData("nistP384", 384)]
+-        [InlineData("nistP521", 521)]
+-        public void CreateECDsa_WithValidCurve_ReturnsECDsaInstance(string curve, int size)
+-        {
+-            ECCurve ecCurve = ECCurve.CreateFromFriendlyName(curve);
+-            using (var ecdsa = _wrapper.CreateECDsa(ecCurve))
+-            {
+-                Assert.NotNull(ecdsa);
+-                Assert.Equal(ecdsa.KeySize, size);
+-            }
+-        }
+-
+-        [Fact]
+-        public void CreateECDsa_WithValidPublickey_ReturnSameResult()
+-        {
+-            using (ECDsa ecdsa = ECDsa.Create(ECCurve.NamedCurves.nistP521))
+-            {
+-                string publicKey = ecdsa.ExportSubjectPublicKeyInfoPem().Replace("-----BEGIN PUBLIC KEY-----", "")
+-                                                                    .Replace("-----END PUBLIC KEY-----", "")
+-                                                                    .Replace("\n", "");
+-
+-                var result = _wrapper.CreateECDsa(publicKey, ECCurve.NamedCurves.nistP521);
+-
+-                Assert.NotNull(result);
+-                Assert.Equal(result.ExportSubjectPublicKeyInfoPem().Replace("-----BEGIN PUBLIC KEY-----", "")
+-                                                                    .Replace("-----END PUBLIC KEY-----", "")
+-                                                                    .Replace("\n", ""), publicKey);
+-                Assert.Equal(result.KeySize, 521);
+-            }
+-        }
+-
+-        [Fact]
+-        public void CreateECDsa_WithValidPublickeyInbytes_ReturnSameResult()
+-        {
+-            using (ECDsa ecdsa = ECDsa.Create(ECCurve.NamedCurves.nistP521))
+-            {
+-                string publicKey = ecdsa.ExportSubjectPublicKeyInfoPem().Replace("-----BEGIN PUBLIC KEY-----", "")
+-                                                                    .Replace("-----END PUBLIC KEY-----", "")
+-                                                                    .Replace("\n", "");
+-
+-                var result = _wrapper.CreateECDsa(Convert.FromBase64String(publicKey), ECCurve.NamedCurves.nistP521);
+-
+-                Assert.NotNull(result);
+-                Assert.Equal(result.ExportSubjectPublicKeyInfoPem().Replace("-----BEGIN PUBLIC KEY-----", "")
+-                                                                    .Replace("-----END PUBLIC KEY-----", "")
+-                                                                    .Replace("\n", ""), publicKey);
+-                Assert.Equal(result.KeySize, 521);
+-            }
+-        }
+-    }
+-}
+\ No newline at end of file
+diff --git a/ETAMPTests/Services/VerifyWrapperTests.cs b/ETAMPTests/Services/VerifyWrapperTests.cs
+deleted file mode 100644
+index 4e7eb83..0000000
+--- a/ETAMPTests/Services/VerifyWrapperTests.cs
++++ /dev/null
+@@ -1,89 +0,0 @@
+-∩╗┐using ETAMP.Wrapper;
+-using System.Security.Cryptography;
+-using System.Text;
+-using Xunit;
+-
+-namespace ETAMP.Services.Tests
+-{
+-    public class VerifyWrapperTests
+-    {
+-        private readonly VerifyWrapper _verifyWrapper;
+-        private readonly string _data = "testdata";
+-        private byte[] sign;
+-
+-        public VerifyWrapperTests()
+-        {
+-            _verifyWrapper = new VerifyWrapper(new EcdsaWrapper(), HashAlgorithmName.SHA256);
+-            ECDsa ecdsa = _verifyWrapper.ECDsa;
+-            sign = ecdsa.SignData(Encoding.UTF8.GetBytes(_data), HashAlgorithmName.SHA256);
+-        }
+-
+-        [Fact]
+-        public void VerifyData_WithCorrectDataInBytesAndSignInBytes_ReturnTrue()
+-        {
+-            var result = _verifyWrapper.VerifyData(Encoding.UTF8.GetBytes(_data), sign);
+-            Assert.True(result);
+-        }
+-
+-        [Fact]
+-        public void VerifyData_WithCorrectDataInStringAndSignInBytes_ReturnTrue()
+-        {
+-            var result = _verifyWrapper.VerifyData(_data, sign);
+-            Assert.True(result);
+-        }
+-
+-        [Fact]
+-        public void VerifyData_WithCorrectDataInStringAndSignInString_ReturnTrue()
+-        {
+-            var result = _verifyWrapper.VerifyData(_data, Convert.ToBase64String(sign));
+-            Assert.True(result);
+-        }
+-
+-        [Fact]
+-        public void VerifyData_WithCorrectDataInBytesAndSignInString_ReturnTrue()
+-        {
+-            var result = _verifyWrapper.VerifyData(Encoding.UTF8.GetBytes(_data), Convert.ToBase64String(sign));
+-            Assert.True(result);
+-        }
+-
+-        [Fact]
+-        public void VerifyData_WithIncorrectSignature_ReturnsFalse()
+-        {
+-            var incorrectSignature = new byte[] { 1, 2, 3 }; // ╨ƒ╤Ç╨╕╨╝╨╡╤Ç ╨╜╨╡╨▓╨╡╤Ç╨╜╨╛╨╣ ╨┐╨╛╨┤╨┐╨╕╤ü╨╕
+-            var result = _verifyWrapper.VerifyData(Encoding.UTF8.GetBytes(_data), incorrectSignature);
+-            Assert.False(result);
+-        }
+-
+-        [Fact]
+-        public void VerifyWrapper_WithCustomCurve_ReturnCorrect()
+-        {
+-            VerifyWrapper verifyWrapper = new VerifyWrapper(new EcdsaWrapper(), ECCurve.NamedCurves.nistP521, HashAlgorithmName.SHA256);
+-            Assert.NotNull(verifyWrapper);
+-            Assert.Equal(521, verifyWrapper.ECDsa.KeySize);
+-        }
+-
+-        [Fact]
+-        public void VerifyWrapper_WithPublickeyAndCustomCurve_ReturnCorrect()
+-        {
+-            ECDsa ecdsa = ECDsa.Create();
+-            string publicKey = ecdsa.ExportSubjectPublicKeyInfoPem().Replace("-----BEGIN PUBLIC KEY-----", "")
+-                                                                   .Replace("-----END PUBLIC KEY-----", "")
+-                                                                   .Replace("\n", "");
+-            VerifyWrapper verifyWrapper = new VerifyWrapper(new EcdsaWrapper(), publicKey, ECCurve.NamedCurves.nistP521, HashAlgorithmName.SHA256);
+-            Assert.NotNull(verifyWrapper);
+-            Assert.Equal(521, verifyWrapper.ECDsa.KeySize);
+-        }
+-
+-        [Fact]
+-        public void VerifyWrapper_WithPublickeyInBytesAndCustomCurve_ReturnCorrect()
+-        {
+-            ECDsa ecdsa = ECDsa.Create();
+-            string publicKey = ecdsa.ExportSubjectPublicKeyInfoPem().Replace("-----BEGIN PUBLIC KEY-----", "")
+-                                                                   .Replace("-----END PUBLIC KEY-----", "")
+-                                                                   .Replace("\n", "");
+-            VerifyWrapper verifyWrapper = new VerifyWrapper(new EcdsaWrapper(), Convert.FromBase64String(publicKey), ECCurve.NamedCurves.nistP521, HashAlgorithmName.SHA256);
+-            Assert.NotNull(verifyWrapper);
+-            Assert.Equal(521, verifyWrapper.ECDsa.KeySize);
+-        }
+-    }
+-}
+\ No newline at end of file
+diff --git a/ETAMPTests/Validate/TestableValidateToken.cs b/ETAMPTests/Validate/TestableValidateToken.cs
+deleted file mode 100644
+index 6bfc2c8..0000000
+--- a/ETAMPTests/Validate/TestableValidateToken.cs
++++ /dev/null
+@@ -1,22 +0,0 @@
+-∩╗┐using ETAMP.Services;
+-using ETAMP.Wrapper.Interfaces;
+-using System.IdentityModel.Tokens.Jwt;
+-
+-namespace ETAMPTests.Validate
+-{
+-    internal class TestableValidateToken : ValidateToken
+-    {
+-        public TestableValidateToken(IVerifyWrapper verifyWrapper) : base(verifyWrapper)
+-        {
+-        }
+-
+-        public TestableValidateToken(IVerifyWrapper verifyWrapper, JwtSecurityTokenHandler jwtSecurityToken) : base(verifyWrapper, jwtSecurityToken)
+-        {
+-        }
+-
+-        public override bool VerifyETAMP(string etamp)
+-        {
+-            return true;
+-        }
+-    }
+-}
+\ No newline at end of file
+diff --git a/ETAMPTests/Validate/ValidateTokenTests.cs b/ETAMPTests/Validate/ValidateTokenTests.cs
+deleted file mode 100644
+index 907bcd6..0000000
+--- a/ETAMPTests/Validate/ValidateTokenTests.cs
++++ /dev/null
+@@ -1,313 +0,0 @@
+-∩╗┐using ETAMP.Models;
+-using ETAMP.Services;
+-using ETAMP.Wrapper;
+-using ETAMP.Wrapper.Interfaces;
+-using ETAMPTests.Models;
+-using ETAMPTests.Validate;
+-using Microsoft.IdentityModel.Tokens;
+-using Moq;
+-using Newtonsoft.Json;
+-using System.IdentityModel.Tokens.Jwt;
+-using System.Security.Cryptography;
+-using System.Text;
+-using Xunit;
+-
+-namespace ETAMP.Validate.Tests
+-{
+-    public class ValidateTokenTests
+-    {
+-        private readonly ETAMP _etamp;
+-        private readonly Data _data;
+-        private readonly ECDsa _ecdsa;
+-        private ValidateToken _token;
+-        private readonly Mock<IVerifyWrapper> _verifyWrapperMock;
+-        private TestableValidateToken _testableValidateToken;
+-        private readonly Mock<JwtSecurityTokenHandler> _jwtSecurityTokenHandler;
+-
+-        public ValidateTokenTests()
+-        {
+-            _ecdsa = ECDsa.Create();
+-
+-            _etamp = new ETAMP();
+-            _data = new Data()
+-            {
+-                Audience = "Someone",
+-                Expires = DateTime.UtcNow.AddDays(10),
+-                IssuedAt = DateTime.UtcNow,
+-                Issuer = "Me",
+-                JTI = Guid.NewGuid(),
+-                Surname = "Bill",
+-                Name = "Alex"
+-            };
+-            _verifyWrapperMock = new Mock<IVerifyWrapper>();
+-            _jwtSecurityTokenHandler = new Mock<JwtSecurityTokenHandler>();
+-            _testableValidateToken = new TestableValidateToken(_verifyWrapperMock.Object);
+-            _token = new ValidateToken(_verifyWrapperMock.Object);
+-        }
+-
+-        [Fact]
+-        public void VerifyETAMP_WhithNull_ReturnFalse()
+-        {
+-            bool result = _token.VerifyETAMP("");
+-            Assert.False(result);
+-        }
+-
+-        [Fact]
+-        public void VerifyETAMP_ModelIsNull_ReturnFalse()
+-        {
+-            bool result = _token.VerifyETAMP("{}");
+-            Assert.False(result);
+-        }
+-
+-        [Fact]
+-        public void VerifyETAMP_DifferentId_ReturnFalse()
+-        {
+-            bool result = _token.VerifyETAMP($"{{Id:\"{Guid.NewGuid()}\", Token: \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c\"}}");
+-            Assert.False(result);
+-        }
+-
+-        [Fact]
+-        public void VerifyETAMP_WithRealData_ReturnTrue()
+-        {
+-            string etamp = _etamp.CreateETAMP("Message", _data);
+-            ValidateToken validate = new ValidateToken(new VerifyWrapper(_etamp.Ecdsa, _etamp.HashAlgorithm));
+-            bool result = validate.VerifyETAMP(etamp);
+-            Assert.True(result);
+-        }
+-
+-        [Fact]
+-        public void VerifyETAMP_DifferentSignatureToken_ReturnFalse()
+-        {
+-            _verifyWrapperMock.Setup(x => x.VerifyData(It.IsAny<string>(), It.IsAny<byte[]>())).Returns(false);
+-            _token = new ValidateToken(_verifyWrapperMock.Object);
+-            bool result = _token.VerifyETAMP($"{{Id:\"bf4e7e00-aa07-42a7-825c-da6178119d2b\", Token: \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJNZXNzYWdlSWQiOiJiZjRlN2UwMC1hYTA3LTQyYTctODI1Yy1kYTYxNzgxMTlkMmIifQ.upbMMn6Ztz0b_olsQAKBLrRYL7IiczGdNgVrG1P-6s\",SignatureToken: \"JNZXNzYWdlSWQiOiJiZjRlN2UwMC1hYTA3LTQyYTctODI1Yy1kYTYxNzgxMTlkMmIifQ\"}}");
+-            Assert.False(result);
+-        }
+-
+-        [Fact]
+-        public void VerifyETAMP_DifferentSignatureMessage_ReturnFalse()
+-        {
+-            string token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJNZXNzYWdlSWQiOiJiZjRlN2UwMC1hYTA3LTQyYTctODI1Yy1kYTYxNzgxMTlkMmIifQ.upbMMn6Ztz0b_olsQAKBLrRYL7IiczGdNgVrG1P-6s";
+-            ECDsa ecdsa = ECDsa.Create();
+-            _token = new ValidateToken(new VerifyWrapper(ecdsa, HashAlgorithmName.SHA256));
+-            string signToken = Convert.ToBase64String(ecdsa.SignData(Encoding.UTF8.GetBytes(token), HashAlgorithmName.SHA256));
+-            bool result = _token.VerifyETAMP($"{{Id:\"bf4e7e00-aa07-42a7-825c-da6178119d2b\", Token: \"{token}\",SignatureToken: \"{signToken}\", SignatureMessage:\"8ca66ee6b2fe4bb928a8e3cd2f508de4119c0895f22e011117e22cf9b13de7ef\"}}");
+-            Assert.False(result);
+-        }
+-
+-        [Fact]
+-        public void VerifyETAMP_CorrectInput_ReturnTrue()
+-        {
+-            string id = "bf4e7e00-aa07-42a7-825c-da6178119d2b";
+-            string token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJNZXNzYWdlSWQiOiJiZjRlN2UwMC1hYTA3LTQyYTctODI1Yy1kYTYxNzgxMTlkMmIifQ.upbMMn6Ztz0b_olsQAKBLrRYL7IiczGdNgVrG1P-6s";
+-            string signToken = Convert.ToBase64String(_ecdsa.SignData(Encoding.UTF8.GetBytes(token), HashAlgorithmName.SHA256));
+-            double version = 1;
+-            string updateType = "Message";
+-            string signMessage = Convert.ToBase64String(_ecdsa.SignData(Encoding.UTF8.GetBytes($"{id}{version}{token}{updateType}{signToken}"), HashAlgorithmName.SHA256));
+-            ETAMPModel model = new ETAMPModel()
+-            {
+-                Id = Guid.Parse(id),
+-                Token = token,
+-                UpdateType = updateType,
+-                Version = version,
+-                SignatureToken = signToken,
+-                SignatureMessage = signMessage
+-            };
+-            _verifyWrapperMock.Setup(x => x.VerifyData(It.IsAny<string>(), It.IsAny<byte[]>())).Returns(true);
+-            bool result = _token.VerifyETAMP(JsonConvert.SerializeObject(model));
+-            Assert.True(result);
+-        }
+-
+-        [Fact]
+-        public async Task FullVerify_WithRealData_ReturnTrue()
+-        {
+-            string etamp = _etamp.CreateETAMP("Message", _data, false);
+-            ValidateToken validate = new ValidateToken(new VerifyWrapper(_etamp.Ecdsa, _etamp.HashAlgorithm));
+-            bool result = await validate.FullVerify(etamp, _data.Audience, _data.Issuer);
+-            Assert.True(result);
+-        }
+-
+-        [Fact]
+-        public async Task FullVerifyWithTokenSignature_WithRealData_ReturnTrue()
+-        {
+-            string etamp = _etamp.CreateETAMP("Message", _data);
+-            ValidateToken validate = new ValidateToken(new VerifyWrapper(_etamp.Ecdsa, _etamp.HashAlgorithm));
+-            bool result = await validate.FullVerify(etamp, _data.Audience, _data.Issuer);
+-            Assert.True(result);
+-        }
+-
+-        [Fact]
+-        public async Task FullVerifyWithTokenSignature_IncorrectInput_ReturnFalse()
+-        {
+-            string id = "bf4e7e00-aa07-42a7-825c-da6178119d2b";
+-            string token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJNZXNzYWdlSWQiOiJiZjRlN2UwMC1hYTA3LTQyYTctODI1Yy1kYTYxNzgxMTlkMmIifQ.upbMMn6Ztz0b_olsQAKBLrRYL7IiczGdNgVrG1P-6s";
+-            string signToken = Convert.ToBase64String(_ecdsa.SignData(Encoding.UTF8.GetBytes(token), HashAlgorithmName.SHA256));
+-            double version = 1;
+-            string updateType = "Message";
+-            string signMessage = Convert.ToBase64String(_ecdsa.SignData(Encoding.UTF8.GetBytes($"{id}{version}{token}{updateType}{signToken}"), HashAlgorithmName.SHA256));
+-            ETAMPModel model = new ETAMPModel()
+-            {
+-                Id = Guid.Parse(id),
+-                Token = token,
+-                UpdateType = updateType,
+-                Version = version,
+-                SignatureToken = signToken,
+-                SignatureMessage = signMessage
+-            };
+-            var result = await _token.FullVerify(JsonConvert.SerializeObject(model), "someone", "some");
+-
+-            Assert.False(result);
+-        }
+-
+-        [Fact]
+-        public async Task FullVerify_IncorrectETAMP_ReturnFalse()
+-        {
+-            var result = await _token.FullVerify(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>());
+-
+-            Assert.False(result);
+-        }
+-
+-        [Fact]
+-        public async Task FullVerifyWithTokenSignature_WithIncorrectParametrs_ReturnFalse()
+-        {
+-            var result = await _token.FullVerifyWithTokenSignature(It.IsAny<string>(), It.IsAny<string>(),
+-                It.IsAny<string>(), It.IsAny<ECDsa>());
+-            Assert.False(result);
+-        }
+-
+-        [Fact]
+-        public async Task FullVerifyWithTokenSignature_WithCustomCurveAndPublickKeyIncorrect_ReturnFalse()
+-        {
+-            var result = await _token.FullVerifyWithTokenSignature(It.IsAny<string>(), It.IsAny<string>(),
+-               It.IsAny<string>(), It.IsAny<ECDsa>());
+-            Assert.False(result);
+-        }
+-
+-        [Fact]
+-        public async Task FullVerifyWithTokenSignature_WithCorrectPublicKey_ReturnTrue()
+-        {
+-            ECDsa ecdsa = ECDsa.Create(ECCurve.NamedCurves.nistP256);
+-            string publicKey = ecdsa.ExportSubjectPublicKeyInfoPem().Replace("-----BEGIN PUBLIC KEY-----", "")
+-                                                                    .Replace("-----END PUBLIC KEY-----", "")
+-                                                                    .Replace("\n", "");
+-            _testableValidateToken = TestableValidateToken();
+-            var result = await _testableValidateToken.FullVerifyWithTokenSignature("{}", It.IsAny<string>(), It.IsAny<string>(), ECCurve.NamedCurves.nistP256, publicKey);
+-
+-            Assert.True(result);
+-        }
+-
+-        [Fact]
+-        public async Task FullVerifyWithTokenSignature_WithIncorrectETAMP_ReturnFalse()
+-        {
+-            var result = await _token.FullVerifyWithTokenSignature("", It.IsAny<string>(), It.IsAny<string>(), ECCurve.NamedCurves.nistP256, "");
+-
+-            Assert.False(result);
+-        }
+-
+-        [Fact]
+-        public async Task FullVerifyWithTokenSignature_WithCorrectData_ReturenTrue()
+-        {
+-            ECDsa ecdsa = ECDsa.Create(ECCurve.NamedCurves.nistP256);
+-            _testableValidateToken = TestableValidateToken();
+-            var result = await _testableValidateToken.FullVerifyWithTokenSignature("{}", It.IsAny<string>(), It.IsAny<string>(), ecdsa);
+-
+-            Assert.True(result);
+-        }
+-
+-        [Fact]
+-        public async Task FullVerifyLite_WithIncorrectData_ReturnFalse()
+-        {
+-            var result = await _token.FullVerifyLite("", ECDsa.Create());
+-
+-            Assert.False(result);
+-        }
+-
+-        [Fact]
+-        public async Task FullVerifyLite_WithCorrectData_ReturnTrue()
+-        {
+-            _testableValidateToken = TestableValidateToken();
+-            var result = await _testableValidateToken.FullVerifyLite("{}", ECDsa.Create());
+-            Assert.True(result);
+-        }
+-
+-        [Fact]
+-        public async Task FullVerifyLite_WithCurvePublicKeyIncorrectEtamp_ReturnFalse()
+-        {
+-            var result = await _token.FullVerifyLite("", ECCurve.NamedCurves.nistP256, "", new EcdsaWrapper());
+-
+-            Assert.False(result);
+-        }
+-
+-        [Fact]
+-        public async Task FullVerifyLite_WithCorrectCurvePublickey_ReturnTrue()
+-        {
+-            _testableValidateToken = TestableValidateToken();
+-
+-            ECDsa ecdsa = ECDsa.Create(ECCurve.NamedCurves.nistP256);
+-            string publicKey = ecdsa.ExportSubjectPublicKeyInfoPem().Replace("-----BEGIN PUBLIC KEY-----", "")
+-                                                                    .Replace("-----END PUBLIC KEY-----", "")
+-                                                                    .Replace("\n", "");
+-            var result = await _testableValidateToken.FullVerifyLite("{}", ECCurve.NamedCurves.nistP521, publicKey, new EcdsaWrapper());
+-
+-            Assert.True(result);
+-        }
+-
+-        [Fact]
+-        public async Task VerifyLifeTime_WithCorrectToken_ReturnsTrue()
+-        {
+-            string etamp = _etamp.CreateETAMP("message", _data);
+-            string token = JsonConvert.DeserializeObject<ETAMPModel>(etamp).Token;
+-            _token = new ValidateToken(new VerifyWrapper(_etamp.Ecdsa, _etamp.HashAlgorithm));
+-            var result = await _token.VerifyLifeTime(token);
+-
+-            Assert.True(result);
+-        }
+-
+-        [Fact]
+-        public async Task VerifyLifeTime_WithValidToken_ReturnsTrue()
+-        {
+-            var token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
+-            _jwtSecurityTokenHandler.Setup(handler => handler.ValidateTokenAsync(token, It.IsAny<TokenValidationParameters>()))
+-                 .ReturnsAsync(new TokenValidationResult { IsValid = true });
+-            _token = new ValidateToken(_verifyWrapperMock.Object, _jwtSecurityTokenHandler.Object);
+-            var result = await _token.VerifyLifeTime(token);
+-
+-            Assert.True(result);
+-        }
+-
+-        private TestableValidateToken TestableValidateToken()
+-        {
+-            TokenValidationResult validationResult = new()
+-            {
+-                IsValid = true
+-            };
+-            _jwtSecurityTokenHandler.Setup(x => x.ValidateTokenAsync(It.IsAny<string>(), It.IsAny<TokenValidationParameters>())).ReturnsAsync(validationResult);
+-            return new TestableValidateToken(_verifyWrapperMock.Object, _jwtSecurityTokenHandler.Object);
+-        }
+-
+-        [Fact]
+-        public void VerifyETAMP_WithEmptyGuid_ReturnFalse()
+-        {
+-            string etamp = $"{{Id:\"{Guid.Empty}\"}}";
+-
+-            var result = _token.VerifyETAMP(etamp);
+-            Assert.False(result);
+-        }
+-
+-        [Fact]
+-        public async Task FullVerifyWithTokenSignature_WithIncorrectData_ReturnFalse()
+-        {
+-            bool result = await _token.FullVerifyWithTokenSignature("{}", It.IsAny<string>(), It.IsAny<string>());
+-            Assert.False(result);
+-        }
+-
+-        [Fact]
+-        public async Task FullVerifyWithTokenSignatureTest_WithCorrectData_ReturnTrue()
+-        {
+-            string etamp = _etamp.CreateETAMP("Message", _data);
+-            ValidateToken validate = new ValidateToken(new VerifyWrapper(_etamp.Ecdsa, _etamp.HashAlgorithm));
+-            bool result = await validate.FullVerifyWithTokenSignature(etamp, _data.Audience, _data.Issuer);
+-            Assert.True(result);
+-        }
+-    }
+-}
+\ No newline at end of file

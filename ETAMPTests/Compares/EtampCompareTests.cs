@@ -2,7 +2,7 @@
 using ETAMP.Models;
 using Xunit;
 
-namespace ETAMP.Services.Compares.Tests
+namespace ETAMPTests.Compares
 {
     public class EtampCompareTests
     {
