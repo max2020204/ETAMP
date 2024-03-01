@@ -1,15 +1,10 @@
-﻿using Xunit;
-using ETAMP.Wrapper;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Security.Cryptography;
-using ETAMP.Models;
-using Newtonsoft.Json;
+﻿using ETAMP.Models;
 using ETAMP.Wrapper.Interfaces;
 using Moq;
+using Newtonsoft.Json;
+using System.Security.Cryptography;
+using System.Text;
+using Xunit;
 
 namespace ETAMP.Wrapper.Tests
 {
