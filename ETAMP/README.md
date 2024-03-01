@@ -18,12 +18,6 @@ Install ETAMP via NuGet Package Manager:
 ```shell
 Install-Package ETAMP
 ```
-
-## Installation
-Install ETAMP via NuGet Package Manager:
-```shell
-Install-Package ETAMP
-```
 ## Usage Examples
 
 ### Creating ETAMP Tokens

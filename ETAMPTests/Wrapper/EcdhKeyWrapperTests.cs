@@ -15,9 +15,7 @@ namespace ETAMP.Wrapper.Tests
         [Fact]
         public void CreateKey_ReturnsNotNullPublicKey()
         {
-            var wrapper = new EcdhKeyWrapper();
-
-            var publicKey = wrapper.CreateKey();
+            var publicKey = _wrapper.CreateKey();
 
             Assert.NotNull(publicKey);
         }
@@ -25,11 +23,10 @@ namespace ETAMP.Wrapper.Tests
         [Fact]
         public void DeriveKey_ReturnsNotNull_WhenUsingValidPublicKey()
         {
-            var wrapper = new EcdhKeyWrapper();
             var otherWrapper = new EcdhKeyWrapper();
             var publicKey = otherWrapper.CreateKey();
 
-            var derivedKey = wrapper.DeriveKey(publicKey);
+            var derivedKey = _wrapper.DeriveKey(publicKey);
 
             Assert.NotNull(derivedKey);
             Assert.NotEmpty(derivedKey);
@@ -38,16 +35,13 @@ namespace ETAMP.Wrapper.Tests
         [Fact]
         public void DeriveKey_ThrowsArgumentNullException_WhenPublicKeyIsNull()
         {
-            var wrapper = new EcdhKeyWrapper();
-
-            Assert.Throws<ArgumentNullException>(() => wrapper.DeriveKey((byte[])null!));
+            Assert.Throws<ArgumentNullException>(() => _wrapper.DeriveKey((byte[])null!));
         }
 
         [Fact]
         public void Dispose_CallsDisposeOnEcdhInstance()
         {
-            var wrapper = new EcdhKeyWrapper();
-            var ex = Record.Exception(() => wrapper.Dispose());
+            var ex = Record.Exception(() => _wrapper.Dispose());
 
             Assert.Null(ex);
         }
@@ -57,9 +51,8 @@ namespace ETAMP.Wrapper.Tests
         {
             var ecdh = ECDiffieHellman.Create();
             var otherEcdh = ECDiffieHellman.Create();
-            var wrapper = new EcdhKeyWrapper();
 
-            var derivedKey = wrapper.DeriveKeyHash(otherEcdh.PublicKey, HashAlgorithmName.SHA256, null, null);
+            var derivedKey = _wrapper.DeriveKeyHash(otherEcdh.PublicKey, HashAlgorithmName.SHA256, null, null);
 
             Assert.NotNull(derivedKey);
             Assert.NotEmpty(derivedKey);
@@ -70,10 +63,9 @@ namespace ETAMP.Wrapper.Tests
         {
             var ecdh = ECDiffieHellman.Create();
             var otherEcdh = ECDiffieHellman.Create();
-            var wrapper = new EcdhKeyWrapper();
             var hmacKey = new byte[] { 1, 2, 3 };
 
-            var derivedKey = wrapper.DeriveKeyHmac(otherEcdh.PublicKey, HashAlgorithmName.SHA256, hmacKey, null, null);
+            var derivedKey = _wrapper.DeriveKeyHmac(otherEcdh.PublicKey, HashAlgorithmName.SHA256, hmacKey, null, null);
 
             Assert.NotNull(derivedKey);
             Assert.NotEmpty(derivedKey);
@@ -82,16 +74,12 @@ namespace ETAMP.Wrapper.Tests
         [Fact]
         public void DeriveKey_ReturnsNonNull_WhenUsingValidPublicKey()
         {
-            // Arrange
-            var ecdh = ECDiffieHellman.Create();
             var otherEcdh = ECDiffieHellman.Create();
             var wrapper = new EcdhKeyWrapper();
             var otherPartyPublicKey = otherEcdh.PublicKey.ToByteArray();
 
-            // Act
             var derivedKey = wrapper.DeriveKey(otherPartyPublicKey);
 
-            // Assert
             Assert.NotNull(derivedKey);
             Assert.NotEmpty(derivedKey);
         }
