@@ -9,6 +9,11 @@ using System.Security.Cryptography;
 
 namespace ETAMPManagment.Services
 {
+    /// <summary>
+    /// Provides functionality for validating ETAMP tokens using cryptographic verification and JWT handling.
+    /// This class supports multiple forms of token verification, including integrity checks, signature validation,
+    /// and full JWT validation with audience and issuer verification.
+    /// </summary>
     public class ValidateToken : IValidateToken
     {
         private readonly IVerifyWrapper _verifyWrapper;
@@ -17,7 +22,7 @@ namespace ETAMPManagment.Services
         /// <summary>
         /// Initializes a new instance of the ValidateToken class with a specified verification wrapper.
         /// This constructor sets up the class with a default JwtSecurityTokenHandler and uses the provided IVerifyWrapper
-        /// instance for cryptographic verification tasks.
+        /// instance for cryptographic verification tasks, enabling basic ETAMP token validation and signature checks.
         /// </summary>
         /// <param name="verifyWrapper">The IVerifyWrapper instance to be used for cryptographic verification.</param>
         public ValidateToken(IVerifyWrapper verifyWrapper)
@@ -28,7 +33,8 @@ namespace ETAMPManagment.Services
 
         /// <summary>
         /// Initializes a new instance of the ValidateToken class with specified verification wrapper and JWT security token handler.
-        /// This constructor allows for custom configuration of both the verification process and the JWT token handling.
+        /// This constructor allows for custom configuration of both the verification process and the JWT token handling,
+        /// facilitating advanced validation scenarios, including custom token handling and signature validation.
         /// </summary>
         /// <param name="verifyWrapper">The IVerifyWrapper instance to be used for cryptographic verification.</param>
         /// <param name="jwtSecurityTokenHandler">The JwtSecurityTokenHandler instance to be used for handling JWT tokens.</param>
@@ -39,9 +45,11 @@ namespace ETAMPManagment.Services
         }
 
         /// <summary>
-        /// Verifies the integrity and authenticity of an ETAMP token.
+        /// Verifies the integrity and authenticity of an ETAMP token by checking its structure, deserializing it into an ETAMPModel,
+        /// and performing basic validations including ID check and signature verification.
         /// </summary>
         /// <param name="etamp">The ETAMP token as a string to be verified.</param>
+        /// <returns>True if the ETAMP token passes all integrity and authenticity checks; otherwise, false.</returns>
         public virtual bool VerifyETAMP(string etamp)
         {
             if (string.IsNullOrEmpty(etamp))
@@ -82,14 +90,13 @@ namespace ETAMPManagment.Services
         }
 
         /// <summary>
-        /// Fully verifies an ETAMP using JWT token.
-        /// This method first checks the validity of the ETAMP, then deserializes it into an ETAMPModel,
-        /// and finally validates the JWT token using provided audience and issuer parameters.
+        /// Fully verifies an ETAMP using a JWT token by deserializing the ETAMP, validating the JWT token's structure,
+        /// and verifying the token's claims against expected audience and issuer values.
         /// </summary>
         /// <param name="etamp">The ETAMP string to be validated.</param>
         /// <param name="audience">The expected audience (aud) claim in the JWT token.</param>
         /// <param name="issuer">The expected issuer (iss) claim in the JWT token.</param>
-        /// <returns>True if the ETAMP and JWT token are valid, false otherwise.</returns>
+        /// <returns>True if the ETAMP and JWT token are valid; otherwise, false.</returns>
         /// <exception cref="Exception">Throws an exception if token validation fails.</exception>
         public virtual async Task<bool> FullVerify(string etamp, string audience, string issuer)
         {
@@ -109,17 +116,17 @@ namespace ETAMPManagment.Services
         }
 
         /// <summary>
-        /// Fully verifies an ETAMP using a JWT token with an ECDSA signature.
-        /// This method first checks the validity of the ETAMP, deserializes it into an ETAMPModel,
-        /// and then validates the JWT token using the provided audience, issuer, ECDSA curve, and public key.
+        /// Asynchronously verifies an ETAMP with its associated JWT token signature, utilizing ECDSA for signature verification.
+        /// This comprehensive method first validates the ETAMP, then verifies the JWT token's signature against a specified ECDSA public key,
+        /// ensuring the authenticity and integrity of both the ETAMP and the JWT token.
         /// </summary>
         /// <param name="etamp">The ETAMP string to be validated.</param>
         /// <param name="audience">The expected audience (aud) claim in the JWT token.</param>
         /// <param name="issuer">The expected issuer (iss) claim in the JWT token.</param>
         /// <param name="curve">The ECCurve used for the ECDSA public key.</param>
         /// <param name="publicKey">The public key in Base64 format used for token signature validation.</param>
-        /// <returns>True if the ETAMP and JWT token are valid, false otherwise.</returns>
-        /// <exception cref="Exception">Throws an exception if token validation fails.</exception>
+        /// <returns>True if the ETAMP and its JWT token are valid; otherwise, false.</returns>
+        /// <exception cref="Exception">Throws an exception if JWT token validation fails.</exception>
         public virtual async Task<bool> FullVerifyWithTokenSignature(string etamp, string audience, string issuer, ECCurve curve, string publicKey)
         {
             if (!VerifyAndDeserializeETAMP(etamp, out ETAMPModel model))
@@ -207,16 +214,14 @@ namespace ETAMPManagment.Services
                 return false;
             }
 
-            using (ECDsa ecdsa = ecdsaWrapper.CreateECDsa(publicKey, curve))
+            using ECDsa ecdsa = ecdsaWrapper.CreateECDsa(publicKey, curve);
+            TokenValidationResult result = await _jwtSecurityTokenHandler.ValidateTokenAsync(model.Token,
+                TokenValidationParametersWithSignature(new ECDsaSecurityKey(ecdsa)));
+            if (result.IsValid)
             {
-                TokenValidationResult result = await _jwtSecurityTokenHandler.ValidateTokenAsync(model.Token,
-                    TokenValidationParametersWithSignature(new ECDsaSecurityKey(ecdsa)));
-                if (result.IsValid)
-                {
-                    return true;
-                }
-                throw result.Exception;
+                return true;
             }
+            throw result.Exception;
         }
 
         /// <summary>
@@ -256,17 +261,12 @@ namespace ETAMPManagment.Services
                 ValidateAudience = false,
                 ValidateLifetime = true,
                 ValidateIssuerSigningKey = false,
-                SignatureValidator = (encodedString, parameters) =>
-                {
-                    return new JwtSecurityToken(encodedString);
-                }
+                SignatureValidator = (encodedString, parameters) => new JwtSecurityToken(encodedString)
             };
 
             TokenValidationResult result = await _jwtSecurityTokenHandler.ValidateTokenAsync(token, validationParametr);
             if (result.IsValid)
-            {
                 return true;
-            }
             throw result.Exception;
         }
 
@@ -287,7 +287,7 @@ namespace ETAMPManagment.Services
 
         private TokenValidationParameters TokenValidationParametersWithSignature(string audience, string issuer, ECDsaSecurityKey securityKey)
         {
-            var parameters = new TokenValidationParameters
+            return new TokenValidationParameters
             {
                 ValidateIssuer = true,
                 ValidateAudience = true,
@@ -297,12 +297,11 @@ namespace ETAMPManagment.Services
                 ValidateIssuerSigningKey = true,
                 IssuerSigningKey = securityKey
             };
-            return parameters;
         }
 
         private TokenValidationParameters TokenValidationParametersWithSignature(ECDsaSecurityKey securityKey)
         {
-            var parameters = new TokenValidationParameters
+            return new TokenValidationParameters
             {
                 ValidateIssuer = false,
                 ValidateAudience = false,
@@ -310,7 +309,6 @@ namespace ETAMPManagment.Services
                 ValidateIssuerSigningKey = true,
                 IssuerSigningKey = securityKey
             };
-            return parameters;
         }
 
         private bool VerifyAndDeserializeETAMP(string etamp, out ETAMPModel model)
