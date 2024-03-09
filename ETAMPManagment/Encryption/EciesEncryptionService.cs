@@ -1,12 +1,11 @@
 ﻿using ETAMPManagment.Encryption.Interfaces;
 using ETAMPManagment.Factories.Interfaces;
-using ETAMPManagment.Wrapper.Interfaces;
 using System.Text;
 
 namespace ETAMPManagment.Services
 {
     /// <summary>
-    /// Provides encryption and decryption services using Elliptic Curve Integrated Encryption Scheme (ECIES).
+    /// Implements Elliptic Curve Integrated Encryption Scheme (ECIES) for encrypting and decrypting messages.
     /// </summary>
     public class EciesEncryptionService : IEciesEncryptionService
     {
@@ -14,12 +13,25 @@ namespace ETAMPManagment.Services
 
         private readonly IEncryptionService _encryptionService;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="EciesEncryptionService"/> class.
+        /// </summary>
+        /// <param name="keyExchanger">The key exchanger to derive the shared secret for encryption and decryption.</param>
+        /// <param name="factory">The factory to create the encryption service based on a specified encryption type.</param>
+        /// <param name="encryptionType">The type of encryption to be used by the encryption service.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="keyExchanger"/> or the encryption service creation fails.</exception>
         public EciesEncryptionService(IKeyExchanger keyExchanger, IEncryptionServiceFactory factory, string encryptionType)
         {
             _keyExchanger = keyExchanger ?? throw new ArgumentNullException(nameof(keyExchanger));
             _encryptionService = factory.CreateEncryptionService(encryptionType) ?? throw new ArgumentNullException("Encryption service creation failed.");
         }
 
+        /// <summary>
+        /// Encrypts a given message using ECIES.
+        /// </summary>
+        /// <param name="message">The plain text message to encrypt.</param>
+        /// <returns>A Base64 encoded string representing the encrypted message.</returns>
+        /// <exception cref="InvalidOperationException">Thrown if the shared secret is not initialized or empty.</exception>
         public virtual string Encrypt(string message)
         {
             if (_keyExchanger.GetSharedSecret() == null || _keyExchanger.GetSharedSecret().Length == 0)
@@ -31,6 +43,14 @@ namespace ETAMPManagment.Services
             return Convert.ToBase64String(encryptedMessage);
         }
 
+        /// <summary>
+        /// Decrypts a given encrypted message back into its plain text form using ECIES.
+        /// </summary>
+        /// <param name="encryptedMessageBase64">The encrypted message in Base64 encoding to decrypt.</param>
+        /// <param name="publicKey">The public key used to derive the shared secret for decryption.</param>
+        /// <returns>The decrypted plain text message.</returns>
+        /// <exception cref="InvalidOperationException">Thrown if the shared secret is not initialized or empty.</exception>
+        /// <exception cref="FormatException">Thrown if the encrypted message is not in a valid Base64 format.</exception>
         public virtual string Decrypt(string encryptedMessageBase64, byte[] publicKey)
         {
             if (_keyExchanger.GetSharedSecret() == null || _keyExchanger.GetSharedSecret().Length == 0)

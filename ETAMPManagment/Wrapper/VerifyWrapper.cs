@@ -1,5 +1,4 @@
 ﻿using ETAMPManagment.Wrapper.Interfaces;
-using System.Diagnostics.CodeAnalysis;
 using System.Security.Cryptography;
 using System.Text;
 
