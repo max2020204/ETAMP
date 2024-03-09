@@ -16,7 +16,7 @@ namespace ETAMPManagment.Wrapper
         /// </summary>
         /// <param name="privateKey">The PEM formatted private key string.</param>
         /// <returns>A Base64-encoded string representing the private key without PEM formatting.</returns>
-        public string ClearPEMPrivateKey(string privateKey)
+        public virtual string ClearPEMPrivateKey(string privateKey)
         {
             return privateKey.Replace("-----BEGIN PRIVATE KEY-----", "")
                              .Replace("-----END PRIVATE KEY-----", "")
@@ -30,7 +30,7 @@ namespace ETAMPManagment.Wrapper
         /// </summary>
         /// <param name="publicKey">The PEM formatted public key string.</param>
         /// <returns>A Base64-encoded string representing the public key without PEM formatting.</returns>
-        public string ClearPEMPublicKey(string publicKey)
+        public virtual string ClearPEMPublicKey(string publicKey)
         {
             return publicKey.Replace("-----BEGIN PUBLIC KEY-----", "")
                             .Replace("-----END PUBLIC KEY-----", "")
@@ -102,7 +102,7 @@ namespace ETAMPManagment.Wrapper
         /// <param name="privateKey">The private key as a byte array.</param>
         /// <param name="curve">The elliptic curve to use for the ECDsa instance.</param>
         /// <returns>A new instance of ECDsa configured with the specified private key and curve.</returns>
-        public ECDsa ImportECDsa(byte[] privateKey, ECCurve curve)
+        public virtual ECDsa ImportECDsa(byte[] privateKey, ECCurve curve)
         {
             ECDsa ecdsa = ECDsa.Create(curve);
             ecdsa.ImportPkcs8PrivateKey(privateKey, out _);
@@ -117,7 +117,7 @@ namespace ETAMPManagment.Wrapper
         /// <param name="privateKey">The private key in Base64 string format.</param>
         /// <param name="curve">The elliptic curve to use for the ECDsa instance.</param>
         /// <returns>A new instance of ECDsa configured with the specified private key and curve.</returns>
-        public ECDsa ImportECDsa(string privateKey, ECCurve curve)
+        public virtual ECDsa ImportECDsa(string privateKey, ECCurve curve)
         {
             if (privateKey.Contains("-"))
             {

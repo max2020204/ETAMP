@@ -36,7 +36,7 @@ namespace ETAMPManagment.Compares
                 Equals(x.Id, y.Id),
                 Equals(x.Version, y.Version),
                 string.Equals(x.UpdateType, y.UpdateType,StringComparison.Ordinal),
-                string.Equals(x.Token, x.Token,StringComparison.Ordinal),
+                string.Equals(x.Token, y.Token,StringComparison.Ordinal),
                 string.Equals(x.SignatureToken, y.SignatureToken,StringComparison.Ordinal),
                 string.Equals(x.SignatureMessage, y.SignatureMessage,StringComparison.Ordinal)
             };

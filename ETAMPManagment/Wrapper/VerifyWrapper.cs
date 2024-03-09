@@ -141,7 +141,6 @@ namespace ETAMPManagment.Wrapper
         /// <summary>
         /// Disposes the underlying ECDsa instance, releasing all associated resources.
         /// </summary>
-        [ExcludeFromCodeCoverage]
         public virtual void Dispose()
         {
             _ecdsa?.Dispose();

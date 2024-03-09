@@ -1,4 +1,5 @@
-﻿using Moq;
+﻿using ETAMPManagment.Encryption;
+using Moq;
 using System.Security.Cryptography;
 using System.Text;
 using Xunit;

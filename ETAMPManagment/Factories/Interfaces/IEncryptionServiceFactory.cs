@@ -1,4 +1,6 @@
-﻿namespace ETAMPManagment.Services.Interfaces
+﻿using ETAMPManagment.Encryption.Interfaces;
+
+namespace ETAMPManagment.Factories.Interfaces
 {
     public interface IEncryptionServiceFactory
     {
@@ -7,5 +9,7 @@
         void RegisterEncryptionService(string name, Func<IEncryptionService> serviceCreator);
 
         IEncryptionService CreateEncryptionService(string name);
+
+        bool UnregisterEncryptionService(string name);
     }
 }

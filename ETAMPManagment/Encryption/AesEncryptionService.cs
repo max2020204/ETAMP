@@ -1,7 +1,7 @@
-﻿using ETAMPManagment.Services.Interfaces;
+﻿using ETAMPManagment.Encryption.Interfaces;
 using System.Security.Cryptography;
 
-namespace ETAMPManagment.Services
+namespace ETAMPManagment.Encryption
 {
     /// <summary>
     /// Provides AES encryption and decryption services.

@@ -1,6 +1,7 @@
-﻿using ETAMPManagment.Services.Interfaces;
+﻿using ETAMPManagment.Encryption.Interfaces;
+using ETAMPManagment.Factories.Interfaces;
 
-namespace ETAMPManagment.Services
+namespace ETAMPManagment.Factories
 {
     /// <summary>
     /// Factory for creating encryption services based on specified names.
@@ -46,6 +47,22 @@ namespace ETAMPManagment.Services
             }
 
             throw new ArgumentException("Unsupported encryption service: " + name);
+        }
+
+        /// <summary>
+        /// Unregisters an encryption service from the factory.
+        /// </summary>
+        /// <param name="name">The name of the encryption service to be unregistered.</param>
+        /// <returns><c>true</c> if the service was successfully unregistered; otherwise, <c>false</c>.</returns>
+        /// <remarks>
+        /// This method removes the specified encryption service from the registry.
+        /// If the service is not found, the method returns <c>false</c> and does not throw an exception.
+        /// This approach allows for safe unregistration without the need for prior checks or exception handling
+        /// by the caller.
+        /// </remarks>
+        public virtual bool UnregisterEncryptionService(string name)
+        {
+            return Services.Remove(name);
         }
     }
 }

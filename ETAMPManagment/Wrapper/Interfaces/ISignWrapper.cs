@@ -2,14 +2,12 @@
 
 namespace ETAMPManagment.Wrapper.Interfaces
 {
-    internal interface ISignWrapper
+    public interface ISignWrapper
     {
-        byte[] Sign(byte[] data);
-
-        byte[] Sign(Stream data);
-
         string SignEtamp(string jsonEtamp);
 
-        string SignEtampModel(ETAMPModel etamp);
+        string SignEtamp(ETAMPModel etamp);
+
+        ETAMPModel SignEtampModel(ETAMPModel etamp);
     }
 }
