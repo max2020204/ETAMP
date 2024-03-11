@@ -71,6 +71,21 @@ namespace ETAMPManagment.Encryption
             PublicKey = _eCDiffieHellman.ExportSubjectPublicKeyInfoPem();
         }
 
+        public KeyPairProvider(byte[] publicKey)
+        {
+            _eCDiffieHellman = ECDiffieHellman.Create();
+            _eCDiffieHellman.ImportSubjectPublicKeyInfo(publicKey, out _);
+            PublicKey = _eCDiffieHellman.ExportSubjectPublicKeyInfoPem();
+        }
+
+        public KeyPairProvider(ReadOnlySpan<byte> privateKey)
+        {
+            _eCDiffieHellman = ECDiffieHellman.Create();
+            _eCDiffieHellman.ImportPkcs8PrivateKey(privateKey, out _);
+            PublicKey = _eCDiffieHellman.ExportSubjectPublicKeyInfoPem();
+            PrivateKey = _eCDiffieHellman.ExportPkcs8PrivateKeyPem();
+        }
+
         /// <summary>
         /// Provides access to the underlying ECDiffieHellman instance for cryptographic operations.
         /// </summary>

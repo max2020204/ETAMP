@@ -95,14 +95,15 @@ namespace ETAMPManagment.Wrapper
         }
 
         /// <summary>
-        /// Imports an ECDsa instance using a private key as a byte array and a specified elliptic curve.
-        /// This method is ideal for scenarios where the private key is available in byte array format,
-        /// allowing for the creation of an ECDsa instance configured with a private key for signature generation.
+        /// Imports an ECDsa instance using a private key as a read-only span of bytes and a specified elliptic curve.
+        /// This method facilitates the creation of an ECDsa instance directly from a byte array representation of a private key,
+        /// offering a convenient approach for scenarios where the private key is available in byte format.
+        /// The method is particularly useful in environments where minimizing memory allocations or working directly with byte spans is required.
         /// </summary>
-        /// <param name="privateKey">The private key as a byte array.</param>
-        /// <param name="curve">The elliptic curve to use for the ECDsa instance.</param>
-        /// <returns>A new instance of ECDsa configured with the specified private key and curve.</returns>
-        public virtual ECDsa ImportECDsa(byte[] privateKey, ECCurve curve)
+        /// <param name="privateKey">The private key as a read-only span of bytes, typically derived from a binary representation of a PEM or PKCS8 private key.</param>
+        /// <param name="curve">The elliptic curve associated with the private key. This curve is used to configure the ECDsa instance appropriately.</param>
+        /// <returns>A new instance of ECDsa configured with the specified private key and elliptic curve.</returns>
+        public virtual ECDsa ImportECDsa(ReadOnlySpan<byte> privateKey, ECCurve curve)
         {
             ECDsa ecdsa = ECDsa.Create(curve);
             ecdsa.ImportPkcs8PrivateKey(privateKey, out _);

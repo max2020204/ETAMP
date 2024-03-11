@@ -37,12 +37,12 @@ namespace ETAMPManagment.Wrapper.Interfaces
         ECDsa CreateECDsa(byte[] publicKey, ECCurve curve);
 
         /// <summary>
-        /// Imports a private key into an ECDsa instance.
+        /// Imports a private key from a byte array into an ECDsa instance.
         /// </summary>
-        /// <param name="privateKey">The private key as a byte array.</param>
+        /// <param name="privateKey">The private key as a read-only span of bytes.</param>
         /// <param name="curve">The ECCurve associated with the private key.</param>
         /// <returns>An ECDsa instance initialized with the given private key.</returns>
-        ECDsa ImportECDsa(byte[] privateKey, ECCurve curve);
+        ECDsa ImportECDsa(ReadOnlySpan<byte> privateKey, ECCurve curve);
 
         /// <summary>
         /// Imports a private key from a PEM-formatted string into an ECDsa instance.

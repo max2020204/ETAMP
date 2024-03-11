@@ -56,13 +56,15 @@ namespace ETAMPManagment.Wrapper
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SignWrapper"/> class using an <see cref="IEcdsaWrapper"/> and a byte array private key.
+        /// Initializes a new instance of the <see cref="SignWrapper"/> class. This constructor allows the creation of a signing utility
+        /// by specifying an <see cref="IEcdsaWrapper"/> for elliptic curve cryptography operations, a private key as a read-only span of bytes,
+        /// the elliptic curve to use, and the hash algorithm for signing operations.
         /// </summary>
-        /// <param name="ecdsaWrapper">The wrapper for ECDsa operations.</param>
-        /// <param name="privateKey">The private key as a byte array.</param>
-        /// <param name="curve">The ECCurve for the ECDsa.</param>
-        /// <param name="algorithmName">The hash algorithm to use for signing.</param>
-        public SignWrapper(IEcdsaWrapper ecdsaWrapper, byte[] privateKey, ECCurve curve, HashAlgorithmName algorithmName)
+        /// <param name="ecdsaWrapper">The <see cref="IEcdsaWrapper"/> instance used for ECDsa operations, providing methods to create and import ECDsa keys.</param>
+        /// <param name="privateKey">The private key used for signing operations, provided as a read-only span of bytes. This allows for the efficient handling of the private key data without unnecessary copying or conversions.</param>
+        /// <param name="curve">The <see cref="ECCurve"/> specifying the elliptic curve parameters to use for the cryptographic operations. This parameter is essential for configuring the ECDsa instance with the correct curve.</param>
+        /// <param name="algorithmName">The <see cref="HashAlgorithmName"/> specifying the hash algorithm to use for generating signatures. This determines how data will be hashed before being signed with the private key.</param>
+        public SignWrapper(IEcdsaWrapper ecdsaWrapper, ReadOnlySpan<byte> privateKey, ECCurve curve, HashAlgorithmName algorithmName)
         {
             _ecdsa = ecdsaWrapper.ImportECDsa(privateKey, curve);
             _algorithmName = algorithmName;
