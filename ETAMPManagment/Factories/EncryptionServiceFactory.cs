@@ -5,7 +5,8 @@ namespace ETAMPManagment.Factories
 {
     /// <summary>
     /// Factory for creating encryption services based on specified names.
-    /// This factory maintains a registry of encryption services which can be dynamically registered and created.
+    /// This factory maintains a registry of encryption services which can be dynamically registered and created,
+    /// allowing for flexible encryption service management and instantiation based on runtime requirements.
     /// </summary>
     public class EncryptionServiceFactory : IEncryptionServiceFactory
     {
@@ -28,8 +29,14 @@ namespace ETAMPManagment.Factories
         /// </summary>
         /// <param name="name">The name of the encryption service to be registered.</param>
         /// <param name="serviceCreator">The function used to create an instance of the encryption service.</param>
+        /// <exception cref="ArgumentException">Thrown when a service with the same name is already registered.</exception>
         public virtual void RegisterEncryptionService(string name, Func<IEncryptionService> serviceCreator)
         {
+            if (Services.ContainsKey(name))
+            {
+                throw new ArgumentException($"An encryption service with the name '{name}' is already registered.", nameof(name));
+            }
+
             Services[name] = serviceCreator;
         }
 

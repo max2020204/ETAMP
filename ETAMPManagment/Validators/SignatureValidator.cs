@@ -18,7 +18,7 @@ namespace ETAMPManagment.Validators
         /// <param name="verifyWrapper">The verify wrapper used for signature verification.</param>
         public SignatureValidator(IVerifyWrapper verifyWrapper)
         {
-            _verifyWrapper = verifyWrapper;
+            _verifyWrapper = verifyWrapper ?? throw new ArgumentNullException(nameof(verifyWrapper));
         }
 
         /// <summary>
@@ -27,7 +27,7 @@ namespace ETAMPManagment.Validators
         /// <param name="structureValidator">The structure validator used for ETAMP message structure validation.</param>
         public SignatureValidator(IStructureValidator structureValidator)
         {
-            _structureValidator = structureValidator;
+            _structureValidator = structureValidator ?? throw new ArgumentNullException(nameof(structureValidator));
         }
 
         /// <summary>

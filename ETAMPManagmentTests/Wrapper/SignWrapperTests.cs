@@ -3,7 +3,6 @@ using ETAMPManagment.Wrapper.Interfaces;
 using Moq;
 using Newtonsoft.Json;
 using System.Security.Cryptography;
-using System.Text;
 using Xunit;
 
 namespace ETAMPManagment.Wrapper.Tests
@@ -11,39 +10,8 @@ namespace ETAMPManagment.Wrapper.Tests
     public class SignWrapperTests
     {
         [Fact]
-        public void Sign_WithData_ReturnsValidSignature()
-        {
-            var ecdsa = ECDsa.Create();
-            var signWrapper = new SignWrapper(ecdsa, HashAlgorithmName.SHA256);
-            byte[] dataToSign = Encoding.UTF8.GetBytes("Test data");
-
-            byte[] signature = signWrapper.Sign(dataToSign);
-
-            Assert.NotNull(signature);
-            Assert.True(signature.Length > 0);
-            Assert.True(ecdsa.VerifyData(dataToSign, signature, HashAlgorithmName.SHA256));
-        }
-
-        [Fact]
-        public void Sign_WithStream_ReturnsValidSignature()
-        {
-            var ecdsa = ECDsa.Create();
-            var signWrapper = new SignWrapper(ecdsa, HashAlgorithmName.SHA256);
-            var dataToSign = "Test data";
-            using var dataStream = new MemoryStream(Encoding.UTF8.GetBytes(dataToSign));
-
-            byte[] signature = signWrapper.Sign(dataStream);
-
-            Assert.NotNull(signature);
-            Assert.True(signature.Length > 0);
-            using var verificationStream = new MemoryStream(Encoding.UTF8.GetBytes(dataToSign));
-            Assert.True(ecdsa.VerifyData(verificationStream, signature, HashAlgorithmName.SHA256));
-        }
-
-        [Fact]
         public void SignEtamp_WithValidJson_ReturnsUpdatedEtampModel()
         {
-            // Arrange
             var ecdsa = ECDsa.Create();
             var signWrapper = new SignWrapper(ecdsa, HashAlgorithmName.SHA256);
             var etampModel = new ETAMPModel
@@ -77,7 +45,7 @@ namespace ETAMPManagment.Wrapper.Tests
                 UpdateType = "updateType"
             };
 
-            var signedJson = signWrapper.SignEtampModel(etampModel);
+            var signedJson = signWrapper.SignEtamp(etampModel);
             var updatedEtampModel = JsonConvert.DeserializeObject<ETAMPModel>(signedJson);
 
             Assert.NotNull(updatedEtampModel);

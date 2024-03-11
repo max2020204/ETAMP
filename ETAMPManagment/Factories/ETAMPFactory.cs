@@ -1,34 +1,36 @@
-﻿using ETAMPManagment.ETAMP.Base.Interfaces;
+﻿using ETAMPManagment.ETAMP.Base;
 using ETAMPManagment.Factories.Interfaces;
 using ETAMPManagment.Utils;
 
 namespace ETAMPManagment.Factories
 {
     /// <summary>
-    /// Implements a factory for creating instances of different types of ETAMP generators based on the ETAMPType enumeration.
+    /// A factory class for creating ETAMP (Encrypted Token And Message Protocol) data generators.
+    /// This class manages a registry of ETAMP generators, allowing dynamic creation of ETAMP data based on specific types.
     /// </summary>
     public class ETAMPFactory : IETAMPFactory<ETAMPType>
     {
         /// <summary>
-        /// Gets the dictionary mapping ETAMP types to their corresponding generator functions.
+        /// Gets the mapping of ETAMP types to their corresponding data generator functions.
         /// </summary>
-        public Dictionary<ETAMPType, Func<IETAMPBase>> Factory { get; }
+        public Dictionary<ETAMPType, Func<IETAMPData>> Factory { get; }
 
         /// <summary>
-        /// Initializes a new instance of the ETAMPFactory class.
+        /// Initializes a new instance of the <see cref="ETAMPFactory"/> class.
+        /// The constructor sets up an empty dictionary ready to register ETAMP data generators.
         /// </summary>
         public ETAMPFactory()
         {
-            Factory = new Dictionary<ETAMPType, Func<IETAMPBase>>();
+            Factory = new Dictionary<ETAMPType, Func<IETAMPData>>();
         }
 
         /// <summary>
-        /// Creates an ETAMP generator instance based on the specified ETAMP type.
+        /// Creates an ETAMP data generator based on the specified ETAMP type.
         /// </summary>
-        /// <param name="type">The ETAMP type for which to create a generator.</param>
-        /// <returns>An instance of IETAMPBase corresponding to the specified ETAMP type.</returns>
-        /// <exception cref="ArgumentException">Thrown when an unsupported ETAMP generator type is requested.</exception>
-        public virtual IETAMPBase CreateGenerator(ETAMPType type)
+        /// <param name="type">The ETAMP type for which to create a data generator.</param>
+        /// <returns>The ETAMP data generator associated with the specified type.</returns>
+        /// <exception cref="ArgumentException">Thrown if the specified ETAMP type is not supported or has no registered generator.</exception>
+        public virtual IETAMPData CreateGenerator(ETAMPType type)
         {
             if (Factory.TryGetValue(type, out var func))
             {
@@ -38,20 +40,28 @@ namespace ETAMPManagment.Factories
         }
 
         /// <summary>
-        /// Registers a new ETAMP generator function under a specified ETAMP type.
+        /// Registers a generator function for a specified ETAMP type.
+        /// This method allows dynamic addition of ETAMP data generators to the factory.
         /// </summary>
-        /// <param name="type">The ETAMP type under which to register the generator.</param>
-        /// <param name="generator">The generator function to be registered.</param>
-        public virtual void RegisterGenerator(ETAMPType type, Func<IETAMPBase> generator)
+        /// <param name="type">The ETAMP type to register the generator for.</param>
+        /// <param name="generator">The generator function that creates an instance of <see cref="IETAMPData"/>.</param>
+        /// <exception cref="ArgumentException">Thrown if a generator for the specified ETAMP type is already registered.</exception>
+        public virtual void RegisterGenerator(ETAMPType type, Func<IETAMPData> generator)
         {
-            Factory.Add(type, generator);
+            if (Factory.ContainsKey(type))
+            {
+                throw new ArgumentException($"A generator for the ETAMP type '{type}' is already registered.", nameof(type));
+            }
+
+            Factory[type] = generator;
         }
 
         /// <summary>
-        /// Unregisters an existing ETAMP generator for a specified ETAMP type.
+        /// Unregisters an ETAMP generator for a specified ETAMP type.
+        /// This method allows removal of ETAMP data generators from the factory, providing flexibility in managing available generators.
         /// </summary>
         /// <param name="type">The ETAMP type whose generator is to be unregistered.</param>
-        /// <returns>True if the generator was successfully unregistered; otherwise, false.</returns>
+        /// <returns><c>true</c> if the generator was successfully unregistered; otherwise, <c>false</c>.</returns>
         public virtual bool UnregisterETAMPGenerator(ETAMPType type)
         {
             return Factory.Remove(type);

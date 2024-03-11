@@ -1,64 +1,84 @@
 ﻿using ETAMPManagment.Encryption.Interfaces;
-using ETAMPManagment.ETAMP.Base.Interfaces;
+using ETAMPManagment.ETAMP.Base;
 using ETAMPManagment.ETAMP.Encrypted.Interfaces;
 using ETAMPManagment.Models;
+using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
+using System.Security.Cryptography;
 
 namespace ETAMPManagment.ETAMP.Encrypted
 {
     /// <summary>
-    /// Implements encryption functionalities for ETAMP (Encrypted Token And Message Protocol) tokens using ECIES (Elliptic Curve Integrated Encryption Scheme).
+    /// Extends <see cref="ETAMPBase"/> to incorporate encryption functionalities into ETAMP (Encrypted Token And Message Protocol) tokens,
+    /// using the Elliptic Curve Integrated Encryption Scheme (ECIES). This class allows for the creation of ETAMP tokens that are not only signed but also encrypted,
+    /// enhancing confidentiality alongside the existing integrity and authentication provided by the base functionality.
     /// </summary>
-    public class ETAMPEncrypted : IETAMPEncrypted
+    public class ETAMPEncrypted : ETAMPBase, IETAMPEncrypted
     {
         /// <summary>
-        /// Base implementation for ETAMP token creation.
+        /// The encryption service responsible for encrypting the payload of the ETAMP tokens.
         /// </summary>
-        private readonly IETAMPBase _etampBase;
-
-        /// <summary>
-        /// Service for encrypting ETAMP tokens.
-        /// </summary>
-
         private readonly IEciesEncryptionService _eciesEncryptionService;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ETAMPEncrypted"/> class with specified ETAMP base and encryption service.
+        /// Initializes a new instance of the <see cref="ETAMPEncrypted"/> class, solely with an encryption service for encrypting ETAMP tokens.
+        /// This constructor can be used when encryption is the only requirement and a new ECDsa instance for signing is created internally.
         /// </summary>
-        /// <param name="etampBase">The base ETAMP service for creating tokens.</param>
-        /// <param name="eciesEncryptionService">The encryption service to be used for encrypting tokens.</param>
-        public ETAMPEncrypted(IETAMPBase etampBase, IEciesEncryptionService eciesEncryptionService)
+        /// <param name="eciesEncryptionService">The service used to encrypt ETAMP tokens.</param>
+        public ETAMPEncrypted(IEciesEncryptionService eciesEncryptionService)
         {
-            _etampBase = etampBase;
             _eciesEncryptionService = eciesEncryptionService;
         }
 
         /// <summary>
-        /// Creates an encrypted ETAMP token as a string.
+        /// Initializes a new instance of the <see cref="ETAMPEncrypted"/> class with an encryption service, a specified ECDsa instance, and a security algorithm.
+        /// This constructor is suitable for scenarios requiring both encryption of the ETAMP tokens and the use of a specific ECDsa instance for digital signatures.
         /// </summary>
-        /// <typeparam name="T">The type of the payload within the ETAMP token.</typeparam>
-        /// <param name="updateType">The type of update the ETAMP token represents.</param>
-        /// <param name="payload">The payload to include in the ETAMP token.</param>
-        /// <param name="version">The protocol version for the ETAMP token.</param>
-        /// <returns>A string representation of the encrypted ETAMP token.</returns>
-        public virtual string CreateEncryptETAMPToken<T>(string updateType, T payload, double version = 1) where T : BasePaylaod
+        /// <param name="eciesEncryptionService">The service used to encrypt ETAMP tokens.</param>
+        /// <param name="ecdsa">The ECDsa instance used for digital signature operations.</param>
+        /// <param name="securityAlgorithm">The security algorithm identifier used for signing. Defaults to EcdsaSha512Signature.</param>
+        public ETAMPEncrypted(IEciesEncryptionService eciesEncryptionService, ECDsa ecdsa, string securityAlgorithm = SecurityAlgorithms.EcdsaSha512Signature) : base(ecdsa, securityAlgorithm)
         {
-            ETAMPModel model = _etampBase.CreateETAMPModel(updateType, payload, version);
+            _eciesEncryptionService = eciesEncryptionService;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ETAMPEncrypted"/> class with an encryption service and a security algorithm, creating a new ECDsa instance internally.
+        /// This constructor is ideal for use cases where encryption is needed alongside digital signing with a default ECDsa configuration.
+        /// </summary>
+        /// <param name="eciesEncryptionService">The service used to encrypt ETAMP tokens.</param>
+        /// <param name="securityAlgorithm">The security algorithm identifier used for signing.</param>
+        public ETAMPEncrypted(IEciesEncryptionService eciesEncryptionService, string securityAlgorithm) : base(securityAlgorithm)
+        {
+            _eciesEncryptionService = eciesEncryptionService;
+        }
+
+        /// <summary>
+        /// Creates a serialized, encrypted ETAMP token based on the specified update type, payload, and protocol version.
+        /// </summary>
+        /// <typeparam name="T">The payload type.</typeparam>
+        /// <param name="updateType">The update type identifier for the ETAMP token.</param>
+        /// <param name="payload">The payload to be encrypted and included in the ETAMP token.</param>
+        /// <param name="version">The version of the ETAMP protocol, defaulting to 1.</param>
+        /// <returns>A serialized string representation of the encrypted ETAMP token.</returns>
+        public virtual string CreateEncryptETAMP<T>(string updateType, T payload, double version = 1) where T : BasePaylaod
+        {
+            ETAMPModel model = CreateETAMPModel(updateType, payload, version);
             model.Token = _eciesEncryptionService.Encrypt(model.Token);
             return JsonConvert.SerializeObject(model);
         }
 
         /// <summary>
-        /// Creates an encrypted ETAMP token model.
+        /// Creates an ETAMP model with encryption based on the specified update type, payload, and protocol version.
         /// </summary>
-        /// <typeparam name="T">The type of the payload within the ETAMP token.</typeparam>
-        /// <param name="updateType">The type of update the ETAMP token represents.</param>
-        /// <param name="payload">The payload to include in the ETAMP token.</param>
-        /// <param name="version">The protocol version for the ETAMP token.</param>
-        /// <returns>An ETAMPModel of the encrypted ETAMP token.</returns>
-        public virtual ETAMPModel CreateEncryptETAMPTokenModel<T>(string updateType, T payload, double version = 1) where T : BasePaylaod
+        /// <typeparam name="T">The payload type.</typeparam>
+        /// <param name="updateType">The update type identifier for the ETAMP model.</param>
+        /// <param name="payload">The payload to be encrypted and included in the ETAMP model.</param>
+        /// <param name="version">The version of the ETAMP protocol, defaulting to 1.</param>
+        /// <returns>An instance of <see cref="ETAMPModel"/> containing the encrypted payload.</returns>
+        public virtual ETAMPModel CreateEncryptETAMPModel<T>(string updateType, T payload, double version = 1) where T : BasePaylaod
         {
-            ETAMPModel model = _etampBase.CreateETAMPModel(updateType, payload, version);
+            ETAMPModel model = CreateETAMPModel(updateType, payload, version);
             model.Token = _eciesEncryptionService.Encrypt(model.Token);
             return model;
         }

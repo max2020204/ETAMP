@@ -3,9 +3,9 @@
 namespace ETAMPManagment.ETAMP.Base.Interfaces
 {
     /// <summary>
-    /// Defines the base functionality for creating Encrypted Token And Message Protocol (ETAMP) payloads.
+    /// Extends IETAMPData to include methods for creating ETAMP tokens and models, supporting encryption and digital signing.
     /// </summary>
-    public interface IETAMPBase
+    public interface IETAMPBase : IETAMPData
     {
         /// <summary>
         /// Creates a serialized ETAMP token with the specified update type and payload.
@@ -18,7 +18,7 @@ namespace ETAMPManagment.ETAMP.Base.Interfaces
         string CreateETAMP<T>(string updateType, T payload, double version = 1) where T : BasePaylaod;
 
         /// <summary>
-        /// Creates an ETAMP model with the specified update type and payload without serialization.
+        /// Creates an ETAMP model with the specified update type and payload.
         /// </summary>
         /// <typeparam name="T">The payload type.</typeparam>
         /// <param name="updateType">The update type identifier for the ETAMP model.</param>
