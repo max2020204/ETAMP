@@ -19,10 +19,7 @@ namespace ETAMPManagment.Factories
         /// <summary>
         /// Initializes a new instance of the <see cref="EncryptionServiceFactory"/> class.
         /// </summary>
-        public EncryptionServiceFactory()
-        {
-            Services = new Dictionary<string, Func<IEncryptionService>>();
-        }
+        public EncryptionServiceFactory() => Services = new Dictionary<string, Func<IEncryptionService>>();
 
         /// <summary>
         /// Registers an encryption service in the factory.
@@ -33,9 +30,7 @@ namespace ETAMPManagment.Factories
         public virtual void RegisterEncryptionService(string name, Func<IEncryptionService> serviceCreator)
         {
             if (Services.ContainsKey(name))
-            {
                 throw new ArgumentException($"An encryption service with the name '{name}' is already registered.", nameof(name));
-            }
 
             Services[name] = serviceCreator;
         }
@@ -49,9 +44,7 @@ namespace ETAMPManagment.Factories
         public virtual IEncryptionService CreateEncryptionService(string name)
         {
             if (Services.TryGetValue(name, out var serviceCreator))
-            {
                 return serviceCreator();
-            }
 
             throw new ArgumentException("Unsupported encryption service: " + name);
         }

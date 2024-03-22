@@ -57,14 +57,14 @@ namespace ETAMPManagment.Wrapper
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SignWrapper"/> class. This constructor allows the creation of a signing utility
-        /// by specifying an <see cref="IEcdsaWrapper"/> for elliptic curve cryptography operations, a private key as a read-only span of bytes,
+        /// by specifying an <see cref="IEcdsaWrapper"/> for elliptic curve cryptography operations, a private key as a byte array,
         /// the elliptic curve to use, and the hash algorithm for signing operations.
         /// </summary>
         /// <param name="ecdsaWrapper">The <see cref="IEcdsaWrapper"/> instance used for ECDsa operations, providing methods to create and import ECDsa keys.</param>
-        /// <param name="privateKey">The private key used for signing operations, provided as a read-only span of bytes. This allows for the efficient handling of the private key data without unnecessary copying or conversions.</param>
+        /// <param name="privateKey">The private key used for signing operations, provided as a byte array. This change allows for a more straightforward handling of the private key data, accommodating scenarios where `ReadOnlySpan<byte>` cannot be directly used or is not preferred.</param>
         /// <param name="curve">The <see cref="ECCurve"/> specifying the elliptic curve parameters to use for the cryptographic operations. This parameter is essential for configuring the ECDsa instance with the correct curve.</param>
         /// <param name="algorithmName">The <see cref="HashAlgorithmName"/> specifying the hash algorithm to use for generating signatures. This determines how data will be hashed before being signed with the private key.</param>
-        public SignWrapper(IEcdsaWrapper ecdsaWrapper, ReadOnlySpan<byte> privateKey, ECCurve curve, HashAlgorithmName algorithmName)
+        public SignWrapper(IEcdsaWrapper ecdsaWrapper, byte[] privateKey, ECCurve curve, HashAlgorithmName algorithmName)
         {
             _ecdsa = ecdsaWrapper.ImportECDsa(privateKey, curve);
             _algorithmName = algorithmName;
@@ -80,9 +80,13 @@ namespace ETAMPManagment.Wrapper
         /// </summary>
         /// <param name="jsonEtamp">The ETAMP data in JSON format.</param>
         /// <returns>A JSON string of the ETAMP data with updated signature fields.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when the input JSON string is null, empty,
+        /// or cannot be deserialized into an ETAMP model.</exception>
         public virtual string SignEtamp(string jsonEtamp)
         {
-            ETAMPModel etamp = JsonConvert.DeserializeObject<ETAMPModel>(jsonEtamp);
+            ETAMPModel? etamp = JsonConvert.DeserializeObject<ETAMPModel>(jsonEtamp);
+            ArgumentNullException.ThrowIfNull(etamp, nameof(etamp));
+
             etamp.SignatureToken = Convert.ToBase64String(Sign(Encoding.UTF8.GetBytes(etamp.Token)));
             etamp.SignatureMessage = Convert.ToBase64String(Sign(Encoding.UTF8.GetBytes($"{etamp.Id}{etamp.Version}{etamp.Token}{etamp.UpdateType}{etamp.SignatureToken}")));
             return JsonConvert.SerializeObject(etamp);

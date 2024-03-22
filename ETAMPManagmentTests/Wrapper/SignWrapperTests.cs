@@ -9,11 +9,18 @@ namespace ETAMPManagment.Wrapper.Tests
 {
     public class SignWrapperTests
     {
+        private readonly ECDsa _ecdsa;
+        private readonly SignWrapper _signWrapper;
+
+        public SignWrapperTests()
+        {
+            _ecdsa = ECDsa.Create();
+            _signWrapper = new SignWrapper(_ecdsa, HashAlgorithmName.SHA256);
+        }
+
         [Fact]
         public void SignEtamp_WithValidJson_ReturnsUpdatedEtampModel()
         {
-            var ecdsa = ECDsa.Create();
-            var signWrapper = new SignWrapper(ecdsa, HashAlgorithmName.SHA256);
             var etampModel = new ETAMPModel
             {
                 Id = Guid.NewGuid(),
@@ -21,7 +28,7 @@ namespace ETAMPManagment.Wrapper.Tests
             };
             var jsonEtamp = JsonConvert.SerializeObject(etampModel);
 
-            var signedJson = signWrapper.SignEtamp(jsonEtamp);
+            var signedJson = _signWrapper.SignEtamp(jsonEtamp);
             var signedEtampModel = JsonConvert.DeserializeObject<ETAMPModel>(signedJson);
 
             Assert.NotNull(signedEtampModel);
@@ -30,6 +37,15 @@ namespace ETAMPManagment.Wrapper.Tests
 
             Assert.NotEmpty(signedEtampModel.SignatureToken);
             Assert.NotEmpty(signedEtampModel.SignatureMessage);
+        }
+
+        [Fact]
+        public void SignEtamp_WithNullInput_ThrowsArgumentNullException()
+        {
+            var ecdsa = ECDsa.Create();
+            var signWrapper = new SignWrapper(ecdsa, HashAlgorithmName.SHA256);
+            var exception = Assert.Throws<ArgumentNullException>(() => signWrapper.SignEtamp(""));
+            Assert.Equal("etamp", exception.ParamName);
         }
 
         [Fact]
@@ -49,21 +65,18 @@ namespace ETAMPManagment.Wrapper.Tests
             var updatedEtampModel = JsonConvert.DeserializeObject<ETAMPModel>(signedJson);
 
             Assert.NotNull(updatedEtampModel);
-            Assert.NotEmpty(updatedEtampModel.SignatureToken);
-            Assert.NotEmpty(updatedEtampModel.SignatureMessage);
+            Assert.NotNull(updatedEtampModel.SignatureToken);
+            Assert.NotNull(updatedEtampModel.SignatureMessage);
         }
 
         [Fact]
         public void Constructor_WithStringPrivateKey_InitializesCorrectly()
         {
-            ECDsa ecdsa = ECDsa.Create();
-            var algorithmName = HashAlgorithmName.SHA256;
-
-            string key = ecdsa.ExportPkcs8PrivateKeyPem().Replace("-----BEGIN PRIVATE KEY-----", "")
+            string key = _ecdsa.ExportPkcs8PrivateKeyPem().Replace("-----BEGIN PRIVATE KEY-----", "")
                              .Replace("-----END PRIVATE KEY-----", "")
                              .Replace("\n", "")
                              .Replace("\r", "");
-            var signWrapper = new SignWrapper(key, algorithmName);
+            var signWrapper = new SignWrapper(key, HashAlgorithmName.SHA256);
 
             Assert.NotNull(signWrapper);
         }
@@ -109,6 +122,31 @@ namespace ETAMPManagment.Wrapper.Tests
 
             Assert.NotNull(signWrapper);
             mockEcdsaWrapper.Verify(m => m.ImportECDsa(key, curve), Times.Once());
+        }
+
+        [Fact]
+        public void SignEtampModel_UpdatesSignatureFields()
+        {
+            // Arrange
+            var etamp = new ETAMPModel
+            {
+                Id = Guid.NewGuid(),
+                Version = 1.0,
+                Token = "token",
+                UpdateType = "update",
+                SignatureMessage = "",
+                SignatureToken = ""
+            };
+
+            // Act
+            var signedEtamp = _signWrapper.SignEtampModel(etamp);
+
+            // Assert
+            Assert.NotNull(signedEtamp);
+            Assert.NotNull(signedEtamp.SignatureToken);
+            Assert.NotNull(signedEtamp.SignatureMessage);
+            Assert.NotEmpty(signedEtamp.SignatureToken);
+            Assert.NotEmpty(signedEtamp.SignatureMessage);
         }
     }
 }

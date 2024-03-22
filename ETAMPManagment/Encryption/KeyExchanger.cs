@@ -6,23 +6,18 @@ namespace ETAMPManagment.Encryption
     /// <summary>
     /// Manages key exchange and key derivation operations using Elliptic Curve Diffie-Hellman (ECDH) algorithm.
     /// </summary>
-    public class KeyExchanger : IKeyExchanger
+    /// <remarks>
+    /// Initializes a new instance of the KeyExchanger class with a specified key pair provider.
+    /// </remarks>
+    /// <param name="keyPairProvider">The provider for ECDH key pair.</param>
+    public class KeyExchanger(IKeyPairProvider keyPairProvider) : IKeyExchanger
     {
         private byte[] _sharedSecret;
 
         /// <summary>
         /// Provides access to the key pair used in the ECDH algorithm.
         /// </summary>
-        private readonly IKeyPairProvider _keyProvider;
-
-        /// <summary>
-        /// Initializes a new instance of the KeyExchanger class with a specified key pair provider.
-        /// </summary>
-        /// <param name="keyPairProvider">The provider for ECDH key pair.</param>
-        public KeyExchanger(IKeyPairProvider keyPairProvider)
-        {
-            _keyProvider = keyPairProvider ?? throw new ArgumentNullException(nameof(keyPairProvider));
-        }
+        private readonly IKeyPairProvider _keyProvider = keyPairProvider ?? throw new ArgumentNullException(nameof(keyPairProvider));
 
         /// <summary>
         /// Derives a key using a hash function from the given public key and optional prepended or appended data.
@@ -34,10 +29,7 @@ namespace ETAMPManagment.Encryption
         /// <returns>A byte array representing the derived key.</returns>
         public virtual byte[] DeriveKeyHash(ECDiffieHellmanPublicKey publicKey, HashAlgorithmName hash, byte[]? secretPrepend, byte[]? secretAppend)
         {
-            if (publicKey == null)
-            {
-                throw new ArgumentNullException(nameof(publicKey));
-            }
+            ArgumentNullException.ThrowIfNull(publicKey);
             return _sharedSecret = _keyProvider.GetECDiffieHellman().DeriveKeyFromHash(publicKey, hash, secretPrepend, secretAppend);
         }
 
@@ -48,10 +40,7 @@ namespace ETAMPManagment.Encryption
         /// <returns>A byte array representing the derived key material.</returns>
         public virtual byte[] DeriveKey(ECDiffieHellmanPublicKey publicKey)
         {
-            if (publicKey == null)
-            {
-                throw new ArgumentNullException(nameof(publicKey));
-            }
+            ArgumentNullException.ThrowIfNull(publicKey);
             return _sharedSecret = _keyProvider.GetECDiffieHellman().DeriveKeyMaterial(publicKey);
         }
 
@@ -66,10 +55,7 @@ namespace ETAMPManagment.Encryption
         /// <returns>A byte array representing the derived key.</returns>
         public virtual byte[] DeriveKeyHmac(ECDiffieHellmanPublicKey publicKey, HashAlgorithmName hash, byte[]? hmacKey, byte[]? secretPrepend, byte[]? secretAppend)
         {
-            if (publicKey == null)
-            {
-                throw new ArgumentNullException(nameof(publicKey));
-            }
+            ArgumentNullException.ThrowIfNull(publicKey);
             return _sharedSecret = _keyProvider.GetECDiffieHellman().DeriveKeyFromHmac(publicKey, hash, hmacKey, secretPrepend, secretAppend);
         }
 
@@ -80,13 +66,10 @@ namespace ETAMPManagment.Encryption
         /// <returns>A byte array representing the derived key material.</returns>
         public virtual byte[] DeriveKey(byte[] otherPartyPublicKey)
         {
-            if (otherPartyPublicKey == null)
-            {
-                throw new ArgumentNullException(nameof(otherPartyPublicKey), "Public key cannot be null.");
-            }
-
-            using ECDiffieHellmanPublicKey otherPartyEcdh = ECDiffieHellmanCngPublicKey.FromByteArray(otherPartyPublicKey, CngKeyBlobFormat.EccPublicBlob);
-            return _sharedSecret = _keyProvider.GetECDiffieHellman().DeriveKeyMaterial(otherPartyEcdh);
+            ArgumentNullException.ThrowIfNull(otherPartyPublicKey, nameof(otherPartyPublicKey));
+            ECDiffieHellman eCDiffieHellman = ECDiffieHellman.Create();
+            eCDiffieHellman.ImportSubjectPublicKeyInfo(otherPartyPublicKey, out _);
+            return _sharedSecret = _keyProvider.GetECDiffieHellman().DeriveKeyMaterial(eCDiffieHellman.PublicKey);
         }
 
         /// <summary>

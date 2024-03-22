@@ -35,7 +35,7 @@ etampFactory.RegisterGenerator(ETAMPType.Base, () => new ETAMPBase());
 var etampBuilder = new ETAMPBuilder(etampFactory);
 
 // Create a basic ETAMP
-var payload = new BasePaylaod();
+var payload = new BasePayload();
 var etamp = etampBuilder.CreateETAMP("update_type", payload).Build();
 ```
 
@@ -57,7 +57,7 @@ etampFactory.RegisterGenerator(ETAMPType.Sign, () => new ETAMPSign(signWrapper))
 var etampBuilder = new ETAMPBuilder(etampFactory);
 
 // Create a signed ETAMP
-var payload = new BasePaylaod();
+var payload = new BasePayload();
 var etamp = etampBuilder.CreateSignETAMP("update_type", payload).Build();
 ```
 
@@ -79,7 +79,7 @@ etampFactory.RegisterGenerator(ETAMPType.Encrypted, () => new ETAMPEncrypted(new
 var etampBuilder = new ETAMPBuilder(etampFactory);
 
 // Create an encrypted ETAMP
-var payload = new BasePaylaod();
+var payload = new BasePayload();
 var etamp = etampBuilder.CreateEncryptedETAMP("update_type", payload).Build();
 ```
 
@@ -107,7 +107,7 @@ etampFactory.RegisterGenerator(ETAMPType.EncryptedSign, () => new ETAMPEncrypted
 var etampBuilder = new ETAMPBuilder(etampFactory);
 
 // Create an encrypted and signed ETAMP
-var payload = new BasePaylaod();
+var payload = new BasePayload();
 var etamp = etampBuilder.CreateEncryptedSignETAMP("update_type", payload).Build();
 ```
 

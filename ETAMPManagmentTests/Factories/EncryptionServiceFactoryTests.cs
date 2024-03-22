@@ -1,13 +1,12 @@
 ﻿using ETAMPManagment.Encryption.Interfaces;
-using ETAMPManagment.Factories;
 using Moq;
 using Xunit;
 
-namespace ETAMPManagment.Services.Tests
+namespace ETAMPManagment.Factories.Tests
 {
     public class EncryptionServiceFactoryTests
     {
-        private EncryptionServiceFactory _factory;
+        private readonly EncryptionServiceFactory _factory;
 
         public EncryptionServiceFactoryTests()
         {
@@ -60,6 +59,29 @@ namespace ETAMPManagment.Services.Tests
 
             Assert.Equal(mockService1.Object, service1);
             Assert.Equal(mockService2.Object, service2);
+        }
+
+        [Fact]
+        public void RegisterEncryptionService_WithDuplicateName_ThrowsArgumentException()
+        {
+            Func<IEncryptionService> serviceCreator = Mock.Of<IEncryptionService>;
+            _factory.RegisterEncryptionService("TestService", serviceCreator);
+            var exception = Assert.Throws<ArgumentException>(() => _factory.RegisterEncryptionService("TestService", serviceCreator));
+            Assert.Equal("name", exception.ParamName);
+            Assert.Contains("TestService", exception.Message);
+        }
+
+        [Fact]
+        public void UnregisterEncryptionService_RemovesService()
+        {
+            var mockService = new Mock<IEncryptionService>();
+            Func<IEncryptionService> serviceCreator = () => mockService.Object;
+            _factory.RegisterEncryptionService("TestService", serviceCreator);
+
+            var result = _factory.UnregisterEncryptionService("TestService");
+
+            Assert.True(result);
+            Assert.DoesNotContain("TestService", _factory.Services.Keys);
         }
     }
 }

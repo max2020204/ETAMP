@@ -1,4 +1,5 @@
-﻿using ETAMPManagment.Validators.Interfaces;
+﻿using ETAMPManagment.Models;
+using ETAMPManagment.Validators.Interfaces;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using System.IdentityModel.Tokens.Jwt;
@@ -6,7 +7,7 @@ using System.IdentityModel.Tokens.Jwt;
 namespace ETAMPManagment.Validators
 {
     /// <summary>
-    /// Provides functionality for validating JSON Web Tokens (JWT), including structure, lifetime, and claims validation.
+    /// Provides functionality for validating JSON Web Tokens (JWT), including checks for structure, lifetime, and claims validation.
     /// </summary>
     public class JwtValidator : IJwtValidator
     {
@@ -33,22 +34,16 @@ namespace ETAMPManagment.Validators
         /// Determines whether the provided JWT token is valid based on its structure and header information.
         /// </summary>
         /// <param name="token">The JWT token to validate.</param>
-        /// <returns><c>true</c> if the token is a well-formed JWT; otherwise, <c>false</c>.</returns>
-        /// <exception cref="ArgumentException">Thrown if the token is null or empty.</exception>
-        /// <exception cref="FormatException">Thrown if the token does not consist of three parts or is not in a valid Base64Url format.</exception>
-        /// <exception cref="InvalidOperationException">Thrown if the JWT header is invalid or missing expected values.</exception>
-        public virtual bool IsValidJwtToken(string token)
+        /// <returns>A JwtValidationResult indicating whether the token is a well-formed JWT and containing the error message if it's not.</returns>
+        public virtual ValidationResult IsValidJwtToken(string token)
         {
             if (string.IsNullOrEmpty(token))
-            {
-                throw new ArgumentException("The token cannot be null or empty.", nameof(token));
-            }
+                return new ValidationResult(false, "The token cannot be null or empty");
 
             var parts = token.Split('.');
+
             if (parts.Length != 3)
-            {
-                throw new FormatException("JWT must consist of three parts: header, payload, and signature.");
-            }
+                return new ValidationResult(false, "JWT must consist of three parts: header, payload, and signature");
 
             try
             {
@@ -56,54 +51,70 @@ namespace ETAMPManagment.Validators
                 var headerData = JsonConvert.DeserializeObject<Dictionary<string, string>>(headerJson);
 
                 if (headerData == null || !headerData.TryGetValue("typ", out string? value) || value != "ETAMP")
-                {
-                    throw new InvalidOperationException("The JWT header is invalid or the expected type 'ETAMP' is missing.");
-                }
+                    return new ValidationResult(false, "The JWT header is invalid or the expected type 'ETAMP' is missing");
             }
             catch (JsonException ex)
             {
-                throw new InvalidOperationException("Error deserializing the JWT header.", ex);
+                return new ValidationResult(false, $"Error deserializing the JWT header: {ex.Message}");
             }
             catch (FormatException ex)
             {
-                throw new InvalidOperationException("Format error decoding from Base64Url.", ex);
+                return new ValidationResult(false, $"Format error decoding from Base64Url: {ex.Message}");
             }
 
-            return true;
+            return new ValidationResult(true);
         }
 
         /// <summary>
-        /// Validates the lifetime of the provided JWT token using a specified ECDsaSecurityKey.
+        /// Asynchronously validates the lifetime of the provided JWT token using a specified ECDsa security key.
         /// </summary>
         /// <param name="token">The JWT token to validate.</param>
         /// <param name="securityKey">The ECDsaSecurityKey used for signature validation.</param>
-        /// <returns>A task that represents the asynchronous operation, yielding true if the token's lifetime is valid; otherwise, false.</returns>
-        public virtual async Task<bool> ValidateLifeTime(string token, ECDsaSecurityKey securityKey)
+        /// <returns>A task that represents the asynchronous validation operation, yielding a <see cref="ValidationResult"/> that contains the validation outcome.</returns>
+        /// <remarks>
+        /// This method first checks if the token is well-formed and has a valid structure using <see cref="IsValidJwtToken"/>.
+        /// Then it validates the token's lifetime against the provided security key.
+        /// The method returns a detailed validation result, indicating whether the token's lifetime is valid.
+        /// </remarks>
+        public virtual async Task<ValidationResult> ValidateLifeTime(string token, ECDsaSecurityKey securityKey)
         {
-            if (IsValidJwtToken(token))
+            try
             {
+                IsValidJwtToken(token);
                 TokenValidationResult result = await _jwtSecurityTokenHandler.ValidateTokenAsync(token, GetValidationParameters(securityKey));
-                return result.IsValid;
+                return new ValidationResult(result.IsValid);
             }
-            return false;
+            catch (Exception ex)
+            {
+                return new ValidationResult(false, ex.Message);
+            }
         }
 
         /// <summary>
-        /// Validates a JWT token for its lifetime, audience, and issuer claims using a specified ECDsaSecurityKey.
+        /// Asynchronously validates a JWT token, including its lifetime, audience, and issuer claims, using a specified ECDsa security key.
         /// </summary>
         /// <param name="token">The JWT token to validate.</param>
-        /// <param name="audience">The expected audience (aud) claim.</param>
-        /// <param name="issuer">The expected issuer (iss) claim.</param>
-        /// <param name="securityKey">The ECDsaSecurityKey used for signature validation.</param>
-        /// <returns>A task that represents the asynchronous operation, yielding true if the token is valid; otherwise, false.</returns>
-        public virtual async Task<bool> ValidateToken(string token, string audience, string issuer, ECDsaSecurityKey securityKey)
+        /// <param name="audience">The expected audience (aud) claim in the JWT token.</param>
+        /// <param name="issuer">The expected issuer (iss) claim in the JWT token.</param>
+        /// <param name="securityKey">The ECDsaSecurityKey used for token signature validation.</param>
+        /// <returns>A task that represents the asynchronous validation operation, yielding a <see cref="ValidationResult"/> that contains the validation outcome.</returns>
+        /// <remarks>
+        /// This method performs a comprehensive validation of the JWT token using <see cref="IsValidJwtToken"/>
+        /// and then checks its audience and issuer claims.
+        /// It provides a detailed validation result, indicating whether all aspects of the token are valid.
+        /// </remarks>
+        public virtual async Task<ValidationResult> ValidateToken(string token, string audience, string issuer, ECDsaSecurityKey securityKey)
         {
-            if (IsValidJwtToken(token))
+            try
             {
+                IsValidJwtToken(token);
                 TokenValidationResult result = await _jwtSecurityTokenHandler.ValidateTokenAsync(token, GetValidationParameters(securityKey, audience, issuer));
-                return result.IsValid;
+                return new ValidationResult(result.IsValid);
             }
-            return false;
+            catch (Exception ex)
+            {
+                return new ValidationResult(false, ex.Message);
+            }
         }
 
         /// <summary>
@@ -113,7 +124,7 @@ namespace ETAMPManagment.Validators
         /// <param name="validAudience">The expected audience value.</param>
         /// <param name="validIssuer">The expected issuer value.</param>
         /// <returns>The constructed TokenValidationParameters.</returns>
-        private TokenValidationParameters GetValidationParameters(ECDsaSecurityKey? issuerSigningKey = null, string? validAudience = null, string? validIssuer = null)
+        private TokenValidationParameters GetValidationParameters(ECDsaSecurityKey issuerSigningKey, string? validAudience = null, string? validIssuer = null)
         {
             return new TokenValidationParameters()
             {

@@ -71,19 +71,34 @@ namespace ETAMPManagment.Encryption
             PublicKey = _eCDiffieHellman.ExportSubjectPublicKeyInfoPem();
         }
 
+        /// <summary>
+        /// Initializes a new instance of the KeyPairProvider class using a specified public key.
+        /// </summary>
+        /// <param name="publicKey">
+        /// The public key in binary format to be used for the Elliptic Curve Diffie-Hellman (ECDH) key pair.
+        /// This public key is used to initialize the ECDH algorithm instance within the provider.
+        /// </param>
+        /// <remarks>
+        /// This constructor is particularly useful when you have a public key in binary format
+        /// and want to create a KeyPairProvider instance that can be used for cryptographic operations
+        /// with this public key. The ECDH algorithm instance is created and the provided public key
+        /// is imported into it. The PublicKey property of the provider will then contain
+        /// the PEM representation of the imported public key.
+        /// </remarks>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown if the <paramref name="publicKey"/> parameter is null.
+        /// </exception>
+        /// <exception cref="CryptographicException">
+        /// Thrown if the <paramref name="publicKey"/> parameter is not a valid public key or
+        /// if the public key cannot be imported into the ECDH algorithm instance.
+        /// </exception>
         public KeyPairProvider(byte[] publicKey)
         {
+            ArgumentNullException.ThrowIfNull(publicKey);
+
             _eCDiffieHellman = ECDiffieHellman.Create();
             _eCDiffieHellman.ImportSubjectPublicKeyInfo(publicKey, out _);
             PublicKey = _eCDiffieHellman.ExportSubjectPublicKeyInfoPem();
-        }
-
-        public KeyPairProvider(ReadOnlySpan<byte> privateKey)
-        {
-            _eCDiffieHellman = ECDiffieHellman.Create();
-            _eCDiffieHellman.ImportPkcs8PrivateKey(privateKey, out _);
-            PublicKey = _eCDiffieHellman.ExportSubjectPublicKeyInfoPem();
-            PrivateKey = _eCDiffieHellman.ExportPkcs8PrivateKeyPem();
         }
 
         /// <summary>

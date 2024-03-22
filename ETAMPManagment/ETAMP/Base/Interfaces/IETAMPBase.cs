@@ -15,7 +15,7 @@ namespace ETAMPManagment.ETAMP.Base.Interfaces
         /// <param name="payload">The payload to be included in the ETAMP token.</param>
         /// <param name="version">The version of the ETAMP protocol.</param>
         /// <returns>A serialized ETAMP token as a json string.</returns>
-        string CreateETAMP<T>(string updateType, T payload, double version = 1) where T : BasePaylaod;
+        string CreateETAMP<T>(string updateType, T payload, double version = 1) where T : BasePayload;
 
         /// <summary>
         /// Creates an ETAMP model with the specified update type and payload.
@@ -25,6 +25,6 @@ namespace ETAMPManagment.ETAMP.Base.Interfaces
         /// <param name="payload">The payload to be included in the ETAMP model.</param>
         /// <param name="version">The version of the ETAMP protocol.</param>
         /// <returns>An ETAMP model instance.</returns>
-        ETAMPModel CreateETAMPModel<T>(string updateType, T payload, double version = 1) where T : BasePaylaod;
+        ETAMPModel CreateETAMPModel<T>(string updateType, T payload, double version = 1) where T : BasePayload;
     }
 }

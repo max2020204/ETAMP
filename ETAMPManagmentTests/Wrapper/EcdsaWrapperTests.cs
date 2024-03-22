@@ -26,11 +26,9 @@ namespace ETAMPManagment.Wrapper.Tests
         public void CreateECDsa_UsingSpecifiedCurve_ShouldReturnInstanceWithCorrectKeySize(string curve, int size)
         {
             ECCurve ecCurve = ECCurve.CreateFromFriendlyName(curve);
-            using (var ecdsa = _wrapper.CreateECDsa(ecCurve))
-            {
-                Assert.NotNull(ecdsa);
-                Assert.Equal(ecdsa.KeySize, size);
-            }
+            using var ecdsa = _wrapper.CreateECDsa(ecCurve);
+            Assert.NotNull(ecdsa);
+            Assert.Equal(ecdsa.KeySize, size);
         }
 
         [Fact]
@@ -48,7 +46,7 @@ namespace ETAMPManagment.Wrapper.Tests
                 Assert.Equal(result.ExportSubjectPublicKeyInfoPem().Replace("-----BEGIN PUBLIC KEY-----", "")
                                                                     .Replace("-----END PUBLIC KEY-----", "")
                                                                     .Replace("\n", ""), publicKey);
-                Assert.Equal(result.KeySize, 521);
+                Assert.Equal(521, result.KeySize);
             }
         }
 
@@ -67,7 +65,8 @@ namespace ETAMPManagment.Wrapper.Tests
                 Assert.Equal(result.ExportSubjectPublicKeyInfoPem().Replace("-----BEGIN PUBLIC KEY-----", "")
                                                                     .Replace("-----END PUBLIC KEY-----", "")
                                                                     .Replace("\n", ""), publicKey);
-                Assert.Equal(result.KeySize, 521);
+
+                Assert.Equal(521, result.KeySize);
             }
         }
 
@@ -81,6 +80,7 @@ namespace ETAMPManagment.Wrapper.Tests
                              .Replace("\n", "")
                              .Replace("\r", "");
             string result = _wrapper.ClearPEMPrivateKey(key);
+
             Assert.Equal(clearKey, result);
         }
 
@@ -94,6 +94,7 @@ namespace ETAMPManagment.Wrapper.Tests
                             .Replace("\n", "")
                             .Replace("\r", "");
             string result = _wrapper.ClearPEMPublicKey(key);
+
             Assert.Equal(clearKey, result);
         }
 
@@ -115,6 +116,17 @@ namespace ETAMPManagment.Wrapper.Tests
             ECDsa result = _wrapper.CreateECDsa(key, ECCurve.NamedCurves.nistP521);
 
             Assert.Equal(ecdsa.ExportSubjectPublicKeyInfoPem(), result.ExportSubjectPublicKeyInfoPem());
+        }
+
+        [Fact]
+        public void ImportECDsa_ReturnsECDsaInstanceWithGivenPrivateKeyAndCurve()
+        {
+            var curve = ECCurve.NamedCurves.nistP256;
+            ECDsa ecdsa = ECDsa.Create();
+            byte[] key = ecdsa.ExportPkcs8PrivateKey();
+            var result = _wrapper.ImportECDsa(key, curve);
+            Assert.NotNull(result);
+            Assert.Equal(result.ExportPkcs8PrivateKey(), ecdsa.ExportPkcs8PrivateKey());
         }
     }
 }

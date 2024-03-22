@@ -1,5 +1,6 @@
 ﻿using ETAMPManagment.Encryption.Interfaces;
 using ETAMPManagment.Models;
+using ETAMPManagment.Services.Interfaces;
 using ETAMPManagment.Wrapper.Interfaces;
 using Newtonsoft.Json;
 
@@ -9,24 +10,13 @@ namespace ETAMPManagment.ETAMP.Encrypted
     /// Extends <see cref="ETAMPEncrypted"/> to include digital signing of the encrypted ETAMP (Encrypted Token And Message Protocol) tokens.
     /// This class enhances the security of ETAMP tokens by adding a digital signature on top of encryption, ensuring both confidentiality and authenticity.
     /// </summary>
-    public class ETAMPEncryptedSigned : ETAMPEncrypted
+    /// <remarks>
+    /// Initializes a new instance of the <see cref="ETAMPEncryptedSigned"/> class, enabling both encryption and digital signing of ETAMP tokens.
+    /// </remarks>
+    /// <param name="signWrapper">The digital signature wrapper to sign the ETAMP tokens.</param>
+    /// <param name="eciesEncryptionService">The encryption service to encrypt the ETAMP tokens.</param>
+    public class ETAMPEncryptedSigned(ISignWrapper signWrapper, IEciesEncryptionService eciesEncryptionService, ISigningCredentialsProvider signingCredentialsProvider) : ETAMPEncrypted(eciesEncryptionService, signingCredentialsProvider)
     {
-        /// <summary>
-        /// Wrapper for digital signing functionalities.
-        /// </summary>
-        private readonly ISignWrapper _signWrapper;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ETAMPEncryptedSigned"/> class, enabling both encryption and digital signing of ETAMP tokens.
-        /// </summary>
-        /// <param name="signWrapper">The digital signature wrapper to sign the ETAMP tokens.</param>
-        /// <param name="eciesEncryptionService">The encryption service to encrypt the ETAMP tokens.</param>
-        public ETAMPEncryptedSigned(ISignWrapper signWrapper, IEciesEncryptionService eciesEncryptionService)
-            : base(eciesEncryptionService)
-        {
-            _signWrapper = signWrapper;
-        }
-
         /// <summary>
         /// Creates an encrypted and signed ETAMP token as a serialized string.
         /// </summary>
@@ -37,7 +27,7 @@ namespace ETAMPManagment.ETAMP.Encrypted
         /// <returns>A serialized string representation of the encrypted and signed ETAMP token.</returns>
         public override string CreateEncryptETAMP<T>(string updateType, T payload, double version = 1)
         {
-            return JsonConvert.SerializeObject(this.CreateEncryptETAMPModel(updateType, payload, version));
+            return JsonConvert.SerializeObject(CreateEncryptETAMPModel(updateType, payload, version));
         }
 
         /// <summary>
@@ -50,7 +40,7 @@ namespace ETAMPManagment.ETAMP.Encrypted
         /// <returns>An ETAMPModel instance containing the encrypted and signed token.</returns>
         public override ETAMPModel CreateEncryptETAMPModel<T>(string updateType, T payload, double version = 1)
         {
-            return _signWrapper.SignEtampModel(base.CreateEncryptETAMPModel(updateType, payload, version));
+            return signWrapper.SignEtampModel(base.CreateEncryptETAMPModel(updateType, payload, version));
         }
     }
 }

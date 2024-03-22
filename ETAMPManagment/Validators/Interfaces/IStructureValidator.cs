@@ -11,8 +11,9 @@ namespace ETAMPManagment.Validators.Interfaces
         /// Validates the format of an ETAMP token and returns the deserialized model if valid.
         /// </summary>
         /// <param name="etamp">The ETAMP token as a JSON string to be validated.</param>
-        /// <returns>A tuple containing a boolean indicating validity and the deserialized ETAMP model.</returns>
-        (bool isValid, ETAMPModel model) IsValidEtampFormat(string etamp);
+        /// <returns>The deserialized ETAMP model if the string is a valid JSON representation of an ETAMP.</returns>
+        /// <exception cref="ArgumentException">Thrown when the ETAMP string is invalid or cannot be deserialized into an ETAMP model.</exception>
+        ETAMPModel IsValidEtampFormat(string etamp);
 
         /// <summary>
         /// Validates the consistency of identifiers within an ETAMP token.
@@ -25,28 +26,28 @@ namespace ETAMPManagment.Validators.Interfaces
         /// Validates the structure of an ETAMP token against the expected schema.
         /// </summary>
         /// <param name="etamp">The ETAMP token as a JSON string to be validated for structural integrity.</param>
-        /// <returns><c>true</c> if the structure is valid; otherwise, <c>false</c>.</returns>
-        bool ValidateETAMPStructure(string etamp);
+        /// <returns>A ValidationResult indicating whether the structure is valid.</returns>
+        ValidationResult ValidateETAMPStructure(string etamp);
 
         /// <summary>
         /// Validates the structure of an ETAMP model against the expected schema.
         /// </summary>
         /// <param name="model">The ETAMPModel object to be validated for structural integrity.</param>
-        /// <returns><c>true</c> if the structure is valid; otherwise, <c>false</c>.</returns>
-        bool ValidateETAMPStructure(ETAMPModel model);
+        /// <returns>A ValidationResult indicating whether the structure is valid.</returns>
+        ValidationResult ValidateETAMPStructure(ETAMPModel model);
 
         /// <summary>
         /// Performs a lightweight structure validation of an ETAMP token.
         /// </summary>
         /// <param name="etamp">The ETAMP token as a JSON string to be validated for basic structural integrity.</param>
-        /// <returns><c>true</c> if the basic structure is valid; otherwise, <c>false</c>.</returns>
-        bool ValidateETAMPStructureLite(string etamp);
+        /// <returns>A ValidationResult indicating whether the basic structure is valid.</returns>
+        ValidationResult ValidateETAMPStructureLite(string etamp);
 
         /// <summary>
         /// Performs a lightweight structure validation of an ETAMP model.
         /// </summary>
         /// <param name="model">The ETAMPModel object to be validated for basic structural integrity.</param>
-        /// <returns><c>true</c> if the basic structure is valid; otherwise, <c>false</c>.</returns>
-        bool ValidateETAMPStructureLite(ETAMPModel model);
+        /// <returns>A ValidationResult indicating whether the basic structure is valid.</returns>
+        ValidationResult ValidateETAMPStructureLite(ETAMPModel model);
     }
 }

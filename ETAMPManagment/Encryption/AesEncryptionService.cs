@@ -29,10 +29,7 @@ namespace ETAMPManagment.Encryption
         /// Initializes a new instance of the AesEncryptionService class with a specific IV.
         /// </summary>
         /// <param name="iv">The initialization vector (IV) to use for encryption and decryption.</param>
-        public AesEncryptionService(byte[] iv)
-        {
-            _iv = iv;
-        }
+        public AesEncryptionService(byte[] iv) => _iv = iv;
 
         /// <summary>
         /// Encrypts the specified data using the AES algorithm.
@@ -43,11 +40,8 @@ namespace ETAMPManagment.Encryption
         /// <exception cref="ArgumentNullException">Thrown when data or key is null.</exception>
         public virtual byte[] Encrypt(byte[] dataToEncrypt, byte[] key)
         {
-            if (dataToEncrypt == null)
-                throw new ArgumentNullException(nameof(dataToEncrypt));
-            if (key == null)
-                throw new ArgumentNullException(nameof(key));
-
+            ArgumentNullException.ThrowIfNull(dataToEncrypt);
+            ArgumentNullException.ThrowIfNull(key);
             using Aes aes = Aes.Create();
             aes.Key = key;
             _iv = aes.IV;
@@ -67,10 +61,9 @@ namespace ETAMPManagment.Encryption
 
         public virtual byte[] Decrypt(byte[] dataToDecrypt, byte[] key)
         {
-            if (dataToDecrypt == null)
-                throw new ArgumentNullException(nameof(dataToDecrypt));
-            if (key == null)
-                throw new ArgumentNullException(nameof(key));
+            ArgumentNullException.ThrowIfNull(dataToDecrypt);
+            ArgumentNullException.ThrowIfNull(key);
+
             if (IV == null)
                 throw new InvalidOperationException("IV is not set.");
 

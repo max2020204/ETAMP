@@ -13,20 +13,24 @@ namespace ETAMPManagment.Validators
         private readonly IStructureValidator _structureValidator;
 
         /// <summary>
-        /// Initializes a new instance of the SignatureValidator class with a verify wrapper.
+        /// Initializes a new instance of the SignatureValidator class using a verify wrapper for signature verification.
         /// </summary>
-        /// <param name="verifyWrapper">The verify wrapper used for signature verification.</param>
+        /// <param name="verifyWrapper">The verify wrapper used to verify the signature of ETAMP messages and tokens.</param>
+        /// <exception cref="ArgumentNullException">Thrown if the verifyWrapper is null.</exception>
         public SignatureValidator(IVerifyWrapper verifyWrapper)
         {
             _verifyWrapper = verifyWrapper ?? throw new ArgumentNullException(nameof(verifyWrapper));
         }
 
         /// <summary>
-        /// Initializes a new instance of the SignatureValidator class with a structure validator.
+        /// Initializes a new instance of the SignatureValidator class with specified verify and structure validators.
         /// </summary>
+        /// <param name="verifyWrapper">The verify wrapper used for signature verification.</param>
         /// <param name="structureValidator">The structure validator used for ETAMP message structure validation.</param>
-        public SignatureValidator(IStructureValidator structureValidator)
+        /// <exception cref="ArgumentNullException">Thrown if either verifyWrapper or structureValidator is null.</exception>
+        public SignatureValidator(IVerifyWrapper verifyWrapper, IStructureValidator structureValidator)
         {
+            _verifyWrapper = verifyWrapper ?? throw new ArgumentNullException(nameof(verifyWrapper));
             _structureValidator = structureValidator ?? throw new ArgumentNullException(nameof(structureValidator));
         }
 
@@ -39,14 +43,12 @@ namespace ETAMPManagment.Validators
         public virtual bool ValidateETAMPMessage(string etamp)
         {
             if (_structureValidator == null)
-            {
                 throw new InvalidOperationException("IStructureValidator is not initialized. Ensure that validator is provided.");
-            }
-            var valid = _structureValidator.IsValidEtampFormat(etamp);
-            if (valid.isValid && _structureValidator.ValidateETAMPStructure(valid.model))
-            {
-                return _verifyWrapper.VerifyData($"{valid.model.Id}{valid.model.Version}{valid.model.Token}{valid.model.UpdateType}{valid.model.SignatureToken}", valid.model.SignatureMessage);
-            }
+
+            var model = _structureValidator.IsValidEtampFormat(etamp);
+            if (_structureValidator.ValidateETAMPStructure(model).IsValid)
+                return _verifyWrapper.VerifyData($"{model.Id}{model.Version}{model.Token}{model.UpdateType}{model.SignatureToken}", model.SignatureMessage);
+
             return false;
         }
 

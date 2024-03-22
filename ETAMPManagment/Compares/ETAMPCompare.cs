@@ -24,14 +24,11 @@ namespace ETAMPManagment.Compares
         public bool Equals(ETAMPModel? x, ETAMPModel? y)
         {
             if (x == null && y == null)
-            {
                 return true;
-            }
             if (x == null || y == null)
-            {
                 return false;
-            }
-            List<bool> states = new List<bool>()
+
+            return new List<bool>()
             {
                 Equals(x.Id, y.Id),
                 Equals(x.Version, y.Version),
@@ -39,8 +36,7 @@ namespace ETAMPManagment.Compares
                 string.Equals(x.Token, y.Token,StringComparison.Ordinal),
                 string.Equals(x.SignatureToken, y.SignatureToken,StringComparison.Ordinal),
                 string.Equals(x.SignatureMessage, y.SignatureMessage,StringComparison.Ordinal)
-            };
-            return states.TrueForAll(t => t);
+            }.TrueForAll(x => x);
         }
 
         /// <summary>

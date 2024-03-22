@@ -4,7 +4,7 @@ using System.Security.Cryptography;
 using System.Text;
 using Xunit;
 
-namespace ETAMPManagment.Services.Tests
+namespace ETAMPManagmentTests.Encryption
 {
     public class AesEncryptionServiceTests
     {

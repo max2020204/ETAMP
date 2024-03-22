@@ -70,10 +70,9 @@ namespace ETAMPManagment.Wrapper
         /// <returns>A new instance of ECDsa configured with the specified public key and curve.</returns>
         public virtual ECDsa CreateECDsa(string publicKey, ECCurve curve)
         {
-            if (publicKey.Contains("-"))
-            {
+            if (publicKey.Contains('-'))
                 publicKey = ClearPEMPublicKey(publicKey);
-            }
+
             ECDsa ecdsa = ECDsa.Create(curve);
             ecdsa.ImportSubjectPublicKeyInfo(Convert.FromBase64String(publicKey), out _);
             return ecdsa;
@@ -95,15 +94,12 @@ namespace ETAMPManagment.Wrapper
         }
 
         /// <summary>
-        /// Imports an ECDsa instance using a private key as a read-only span of bytes and a specified elliptic curve.
-        /// This method facilitates the creation of an ECDsa instance directly from a byte array representation of a private key,
-        /// offering a convenient approach for scenarios where the private key is available in byte format.
-        /// The method is particularly useful in environments where minimizing memory allocations or working directly with byte spans is required.
+        /// Imports an ECDsa instance using a private key and a specified elliptic curve.
         /// </summary>
-        /// <param name="privateKey">The private key as a read-only span of bytes, typically derived from a binary representation of a PEM or PKCS8 private key.</param>
-        /// <param name="curve">The elliptic curve associated with the private key. This curve is used to configure the ECDsa instance appropriately.</param>
-        /// <returns>A new instance of ECDsa configured with the specified private key and elliptic curve.</returns>
-        public virtual ECDsa ImportECDsa(ReadOnlySpan<byte> privateKey, ECCurve curve)
+        /// <param name="privateKey">The private key as a byte array, derived from a PEM or PKCS8 format.</param>
+        /// <param name="curve">The elliptic curve to use with the private key.</param>
+        /// <returns>An ECDsa instance for cryptographic operations like signing and verifying.</returns>
+        public virtual ECDsa ImportECDsa(byte[] privateKey, ECCurve curve)
         {
             ECDsa ecdsa = ECDsa.Create(curve);
             ecdsa.ImportPkcs8PrivateKey(privateKey, out _);
@@ -120,10 +116,9 @@ namespace ETAMPManagment.Wrapper
         /// <returns>A new instance of ECDsa configured with the specified private key and curve.</returns>
         public virtual ECDsa ImportECDsa(string privateKey, ECCurve curve)
         {
-            if (privateKey.Contains("-"))
-            {
+            if (privateKey.Contains('-'))
                 privateKey = ClearPEMPrivateKey(privateKey);
-            }
+
             ECDsa ecdsa = ECDsa.Create(curve);
             ecdsa.ImportPkcs8PrivateKey(Convert.FromBase64String(privateKey), out _);
             return ecdsa;

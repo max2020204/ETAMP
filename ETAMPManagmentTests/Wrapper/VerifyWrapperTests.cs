@@ -84,5 +84,14 @@ namespace ETAMPManagment.Wrapper.Tests
             Assert.NotNull(verifyWrapper);
             Assert.Equal(521, verifyWrapper.ECDsa.KeySize);
         }
+
+        [Fact()]
+        public void VerifyWrapper_InputECDsa_ReturnSame()
+        {
+            ECDsa ecdsa = ECDsa.Create();
+            VerifyWrapper verifyWrapper = new VerifyWrapper(ecdsa, HashAlgorithmName.SHA256);
+            Assert.NotNull(verifyWrapper);
+            Assert.Equal(ecdsa.ExportECPrivateKeyPem(), verifyWrapper.ECDsa.ExportECPrivateKeyPem());
+        }
     }
 }

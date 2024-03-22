@@ -9,29 +9,13 @@ namespace ETAMPManagment.ETAMP.Encrypted
     /// <summary>
     /// Provides functionalities for encrypting ETAMP tokens using the Elliptic Curve Integrated Encryption Scheme (ECIES).
     /// </summary>
-    public class EncryptToken : IEncryptToken
-    {    /// <summary>
-         /// Validates the structure of ETAMP tokens.
-         /// </summary>
-        private readonly IStructureValidator _structureValidator;
-
-        /// <summary>
-        /// Performs the encryption of ETAMP tokens.
-        /// </summary>
-
-        private readonly IEciesEncryptionService _eciesEncryptionService;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="EncryptToken"/> class.
-        /// </summary>
-        /// <param name="structureValidator">The validator used to ensure the integrity and structure of ETAMP tokens.</param>
-        /// <param name="eciesEncryptionService">The encryption service to encrypt ETAMP tokens.</param>
-        public EncryptToken(IStructureValidator structureValidator, IEciesEncryptionService eciesEncryptionService)
-        {
-            _structureValidator = structureValidator;
-            _eciesEncryptionService = eciesEncryptionService;
-        }
-
+    /// <remarks>
+    /// Initializes a new instance of the <see cref="EncryptToken"/> class.
+    /// </remarks>
+    /// <param name="structureValidator">The validator used to ensure the integrity and structure of ETAMP tokens.</param>
+    /// <param name="eciesEncryptionService">The encryption service to encrypt ETAMP tokens.</param>
+    public class EncryptToken(IStructureValidator structureValidator, IEciesEncryptionService eciesEncryptionService) : IEncryptToken
+    {
         /// <summary>
         /// Encrypts an ETAMP token and returns the encrypted token as an ETAMPModel.
         /// </summary>
@@ -40,13 +24,9 @@ namespace ETAMPManagment.ETAMP.Encrypted
         /// <exception cref="InvalidOperationException">Thrown if the ETAMP data is invalid.</exception>
         public virtual ETAMPModel EncryptETAMP(string jsonEtamp)
         {
-            var valid = _structureValidator.IsValidEtampFormat(jsonEtamp);
-            if (valid.isValid)
-            {
-                valid.model.Token = _eciesEncryptionService.Encrypt(valid.model.Token);
-                return valid.model;
-            }
-            throw new InvalidOperationException("ETAMP data is invalid. Ensure the JSON structure includes all required fields and matches the expected format.");
+            var model = structureValidator.IsValidEtampFormat(jsonEtamp);
+            model.Token = eciesEncryptionService.Encrypt(model.Token);
+            return model;
         }
 
         /// <summary>

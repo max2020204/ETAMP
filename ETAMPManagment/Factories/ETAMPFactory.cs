@@ -19,10 +19,7 @@ namespace ETAMPManagment.Factories
         /// Initializes a new instance of the <see cref="ETAMPFactory"/> class.
         /// The constructor sets up an empty dictionary ready to register ETAMP data generators.
         /// </summary>
-        public ETAMPFactory()
-        {
-            Factory = new Dictionary<ETAMPType, Func<IETAMPData>>();
-        }
+        public ETAMPFactory() => Factory = new Dictionary<ETAMPType, Func<IETAMPData>>();
 
         /// <summary>
         /// Creates an ETAMP data generator based on the specified ETAMP type.
@@ -33,9 +30,8 @@ namespace ETAMPManagment.Factories
         public virtual IETAMPData CreateGenerator(ETAMPType type)
         {
             if (Factory.TryGetValue(type, out var func))
-            {
                 return func();
-            }
+
             throw new ArgumentException($"Unsupported ETAMP generator type: {type}", nameof(type));
         }
 
@@ -49,9 +45,7 @@ namespace ETAMPManagment.Factories
         public virtual void RegisterGenerator(ETAMPType type, Func<IETAMPData> generator)
         {
             if (Factory.ContainsKey(type))
-            {
                 throw new ArgumentException($"A generator for the ETAMP type '{type}' is already registered.", nameof(type));
-            }
 
             Factory[type] = generator;
         }

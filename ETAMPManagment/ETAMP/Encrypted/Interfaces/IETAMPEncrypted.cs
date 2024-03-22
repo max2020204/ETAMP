@@ -21,7 +21,7 @@ namespace ETAMPManagment.ETAMP.Encrypted.Interfaces
         /// This method provides an additional layer of security by encrypting the payload,
         /// which is useful for sensitive or confidential information transfer.
         /// </remarks>
-        string CreateEncryptETAMP<T>(string updateType, T payload, double version = 1) where T : BasePaylaod;
+        string CreateEncryptETAMP<T>(string updateType, T payload, double version = 1) where T : BasePayload;
 
         /// <summary>
         /// Creates an ETAMP model with encryption, based on the specified update type, payload, and protocol version, without serialization.
@@ -35,6 +35,6 @@ namespace ETAMPManagment.ETAMP.Encrypted.Interfaces
         /// Unlike <see cref="CreateEncryptETAMP"/>, this method does not serialize the ETAMP model into a string,
         /// providing flexibility in how the encrypted model is further processed or utilized.
         /// </remarks>
-        ETAMPModel CreateEncryptETAMPModel<T>(string updateType, T payload, double version = 1) where T : BasePaylaod;
+        ETAMPModel CreateEncryptETAMPModel<T>(string updateType, T payload, double version = 1) where T : BasePayload;
     }
 }
