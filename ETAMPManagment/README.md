@@ -26,7 +26,7 @@ Install-Package ETAMP
 using ETAMPManagment;
 using ETAMPManagment.Factories;
 using ETAMPManagment.Models;
-// Assume we have a signingCredentialsProvider instance
+
 ISigningCredentialsProvider signingCredentialsProvider = new ECDsaSigningCredentialsProvider()
 // Create an ETAMP factory
 var etampFactory = new ETAMPFactory();
