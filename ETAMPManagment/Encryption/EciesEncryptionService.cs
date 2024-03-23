@@ -2,7 +2,7 @@
 using ETAMPManagment.Factories.Interfaces;
 using System.Text;
 
-namespace ETAMPManagment.Services
+namespace ETAMPManagment.Encryption
 {
     /// <summary>
     /// Implements Elliptic Curve Integrated Encryption Scheme (ECIES) for encrypting and decrypting messages.

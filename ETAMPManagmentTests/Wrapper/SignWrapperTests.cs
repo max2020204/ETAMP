@@ -84,7 +84,6 @@ namespace ETAMPManagment.Wrapper.Tests
         [Fact]
         public void Constructor_WithEcdsaWrapperAndStringPrivateKey_InitializesCorrectly()
         {
-            // Arrange
             var mockEcdsaWrapper = new Mock<IEcdsaWrapper>();
             var curve = ECCurve.NamedCurves.nistP256;
             ECDsa ecdsa = ECDsa.Create();
@@ -127,7 +126,6 @@ namespace ETAMPManagment.Wrapper.Tests
         [Fact]
         public void SignEtampModel_UpdatesSignatureFields()
         {
-            // Arrange
             var etamp = new ETAMPModel
             {
                 Id = Guid.NewGuid(),
@@ -138,10 +136,8 @@ namespace ETAMPManagment.Wrapper.Tests
                 SignatureToken = ""
             };
 
-            // Act
             var signedEtamp = _signWrapper.SignEtampModel(etamp);
 
-            // Assert
             Assert.NotNull(signedEtamp);
             Assert.NotNull(signedEtamp.SignatureToken);
             Assert.NotNull(signedEtamp.SignatureMessage);

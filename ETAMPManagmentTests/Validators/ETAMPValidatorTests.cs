@@ -37,6 +37,8 @@ namespace ETAMPManagment.Validators.Tests
         {
             _jwtValidator.Setup(x => x.ValidateToken(_etampModel.Token, "audience", "issuer", _tokenSecurityKey))
                 .ReturnsAsync(new ValidationResult(true));
+            _structureValidator.Setup(x => x.ValidateETAMPStructure(It.IsAny<ETAMPModel>()))
+                .Returns(new ValidationResult(true));
             _signatureValidator.Setup(v => v.ValidateToken(_etampModel.Token, _etampModel.SignatureToken))
                 .Returns(true);
             _signatureValidator.Setup(v => v.ValidateETAMPMessage(_etampModel))
@@ -50,7 +52,10 @@ namespace ETAMPManagment.Validators.Tests
         [Fact]
         public async Task ValidateETAMP_ReturnsFalseWhenStructureValidationFails()
         {
-            _structureValidator.Setup(v => v.ValidateETAMPStructure(_etampModel)).Returns(new ValidationResult(false));
+            _structureValidator.Setup(v => v.ValidateETAMPStructure(_etampModel))
+                .Returns(new ValidationResult(false));
+            _jwtValidator.Setup(x => x.ValidateLifeTime(It.IsAny<string>(), _tokenSecurityKey))
+                .ReturnsAsync(new ValidationResult(false));
 
             var result = await _validator.ValidateETAMP(_etampModel, _tokenSecurityKey);
 

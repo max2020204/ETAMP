@@ -13,118 +13,83 @@ namespace ETAMPManagment.Compares.Tests
         }
 
         [Fact]
-        public void EqualsTest_WithSameModel_True()
+        public void Equals_WithSameModel_ReturnsTrue()
         {
-            ETAMPModel model = new()
-            {
-                Id = Guid.Empty,
-                Version = 1,
-                Token = "SomeToken",
-                SignatureToken = "SomeSignatureToken",
-                SignatureMessage = "SomeSignatureMessage"
-            };
-            ETAMPModel model1 = new()
-            {
-                Id = Guid.Empty,
-                Version = 1,
-                Token = "SomeToken",
-                SignatureToken = "SomeSignatureToken",
-                SignatureMessage = "SomeSignatureMessage"
-            };
+            var model = CreateModel(Guid.Empty, 1, "SomeToken", "SomeSignatureToken", "SomeSignatureMessage");
+            var model1 = CreateModel(Guid.Empty, 1, "SomeToken", "SomeSignatureToken", "SomeSignatureMessage");
+
             var result = _etampCompare.Equals(model, model1);
+
             Assert.True(result);
         }
 
         [Fact]
-        public void EqualsTest_WithDiffrentToken_True()
+        public void Equals_WithDifferentToken_ReturnsFalse()
         {
-            ETAMPModel model = new()
-            {
-                Id = Guid.NewGuid(),
-                Version = 1,
-                Token = "SomeToken1",
-                SignatureToken = "SomeSignatureToken",
-                SignatureMessage = "SomeSignatureMessage"
-            };
-            ETAMPModel model1 = new()
-            {
-                Id = Guid.NewGuid(),
-                Version = 1,
-                Token = "SomeToken",
-                SignatureToken = "SomeSignatureToken",
-                SignatureMessage = "SomeSignatureMessage"
-            };
+            var model = CreateModel(Guid.NewGuid(), 1, "SomeToken1", "SomeSignatureToken", "SomeSignatureMessage");
+            var model1 = CreateModel(Guid.NewGuid(), 1, "SomeToken", "SomeSignatureToken", "SomeSignatureMessage");
+
             var result = _etampCompare.Equals(model, model1);
+
             Assert.False(result);
         }
 
         [Fact]
-        public void EqualsTest_BothNew_True()
+        public void Equals_BothNew_ReturnsTrue()
         {
-            ETAMPModel model = new();
-            ETAMPModel model1 = new();
+            var model = new ETAMPModel();
+            var model1 = new ETAMPModel();
+
             var result = _etampCompare.Equals(model, model1);
+
             Assert.True(result);
         }
 
         [Fact]
-        public void EqualsTest_BothNull_True()
+        public void Equals_BothNull_ReturnsTrue()
         {
             var result = _etampCompare.Equals(null, null);
+
             Assert.True(result);
         }
 
         [Fact]
-        public void EqualsTest_SecondNotNull_True()
+        public void Equals_SecondNotNull_ReturnsFalse()
         {
             var result = _etampCompare.Equals(null, new ETAMPModel());
+
             Assert.False(result);
         }
 
         [Fact]
-        public void EqualsTest_FirstNotNull_True()
+        public void Equals_FirstNotNull_ReturnsFalse()
         {
             var result = _etampCompare.Equals(new ETAMPModel(), null);
+
             Assert.False(result);
         }
 
         [Fact]
-        public void GetHashCode_IdenticalObjects_SameHashCode()
+        public void GetHashCode_IdenticalObjects_ReturnsSameHashCode()
         {
-            var model1 = new ETAMPModel
-            {
-                Id = Guid.NewGuid(),
-                Version = 1.0,
-                Token = "Token1",
-                UpdateType = "Type1",
-                SignatureToken = "SigToken1",
-                SignatureMessage = "SigMessage1"
-            };
-            var model2 = new ETAMPModel
-            {
-                Id = model1.Id,
-                Version = model1.Version,
-                Token = model1.Token,
-                UpdateType = model1.UpdateType,
-                SignatureToken = model1.SignatureToken,
-                SignatureMessage = model1.SignatureMessage
-            };
+            var id = Guid.NewGuid();
+            var model1 = CreateModel(id, 1.0, "Token1", "SigToken1", "SigMessage1");
+            var model2 = CreateModel(id, 1.0, "Token1", "SigToken1", "SigMessage1");
 
-            int hash1 = _etampCompare.GetHashCode(model1);
-            int hash2 = _etampCompare.GetHashCode(model2);
+            var hash1 = _etampCompare.GetHashCode(model1);
+            var hash2 = _etampCompare.GetHashCode(model2);
 
-            // Assert
             Assert.Equal(hash1, hash2);
         }
 
         [Fact]
-        public void GetHashCode_DifferentObjects_DifferentHashCode()
+        public void GetHashCode_DifferentObjects_ReturnsDifferentHashCode()
         {
-            var model1 = new ETAMPModel { Id = Guid.NewGuid(), Version = 1.0, Token = "Token1", UpdateType = "Type1", SignatureToken = "SigToken1", SignatureMessage = "SigMessage1" };
-            var model2 = new ETAMPModel { Id = Guid.NewGuid(), Version = 2.0, Token = "Token2", UpdateType = "Type2", SignatureToken = "SigToken2", SignatureMessage = "SigMessage2" };
+            var model1 = CreateModel(Guid.NewGuid(), 1.0, "Token1", "SigToken1", "SigMessage1");
+            var model2 = CreateModel(Guid.NewGuid(), 2.0, "Token2", "SigToken2", "SigMessage2");
 
-            int hash1 = _etampCompare.GetHashCode(model1);
-            int hash2 = _etampCompare.GetHashCode(model2);
+            var hash1 = _etampCompare.GetHashCode(model1);
+            var hash2 = _etampCompare.GetHashCode(model2);
 
             Assert.NotEqual(hash1, hash2);
         }
@@ -132,11 +97,23 @@ namespace ETAMPManagment.Compares.Tests
         [Fact]
         public void GetHashCode_NullProperties_HandledGracefully()
         {
-            var compare = new ETAMPCompare();
-            var model = new ETAMPModel { Id = Guid.NewGuid(), Version = 0, Token = null, UpdateType = null, SignatureToken = null, SignatureMessage = null };
+            var model = new ETAMPModel { Id = Guid.NewGuid() };
 
-            Exception ex = Record.Exception(() => compare.GetHashCode(model));
-            Assert.Null(ex);
+            Exception exception = Record.Exception(() => _etampCompare.GetHashCode(model));
+
+            Assert.Null(exception);
+        }
+
+        private ETAMPModel CreateModel(Guid id, double version, string token, string signatureToken, string signatureMessage)
+        {
+            return new ETAMPModel
+            {
+                Id = id,
+                Version = version,
+                Token = token,
+                SignatureToken = signatureToken,
+                SignatureMessage = signatureMessage
+            };
         }
     }
 }

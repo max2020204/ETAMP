@@ -7,6 +7,7 @@ namespace ETAMPManagment.Factories.Tests
     public class EncryptionServiceFactoryTests
     {
         private readonly EncryptionServiceFactory _factory;
+        private const string TestServiceName = "TestService";
 
         public EncryptionServiceFactoryTests()
         {
@@ -14,40 +15,36 @@ namespace ETAMPManagment.Factories.Tests
         }
 
         [Fact]
-        public void RegisterEncryptionService_StoresServiceCreator()
+        public void RegisterEncryptionService_ShouldStoreServiceCreator()
         {
             Func<IEncryptionService> serviceCreator = () => Mock.Of<IEncryptionService>();
 
-            // Act
-            _factory.RegisterEncryptionService("TestService", serviceCreator);
+            _factory.RegisterEncryptionService(TestServiceName, serviceCreator);
 
-            // Assert
-            Assert.Contains("TestService", _factory.Services.Keys);
+            Assert.Contains(TestServiceName, _factory.Services.Keys);
         }
 
         [Fact]
-        public void CreateEncryptionService_ReturnsServiceInstance()
+        public void CreateEncryptionService_ShouldReturnRegisteredServiceInstance()
         {
             var mockService = new Mock<IEncryptionService>();
             Func<IEncryptionService> serviceCreator = () => mockService.Object;
-            _factory.RegisterEncryptionService("TestService", serviceCreator);
+            _factory.RegisterEncryptionService(TestServiceName, serviceCreator);
 
-            var service = _factory.CreateEncryptionService("TestService");
+            var service = _factory.CreateEncryptionService(TestServiceName);
 
             Assert.NotNull(service);
             Assert.IsAssignableFrom<IEncryptionService>(service);
         }
 
         [Fact]
-        public void CreateEncryptionService_WithUnsupportedName_ThrowsArgumentException()
+        public void CreateEncryptionService_WithUnsupportedName_ShouldThrowArgumentException()
         {
-            var factory = new EncryptionServiceFactory();
-
-            Assert.Throws<ArgumentException>(() => factory.CreateEncryptionService("UnsupportedService"));
+            Assert.Throws<ArgumentException>(() => _factory.CreateEncryptionService("UnsupportedService"));
         }
 
         [Fact]
-        public void CreateEncryptionService_AfterRegisteringMultipleServices_ReturnsCorrectService()
+        public void CreateEncryptionService_AfterRegisteringMultipleServices_ShouldReturnCorrectService()
         {
             var mockService1 = new Mock<IEncryptionService>();
             var mockService2 = new Mock<IEncryptionService>();
@@ -62,26 +59,28 @@ namespace ETAMPManagment.Factories.Tests
         }
 
         [Fact]
-        public void RegisterEncryptionService_WithDuplicateName_ThrowsArgumentException()
+        public void RegisterEncryptionService_WithDuplicateName_ShouldThrowArgumentException()
         {
-            Func<IEncryptionService> serviceCreator = Mock.Of<IEncryptionService>;
-            _factory.RegisterEncryptionService("TestService", serviceCreator);
-            var exception = Assert.Throws<ArgumentException>(() => _factory.RegisterEncryptionService("TestService", serviceCreator));
+            Func<IEncryptionService> serviceCreator = () => Mock.Of<IEncryptionService>();
+            _factory.RegisterEncryptionService(TestServiceName, serviceCreator);
+
+            var exception = Assert.Throws<ArgumentException>(() => _factory.RegisterEncryptionService(TestServiceName, serviceCreator));
+
             Assert.Equal("name", exception.ParamName);
-            Assert.Contains("TestService", exception.Message);
+            Assert.Contains(TestServiceName, exception.Message);
         }
 
         [Fact]
-        public void UnregisterEncryptionService_RemovesService()
+        public void UnregisterEncryptionService_ShouldRemoveService()
         {
             var mockService = new Mock<IEncryptionService>();
             Func<IEncryptionService> serviceCreator = () => mockService.Object;
-            _factory.RegisterEncryptionService("TestService", serviceCreator);
+            _factory.RegisterEncryptionService(TestServiceName, serviceCreator);
 
-            var result = _factory.UnregisterEncryptionService("TestService");
+            var result = _factory.UnregisterEncryptionService(TestServiceName);
 
             Assert.True(result);
-            Assert.DoesNotContain("TestService", _factory.Services.Keys);
+            Assert.DoesNotContain(TestServiceName, _factory.Services.Keys);
         }
     }
 }

@@ -36,8 +36,7 @@ namespace ETAMPManagment.Validators
         /// <exception cref="ArgumentException">Thrown when the ETAMP string is invalid or cannot be deserialized into an ETAMP model.</exception>
         public virtual ETAMPModel IsValidEtampFormat(string etamp)
         {
-            if (string.IsNullOrEmpty(etamp))
-                throw new ArgumentException("JSON ETAMP cannot be null or empty", nameof(etamp));
+            ArgumentException.ThrowIfNullOrEmpty(nameof(etamp));
 
             ETAMPModel? model;
             try
@@ -67,7 +66,7 @@ namespace ETAMPManagment.Validators
                 string.IsNullOrWhiteSpace(model.SignatureToken) ||
                 string.IsNullOrWhiteSpace(model.SignatureMessage))
             {
-                return new ValidationResult(false, "Deserialized ETAMP model is invalid: it is either null, has empty/missing fields, or contains invalid values.");
+                return new ValidationResult(false, "Deserialized ETAMP model is invalid: it is either null, has empty/missing fields, or contains invalid values");
             }
             return new ValidationResult(true);
         }
@@ -124,7 +123,7 @@ namespace ETAMPManagment.Validators
                 string.IsNullOrWhiteSpace(model.SignatureToken) ||
                 string.IsNullOrWhiteSpace(model.SignatureMessage))
             {
-                return new ValidationResult(false, "ETAMP model is invalid: it is either null, has empty/missing fields, or contains invalid values.");
+                return new ValidationResult(false, "ETAMP model is invalid: it is either null, has empty/missing fields, or contains invalid values");
             }
             return new ValidationResult(true);
         }
@@ -141,7 +140,7 @@ namespace ETAMPManagment.Validators
                 string.IsNullOrWhiteSpace(model.Token) ||
                 string.IsNullOrWhiteSpace(model.UpdateType))
             {
-                return new ValidationResult(false, "ETAMP model is invalid: it is either null, has empty/missing fields, or contains invalid values.");
+                return new ValidationResult(false, "ETAMP model is invalid: it is either null, has empty/missing fields, or contains invalid values");
             }
             return new ValidationResult(true);
         }

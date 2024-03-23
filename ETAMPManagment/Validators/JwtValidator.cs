@@ -75,18 +75,30 @@ namespace ETAMPManagment.Validators
         /// This method first checks if the token is well-formed and has a valid structure using <see cref="IsValidJwtToken"/>.
         /// Then it validates the token's lifetime against the provided security key.
         /// The method returns a detailed validation result, indicating whether the token's lifetime is valid.
+        /// Specific lifetime-related issues are reported in the validation result.
         /// </remarks>
         public virtual async Task<ValidationResult> ValidateLifeTime(string token, ECDsaSecurityKey securityKey)
         {
+            var structuralValidation = IsValidJwtToken(token);
+            if (!structuralValidation.IsValid)
+                return structuralValidation;
+
             try
             {
-                IsValidJwtToken(token);
                 TokenValidationResult result = await _jwtSecurityTokenHandler.ValidateTokenAsync(token, GetValidationParameters(securityKey));
-                return new ValidationResult(result.IsValid);
+                return new ValidationResult(result.IsValid, result.IsValid ? null : "Token's lifetime validation failed.");
+            }
+            catch (SecurityTokenExpiredException ex)
+            {
+                return new ValidationResult(false, $"Token has expired: {ex.Message}");
+            }
+            catch (SecurityTokenNotYetValidException ex)
+            {
+                return new ValidationResult(false, $"Token is not yet valid: {ex.Message}");
             }
             catch (Exception ex)
             {
-                return new ValidationResult(false, ex.Message);
+                return new ValidationResult(false, $"Token validation failed: {ex.Message}");
             }
         }
 
@@ -99,21 +111,37 @@ namespace ETAMPManagment.Validators
         /// <param name="securityKey">The ECDsaSecurityKey used for token signature validation.</param>
         /// <returns>A task that represents the asynchronous validation operation, yielding a <see cref="ValidationResult"/> that contains the validation outcome.</returns>
         /// <remarks>
-        /// This method performs a comprehensive validation of the JWT token using <see cref="IsValidJwtToken"/>
-        /// and then checks its audience and issuer claims.
-        /// It provides a detailed validation result, indicating whether all aspects of the token are valid.
+        /// This method first performs a structural validation of the JWT token to ensure it is well-formed.
+        /// If the token passes this initial check, it then proceeds to a comprehensive validation against the provided audience, issuer, and signature.
+        /// Specific checks include validating the token's lifetime, audience, and issuer claims, as well as verifying the token's signature using the provided ECDsa security key.
+        /// The method returns a detailed validation result, indicating whether all aspects of the token are valid or not, and provides specific error messages for different types of validation failures.
         /// </remarks>
         public virtual async Task<ValidationResult> ValidateToken(string token, string audience, string issuer, ECDsaSecurityKey securityKey)
         {
+            var structuralValidation = IsValidJwtToken(token);
+            if (!structuralValidation.IsValid)
+                return structuralValidation;
+
             try
             {
-                IsValidJwtToken(token);
                 TokenValidationResult result = await _jwtSecurityTokenHandler.ValidateTokenAsync(token, GetValidationParameters(securityKey, audience, issuer));
-                return new ValidationResult(result.IsValid);
+                return new ValidationResult(result.IsValid, result.IsValid ? null : "Invalid JWT token claims.");
+            }
+            catch (SecurityTokenExpiredException ex)
+            {
+                return new ValidationResult(false, $"Token is expired: {ex.Message}");
+            }
+            catch (SecurityTokenNotYetValidException ex)
+            {
+                return new ValidationResult(false, $"Token is not yet valid: {ex.Message}");
+            }
+            catch (SecurityTokenInvalidSignatureException ex)
+            {
+                return new ValidationResult(false, $"Invalid token signature: {ex.Message}");
             }
             catch (Exception ex)
             {
-                return new ValidationResult(false, ex.Message);
+                return new ValidationResult(false, $"Token validation failed: {ex.Message}");
             }
         }
 

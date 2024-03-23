@@ -1,4 +1,4 @@
-﻿using ETAMPManagment.ETAMP.Base;
+﻿using ETAMPManagment.ETAMP.Base.Interfaces;
 using ETAMPManagment.Factories.Interfaces;
 using ETAMPManagment.Utils;
 

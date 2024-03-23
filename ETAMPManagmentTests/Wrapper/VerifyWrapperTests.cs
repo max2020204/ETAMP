@@ -48,7 +48,7 @@ namespace ETAMPManagment.Wrapper.Tests
         [Fact]
         public void VerifyData_WithIncorrectSignature_ReturnsFalse()
         {
-            var incorrectSignature = new byte[] { 1, 2, 3 }; // Пример неверной подписи
+            var incorrectSignature = new byte[] { 1, 2, 3 };
             var result = _verifyWrapper.VerifyData(Encoding.UTF8.GetBytes(_data), incorrectSignature);
             Assert.False(result);
         }
@@ -85,7 +85,7 @@ namespace ETAMPManagment.Wrapper.Tests
             Assert.Equal(521, verifyWrapper.ECDsa.KeySize);
         }
 
-        [Fact()]
+        [Fact]
         public void VerifyWrapper_InputECDsa_ReturnSame()
         {
             ECDsa ecdsa = ECDsa.Create();

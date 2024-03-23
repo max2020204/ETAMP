@@ -66,7 +66,7 @@ namespace ETAMPManagment.Encryption
         /// <returns>A byte array representing the derived key material.</returns>
         public virtual byte[] DeriveKey(byte[] otherPartyPublicKey)
         {
-            ArgumentNullException.ThrowIfNull(otherPartyPublicKey, nameof(otherPartyPublicKey));
+            ArgumentNullException.ThrowIfNull(otherPartyPublicKey);
             ECDiffieHellman eCDiffieHellman = ECDiffieHellman.Create();
             eCDiffieHellman.ImportSubjectPublicKeyInfo(otherPartyPublicKey, out _);
             return _sharedSecret = _keyProvider.GetECDiffieHellman().DeriveKeyMaterial(eCDiffieHellman.PublicKey);

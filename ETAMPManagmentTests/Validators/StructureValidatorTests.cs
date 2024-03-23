@@ -49,7 +49,9 @@ namespace ETAMPManagment.Validators.Tests
         {
             var invalidEtamp = $"{{\"Id\":\"{Guid.NewGuid()}\",\"Token\":\"\",\"UpdateType\":\"Update\",\"SignatureToken\":\"Signature\",\"SignatureMessage\":\"Message\"}}";
 
-            Assert.Throws<InvalidOperationException>(() => _validator.ValidateETAMPStructure(invalidEtamp));
+            var result = _validator.ValidateETAMPStructure(invalidEtamp);
+            Assert.False(result.IsValid);
+            Assert.Equal("Deserialized ETAMP model is invalid: it is either null, has empty/missing fields, or contains invalid values", result.ErrorMessage);
         }
 
         [Fact]
@@ -100,8 +102,9 @@ namespace ETAMPManagment.Validators.Tests
         {
             var invalidEtamp = $"{{\"Id\":\"{Guid.NewGuid()}\",\"Token\":\"\",\"UpdateType\":\"\"}}";
 
-            var exception = Assert.Throws<InvalidOperationException>(() => _validator.ValidateETAMPStructureLite(invalidEtamp));
-            Assert.Contains("Deserialized ETAMP model is invalid", exception.Message);
+            var result = _validator.ValidateETAMPStructureLite(invalidEtamp);
+            Assert.False(result.IsValid);
+            Assert.Contains("Deserialized ETAMP model is invalid", result.ErrorMessage);
         }
 
         [Fact]
@@ -137,9 +140,10 @@ namespace ETAMPManagment.Validators.Tests
         [Fact]
         public void ValidateETAMPStructure_WithInvalidModel_ThrowsInvalidOperationException()
         {
-            var model = new ETAMPModel(); // Empty or invalid data
-
-            Assert.Throws<InvalidOperationException>(() => _validator.ValidateETAMPStructure(model));
+            var model = new ETAMPModel();
+            var result = _validator.ValidateETAMPStructure(model);
+            Assert.False(result.IsValid);
+            Assert.Equal("ETAMP model is invalid: it is either null, has empty/missing fields, or contains invalid values", result.ErrorMessage);
         }
 
         [Fact]
@@ -160,9 +164,11 @@ namespace ETAMPManagment.Validators.Tests
         [Fact]
         public void ValidateETAMPStructureLite_WithInvalidModel_ThrowsInvalidOperationException()
         {
-            var model = new ETAMPModel(); // Missing essential fields like Token or UpdateType
+            var model = new ETAMPModel();
 
-            Assert.Throws<InvalidOperationException>(() => _validator.ValidateETAMPStructureLite(model));
+            var result = _validator.ValidateETAMPStructureLite(model);
+            Assert.False(result.IsValid);
+            Assert.Equal("ETAMP model is invalid: it is either null, has empty/missing fields, or contains invalid values", result.ErrorMessage);
         }
 
         [Fact]

@@ -86,9 +86,13 @@ namespace ETAMPManagment.Validators.Tests
         [Fact]
         public void ValidateETAMPMessageTest1()
         {
-            _structureValidatorMock.Setup(v => v.IsValidEtampFormat("")).Returns(new ETAMPModel());
+            ETAMPModel model = new ETAMPModel();
+            _structureValidatorMock.Setup(v => v.IsValidEtampFormat(It.IsAny<string>()))
+                .Returns(model);
+            _structureValidatorMock.Setup(x => x.ValidateETAMPStructure(model))
+                .Returns(new ValidationResult(false));
             SignatureValidator signatureValidator = new SignatureValidator(_verifyWrapperMock.Object, _structureValidatorMock.Object);
-            Assert.False(signatureValidator.ValidateETAMPMessage(""));
+            Assert.False(signatureValidator.ValidateETAMPMessage(It.IsAny<string>()));
         }
     }
 }

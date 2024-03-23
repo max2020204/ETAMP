@@ -11,22 +11,27 @@ namespace ETAMPManagment.ETAMP.Base.Tests
 {
     public class ETAMPDataTests
     {
-        private Mock<ISigningCredentialsProvider> sign;
-        private string messageId;
-        private BasePayload payload;
+        private readonly Mock<ISigningCredentialsProvider> _signMock;
+        private readonly string _messageId;
+        private readonly BasePayload _payload;
+        private readonly JwtSecurityTokenHandler _jwtHandler;
 
         public ETAMPDataTests()
         {
-            messageId = Guid.NewGuid().ToString();
-            payload = new BasePayload();
-            sign = new Mock<ISigningCredentialsProvider>();
+            _messageId = Guid.NewGuid().ToString();
+            _payload = new BasePayload();
+            _signMock = new Mock<ISigningCredentialsProvider>();
+            _jwtHandler = new JwtSecurityTokenHandler();
         }
 
         private string GenerateToken(string ecdsaAlgorithm)
         {
-            sign.Setup(x => x.CreateSigningCredentials()).Returns(new ECDsaSigningCredentialsProvider(ECDsa.Create(), ecdsaAlgorithm).CreateSigningCredentials());
-            ETAMPData data = new ETAMPData(sign.Object);
-            return data.CreateEtampData(messageId, payload);
+            _signMock.Setup(x => x.CreateSigningCredentials())
+                .Returns(new ECDsaSigningCredentialsProvider(ECDsa.Create(), ecdsaAlgorithm)
+                .CreateSigningCredentials());
+
+            ETAMPData data = new ETAMPData(_signMock.Object);
+            return data.CreateEtampData(_messageId, _payload);
         }
 
         [Theory]
@@ -36,31 +41,21 @@ namespace ETAMPManagment.ETAMP.Base.Tests
         public void CreateEtampData_ShouldGenerateTokenWithCorrectAlgorithm(string securityAlgorithm, string ecdsaAlgorithm)
         {
             string token = GenerateToken(ecdsaAlgorithm);
-            var handler = new JwtSecurityTokenHandler();
-            var readToken = handler.ReadJwtToken(token);
+            var readToken = _jwtHandler.ReadJwtToken(token);
 
             Assert.Equal(securityAlgorithm, readToken.Header.Alg);
         }
 
         [Fact]
-        public void CreateEtampData_ShouldSetCorrectHeader()
+        public void CreateEtampData_ShouldSetCorrectHeaderAndContainCorrectClaims()
         {
             string token = GenerateToken(SecurityAlgorithms.EcdsaSha256Signature);
-            var handler = new JwtSecurityTokenHandler();
-            var readToken = handler.ReadJwtToken(token);
+            var readToken = _jwtHandler.ReadJwtToken(token);
 
             Assert.Equal("ES256", readToken.Header.Alg);
             Assert.Equal("ETAMP", readToken.Header.Typ);
-        }
 
-        [Fact]
-        public void CreateEtampData_ShouldContainCorrectClaims()
-        {
-            string token = GenerateToken(SecurityAlgorithms.EcdsaSha256Signature);
-            var handler = new JwtSecurityTokenHandler();
-            var readToken = handler.ReadJwtToken(token);
-
-            Assert.Contains(readToken.Claims, c => c.Type == "MessageId" && c.Value == messageId);
+            Assert.Contains(readToken.Claims, c => c.Type == "MessageId" && c.Value == _messageId);
         }
     }
 }

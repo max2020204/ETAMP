@@ -5,31 +5,24 @@ namespace ETAMPManagment.Encryption.Tests
 {
     public class KeyPairProviderTests
     {
-        private readonly KeyPairProvider _provider;
-
-        public KeyPairProviderTests()
-        {
-            _provider = new KeyPairProvider();
-        }
-
         [Fact]
         public void HellmanPublicKey_ShouldMatchPublicKeyFromECDiffieHellman()
         {
-            var eCDiffieHellman = ECDiffieHellman.Create();
+            using var eCDiffieHellman = ECDiffieHellman.Create();
             var provider = new KeyPairProvider(eCDiffieHellman);
+
             Assert.Equal(eCDiffieHellman.PublicKey.ExportSubjectPublicKeyInfo(), provider.HellmanPublicKey.ExportSubjectPublicKeyInfo());
         }
 
         [Fact]
         public void Constructor_WithInvalidPublicKey_ShouldThrowException()
         {
-            // Arrange
-            byte[] invalidPublicKey = { 0x01, 0x02, 0x03 }; // This should be invalid for an ECDH public key
+            byte[] invalidPublicKey = { 0x01, 0x02, 0x03 };
 
-            // Act & Assert
             var exception = Assert.Throws<CryptographicException>(() => new KeyPairProvider(invalidPublicKey));
+
             Assert.NotNull(exception);
-            Assert.Contains("ASN1", exception.Message); // The exact message may vary, adjust according to the actual exception message
+            Assert.Contains("ASN1", exception.Message);
         }
 
         [Fact]
@@ -62,8 +55,8 @@ namespace ETAMPManagment.Encryption.Tests
         public void Constructor_WithPublicKey_ShouldSetPublicKeyProperty()
         {
             using var eCDiffieHellman = ECDiffieHellman.Create();
-            var publicKey = eCDiffieHellman.ExportParameters(false);
-            var provider = new KeyPairProvider(eCDiffieHellman.ExportSubjectPublicKeyInfo());
+            var publicKeyInfo = eCDiffieHellman.ExportSubjectPublicKeyInfo();
+            var provider = new KeyPairProvider(publicKeyInfo);
 
             Assert.NotNull(provider.PublicKey);
         }
@@ -71,8 +64,10 @@ namespace ETAMPManagment.Encryption.Tests
         [Fact]
         public void Constructor_Default_InitializesKeys()
         {
-            Assert.False(string.IsNullOrEmpty(_provider.PrivateKey));
-            Assert.False(string.IsNullOrEmpty(_provider.PublicKey));
+            var provider = new KeyPairProvider();
+
+            Assert.False(string.IsNullOrEmpty(provider.PrivateKey));
+            Assert.False(string.IsNullOrEmpty(provider.PublicKey));
         }
 
         [Fact]
@@ -88,7 +83,8 @@ namespace ETAMPManagment.Encryption.Tests
         [Fact]
         public void GetECDiffieHellman_ReturnsInitializedInstance()
         {
-            var eCDiffieHellman = _provider.GetECDiffieHellman();
+            var provider = new KeyPairProvider();
+            var eCDiffieHellman = provider.GetECDiffieHellman();
 
             Assert.NotNull(eCDiffieHellman);
         }
@@ -96,9 +92,11 @@ namespace ETAMPManagment.Encryption.Tests
         [Fact]
         public void Dispose_ReleasesECDiffieHellmanResources()
         {
-            var eCDiffieHellman = _provider.GetECDiffieHellman();
+            var provider = new KeyPairProvider();
+            var eCDiffieHellman = provider.GetECDiffieHellman();
 
-            _provider.Dispose();
+            provider.Dispose();
+
             Assert.Throws<ObjectDisposedException>(() => eCDiffieHellman.GenerateKey(ECCurve.NamedCurves.nistP256));
         }
     }

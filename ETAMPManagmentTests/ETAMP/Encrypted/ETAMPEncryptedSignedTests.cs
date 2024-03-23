@@ -19,6 +19,8 @@ namespace ETAMPManagment.ETAMP.Encrypted.Tests
 
         public ETAMPEncryptedSignedTests()
         {
+            _signWrapperMock.Setup(sw => sw.SignEtampModel(It.IsAny<ETAMPModel>()))
+                            .Returns((ETAMPModel model) => model);
             _encryptedSigned = new ETAMPEncryptedSigned(_signWrapperMock.Object, _eciesMock.Object, _signingCredentialsProviderMock.Object);
             _payload = new BasePayload();
         }
@@ -34,13 +36,8 @@ namespace ETAMPManagment.ETAMP.Encrypted.Tests
         [Fact]
         public void CreateEncryptETAMPModel_ReturnsEncryptedAndSignedETAMPModel()
         {
-            _signWrapperMock.Setup(sw => sw.SignEtampModel(It.IsAny<ETAMPModel>()))
-                           .Returns((ETAMPModel model) => model);
-            var encryptedSigned = new ETAMPEncryptedSigned(_signWrapperMock.Object, _eciesMock.Object, _signingCredentialsProviderMock.Object);
+            var result = _encryptedSigned.CreateEncryptETAMPModel(_updateType, _payload, _version);
 
-            var result = encryptedSigned.CreateEncryptETAMPModel(_updateType, _payload, _version);
-
-            // Assert
             Assert.NotNull(result);
             Assert.IsType<ETAMPModel>(result);
         }

@@ -1,6 +1,6 @@
 ﻿using ETAMPManagment.Models;
 
-namespace ETAMPManagment.ETAMP.Base
+namespace ETAMPManagment.ETAMP.Base.Interfaces
 {
     /// <summary>
     /// Interface for ETAMP data processing, providing a method to create ETAMP token data.
