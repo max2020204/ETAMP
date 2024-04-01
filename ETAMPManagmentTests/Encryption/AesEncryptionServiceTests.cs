@@ -1,4 +1,5 @@
 ﻿using ETAMPManagment.Encryption;
+using System.Security.Cryptography;
 using System.Text;
 using Xunit;
 
@@ -86,6 +87,32 @@ namespace ETAMPManagmentTests.Encryption
             byte[] encryptedData = Encoding.UTF8.GetBytes("TestData");
 
             Assert.Throws<InvalidOperationException>(() => service.Decrypt(encryptedData, _key));
+        }
+
+        [Fact]
+        public void Decrypt_WithWrongKey_Fails()
+        {
+            byte[] originalData = Encoding.UTF8.GetBytes("Sensitive data");
+            byte[] wrongKey = new byte[32];
+            new Random().NextBytes(wrongKey);
+
+            var service = new AesEncryptionService(_iv);
+            byte[] encryptedData = service.Encrypt(originalData, _key);
+
+            Assert.Throws<CryptographicException>(() => service.Decrypt(encryptedData, wrongKey));
+        }
+
+        [Fact]
+        public void EncryptDecrypt_LargeData_RetainsDataIntegrity()
+        {
+            byte[] largeData = new byte[10 * 1024 * 1024];
+            new Random().NextBytes(largeData);
+
+            var service = new AesEncryptionService(_iv);
+            byte[] encryptedData = service.Encrypt(largeData, _key);
+            byte[] decryptedData = service.Decrypt(encryptedData, _key);
+
+            Assert.Equal(largeData, decryptedData);
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using ETAMPManagment.Encryption;
 using ETAMPManagment.Encryption.Interfaces;
+using Microsoft.IdentityModel.Tokens;
 using Moq;
 using System.Text;
 using Xunit;
@@ -37,7 +38,7 @@ namespace ETAMPManagment.Services.Tests
 
             var result = _eciesEncryptionService.Encrypt(message);
 
-            Assert.Equal(Convert.ToBase64String(encryptedData), result);
+            Assert.Equal(Base64UrlEncoder.Encode(encryptedData), result);
         }
 
         [Fact]
@@ -51,7 +52,7 @@ namespace ETAMPManagment.Services.Tests
         {
             byte[] secretKey = { 1, 2, 3 };
             byte[] decryptedData = Encoding.UTF8.GetBytes("Test message");
-            string encryptedMessage = Convert.ToBase64String(decryptedData);
+            string encryptedMessage = Base64UrlEncoder.Encode(decryptedData);
 
             _keyExchangerMock.Setup(x => x.GetSharedSecret())
                 .Returns(secretKey);
@@ -64,14 +65,19 @@ namespace ETAMPManagment.Services.Tests
         }
 
         [Fact]
-        public void Decrypt_WithInvalidBase64_ThrowsFormatException()
+        public void Decrypt_CallsDeriveKeyWithCorrectArguments()
         {
-            string invalidBase64 = "invalid_base64";
-            byte[] publicKey = [1, 2, 3];
-            _keyExchangerMock.Setup(x => x.GetSharedSecret())
-                    .Returns(publicKey);
-            var exception = Assert.Throws<FormatException>(() => _eciesEncryptionService.Decrypt(invalidBase64, publicKey));
-            Assert.Contains("The encrypted message is not in a valid Base64 format.", exception.Message);
+            byte[] publicKey = { 4, 5, 6 };
+            byte[] secretKey = { 1, 2, 3 };
+            byte[] encryptedData = Encoding.UTF8.GetBytes("encrypted message");
+            string base64EncryptedMessage = Base64UrlEncoder.Encode(encryptedData);
+
+            _keyExchangerMock.Setup(x => x.GetSharedSecret()).Returns(secretKey);
+            _encryptionServiceMock.Setup(x => x.Decrypt(encryptedData, secretKey)).Returns(Encoding.UTF8.GetBytes("decrypted message"));
+
+            _eciesEncryptionService.Decrypt(base64EncryptedMessage, publicKey);
+
+            _keyExchangerMock.Verify(x => x.DeriveKey(publicKey), Times.Once);
         }
     }
 }

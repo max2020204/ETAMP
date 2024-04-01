@@ -8,13 +8,6 @@ namespace ETAMPManagment.ETAMP.Encrypted.Interfaces
     public interface IEncryptToken
     {
         /// <summary>
-        /// Encrypts a serialized ETAMP token string.
-        /// </summary>
-        /// <param name="jsonEtamp">The JSON string representation of an ETAMP token to be encrypted.</param>
-        /// <returns>A string representing the encrypted ETAMP token.</returns>
-        string EncryptETAMPToken(string jsonEtamp);
-
-        /// <summary>
         /// Encrypts an ETAMP token and returns the encrypted token as an ETAMPModel.
         /// </summary>
         /// <param name="jsonEtamp">The JSON string representation of an ETAMP token to be encrypted.</param>

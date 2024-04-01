@@ -1,7 +1,6 @@
 ﻿using ETAMPManagment.Models;
 using ETAMPManagment.Services.Interfaces;
 using Moq;
-using Newtonsoft.Json;
 using Xunit;
 
 namespace ETAMPManagment.ETAMP.Base.Tests
@@ -16,16 +15,6 @@ namespace ETAMPManagment.ETAMP.Base.Tests
         {
             _etampBase = new ETAMPBase(new Mock<ISigningCredentialsProvider>().Object);
             _basePayload = new BasePayload();
-        }
-
-        [Fact]
-        public void CreateETAMP_ReturnsValidJsonString()
-        {
-            var result = _etampBase.CreateETAMP(UpdateType, _basePayload);
-            var deserialized = JsonConvert.DeserializeObject(result);
-
-            Assert.NotNull(deserialized);
-            Assert.IsType<string>(result);
         }
 
         [Fact]

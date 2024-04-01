@@ -1,6 +1,4 @@
-﻿using ETAMPManagment.ETAMP.Base;
-using ETAMPManagment.ETAMP.Encrypted;
-using ETAMPManagment.ETAMP.Encrypted.Interfaces;
+﻿using ETAMPManagment.ETAMP.Encrypted.Interfaces;
 using ETAMPManagment.Models;
 using ETAMPManagment.Utils;
 using Moq;
@@ -20,34 +18,12 @@ namespace ETAMPManagment.Tests
         }
 
         [Fact]
-        public void CreateSignETAMP_ReturnsBuilderForChaining()
-        {
-            var signMock = new Mock<ETAMPSign>();
-            _serviceProviderMock.Setup(p => p.GetService(typeof(ETAMPSign))).Returns(signMock.Object);
-
-            var result = _etampBuilder.CreateETAMP(ETAMPType.Sign, "update_type", new BasePayload(), 1.0);
-
-            Assert.IsType<ETAMPBuilder>(result);
-        }
-
-        [Fact]
         public void CreateEncryptedETAMP_ReturnsBuilderForChaining()
         {
             var encryptedMock = new Mock<IETAMPEncrypted>();
             _serviceProviderMock.Setup(p => p.GetService(typeof(IETAMPEncrypted))).Returns(encryptedMock.Object);
 
             var result = _etampBuilder.CreateETAMP(ETAMPType.Encrypted, "update_type", new BasePayload(), 1.0);
-
-            Assert.IsType<ETAMPBuilder>(result);
-        }
-
-        [Fact]
-        public void CreateEncryptedSignETAMP_ReturnsBuilderForChaining()
-        {
-            var encryptedSignedMock = new Mock<ETAMPEncryptedSigned>();
-            _serviceProviderMock.Setup(p => p.GetService(typeof(ETAMPEncryptedSigned))).Returns(encryptedSignedMock.Object);
-
-            var result = _etampBuilder.CreateETAMP(ETAMPType.EncryptedSign, "update_type", new BasePayload(), 1.0);
 
             Assert.IsType<ETAMPBuilder>(result);
         }

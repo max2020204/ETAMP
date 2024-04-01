@@ -16,7 +16,7 @@ namespace ETAMPManagment.Validators.Tests
         {
             _verifyWrapperMock = new Mock<IVerifyWrapper>();
             _structureValidatorMock = new Mock<IStructureValidator>();
-            _signatureValidator = new SignatureValidator(_verifyWrapperMock.Object);
+            _signatureValidator = new SignatureValidator(_verifyWrapperMock.Object, _structureValidatorMock.Object);
         }
 
         [Fact]
@@ -74,13 +74,6 @@ namespace ETAMPManagment.Validators.Tests
             bool result = _signatureValidator.ValidateToken(token, tokenSignature);
 
             Assert.True(result);
-        }
-
-        [Fact]
-        public void ValidateETAMPMessageTest()
-        {
-            SignatureValidator signature = new SignatureValidator(_verifyWrapperMock.Object);
-            Assert.Throws<InvalidOperationException>(() => signature.ValidateETAMPMessage(""));
         }
 
         [Fact]

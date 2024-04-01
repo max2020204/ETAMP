@@ -13,16 +13,6 @@ namespace ETAMPManagment.Validators
         private readonly IStructureValidator _structureValidator;
 
         /// <summary>
-        /// Initializes a new instance of the SignatureValidator class using a verify wrapper for signature verification.
-        /// </summary>
-        /// <param name="verifyWrapper">The verify wrapper used to verify the signature of ETAMP messages and tokens.</param>
-        /// <exception cref="ArgumentNullException">Thrown if the verifyWrapper is null.</exception>
-        public SignatureValidator(IVerifyWrapper verifyWrapper)
-        {
-            _verifyWrapper = verifyWrapper ?? throw new ArgumentNullException(nameof(verifyWrapper));
-        }
-
-        /// <summary>
         /// Initializes a new instance of the SignatureValidator class with specified verify and structure validators.
         /// </summary>
         /// <param name="verifyWrapper">The verify wrapper used for signature verification.</param>

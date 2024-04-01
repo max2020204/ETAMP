@@ -1,6 +1,7 @@
 ﻿using ETAMPManagment.Encryption.ECDsaManager.Interfaces;
 using ETAMPManagment.Models;
 using ETAMPManagment.Wrapper.Interfaces;
+using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using System.Security.Cryptography;
 using System.Text;
@@ -19,17 +20,6 @@ namespace ETAMPManagment.Wrapper
     {
         private readonly ECDsa _ecdsa;
         private readonly HashAlgorithmName _algorithmName;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="SignWrapper"/> class using an existing ECDsa instance.
-        /// </summary>
-        /// <param name="ecdsa">The ECDsa instance to use for signing operations.</param>
-        /// <param name="algorithmName">The hash algorithm to use for signing.</param>
-        public SignWrapper(ECDsa ecdsa, HashAlgorithmName algorithmName)
-        {
-            _ecdsa = ecdsa ?? throw new ArgumentNullException(nameof(ecdsa), "ECDsa instance cannot be null.");
-            _algorithmName = algorithmName;
-        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SignWrapper"/> class using an IECDsaProvider.
@@ -66,8 +56,8 @@ namespace ETAMPManagment.Wrapper
             ETAMPModel? etamp = JsonConvert.DeserializeObject<ETAMPModel>(jsonEtamp);
             ArgumentNullException.ThrowIfNull(etamp, nameof(etamp));
 
-            etamp.SignatureToken = Convert.ToBase64String(Sign(Encoding.UTF8.GetBytes(etamp.Token)));
-            etamp.SignatureMessage = Convert.ToBase64String(Sign(Encoding.UTF8.GetBytes($"{etamp.Id}{etamp.Version}{etamp.Token}{etamp.UpdateType}{etamp.SignatureToken}")));
+            etamp.SignatureToken = Base64UrlEncoder.Encode(Sign(Encoding.UTF8.GetBytes(etamp.Token)));
+            etamp.SignatureMessage = Base64UrlEncoder.Encode(Sign(Encoding.UTF8.GetBytes($"{etamp.Id}{etamp.Version}{etamp.Token}{etamp.UpdateType}{etamp.SignatureToken}")));
             return JsonConvert.SerializeObject(etamp);
         }
 
@@ -78,8 +68,8 @@ namespace ETAMPManagment.Wrapper
         /// <returns>A JSON string of the ETAMP data with updated signature fields.</returns>
         public virtual string SignEtamp(ETAMPModel etamp)
         {
-            etamp.SignatureToken = Convert.ToBase64String(Sign(Encoding.UTF8.GetBytes(etamp.Token)));
-            etamp.SignatureMessage = Convert.ToBase64String(Sign(Encoding.UTF8.GetBytes($"{etamp.Id}{etamp.Version}{etamp.Token}{etamp.UpdateType}{etamp.SignatureToken}")));
+            etamp.SignatureToken = Base64UrlEncoder.Encode(Sign(Encoding.UTF8.GetBytes(etamp.Token)));
+            etamp.SignatureMessage = Base64UrlEncoder.Encode(Sign(Encoding.UTF8.GetBytes($"{etamp.Id}{etamp.Version}{etamp.Token}{etamp.UpdateType}{etamp.SignatureToken}")));
             return JsonConvert.SerializeObject(etamp);
         }
 
@@ -90,8 +80,8 @@ namespace ETAMPManagment.Wrapper
         /// <returns>The ETAMP model with updated signature fields.</returns>
         public virtual ETAMPModel SignEtampModel(ETAMPModel etamp)
         {
-            etamp.SignatureToken = Convert.ToBase64String(Sign(Encoding.UTF8.GetBytes(etamp.Token)));
-            etamp.SignatureMessage = Convert.ToBase64String(Sign(Encoding.UTF8.GetBytes($"{etamp.Id}{etamp.Version}{etamp.Token}{etamp.UpdateType}{etamp.SignatureToken}")));
+            etamp.SignatureToken = Base64UrlEncoder.Encode(Sign(Encoding.UTF8.GetBytes(etamp.Token)));
+            etamp.SignatureMessage = Base64UrlEncoder.Encode(Sign(Encoding.UTF8.GetBytes($"{etamp.Id}{etamp.Version}{etamp.Token}{etamp.UpdateType}{etamp.SignatureToken}")));
             return etamp;
         }
     }

@@ -34,19 +34,6 @@ namespace ETAMPManagment.Wrapper
         }
 
         /// <summary>
-        /// Initializes a new instance of the VerifyWrapper class with a pre-configured ECDsa instance.
-        /// This constructor is useful when an ECDsa instance has already been set up elsewhere in the application and needs to be reused,
-        /// allowing for the integration of a custom-configured ECDsa instance and providing flexibility in cryptographic operations.
-        /// </summary>
-        /// <param name="ecdsa">The pre-configured ECDsa instance to be used for verification.</param>
-        /// <param name="algorithm">The hashing algorithm to be used with ECDsa for cryptographic operations.</param>
-        public VerifyWrapper(ECDsa ecdsa, HashAlgorithmName algorithm)
-        {
-            _ecdsa = ecdsa ?? throw new ArgumentNullException(nameof(ecdsa), "ECDsa instance cannot be null.");
-            _algorithm = algorithm;
-        }
-
-        /// <summary>
         /// Verifies the given data against the specified signature. This method supports verification of data provided
         /// in string format against a signature in string format, converting both to their respective byte array representations
         /// for the cryptographic operation.

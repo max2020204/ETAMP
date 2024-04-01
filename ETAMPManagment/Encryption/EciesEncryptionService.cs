@@ -1,4 +1,5 @@
 ﻿using ETAMPManagment.Encryption.Interfaces;
+using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
 namespace ETAMPManagment.Encryption
@@ -34,7 +35,7 @@ namespace ETAMPManagment.Encryption
 
             byte[] secretKey = _keyExchanger.GetSharedSecret();
             byte[] encryptedMessage = _encryptionService.Encrypt(Encoding.UTF8.GetBytes(message), secretKey);
-            return Convert.ToBase64String(encryptedMessage);
+            return Base64UrlEncoder.Encode(encryptedMessage);
         }
 
         /// <summary>
@@ -53,7 +54,7 @@ namespace ETAMPManagment.Encryption
             byte[] encryptedMessage;
             try
             {
-                encryptedMessage = Convert.FromBase64String(encryptedMessageBase64);
+                encryptedMessage = Base64UrlEncoder.DecodeBytes(encryptedMessageBase64);
             }
             catch (FormatException ex)
             {

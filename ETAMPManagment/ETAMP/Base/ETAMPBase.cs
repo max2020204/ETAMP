@@ -1,7 +1,6 @@
 ﻿using ETAMPManagment.ETAMP.Base.Interfaces;
 using ETAMPManagment.Models;
 using ETAMPManagment.Services.Interfaces;
-using Newtonsoft.Json;
 
 namespace ETAMPManagment.ETAMP.Base
 {
@@ -19,21 +18,6 @@ namespace ETAMPManagment.ETAMP.Base
     /// <param name="signingCredentialsProvider">The provider used to create signing credentials for digital signature operations.</param>
     public class ETAMPBase(ISigningCredentialsProvider signingCredentialsProvider) : ETAMPData(signingCredentialsProvider), IETAMPBase
     {
-        /// <summary>
-        /// Creates a serialized ETAMP token with the specified update type and payload.
-        /// This method constructs an ETAMP token that encapsulates the payload and meta-information
-        /// like the update type and protocol version, then serializes this information into a JSON string.
-        /// </summary>
-        /// <typeparam name="T">The type of the payload included in the ETAMP token.</typeparam>
-        /// <param name="updateType">The update type identifier for the ETAMP token, indicating the purpose or action associated with the token.</param>
-        /// <param name="payload">The payload to be included in the ETAMP token. This data will be signed to ensure its integrity and authenticity.</param>
-        /// <param name="version">The version of the ETAMP protocol. This allows for versioning control and future protocol upgrades.</param>
-        /// <returns>A serialized ETAMP token as a string, ready for transmission or storage.</returns>
-        public virtual string CreateETAMP<T>(string updateType, T payload, double version = 1) where T : BasePayload
-        {
-            return JsonConvert.SerializeObject(CreateETAMPModel(updateType, payload, version));
-        }
-
         /// <summary>
         /// Creates an ETAMP model with the specified update type and payload without serialization.
         /// This method assembles an ETAMP model, combining the payload with meta-information

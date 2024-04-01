@@ -48,12 +48,10 @@ namespace ETAMPManagment.Extensions
             // Register ETAMP processing services
             services.AddScoped<IETAMPBase, ETAMPBase>();
             services.AddScoped<IETAMPData, ETAMPData>();
-            services.AddScoped<ETAMPSign>();
 
             // Register token and encryption services
             services.AddScoped<IEncryptToken, EncryptToken>();
             services.AddScoped<IETAMPEncrypted, ETAMPEncrypted>();
-            services.AddScoped<ETAMPEncryptedSigned>();
 
             // Register compression services
             services.AddScoped<ICompressionService, DeflateCompressionService>();

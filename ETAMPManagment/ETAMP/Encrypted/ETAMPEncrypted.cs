@@ -3,7 +3,6 @@ using ETAMPManagment.ETAMP.Base;
 using ETAMPManagment.ETAMP.Encrypted.Interfaces;
 using ETAMPManagment.Models;
 using ETAMPManagment.Services.Interfaces;
-using Newtonsoft.Json;
 
 namespace ETAMPManagment.ETAMP.Encrypted
 {
@@ -21,21 +20,6 @@ namespace ETAMPManagment.ETAMP.Encrypted
     public class ETAMPEncrypted(IEciesEncryptionService eciesEncryptionService,
                                 ISigningCredentialsProvider signingCredentialsProvider) : ETAMPBase(signingCredentialsProvider), IETAMPEncrypted
     {
-        /// <summary>
-        /// Creates a serialized, encrypted ETAMP token based on the specified update type, payload, and protocol version.
-        /// </summary>
-        /// <typeparam name="T">The payload type.</typeparam>
-        /// <param name="updateType">The update type identifier for the ETAMP token.</param>
-        /// <param name="payload">The payload to be encrypted and included in the ETAMP token.</param>
-        /// <param name="version">The version of the ETAMP protocol, defaulting to 1.</param>
-        /// <returns>A serialized string representation of the encrypted ETAMP token.</returns>
-        public virtual string CreateEncryptETAMP<T>(string updateType, T payload, double version = 1) where T : BasePayload
-        {
-            ETAMPModel model = CreateETAMPModel(updateType, payload, version);
-            model.Token = eciesEncryptionService.Encrypt(model.Token);
-            return JsonConvert.SerializeObject(model);
-        }
-
         /// <summary>
         /// Creates an ETAMP model with encryption based on the specified update type, payload, and protocol version.
         /// </summary>

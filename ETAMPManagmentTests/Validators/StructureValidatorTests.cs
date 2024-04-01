@@ -8,12 +8,12 @@ namespace ETAMPManagment.Validators.Tests
     public class StructureValidatorTests
     {
         private StructureValidator _validator;
-        private Mock<IJwtValidator> _jwtValidatorMock;
+        private readonly Mock<IJwtValidator> _jwtValidatorMock;
 
         public StructureValidatorTests()
         {
-            _validator = new StructureValidator();
             _jwtValidatorMock = new Mock<IJwtValidator>();
+            _validator = new StructureValidator(_jwtValidatorMock.Object);
         }
 
         [Fact]
@@ -66,12 +66,6 @@ namespace ETAMPManagment.Validators.Tests
             var isValid = structureValidator.ValidateIdConsistency(etamp);
 
             Assert.True(isValid);
-        }
-
-        [Fact]
-        public void ValidateIdConsistency_WithInconsistentId_ThrowsInvalidOperationException()
-        {
-            Assert.Throws<InvalidOperationException>(() => _validator.ValidateIdConsistency(""));
         }
 
         [Fact]

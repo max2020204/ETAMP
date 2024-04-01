@@ -2,7 +2,6 @@
 using ETAMPManagment.Models;
 using ETAMPManagment.Services.Interfaces;
 using Moq;
-using Newtonsoft.Json;
 using Xunit;
 
 namespace ETAMPManagment.ETAMP.Encrypted.Tests
@@ -22,21 +21,6 @@ namespace ETAMPManagment.ETAMP.Encrypted.Tests
             _payload = new BasePayload();
             _encryptionServiceMock.Setup(e => e.Encrypt(It.IsAny<string>())).Returns(_encryptedToken);
             _etampEncrypted = new ETAMPEncrypted(_encryptionServiceMock.Object, new Mock<ISigningCredentialsProvider>().Object);
-        }
-
-        [Fact]
-        public void CreateEncryptETAMP_ShouldEncryptTokenAndSerializeModel()
-        {
-            var result = _etampEncrypted.CreateEncryptETAMP(_updateType, _payload, _version);
-
-            _encryptionServiceMock.Verify(e => e.Encrypt(It.IsAny<string>()), Times.Once);
-            Assert.Contains(_encryptedToken, result);
-
-            var deserializedResult = JsonConvert.DeserializeObject<ETAMPModel>(result);
-            Assert.NotNull(deserializedResult);
-            Assert.Equal(_encryptedToken, deserializedResult.Token);
-            Assert.Equal(_updateType, deserializedResult.UpdateType);
-            Assert.Equal(_version, deserializedResult.Version);
         }
 
         [Fact]

@@ -1,6 +1,4 @@
-﻿using ETAMPManagment.ETAMP.Base;
-using ETAMPManagment.ETAMP.Base.Interfaces;
-using ETAMPManagment.ETAMP.Encrypted;
+﻿using ETAMPManagment.ETAMP.Base.Interfaces;
 using ETAMPManagment.ETAMP.Encrypted.Interfaces;
 using ETAMPManagment.Interfaces;
 using ETAMPManagment.Models;
@@ -39,23 +37,10 @@ namespace ETAMPManagment
                     _model = etampBase.CreateETAMPModel(updateType, payload, version);
                     break;
 
-                case ETAMPType.Sign:
-                    ETAMPSign sign = _serviceProvider.GetRequiredService<ETAMPSign>();
-                    ArgumentNullException.ThrowIfNull(sign, nameof(sign));
-                    _model = sign.CreateETAMPModel(updateType, payload, version);
-                    break;
-
                 case ETAMPType.Encrypted:
                     IETAMPEncrypted encrypted = _serviceProvider.GetRequiredService<IETAMPEncrypted>();
                     ArgumentNullException.ThrowIfNull(encrypted, nameof(encrypted));
                     _model = encrypted.CreateEncryptETAMPModel(updateType, payload, version);
-
-                    break;
-
-                case ETAMPType.EncryptedSign:
-                    ETAMPEncryptedSigned encryptedSigned = _serviceProvider.GetRequiredService<ETAMPEncryptedSigned>();
-                    ArgumentNullException.ThrowIfNull(encryptedSigned, nameof(encryptedSigned));
-                    _model = encryptedSigned.CreateEncryptETAMPModel(updateType, payload, version);
 
                     break;
 

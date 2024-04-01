@@ -9,13 +9,13 @@ namespace ETAMPManagment.Encryption.Tests
     {
         private readonly Mock<IKeyPairProvider> _keyProviderMock;
         private readonly KeyExchanger _exchanger;
-        private Mock<ECDiffieHellman> _mockECDiffieHellman;
+        private Mock<ECDiffieHellman> _eCDiffieHellmanMock;
 
         public KeyExchangerTests()
         {
             _keyProviderMock = new Mock<IKeyPairProvider>();
-            _mockECDiffieHellman = new Mock<ECDiffieHellman>();
-            _keyProviderMock.Setup(x => x.GetECDiffieHellman()).Returns(_mockECDiffieHellman.Object);
+            _eCDiffieHellmanMock = new Mock<ECDiffieHellman>();
+            _keyProviderMock.Setup(x => x.GetECDiffieHellman()).Returns(_eCDiffieHellmanMock.Object);
             _exchanger = new KeyExchanger(_keyProviderMock.Object);
         }
 
@@ -35,10 +35,10 @@ namespace ETAMPManagment.Encryption.Tests
         public void DeriveKey_WithValidPublicKey_ReturnsExpectedDerivedKey()
         {
             var data = new byte[] { 1, 2, 3 };
-            var mockPublicKey = new Mock<ECDiffieHellmanPublicKey>();
-            var publicKey = mockPublicKey.Object;
+            var publicKeyMock = new Mock<ECDiffieHellmanPublicKey>();
+            var publicKey = publicKeyMock.Object;
 
-            _mockECDiffieHellman.Setup(x => x.DeriveKeyMaterial(publicKey)).Returns(data);
+            _eCDiffieHellmanMock.Setup(x => x.DeriveKeyMaterial(publicKey)).Returns(data);
 
             var result = _exchanger.DeriveKey(publicKey);
 
@@ -56,7 +56,7 @@ namespace ETAMPManagment.Encryption.Tests
                                                              .Replace("\n", "")
                                                              .Replace("\r", ""));
 
-            _mockECDiffieHellman.Setup(ecdh => ecdh.DeriveKeyMaterial(It.IsAny<ECDiffieHellmanPublicKey>()))
+            _eCDiffieHellmanMock.Setup(ecdh => ecdh.DeriveKeyMaterial(It.IsAny<ECDiffieHellmanPublicKey>()))
                                 .Returns(expectedDerivedKeyMaterial);
 
             var derivedKeyMaterial = _exchanger.DeriveKey(rawPublicKey);
@@ -79,7 +79,7 @@ namespace ETAMPManagment.Encryption.Tests
             var appendData = new byte[] { 7, 8 };
             var hashAlgorithm = HashAlgorithmName.SHA256;
 
-            _mockECDiffieHellman.Setup(m => m.DeriveKeyFromHash(dummyPublicKey, hashAlgorithm, prependData, appendData))
+            _eCDiffieHellmanMock.Setup(m => m.DeriveKeyFromHash(dummyPublicKey, hashAlgorithm, prependData, appendData))
                                 .Returns(expectedKey);
 
             var result = _exchanger.DeriveKeyHash(dummyPublicKey, hashAlgorithm, prependData, appendData);
@@ -103,7 +103,7 @@ namespace ETAMPManagment.Encryption.Tests
             var appendData = new byte[] { 17, 18 };
             var hashAlgorithm = HashAlgorithmName.SHA256;
 
-            _mockECDiffieHellman.Setup(m => m.DeriveKeyFromHmac(dummyPublicKey, hashAlgorithm, hmacKey, prependData, appendData))
+            _eCDiffieHellmanMock.Setup(m => m.DeriveKeyFromHmac(dummyPublicKey, hashAlgorithm, hmacKey, prependData, appendData))
                                 .Returns(expectedKey);
 
             var result = _exchanger.DeriveKeyHmac(dummyPublicKey, hashAlgorithm, hmacKey, prependData, appendData);
@@ -117,13 +117,30 @@ namespace ETAMPManagment.Encryption.Tests
             var expectedSecret = new byte[] { 19, 20, 21, 22 };
             var dummyPublicKey = new Mock<ECDiffieHellmanPublicKey>().Object;
 
-            _mockECDiffieHellman.Setup(m => m.DeriveKeyMaterial(dummyPublicKey)).Returns(expectedSecret);
+            _eCDiffieHellmanMock.Setup(m => m.DeriveKeyMaterial(dummyPublicKey)).Returns(expectedSecret);
 
             _exchanger.DeriveKey(dummyPublicKey);
 
             var sharedSecret = _exchanger.GetSharedSecret();
 
             Assert.Equal(expectedSecret, sharedSecret);
+        }
+
+        [Fact]
+        public void DeriveKey_UpdatesSharedSecret()
+        {
+            var publicKeyMock = new Mock<ECDiffieHellmanPublicKey>();
+            var publicKey = publicKeyMock.Object;
+            var newSecret = new byte[] { 23, 24, 25, 26 };
+
+            _eCDiffieHellmanMock.Setup(x => x.DeriveKeyMaterial(publicKey)).Returns(newSecret);
+
+            var initialSecret = _exchanger.GetSharedSecret();
+            _exchanger.DeriveKey(publicKey);
+            var updatedSecret = _exchanger.GetSharedSecret();
+
+            Assert.NotEqual(initialSecret, updatedSecret);
+            Assert.Equal(newSecret, updatedSecret);
         }
     }
 }

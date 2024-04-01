@@ -18,6 +18,9 @@ namespace ETAMPManagment.Extensions
         public static string Compress(this ETAMPModel model, Func<ICompressionService> compressionServiceFactory)
         {
             // Utilizes the provided compression service to compress the model's string representation
+            ArgumentNullException.ThrowIfNull(nameof(model));
+            ArgumentNullException.ThrowIfNull(nameof(compressionServiceFactory));
+
             return compressionServiceFactory().CompressString(model.ToString());
         }
 
@@ -32,10 +35,8 @@ namespace ETAMPManagment.Extensions
         /// <exception cref="InvalidOperationException">Thrown if the compression service fails to decompress the string.</exception>
         public static ETAMPModel Decompress(this string jsonEtamp, Func<ICompressionService> compressionServiceFactory)
         {
-            if (string.IsNullOrWhiteSpace(jsonEtamp))
-            {
-                throw new ArgumentNullException(nameof(jsonEtamp), "The ETAMP string to decompress cannot be null or empty.");
-            }
+            ArgumentException.ThrowIfNullOrWhiteSpace(nameof(jsonEtamp));
+            ArgumentNullException.ThrowIfNull(nameof(compressionServiceFactory));
 
             var compressionService = compressionServiceFactory() ?? throw new InvalidOperationException("Failed to create a compression service instance.");
 

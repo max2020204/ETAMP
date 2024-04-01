@@ -22,13 +22,6 @@ namespace ETAMPManagment.Validators
         }
 
         /// <summary>
-        /// Initializes a new instance of the StructureValidator class without a specific JWT validator.
-        /// </summary>
-        public StructureValidator()
-        {
-        }
-
-        /// <summary>
         /// Validates the format of a given ETAMP string to ensure it's a valid JSON and can be deserialized into an ETAMP model.
         /// </summary>
         /// <param name="etamp">The ETAMP string to validate.</param>

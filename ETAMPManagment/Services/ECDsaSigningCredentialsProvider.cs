@@ -1,4 +1,5 @@
-﻿using ETAMPManagment.Services.Interfaces;
+﻿using ETAMPManagment.Encryption.ECDsaManager.Interfaces;
+using ETAMPManagment.Services.Interfaces;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Cryptography;
 
@@ -14,40 +15,16 @@ namespace ETAMPManagment.Services
         private readonly string _securityAlgorithm;
 
         /// <summary>
-        /// Initializes a new instance of the ECDsaSigningCredentialsProvider class using a specific ECDsa instance and security algorithm.
-        /// This constructor allows for the use of an existing ECDsa instance for signing operations.
+        /// Initializes a new instance of the <see cref="ECDsaSigningCredentialsProvider"/> class using a provider for ECDsa instances and a security algorithm.
+        /// This constructor allows for the flexible use of an ECDsa instance provided by the <see cref="IECDsaProvider"/> for signing operations.
         /// </summary>
-        /// <param name="ecdsa">The ECDsa instance to use for signing.</param>
-        /// <param name="securityAlgorithm">The security algorithm identifier to use for signing.</param>
-        public ECDsaSigningCredentialsProvider(ECDsa ecdsa, string securityAlgorithm)
+        /// <param name="ecdsaProvider">The provider for obtaining an ECDsa instance to use for signing.</param>
+        /// <param name="securityAlgorithm">The security algorithm identifier to use for signing, such as "ES256", "ES384", or "ES512".</param>
+        public ECDsaSigningCredentialsProvider(IECDsaProvider ecdsaProvider, string securityAlgorithm)
         {
-            _ecdsa = ecdsa;
-            _securityAlgorithm = securityAlgorithm;
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the ECDsaSigningCredentialsProvider class using a default ECDsa instance and an optional security algorithm.
-        /// This constructor creates a new ECDsa instance internally using the default algorithm.
-        /// </summary>
-        /// <param name="securityAlgorithm">The security algorithm identifier to use for signing. Defaults to EcdsaSha256Signature.</param>
-
-        public ECDsaSigningCredentialsProvider(string securityAlgorithm = SecurityAlgorithms.EcdsaSha256Signature)
-        {
-            _ecdsa = ECDsa.Create();
-            _securityAlgorithm = securityAlgorithm;
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the ECDsaSigningCredentialsProvider class with a specific elliptic curve and an optional security algorithm.
-        /// This constructor allows specifying the curve to be used by the ECDsa instance, providing more control over the cryptographic process.
-        /// </summary>
-        /// <param name="curve">The elliptic curve to use for the ECDsa instance.</param>
-        /// <param name="securityAlgorithm">The security algorithm identifier to use for signing. Defaults to EcdsaSha256Signature.</param>
-
-        public ECDsaSigningCredentialsProvider(ECCurve curve, string securityAlgorithm = SecurityAlgorithms.EcdsaSha256Signature)
-        {
-            _ecdsa = ECDsa.Create(curve);
-            _securityAlgorithm = securityAlgorithm;
+            ArgumentNullException.ThrowIfNull(nameof(ecdsaProvider));
+            _ecdsa = ecdsaProvider.GetECDsa() ?? throw new InvalidOperationException("ECDsa instance cannot be null.");
+            _securityAlgorithm = securityAlgorithm ?? throw new ArgumentNullException(nameof(securityAlgorithm));
         }
 
         /// <summary>

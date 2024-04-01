@@ -68,8 +68,10 @@ namespace ETAMPManagment.Encryption
         public byte[] DeriveKey(byte[] otherPartyPublicKey)
         {
             ArgumentNullException.ThrowIfNull(otherPartyPublicKey);
+
             ECDiffieHellman eCDiffieHellman = ECDiffieHellman.Create();
             eCDiffieHellman.ImportSubjectPublicKeyInfo(otherPartyPublicKey, out _);
+
             return _sharedSecret = _keyProvider.GetECDiffieHellman().DeriveKeyMaterial(eCDiffieHellman.PublicKey);
         }
 

@@ -1,4 +1,5 @@
-﻿using ETAMPManagment.Models;
+﻿using ETAMPManagment.Encryption.ECDsaManager.Interfaces;
+using ETAMPManagment.Models;
 using ETAMPManagment.Services;
 using ETAMPManagment.Services.Interfaces;
 using Microsoft.IdentityModel.Tokens;
@@ -12,13 +13,18 @@ namespace ETAMPManagment.ETAMP.Base.Tests
     public class ETAMPDataTests
     {
         private readonly Mock<ISigningCredentialsProvider> _signMock;
+
+        private readonly Mock<IECDsaProvider> _providerMock;
         private readonly string _messageId;
+
         private readonly BasePayload _payload;
         private readonly JwtSecurityTokenHandler _jwtHandler;
 
         public ETAMPDataTests()
         {
             _messageId = Guid.NewGuid().ToString();
+            _providerMock = new Mock<IECDsaProvider>();
+            _providerMock.Setup(x => x.GetECDsa()).Returns(ECDsa.Create());
             _payload = new BasePayload();
             _signMock = new Mock<ISigningCredentialsProvider>();
             _jwtHandler = new JwtSecurityTokenHandler();
@@ -27,7 +33,7 @@ namespace ETAMPManagment.ETAMP.Base.Tests
         private string GenerateToken(string ecdsaAlgorithm)
         {
             _signMock.Setup(x => x.CreateSigningCredentials())
-                .Returns(new ECDsaSigningCredentialsProvider(ECDsa.Create(), ecdsaAlgorithm)
+                .Returns(new ECDsaSigningCredentialsProvider(_providerMock.Object, ecdsaAlgorithm)
                 .CreateSigningCredentials());
 
             ETAMPData data = new ETAMPData(_signMock.Object);

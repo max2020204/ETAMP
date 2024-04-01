@@ -22,35 +22,20 @@ namespace ETAMPManagment.Encryption
         public ECDiffieHellmanPublicKey HellmanPublicKey => _eCDiffieHellman.PublicKey;
 
         /// <summary>
-        /// Initializes a new instance of the KeyPairProvider class using the default ECDH algorithm parameters,
-        /// automatically generating a new public/private key pair.
-        /// </summary>
-        public KeyPairProvider()
-        {
-            _eCDiffieHellman = ECDiffieHellman.Create();
-            KeyModelProvider = new ECDKeyModelProvider
-            {
-                PrivateKey = _eCDiffieHellman.ExportECPrivateKeyPem(),
-                PublicKey = _eCDiffieHellman.ExportSubjectPublicKeyInfoPem()
-            };
-        }
-
-        /// <summary>
         /// Initializes a new instance of the KeyPairProvider class with a specific instance of ECDiffieHellman,
         /// allowing for custom configuration and use of an existing ECDiffieHellman instance.
         /// </summary>
         /// <param name="ecDiffieHellman">An existing instance of ECDiffieHellman for cryptographic operations.</param>
         public KeyPairProvider(ECDiffieHellman ecDiffieHellman)
         {
-            _eCDiffieHellman = ecDiffieHellman ?? throw new ArgumentNullException(nameof(ecDiffieHellman));
+            _eCDiffieHellman = ecDiffieHellman ??
+                throw new ArgumentNullException(nameof(ecDiffieHellman));
             KeyModelProvider = new ECDKeyModelProvider
             {
                 PrivateKey = _eCDiffieHellman.ExportECPrivateKeyPem(),
                 PublicKey = _eCDiffieHellman.ExportSubjectPublicKeyInfoPem()
             };
         }
-
-        // Additional constructors as necessary...
 
         /// <summary>
         /// Initializes a new instance of the KeyPairProvider class using a public key in byte array format.
@@ -66,40 +51,6 @@ namespace ETAMPManagment.Encryption
             _eCDiffieHellman.ImportSubjectPublicKeyInfo(publicKey, out _);
             KeyModelProvider = new ECDKeyModelProvider
             {
-                PublicKey = _eCDiffieHellman.ExportSubjectPublicKeyInfoPem()
-            };
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the KeyPairProvider class using specified elliptic curve parameters.
-        /// This constructor allows for precise control over the elliptic curve characteristics used in the
-        /// Elliptic Curve Diffie-Hellman (ECDH) key pair generation, enabling the creation of a key pair with
-        /// custom curve parameters.
-        /// </summary>
-        /// <param name="parameters">The EC parameters defining the elliptic curve and key pair characteristics.</param>
-        public KeyPairProvider(ECParameters parameters)
-        {
-            _eCDiffieHellman = ECDiffieHellman.Create(parameters);
-            KeyModelProvider = new ECDKeyModelProvider
-            {
-                PrivateKey = _eCDiffieHellman.ExportECPrivateKeyPem(),
-                PublicKey = _eCDiffieHellman.ExportSubjectPublicKeyInfoPem()
-            };
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the KeyPairProvider class using a specific elliptic curve.
-        /// This constructor allows the creation of an Elliptic Curve Diffie-Hellman (ECDH) key pair based on the provided curve,
-        /// facilitating the use of custom curve parameters for enhanced cryptographic flexibility and security.
-        /// </summary>
-        /// <param name="curve">The elliptic curve to be used for ECDH key pair generation. This parameter specifies the curve parameters,
-        /// including the curve type and any associated domain parameters required for initializing the ECDH key pair.</param>
-        public KeyPairProvider(ECCurve curve)
-        {
-            _eCDiffieHellman = ECDiffieHellman.Create(curve);
-            KeyModelProvider = new ECDKeyModelProvider
-            {
-                PrivateKey = _eCDiffieHellman.ExportPkcs8PrivateKeyPem(),
                 PublicKey = _eCDiffieHellman.ExportSubjectPublicKeyInfoPem()
             };
         }

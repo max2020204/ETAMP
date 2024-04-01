@@ -1,4 +1,6 @@
-﻿using ETAMPManagment.Models;
+﻿using ETAMPManagment.Encryption.ECDsaManager.Interfaces;
+using ETAMPManagment.Models;
+using Moq;
 using Newtonsoft.Json;
 using System.Security.Cryptography;
 using Xunit;
@@ -7,14 +9,15 @@ namespace ETAMPManagment.Wrapper.Tests
 {
     public class SignWrapperTests
     {
-        private readonly ECDsa _ecdsa;
+        private readonly Mock<IECDsaProvider> _providerMock;
         private readonly SignWrapper _signWrapper;
 
         //TODO make valid tests
         public SignWrapperTests()
         {
-            _ecdsa = ECDsa.Create();
-            _signWrapper = new SignWrapper(_ecdsa, HashAlgorithmName.SHA256);
+            _providerMock = new Mock<IECDsaProvider>();
+            _providerMock.Setup(x => x.GetECDsa()).Returns(ECDsa.Create());
+            _signWrapper = new SignWrapper(_providerMock.Object, HashAlgorithmName.SHA256);
         }
 
         [Fact]
@@ -42,7 +45,7 @@ namespace ETAMPManagment.Wrapper.Tests
         public void SignEtamp_WithNullInput_ThrowsArgumentNullException()
         {
             var ecdsa = ECDsa.Create();
-            var signWrapper = new SignWrapper(ecdsa, HashAlgorithmName.SHA256);
+            var signWrapper = new SignWrapper(_providerMock.Object, HashAlgorithmName.SHA256);
             var exception = Assert.Throws<ArgumentNullException>(() => signWrapper.SignEtamp(""));
             Assert.Equal("etamp", exception.ParamName);
         }
@@ -51,7 +54,7 @@ namespace ETAMPManagment.Wrapper.Tests
         public void SignEtampModel_UpdatesSignatureFieldsCorrectly()
         {
             var ecdsa = ECDsa.Create();
-            var signWrapper = new SignWrapper(ecdsa, HashAlgorithmName.SHA256);
+            var signWrapper = new SignWrapper(_providerMock.Object, HashAlgorithmName.SHA256);
             var etampModel = new ETAMPModel
             {
                 Id = Guid.NewGuid(),
