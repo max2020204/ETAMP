@@ -17,7 +17,8 @@ namespace ETAMPManagment.Encryption
         /// <summary>
         /// Provides access to the key pair used in the ECDH algorithm.
         /// </summary>
-        private readonly IKeyPairProvider _keyProvider = keyPairProvider ?? throw new ArgumentNullException(nameof(keyPairProvider));
+        private readonly IKeyPairProvider _keyProvider = keyPairProvider ??
+            throw new ArgumentNullException(nameof(keyPairProvider));
 
         /// <summary>
         /// Derives a key using a hash function from the given public key and optional prepended or appended data.
@@ -27,7 +28,7 @@ namespace ETAMPManagment.Encryption
         /// <param name="secretPrepend">Optional data to prepend to the derived secret before hashing.</param>
         /// <param name="secretAppend">Optional data to append to the derived secret before hashing.</param>
         /// <returns>A byte array representing the derived key.</returns>
-        public virtual byte[] DeriveKeyHash(ECDiffieHellmanPublicKey publicKey, HashAlgorithmName hash, byte[]? secretPrepend, byte[]? secretAppend)
+        public byte[] DeriveKeyHash(ECDiffieHellmanPublicKey publicKey, HashAlgorithmName hash, byte[]? secretPrepend, byte[]? secretAppend)
         {
             ArgumentNullException.ThrowIfNull(publicKey);
             return _sharedSecret = _keyProvider.GetECDiffieHellman().DeriveKeyFromHash(publicKey, hash, secretPrepend, secretAppend);
@@ -38,7 +39,7 @@ namespace ETAMPManagment.Encryption
         /// </summary>
         /// <param name="publicKey">The public key of the other party.</param>
         /// <returns>A byte array representing the derived key material.</returns>
-        public virtual byte[] DeriveKey(ECDiffieHellmanPublicKey publicKey)
+        public byte[] DeriveKey(ECDiffieHellmanPublicKey publicKey)
         {
             ArgumentNullException.ThrowIfNull(publicKey);
             return _sharedSecret = _keyProvider.GetECDiffieHellman().DeriveKeyMaterial(publicKey);
@@ -53,7 +54,7 @@ namespace ETAMPManagment.Encryption
         /// <param name="secretPrepend">Optional data to prepend to the derived secret before applying HMAC.</param>
         /// <param name="secretAppend">Optional data to append to the derived secret before applying HMAC.</param>
         /// <returns>A byte array representing the derived key.</returns>
-        public virtual byte[] DeriveKeyHmac(ECDiffieHellmanPublicKey publicKey, HashAlgorithmName hash, byte[]? hmacKey, byte[]? secretPrepend, byte[]? secretAppend)
+        public byte[] DeriveKeyHmac(ECDiffieHellmanPublicKey publicKey, HashAlgorithmName hash, byte[]? hmacKey, byte[]? secretPrepend, byte[]? secretAppend)
         {
             ArgumentNullException.ThrowIfNull(publicKey);
             return _sharedSecret = _keyProvider.GetECDiffieHellman().DeriveKeyFromHmac(publicKey, hash, hmacKey, secretPrepend, secretAppend);
@@ -64,7 +65,7 @@ namespace ETAMPManagment.Encryption
         /// </summary>
         /// <param name="otherPartyPublicKey">The raw byte array of the other party's public key.</param>
         /// <returns>A byte array representing the derived key material.</returns>
-        public virtual byte[] DeriveKey(byte[] otherPartyPublicKey)
+        public byte[] DeriveKey(byte[] otherPartyPublicKey)
         {
             ArgumentNullException.ThrowIfNull(otherPartyPublicKey);
             ECDiffieHellman eCDiffieHellman = ECDiffieHellman.Create();
@@ -76,7 +77,7 @@ namespace ETAMPManagment.Encryption
         /// Retrieves the shared secret generated from the key exchange process.
         /// </summary>
         /// <returns>A byte array representing the shared secret.</returns>
-        public virtual byte[] GetSharedSecret()
+        public byte[] GetSharedSecret()
         {
             return _sharedSecret;
         }

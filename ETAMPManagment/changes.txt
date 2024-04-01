@@ -1,0 +1,2264 @@
+diff --git a/ETAMPManagment/ETAMP/Base/ETAMPBase.cs b/ETAMPManagment/ETAMP/Base/ETAMPBase.cs
+index 3142e3b..2653af5 100644
+--- a/ETAMPManagment/ETAMP/Base/ETAMPBase.cs
++++ b/ETAMPManagment/ETAMP/Base/ETAMPBase.cs
+@@ -48,12 +48,11 @@ namespace ETAMPManagment.ETAMP.Base
+         public virtual ETAMPModel CreateETAMPModel<T>(string updateType, T payload, double version = 1) where T : BasePayload
+         {
+             Guid messageId = Guid.NewGuid();
+-            string token = CreateEtampData(messageId.ToString(), payload);
+             return new()
+             {
+                 Id = messageId,
+                 Version = version,
+-                Token = token,
++                Token = CreateEtampData(messageId.ToString(), payload),
+                 UpdateType = updateType
+             };
+         }
+diff --git a/ETAMPManagment/ETAMP/Base/ETAMPSign.cs b/ETAMPManagment/ETAMP/Base/ETAMPSign.cs
+index 17a83a6..26f5d52 100644
+--- a/ETAMPManagment/ETAMP/Base/ETAMPSign.cs
++++ b/ETAMPManagment/ETAMP/Base/ETAMPSign.cs
+@@ -1,4 +1,5 @@
+-∩╗┐using ETAMPManagment.Models;
++∩╗┐using ETAMPManagment.ETAMP.Base.Interfaces;
++using ETAMPManagment.Models;
+ using ETAMPManagment.Services.Interfaces;
+ using ETAMPManagment.Wrapper.Interfaces;
+ using Newtonsoft.Json;
+diff --git a/ETAMPManagment/ETAMPBuilder.cs b/ETAMPManagment/ETAMPBuilder.cs
+index 5ec22f8..3620087 100644
+--- a/ETAMPManagment/ETAMPBuilder.cs
++++ b/ETAMPManagment/ETAMPBuilder.cs
+@@ -2,93 +2,67 @@
+ using ETAMPManagment.ETAMP.Base.Interfaces;
+ using ETAMPManagment.ETAMP.Encrypted;
+ using ETAMPManagment.ETAMP.Encrypted.Interfaces;
+-using ETAMPManagment.Factories.Interfaces;
+ using ETAMPManagment.Interfaces;
+ using ETAMPManagment.Models;
+ using ETAMPManagment.Utils;
++using Microsoft.Extensions.DependencyInjection;
+ 
+ namespace ETAMPManagment
+ {
+-    /// <summary>
+-    /// A builder class for creating and configuring ETAMP (Encrypted Token And Message Protocol) models.
+-    /// Utilizes a factory pattern to dynamically generate ETAMP models based on specified types,
+-    /// such as base, signed, encrypted, and encrypted and signed models.
+-    /// </summary>
+-    /// <remarks>
+-    /// Initializes a new instance of the <see cref="ETAMPBuilder"/> class using a factory to generate ETAMP models.
+-    /// </remarks>
+-    /// <param name="factory">The factory responsible for creating ETAMP data generators.</param>
+-    public class ETAMPBuilder(IETAMPFactory<ETAMPType> factory) : IETAMPBuilder
++    public class ETAMPBuilder : IETAMPBuilder<ETAMPType>
+     {
+-        private ETAMPModel _model = new();
++        private ETAMPModel? _model;
++        private readonly IServiceProvider _serviceProvider;
+ 
+-        /// <summary>
+-        /// Creates a basic ETAMP model with the specified update type, payload, and version.
+-        /// </summary>
+-        /// <typeparam name="T">The type of the payload included in the ETAMP model.</typeparam>
+-        /// <param name="updateType">The update type identifier for the ETAMP model.</param>
+-        /// <param name="payload">The payload data to be included in the model.</param>
+-        /// <param name="version">The version number of the ETAMP protocol to use.</param>
+-        /// <returns>The <see cref="ETAMPBuilder"/> instance for chaining further configuration calls.</returns>
+-        public virtual ETAMPBuilder CreateETAMP<T>(string updateType, T payload, double version = 1) where T : BasePayload
++        public ETAMPBuilder(IServiceProvider serviceProvider)
+         {
+-            var generator = factory.CreateGenerator(ETAMPType.Base) as IETAMPBase;
+-            _model = generator?.CreateETAMPModel(updateType, payload, version);
+-            return this;
++            _serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
+         }
+ 
+-        /// <summary>
+-        /// Creates a signed ETAMP model using the specified update type, payload, version, and a signing wrapper.
+-        /// </summary>
+-        /// <typeparam name="T">The payload type.</typeparam>
+-        /// <param name="updateType">The update type identifier.</param>
+-        /// <param name="payload">The payload data.</param>
+-        /// <param name="version">The protocol version.</param>
+-        /// <returns>The builder instance for chaining.</returns>
+-        public virtual ETAMPBuilder CreateSignETAMP<T>(string updateType, T payload, double version = 1) where T : BasePayload
++        public ETAMPModel Build()
+         {
+-            var generator = factory.CreateGenerator(ETAMPType.Sign) as ETAMPSign;
+-            _model = generator?.CreateETAMPModel(updateType, payload, version);
+-            return this;
+-        }
++            if (_model == null)
++            {
++                throw new InvalidOperationException("ETAMP model is not created yet.");
++            }
+ 
+-        /// <summary>
+-        /// Creates an encrypted ETAMP model for enhanced security, specifying the update type, payload, and version.
+-        /// </summary>
+-        /// <typeparam name="T">The payload type.</typeparam>
+-        /// <param name="updateType">The update type identifier.</param>
+-        /// <param name="payload">The payload data.</param>
+-        /// <param name="version">The protocol version.</param>
+-        /// <returns>The builder instance for chaining.</returns>
+-        public virtual ETAMPBuilder CreateEncryptedETAMP<T>(string updateType, T payload, double version = 1) where T : BasePayload
+-        {
+-            var generator = factory.CreateGenerator(ETAMPType.Encrypted) as IETAMPEncrypted;
+-            _model = generator?.CreateEncryptETAMPModel(updateType, payload, version);
+-            return this;
++            return _model;
+         }
+ 
+-        /// <summary>
+-        /// Creates a model that is both encrypted and signed, using provided services for encryption and signing, along with update type, payload, and version.
+-        /// </summary>
+-        /// <typeparam name="T">The payload type.</typeparam>
+-        /// <param name="updateType">The update type identifier.</param>
+-        /// <param name="payload">The payload data.</param>
+-        /// <param name="version">The protocol version.</param>
+-        /// <returns>The builder instance for chaining.</returns>
+-        public virtual ETAMPBuilder CreateEncryptedSignETAMP<T>(string updateType, T payload, double version = 1) where T : BasePayload
++        public virtual ETAMPBuilder CreateETAMP<T>(ETAMPType type, string updateType, T payload, double version = 1) where T : BasePayload
+         {
+-            var generator = factory.CreateGenerator(ETAMPType.EncryptedSign) as ETAMPEncryptedSigned;
+-            _model = generator?.CreateEncryptETAMPModel(updateType, payload, version);
+-            return this;
+-        }
++            switch (type)
++            {
++                case ETAMPType.Base:
++                    IETAMPBase etampBase = _serviceProvider.GetRequiredService<IETAMPBase>();
++                    ArgumentNullException.ThrowIfNull(etampBase, nameof(etampBase));
++                    _model = etampBase.CreateETAMPModel(updateType, payload, version);
++                    break;
+ 
+-        /// <summary>
+-        /// Finalizes the building process and returns the configured ETAMP model.
+-        /// </summary>
+-        /// <returns>The configured ETAMP model.</returns>
+-        public virtual ETAMPModel Build()
+-        {
+-            return _model;
++                case ETAMPType.Sign:
++                    ETAMPSign sign = _serviceProvider.GetRequiredService<ETAMPSign>();
++                    ArgumentNullException.ThrowIfNull(sign, nameof(sign));
++                    _model = sign.CreateETAMPModel(updateType, payload, version);
++                    break;
++
++                case ETAMPType.Encrypted:
++                    IETAMPEncrypted encrypted = _serviceProvider.GetRequiredService<IETAMPEncrypted>();
++                    ArgumentNullException.ThrowIfNull(encrypted, nameof(encrypted));
++                    _model = encrypted.CreateEncryptETAMPModel(updateType, payload, version);
++
++                    break;
++
++                case ETAMPType.EncryptedSign:
++                    ETAMPEncryptedSigned encryptedSigned = _serviceProvider.GetRequiredService<ETAMPEncryptedSigned>();
++                    ArgumentNullException.ThrowIfNull(encryptedSigned, nameof(encryptedSigned));
++                    _model = encryptedSigned.CreateEncryptETAMPModel(updateType, payload, version);
++
++                    break;
++
++                default:
++                    throw new ArgumentException($"Unsupported ETAMP type: {type}");
++            }
++            return this;
+         }
+     }
+ }
+\ No newline at end of file
+diff --git a/ETAMPManagment/ETAMPManagment.csproj b/ETAMPManagment/ETAMPManagment.csproj
+index 4fb3251..f5f46c2 100644
+--- a/ETAMPManagment/ETAMPManagment.csproj
++++ b/ETAMPManagment/ETAMPManagment.csproj
+@@ -7,6 +7,7 @@
+ 		<PackageReadmeFile>README.md</PackageReadmeFile>
+ 	</PropertyGroup>
+ 	<ItemGroup>
++		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.1" />
+ 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+ 		<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.4.1" />
+ 	</ItemGroup>
+@@ -24,7 +25,7 @@
+ 
+ 	<PropertyGroup>
+ 		<PackageId>ETAMP</PackageId>
+-		<Version>1.4.0</Version>
++		<Version>1.5.0</Version>
+ 		<Authors>Maksym Nikitiuk</Authors>
+ 		<Description>
+ 			ETAMP (Encrypted Token And Message Protocol) is a lightweight .NET library designed for enhancing message and transaction security within applications. It incorporates advanced cryptographic techniques, including JWT (JSON Web Tokens), ECDSA (Elliptic Curve Digital Signature Algorithm), and optional ECDH (Elliptic Curve Diffie-Hellman) encryption, to provide robust protection against unauthorized access and data tampering. Ideal for systems requiring secure data transmission, ETAMP is easy to integrate and ensures the highest levels of data integrity and confidentiality.
+@@ -39,7 +40,7 @@
+ 		<PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
+ 		<IncludeSymbols>True</IncludeSymbols>
+ 		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
+-		<Copyright>https://github.com/max2020204/ETAMP/blob/master/LICENSE.txt</Copyright>
++		<Copyright>Copyright (c) 2024 Maksym Nikitiuk</Copyright>
+ 		<NeutralLanguage>en-US</NeutralLanguage>
+ 	</PropertyGroup>
+ </Project>
+diff --git a/ETAMPManagment/Encryption/EciesEncryptionService.cs b/ETAMPManagment/Encryption/EciesEncryptionService.cs
+index 17f5aaa..6c2faa2 100644
+--- a/ETAMPManagment/Encryption/EciesEncryptionService.cs
++++ b/ETAMPManagment/Encryption/EciesEncryptionService.cs
+@@ -1,5 +1,4 @@
+ ∩╗┐using ETAMPManagment.Encryption.Interfaces;
+-using ETAMPManagment.Factories.Interfaces;
+ using System.Text;
+ 
+ namespace ETAMPManagment.Encryption
+@@ -14,11 +13,13 @@ namespace ETAMPManagment.Encryption
+     /// <param name="factory">The factory to create the encryption service based on a specified encryption type.</param>
+     /// <param name="encryptionType">The type of encryption to be used by the encryption service.</param>
+     /// <exception cref="ArgumentNullException">Thrown if <paramref name="keyExchanger"/> or the encryption service creation fails.</exception>
+-    public class EciesEncryptionService(IKeyExchanger keyExchanger, IEncryptionServiceFactory factory, string encryptionType) : IEciesEncryptionService
++    public class EciesEncryptionService(IKeyExchanger keyExchanger, IEncryptionService encryptionService) : IEciesEncryptionService
+     {
+-        private readonly IKeyExchanger _keyExchanger = keyExchanger ?? throw new ArgumentNullException(nameof(keyExchanger));
++        private readonly IKeyExchanger _keyExchanger = keyExchanger ??
++            throw new ArgumentNullException(nameof(keyExchanger));
+ 
+-        private readonly IEncryptionService _encryptionService = factory.CreateEncryptionService(encryptionType) ?? throw new ArgumentNullException("Encryption service creation failed.");
++        private readonly IEncryptionService _encryptionService = encryptionService ??
++            throw new ArgumentNullException("Encryption service creation failed.");
+ 
+         /// <summary>
+         /// Encrypts a given message using ECIES.
+diff --git a/ETAMPManagment/Encryption/Interfaces/IKeyPairProvider.cs b/ETAMPManagment/Encryption/Interfaces/IKeyPairProvider.cs
+index 1bb7d01..e6c4e41 100644
+--- a/ETAMPManagment/Encryption/Interfaces/IKeyPairProvider.cs
++++ b/ETAMPManagment/Encryption/Interfaces/IKeyPairProvider.cs
+@@ -1,41 +1,38 @@
+-∩╗┐using System.Security.Cryptography;
++∩╗┐using ETAMPManagment.Models;
++using System.Security.Cryptography;
+ 
+ namespace ETAMPManagment.Encryption.Interfaces
+ {
+     /// <summary>
+-    /// Provides functionality for managing an Elliptic Curve Diffie-Hellman (ECDH) key pair and accessing its components.
++    /// Defines a contract for managing Elliptic Curve Diffie-Hellman (ECDH) key pairs and facilitates access to their components,
++    /// including the public and private keys. This interface abstracts the functionality necessary to work with ECDH keys
++    /// in various cryptographic operations.
+     /// </summary>
+     public interface IKeyPairProvider : IDisposable
+     {
+         /// <summary>
+-        /// Gets the private key of the ECDH key pair in a string format.
++        /// Gets the key model provider that contains the private and public keys in PEM format.
+         /// </summary>
+         /// <value>
+-        /// The private key as a string.
++        /// The <see cref="ECDKeyModelProvider"/> that holds the private and public key information.
+         /// </value>
+-        string PrivateKey { get; }
++        ECDKeyModelProvider KeyModelProvider { get; }
+ 
+         /// <summary>
+-        /// Gets the public key of the ECDH key pair in a string format.
++        /// Gets the public key component of the ECDH key pair.
+         /// </summary>
+         /// <value>
+-        /// The public key as a string.
+-        /// </value>
+-        string PublicKey { get; }
+-
+-        /// <summary>
+-        /// Gets the public key of the ECDH key pair as an <see cref="ECDiffieHellmanPublicKey"/>.
+-        /// </summary>
+-        /// <value>
+-        /// The public key as an <see cref="ECDiffieHellmanPublicKey"/>.
++        /// The public key as an <see cref="ECDiffieHellmanPublicKey"/>, which can be used in cryptographic operations
++        /// such as key agreement or signature verification.
+         /// </value>
+         ECDiffieHellmanPublicKey HellmanPublicKey { get; }
+ 
+         /// <summary>
+-        /// Gets the <see cref="ECDiffieHellman"/> instance representing the ECDH key pair.
++        /// Retrieves the underlying <see cref="ECDiffieHellman"/> instance representing the ECDH key pair,
++        /// allowing for direct cryptographic operations such as key exchange.
+         /// </summary>
+         /// <returns>
+-        /// An <see cref="ECDiffieHellman"/> instance used for cryptographic operations.
++        /// An <see cref="ECDiffieHellman"/> instance representing the ECDH key pair, suitable for cryptographic operations.
+         /// </returns>
+         ECDiffieHellman GetECDiffieHellman();
+     }
+diff --git a/ETAMPManagment/Encryption/KeyExchanger.cs b/ETAMPManagment/Encryption/KeyExchanger.cs
+index 1e37d72..b4d358d 100644
+--- a/ETAMPManagment/Encryption/KeyExchanger.cs
++++ b/ETAMPManagment/Encryption/KeyExchanger.cs
+@@ -17,7 +17,8 @@ namespace ETAMPManagment.Encryption
+         /// <summary>
+         /// Provides access to the key pair used in the ECDH algorithm.
+         /// </summary>
+-        private readonly IKeyPairProvider _keyProvider = keyPairProvider ?? throw new ArgumentNullException(nameof(keyPairProvider));
++        private readonly IKeyPairProvider _keyProvider = keyPairProvider ??
++            throw new ArgumentNullException(nameof(keyPairProvider));
+ 
+         /// <summary>
+         /// Derives a key using a hash function from the given public key and optional prepended or appended data.
+@@ -27,7 +28,7 @@ namespace ETAMPManagment.Encryption
+         /// <param name="secretPrepend">Optional data to prepend to the derived secret before hashing.</param>
+         /// <param name="secretAppend">Optional data to append to the derived secret before hashing.</param>
+         /// <returns>A byte array representing the derived key.</returns>
+-        public virtual byte[] DeriveKeyHash(ECDiffieHellmanPublicKey publicKey, HashAlgorithmName hash, byte[]? secretPrepend, byte[]? secretAppend)
++        public byte[] DeriveKeyHash(ECDiffieHellmanPublicKey publicKey, HashAlgorithmName hash, byte[]? secretPrepend, byte[]? secretAppend)
+         {
+             ArgumentNullException.ThrowIfNull(publicKey);
+             return _sharedSecret = _keyProvider.GetECDiffieHellman().DeriveKeyFromHash(publicKey, hash, secretPrepend, secretAppend);
+@@ -38,7 +39,7 @@ namespace ETAMPManagment.Encryption
+         /// </summary>
+         /// <param name="publicKey">The public key of the other party.</param>
+         /// <returns>A byte array representing the derived key material.</returns>
+-        public virtual byte[] DeriveKey(ECDiffieHellmanPublicKey publicKey)
++        public byte[] DeriveKey(ECDiffieHellmanPublicKey publicKey)
+         {
+             ArgumentNullException.ThrowIfNull(publicKey);
+             return _sharedSecret = _keyProvider.GetECDiffieHellman().DeriveKeyMaterial(publicKey);
+@@ -53,7 +54,7 @@ namespace ETAMPManagment.Encryption
+         /// <param name="secretPrepend">Optional data to prepend to the derived secret before applying HMAC.</param>
+         /// <param name="secretAppend">Optional data to append to the derived secret before applying HMAC.</param>
+         /// <returns>A byte array representing the derived key.</returns>
+-        public virtual byte[] DeriveKeyHmac(ECDiffieHellmanPublicKey publicKey, HashAlgorithmName hash, byte[]? hmacKey, byte[]? secretPrepend, byte[]? secretAppend)
++        public byte[] DeriveKeyHmac(ECDiffieHellmanPublicKey publicKey, HashAlgorithmName hash, byte[]? hmacKey, byte[]? secretPrepend, byte[]? secretAppend)
+         {
+             ArgumentNullException.ThrowIfNull(publicKey);
+             return _sharedSecret = _keyProvider.GetECDiffieHellman().DeriveKeyFromHmac(publicKey, hash, hmacKey, secretPrepend, secretAppend);
+@@ -64,7 +65,7 @@ namespace ETAMPManagment.Encryption
+         /// </summary>
+         /// <param name="otherPartyPublicKey">The raw byte array of the other party's public key.</param>
+         /// <returns>A byte array representing the derived key material.</returns>
+-        public virtual byte[] DeriveKey(byte[] otherPartyPublicKey)
++        public byte[] DeriveKey(byte[] otherPartyPublicKey)
+         {
+             ArgumentNullException.ThrowIfNull(otherPartyPublicKey);
+             ECDiffieHellman eCDiffieHellman = ECDiffieHellman.Create();
+@@ -76,7 +77,7 @@ namespace ETAMPManagment.Encryption
+         /// Retrieves the shared secret generated from the key exchange process.
+         /// </summary>
+         /// <returns>A byte array representing the shared secret.</returns>
+-        public virtual byte[] GetSharedSecret()
++        public byte[] GetSharedSecret()
+         {
+             return _sharedSecret;
+         }
+diff --git a/ETAMPManagment/Encryption/KeyPairProvider.cs b/ETAMPManagment/Encryption/KeyPairProvider.cs
+index a71ef21..fffe10f 100644
+--- a/ETAMPManagment/Encryption/KeyPairProvider.cs
++++ b/ETAMPManagment/Encryption/KeyPairProvider.cs
+@@ -1,4 +1,5 @@
+ ∩╗┐using ETAMPManagment.Encryption.Interfaces;
++using ETAMPManagment.Models;
+ using System.Security.Cryptography;
+ 
+ namespace ETAMPManagment.Encryption
+@@ -9,103 +10,105 @@ namespace ETAMPManagment.Encryption
+     public class KeyPairProvider : IKeyPairProvider
+     {
+         /// <summary>
+-        /// Gets the private key in PEM format.
++        /// Provides access to the model provider which contains the public and private keys.
+         /// </summary>
+-        public string PrivateKey { get; }
++        public ECDKeyModelProvider KeyModelProvider { get; }
+ 
+-        /// <summary>
+-        /// Gets the public key in PEM format.
+-        /// </summary>
+-        public string PublicKey { get; }
+-
+-        /// <summary>
+-        /// Backing field for the ECDH algorithm implementation.
+-        /// </summary>
+         private readonly ECDiffieHellman _eCDiffieHellman;
+ 
+         /// <summary>
+-        /// Gets the public key component of the ECDH key pair.
++        /// Gets the public key component of the ECDH key pair, allowing for public key exchange operations.
+         /// </summary>
+         public ECDiffieHellmanPublicKey HellmanPublicKey => _eCDiffieHellman.PublicKey;
+ 
+         /// <summary>
+-        /// Initializes a new instance of the KeyPairProvider class using the default ECDH algorithm parameters.
++        /// Initializes a new instance of the KeyPairProvider class using the default ECDH algorithm parameters,
++        /// automatically generating a new public/private key pair.
+         /// </summary>
+         public KeyPairProvider()
+         {
+             _eCDiffieHellman = ECDiffieHellman.Create();
+-            PrivateKey = _eCDiffieHellman.ExportECPrivateKeyPem();
+-            PublicKey = _eCDiffieHellman.ExportSubjectPublicKeyInfoPem();
++            KeyModelProvider = new ECDKeyModelProvider
++            {
++                PrivateKey = _eCDiffieHellman.ExportECPrivateKeyPem(),
++                PublicKey = _eCDiffieHellman.ExportSubjectPublicKeyInfoPem()
++            };
+         }
+ 
+         /// <summary>
+-        /// Initializes a new instance of the KeyPairProvider class with a specific instance of ECDiffieHellman.
++        /// Initializes a new instance of the KeyPairProvider class with a specific instance of ECDiffieHellman,
++        /// allowing for custom configuration and use of an existing ECDiffieHellman instance.
+         /// </summary>
+-        /// <param name="ecDiffieHellman">An instance of ECDiffieHellman to be used for cryptographic operations.</param>
++        /// <param name="ecDiffieHellman">An existing instance of ECDiffieHellman for cryptographic operations.</param>
+         public KeyPairProvider(ECDiffieHellman ecDiffieHellman)
+         {
+-            _eCDiffieHellman = ecDiffieHellman;
+-            PrivateKey = _eCDiffieHellman.ExportECPrivateKeyPem();
+-            PublicKey = _eCDiffieHellman.ExportSubjectPublicKeyInfoPem();
++            _eCDiffieHellman = ecDiffieHellman ?? throw new ArgumentNullException(nameof(ecDiffieHellman));
++            KeyModelProvider = new ECDKeyModelProvider
++            {
++                PrivateKey = _eCDiffieHellman.ExportECPrivateKeyPem(),
++                PublicKey = _eCDiffieHellman.ExportSubjectPublicKeyInfoPem()
++            };
+         }
+ 
++        // Additional constructors as necessary...
++
+         /// <summary>
+-        /// Initializes a new instance of the KeyPairProvider class with specific EC parameters.
++        /// Initializes a new instance of the KeyPairProvider class using a public key in byte array format.
++        /// This allows for the creation of a key pair provider based on an external public key, typically used for
++        /// cryptographic operations like key exchange.
+         /// </summary>
+-        /// <param name="parameters">The EC parameters to be used for the ECDH key pair generation.</param>
+-        public KeyPairProvider(ECParameters parameters)
++        /// <param name="publicKey">The public key as a byte array.</param>
++        public KeyPairProvider(byte[] publicKey)
+         {
+-            _eCDiffieHellman = ECDiffieHellman.Create(parameters);
+-            PrivateKey = _eCDiffieHellman.ExportECPrivateKeyPem();
+-            PublicKey = _eCDiffieHellman.ExportSubjectPublicKeyInfoPem();
++            ArgumentNullException.ThrowIfNull(publicKey, nameof(publicKey));
++
++            _eCDiffieHellman = ECDiffieHellman.Create();
++            _eCDiffieHellman.ImportSubjectPublicKeyInfo(publicKey, out _);
++            KeyModelProvider = new ECDKeyModelProvider
++            {
++                PublicKey = _eCDiffieHellman.ExportSubjectPublicKeyInfoPem()
++            };
+         }
+ 
+         /// <summary>
+-        /// Initializes a new instance of the KeyPairProvider class with a specific ECCurve.
++        /// Initializes a new instance of the KeyPairProvider class using specified elliptic curve parameters.
++        /// This constructor allows for precise control over the elliptic curve characteristics used in the
++        /// Elliptic Curve Diffie-Hellman (ECDH) key pair generation, enabling the creation of a key pair with
++        /// custom curve parameters.
+         /// </summary>
+-        /// <param name="curve">The curve to be used for ECDH key pair generation.</param>
+-        public KeyPairProvider(ECCurve curve)
++        /// <param name="parameters">The EC parameters defining the elliptic curve and key pair characteristics.</param>
++        public KeyPairProvider(ECParameters parameters)
+         {
+-            _eCDiffieHellman = ECDiffieHellman.Create(curve);
+-            PrivateKey = _eCDiffieHellman.ExportPkcs8PrivateKeyPem();
+-            PublicKey = _eCDiffieHellman.ExportSubjectPublicKeyInfoPem();
++            _eCDiffieHellman = ECDiffieHellman.Create(parameters);
++            KeyModelProvider = new ECDKeyModelProvider
++            {
++                PrivateKey = _eCDiffieHellman.ExportECPrivateKeyPem(),
++                PublicKey = _eCDiffieHellman.ExportSubjectPublicKeyInfoPem()
++            };
+         }
+ 
+         /// <summary>
+-        /// Initializes a new instance of the KeyPairProvider class using a specified public key.
++        /// Initializes a new instance of the KeyPairProvider class using a specific elliptic curve.
++        /// This constructor allows the creation of an Elliptic Curve Diffie-Hellman (ECDH) key pair based on the provided curve,
++        /// facilitating the use of custom curve parameters for enhanced cryptographic flexibility and security.
+         /// </summary>
+-        /// <param name="publicKey">
+-        /// The public key in binary format to be used for the Elliptic Curve Diffie-Hellman (ECDH) key pair.
+-        /// This public key is used to initialize the ECDH algorithm instance within the provider.
+-        /// </param>
+-        /// <remarks>
+-        /// This constructor is particularly useful when you have a public key in binary format
+-        /// and want to create a KeyPairProvider instance that can be used for cryptographic operations
+-        /// with this public key. The ECDH algorithm instance is created and the provided public key
+-        /// is imported into it. The PublicKey property of the provider will then contain
+-        /// the PEM representation of the imported public key.
+-        /// </remarks>
+-        /// <exception cref="ArgumentNullException">
+-        /// Thrown if the <paramref name="publicKey"/> parameter is null.
+-        /// </exception>
+-        /// <exception cref="CryptographicException">
+-        /// Thrown if the <paramref name="publicKey"/> parameter is not a valid public key or
+-        /// if the public key cannot be imported into the ECDH algorithm instance.
+-        /// </exception>
+-        public KeyPairProvider(byte[] publicKey)
++        /// <param name="curve">The elliptic curve to be used for ECDH key pair generation. This parameter specifies the curve parameters,
++        /// including the curve type and any associated domain parameters required for initializing the ECDH key pair.</param>
++        public KeyPairProvider(ECCurve curve)
+         {
+-            ArgumentNullException.ThrowIfNull(publicKey);
+-
+-            _eCDiffieHellman = ECDiffieHellman.Create();
+-            _eCDiffieHellman.ImportSubjectPublicKeyInfo(publicKey, out _);
+-            PublicKey = _eCDiffieHellman.ExportSubjectPublicKeyInfoPem();
++            _eCDiffieHellman = ECDiffieHellman.Create(curve);
++            KeyModelProvider = new ECDKeyModelProvider
++            {
++                PrivateKey = _eCDiffieHellman.ExportPkcs8PrivateKeyPem(),
++                PublicKey = _eCDiffieHellman.ExportSubjectPublicKeyInfoPem()
++            };
+         }
+ 
+         /// <summary>
+-        /// Provides access to the underlying ECDiffieHellman instance for cryptographic operations.
++        /// Provides access to the underlying ECDiffieHellman instance for advanced cryptographic operations.
+         /// </summary>
+         /// <returns>The ECDiffieHellman instance used by this provider.</returns>
+-        public virtual ECDiffieHellman GetECDiffieHellman()
++        public ECDiffieHellman GetECDiffieHellman()
+         {
+             return _eCDiffieHellman;
+         }
+@@ -113,7 +116,7 @@ namespace ETAMPManagment.Encryption
+         /// <summary>
+         /// Releases all resources used by the KeyPairProvider.
+         /// </summary>
+-        public virtual void Dispose()
++        public void Dispose()
+         {
+             _eCDiffieHellman.Dispose();
+         }
+diff --git a/ETAMPManagment/Factories/ETAMPFactory.cs b/ETAMPManagment/Factories/ETAMPFactory.cs
+deleted file mode 100644
+index fa13148..0000000
+--- a/ETAMPManagment/Factories/ETAMPFactory.cs
++++ /dev/null
+@@ -1,64 +0,0 @@
+-∩╗┐using ETAMPManagment.ETAMP.Base.Interfaces;
+-using ETAMPManagment.Factories.Interfaces;
+-using ETAMPManagment.Utils;
+-
+-namespace ETAMPManagment.Factories
+-{
+-    /// <summary>
+-    /// A factory class for creating ETAMP (Encrypted Token And Message Protocol) data generators.
+-    /// This class manages a registry of ETAMP generators, allowing dynamic creation of ETAMP data based on specific types.
+-    /// </summary>
+-    public class ETAMPFactory : IETAMPFactory<ETAMPType>
+-    {
+-        /// <summary>
+-        /// Gets the mapping of ETAMP types to their corresponding data generator functions.
+-        /// </summary>
+-        public Dictionary<ETAMPType, Func<IETAMPData>> Factory { get; }
+-
+-        /// <summary>
+-        /// Initializes a new instance of the <see cref="ETAMPFactory"/> class.
+-        /// The constructor sets up an empty dictionary ready to register ETAMP data generators.
+-        /// </summary>
+-        public ETAMPFactory() => Factory = new Dictionary<ETAMPType, Func<IETAMPData>>();
+-
+-        /// <summary>
+-        /// Creates an ETAMP data generator based on the specified ETAMP type.
+-        /// </summary>
+-        /// <param name="type">The ETAMP type for which to create a data generator.</param>
+-        /// <returns>The ETAMP data generator associated with the specified type.</returns>
+-        /// <exception cref="ArgumentException">Thrown if the specified ETAMP type is not supported or has no registered generator.</exception>
+-        public virtual IETAMPData CreateGenerator(ETAMPType type)
+-        {
+-            if (Factory.TryGetValue(type, out var func))
+-                return func();
+-
+-            throw new ArgumentException($"Unsupported ETAMP generator type: {type}", nameof(type));
+-        }
+-
+-        /// <summary>
+-        /// Registers a generator function for a specified ETAMP type.
+-        /// This method allows dynamic addition of ETAMP data generators to the factory.
+-        /// </summary>
+-        /// <param name="type">The ETAMP type to register the generator for.</param>
+-        /// <param name="generator">The generator function that creates an instance of <see cref="IETAMPData"/>.</param>
+-        /// <exception cref="ArgumentException">Thrown if a generator for the specified ETAMP type is already registered.</exception>
+-        public virtual void RegisterGenerator(ETAMPType type, Func<IETAMPData> generator)
+-        {
+-            if (Factory.ContainsKey(type))
+-                throw new ArgumentException($"A generator for the ETAMP type '{type}' is already registered.", nameof(type));
+-
+-            Factory[type] = generator;
+-        }
+-
+-        /// <summary>
+-        /// Unregisters an ETAMP generator for a specified ETAMP type.
+-        /// This method allows removal of ETAMP data generators from the factory, providing flexibility in managing available generators.
+-        /// </summary>
+-        /// <param name="type">The ETAMP type whose generator is to be unregistered.</param>
+-        /// <returns><c>true</c> if the generator was successfully unregistered; otherwise, <c>false</c>.</returns>
+-        public virtual bool UnregisterETAMPGenerator(ETAMPType type)
+-        {
+-            return Factory.Remove(type);
+-        }
+-    }
+-}
+\ No newline at end of file
+diff --git a/ETAMPManagment/Factories/EncryptionServiceFactory.cs b/ETAMPManagment/Factories/EncryptionServiceFactory.cs
+deleted file mode 100644
+index e93ffad..0000000
+--- a/ETAMPManagment/Factories/EncryptionServiceFactory.cs
++++ /dev/null
+@@ -1,68 +0,0 @@
+-∩╗┐using ETAMPManagment.Encryption.Interfaces;
+-using ETAMPManagment.Factories.Interfaces;
+-
+-namespace ETAMPManagment.Factories
+-{
+-    /// <summary>
+-    /// Factory for creating encryption services based on specified names.
+-    /// This factory maintains a registry of encryption services which can be dynamically registered and created,
+-    /// allowing for flexible encryption service management and instantiation based on runtime requirements.
+-    /// </summary>
+-    public class EncryptionServiceFactory : IEncryptionServiceFactory
+-    {
+-        /// <summary>
+-        /// Gets the dictionary of registered encryption services.
+-        /// Each service is identified by a string name and associated with a function that creates an instance of the service.
+-        /// </summary>
+-        public Dictionary<string, Func<IEncryptionService>> Services { get; }
+-
+-        /// <summary>
+-        /// Initializes a new instance of the <see cref="EncryptionServiceFactory"/> class.
+-        /// </summary>
+-        public EncryptionServiceFactory() => Services = new Dictionary<string, Func<IEncryptionService>>();
+-
+-        /// <summary>
+-        /// Registers an encryption service in the factory.
+-        /// </summary>
+-        /// <param name="name">The name of the encryption service to be registered.</param>
+-        /// <param name="serviceCreator">The function used to create an instance of the encryption service.</param>
+-        /// <exception cref="ArgumentException">Thrown when a service with the same name is already registered.</exception>
+-        public virtual void RegisterEncryptionService(string name, Func<IEncryptionService> serviceCreator)
+-        {
+-            if (Services.ContainsKey(name))
+-                throw new ArgumentException($"An encryption service with the name '{name}' is already registered.", nameof(name));
+-
+-            Services[name] = serviceCreator;
+-        }
+-
+-        /// <summary>
+-        /// Creates an instance of the encryption service based on the provided name.
+-        /// </summary>
+-        /// <param name="name">The name of the encryption service to create.</param>
+-        /// <returns>An instance of the encryption service.</returns>
+-        /// <exception cref="ArgumentException">Thrown when an unsupported encryption service name is provided.</exception>
+-        public virtual IEncryptionService CreateEncryptionService(string name)
+-        {
+-            if (Services.TryGetValue(name, out var serviceCreator))
+-                return serviceCreator();
+-
+-            throw new ArgumentException("Unsupported encryption service: " + name);
+-        }
+-
+-        /// <summary>
+-        /// Unregisters an encryption service from the factory.
+-        /// </summary>
+-        /// <param name="name">The name of the encryption service to be unregistered.</param>
+-        /// <returns><c>true</c> if the service was successfully unregistered; otherwise, <c>false</c>.</returns>
+-        /// <remarks>
+-        /// This method removes the specified encryption service from the registry.
+-        /// If the service is not found, the method returns <c>false</c> and does not throw an exception.
+-        /// This approach allows for safe unregistration without the need for prior checks or exception handling
+-        /// by the caller.
+-        /// </remarks>
+-        public virtual bool UnregisterEncryptionService(string name)
+-        {
+-            return Services.Remove(name);
+-        }
+-    }
+-}
+\ No newline at end of file
+diff --git a/ETAMPManagment/Factories/Interfaces/IETAMPFactory.cs b/ETAMPManagment/Factories/Interfaces/IETAMPFactory.cs
+deleted file mode 100644
+index 0ebe75a..0000000
+--- a/ETAMPManagment/Factories/Interfaces/IETAMPFactory.cs
++++ /dev/null
+@@ -1,37 +0,0 @@
+-∩╗┐using ETAMPManagment.ETAMP.Base.Interfaces;
+-
+-namespace ETAMPManagment.Factories.Interfaces
+-{
+-    /// <summary>
+-    /// Defines a factory for creating ETAMP data generators.
+-    /// </summary>
+-    /// <typeparam name="Type">The type used as a key to register and retrieve ETAMP data generators.</typeparam>
+-    public interface IETAMPFactory<Type>
+-    {
+-        /// <summary>
+-        /// Gets the dictionary containing registered ETAMP data generators.
+-        /// </summary>
+-        Dictionary<Type, Func<IETAMPData>> Factory { get; }
+-
+-        /// <summary>
+-        /// Registers a generator function for creating ETAMP data instances.
+-        /// </summary>
+-        /// <param name="type">The key used to register the generator.</param>
+-        /// <param name="generator">The function that creates an instance of ETAMP data.</param>
+-        void RegisterGenerator(Type type, Func<IETAMPData> generator);
+-
+-        /// <summary>
+-        /// Creates an ETAMP data instance using the registered generator function associated with the specified key.
+-        /// </summary>
+-        /// <param name="type">The key associated with the generator to create an ETAMP data instance.</param>
+-        /// <returns>An instance of ETAMP data created by the generator function.</returns>
+-        IETAMPData CreateGenerator(Type type);
+-
+-        /// <summary>
+-        /// Unregisters the ETAMP data generator associated with the specified key.
+-        /// </summary>
+-        /// <param name="type">The key associated with the generator to be unregistered.</param>
+-        /// <returns>True if the generator was successfully unregistered; otherwise, false.</returns>
+-        bool UnregisterETAMPGenerator(Type type);
+-    }
+-}
+\ No newline at end of file
+diff --git a/ETAMPManagment/Factories/Interfaces/IEncryptionServiceFactory.cs b/ETAMPManagment/Factories/Interfaces/IEncryptionServiceFactory.cs
+deleted file mode 100644
+index 6224cc7..0000000
+--- a/ETAMPManagment/Factories/Interfaces/IEncryptionServiceFactory.cs
++++ /dev/null
+@@ -1,36 +0,0 @@
+-∩╗┐using ETAMPManagment.Encryption.Interfaces;
+-
+-namespace ETAMPManagment.Factories.Interfaces
+-{
+-    /// <summary>
+-    /// Defines a factory for managing and creating instances of encryption services.
+-    /// </summary>
+-    public interface IEncryptionServiceFactory
+-    {
+-        /// <summary>
+-        /// Gets a dictionary mapping service names to their respective factory methods.
+-        /// </summary>
+-        Dictionary<string, Func<IEncryptionService>> Services { get; }
+-
+-        /// <summary>
+-        /// Registers an encryption service with the factory.
+-        /// </summary>
+-        /// <param name="name">The name of the encryption service to register.</param>
+-        /// <param name="serviceCreator">A function that creates an instance of the encryption service.</param>
+-        void RegisterEncryptionService(string name, Func<IEncryptionService> serviceCreator);
+-
+-        /// <summary>
+-        /// Creates an instance of the specified encryption service.
+-        /// </summary>
+-        /// <param name="name">The name of the encryption service to create.</param>
+-        /// <returns>An instance of the specified encryption service.</returns>
+-        IEncryptionService CreateEncryptionService(string name);
+-
+-        /// <summary>
+-        /// Unregisters an encryption service from the factory.
+-        /// </summary>
+-        /// <param name="name">The name of the encryption service to unregister.</param>
+-        /// <returns><c>true</c> if the service was successfully unregistered; otherwise, <c>false</c>.</returns>
+-        bool UnregisterEncryptionService(string name);
+-    }
+-}
+\ No newline at end of file
+diff --git a/ETAMPManagment/Interfaces/IETAMPBuilder.cs b/ETAMPManagment/Interfaces/IETAMPBuilder.cs
+index b818b1a..b5ac080 100644
+--- a/ETAMPManagment/Interfaces/IETAMPBuilder.cs
++++ b/ETAMPManagment/Interfaces/IETAMPBuilder.cs
+@@ -2,55 +2,10 @@
+ 
+ namespace ETAMPManagment.Interfaces
+ {
+-    /// <summary>
+-    /// Defines the contract for a builder that creates and configures ETAMP (Encrypted Token And Message Protocol) models.
+-    /// </summary>
+-    public interface IETAMPBuilder
++    public interface IETAMPBuilder<Type> where Type : struct, Enum
+     {
+-        /// <summary>
+-        /// Builds and returns the configured ETAMP model.
+-        /// </summary>
+-        /// <returns>The configured ETAMP model after applying all specified configurations.</returns>
+         ETAMPModel Build();
+ 
+-        /// <summary>
+-        /// Creates and configures an encrypted ETAMP model.
+-        /// </summary>
+-        /// <typeparam name="T">The type of the payload included in the ETAMP model.</typeparam>
+-        /// <param name="updateType">The update type identifier for the ETAMP model.</param>
+-        /// <param name="payload">The payload data to be included in the model.</param>
+-        /// <param name="version">The version number of the ETAMP protocol to use.</param>
+-        /// <returns>The builder instance for chaining further configuration calls.</returns>
+-        ETAMPBuilder CreateEncryptedETAMP<T>(string updateType, T payload, double version = 1) where T : BasePayload;
+-
+-        /// <summary>
+-        /// Creates and configures a model that is both encrypted and signed, enhancing the security and integrity of the ETAMP model.
+-        /// </summary>
+-        /// <typeparam name="T">The payload type.</typeparam>
+-        /// <param name="updateType">The update type identifier.</param>
+-        /// <param name="payload">The payload data.</param>
+-        /// <param name="version">The protocol version.</param>
+-        /// <returns>The builder instance for chaining.</returns>
+-        ETAMPBuilder CreateEncryptedSignETAMP<T>(string updateType, T payload, double version = 1) where T : BasePayload;
+-
+-        /// <summary>
+-        /// Creates and configures a basic ETAMP model.
+-        /// </summary>
+-        /// <typeparam name="T">The type of the payload included in the ETAMP model.</typeparam>
+-        /// <param name="updateType">The update type identifier for the ETAMP model.</param>
+-        /// <param name="payload">The payload data to be included in the model.</param>
+-        /// <param name="version">The version number of the ETAMP protocol to use.</param>
+-        /// <returns>The builder instance for chaining further configuration calls.</returns>
+-        ETAMPBuilder CreateETAMP<T>(string updateType, T payload, double version = 1) where T : BasePayload;
+-
+-        /// <summary>
+-        /// Creates and configures a signed ETAMP model.
+-        /// </summary>
+-        /// <typeparam name="T">The payload type.</typeparam>
+-        /// <param name="updateType">The update type identifier.</param>
+-        /// <param name="payload">The payload data.</param>
+-        /// <param name="version">The protocol version.</param>
+-        /// <returns>The builder instance for chaining.</returns>
+-        ETAMPBuilder CreateSignETAMP<T>(string updateType, T payload, double version = 1) where T : BasePayload;
++        ETAMPBuilder CreateETAMP<T>(Type type, string updateType, T payload, double version = 1) where T : BasePayload;
+     }
+ }
+\ No newline at end of file
+diff --git a/ETAMPManagment/Models/ETAMPModel.cs b/ETAMPManagment/Models/ETAMPModel.cs
+index 229da1a..8c6e60a 100644
+--- a/ETAMPManagment/Models/ETAMPModel.cs
++++ b/ETAMPManagment/Models/ETAMPModel.cs
+@@ -1,4 +1,6 @@
+-∩╗┐namespace ETAMPManagment.Models
++∩╗┐using Newtonsoft.Json;
++
++namespace ETAMPManagment.Models
+ {
+     /// <summary>
+     /// Represents the model for the ETAMP (Encrypted Token And Message Protocol) structure.
+@@ -38,5 +40,10 @@
+         /// Gets or sets the signature for the message, adding an additional layer of security by safeguarding the integrity of the message within the ETAMP structure.
+         /// </summary>
+         public string? SignatureMessage { get; set; }
++
++        public override string ToString()
++        {
++            return JsonConvert.SerializeObject(this);
++        }
+     }
+ }
+\ No newline at end of file
+diff --git a/ETAMPManagment/README.md b/ETAMPManagment/README.md
+index 51310c2..2110ae1 100644
+--- a/ETAMPManagment/README.md
++++ b/ETAMPManagment/README.md
+@@ -1,140 +1,104 @@
+ # ETAMP (Encrypted Token And Message Protocol)
+ ## [NuGet Package](https://www.nuget.org/packages/ETAMP/)
+ 
+-ETAMP (Encrypted Token And Message Protocol) is a lightweight .NET library designed for enhancing message and transaction security within applications. It incorporates advanced cryptographic techniques, including JWT (JSON Web Tokens), ECDSA (Elliptic Curve Digital Signature Algorithm), and optional ECDH (Elliptic Curve Diffie-Hellman) encryption, to provide robust protection against unauthorized access and data tampering. Ideal for systems requiring secure data transmission, ETAMP is easy to integrate and ensures the highest levels of data integrity and confidentiality.
++ETAMP (Encrypted Token And Message Protocol) is a versatile .NET library that enhances the security of message and transaction handling in applications. It employs advanced cryptographic methods, including JWT (JSON Web Tokens), ECDSA (Elliptic Curve Digital Signature Algorithm), and ECDH (Elliptic Curve Diffie-Hellman) encryption, ensuring secure and reliable data exchange.
+ 
+ ## Features
+ 
+-- Create and verify JWT tokens using ECDSA
+-- Optional encryption of JWT tokens using ECDH
+-- Message integrity verification using ECDSA digital signatures
+-- Easy integration with existing projects
+-- High scalability and performance
++- Secure JWT creation and verification with ECDSA.
++- Optional ECDH encryption for enhanced token security.
++- Robust ECDSA digital signature for message integrity verification.
++- Flexible integration options with both DI and manual configurations.
++- Performance-optimized for high throughput and scalability.
+ 
+ ## Installation
+ 
+-Install ETAMP via NuGet Package Manager:
++To install ETAMP, use the NuGet Package Manager:
++
+ ```shell
+ Install-Package ETAMP
+ ```
+ 
+ ## Usage
+ 
+-### Creating a Basic ETAMP
+-
+-```csharp
+-using ETAMPManagment;
+-using ETAMPManagment.Factories;
+-using ETAMPManagment.Models;
++ETAMP supports both Dependency Injection (DI) for seamless integration in .NET projects and manual configuration for customized setup.
+ 
+-ISigningCredentialsProvider signingCredentialsProvider = new ECDsaSigningCredentialsProvider()
+-// Create an ETAMP factory
+-var etampFactory = new ETAMPFactory();
+-etampFactory.RegisterGenerator(ETAMPType.Base, () => new ETAMPBase(signingCredentialsProvider));
++### Dependency Injection (DI) Setup
+ 
+-// Create an ETAMP builder
+-var etampBuilder = new ETAMPBuilder(etampFactory);
++1. **Register ETAMP Services in Startup:**
+ 
+-// Create a basic ETAMP
+-var payload = new BasePayload();
+-var etamp = etampBuilder.CreateETAMP("update_type", payload).Build();
+-```
++   In your applicationÆs startup class, register ETAMP services to the services collection:
+ 
+-### Creating a Signed ETAMP
++   ```csharp
++   public void ConfigureServices(IServiceCollection services)
++   {
++       services.AddETAMPServices();
++       // Additional service registrations
++   }
++   ```
+ 
+-```csharp
+-using System.Security.Cryptography;
+-using ETAMPManagment.Wrapper;
++2. **Use ETAMP in Your Application:**
+ 
+-// Create a signature wrapper
+-var ecdsa = ECDsa.Create();
+-var signWrapper = new SignWrapper(ecdsa, HashAlgorithmName.SHA512);
++   Inject `IETAMPBuilder<ETAMPType>` into your classes to create ETAMP instances:
+ 
+-// Create an ETAMP factory
+-var etampFactory = new ETAMPFactory();
+-etampFactory.RegisterGenerator(ETAMPType.Sign, () => new ETAMPSign(signWrapper));
++   ```csharp
++   public class MyService
++   {
++       private readonly IETAMPBuilder<ETAMPType> _etampBuilder;
+ 
+-// Create an ETAMP builder
+-var etampBuilder = new ETAMPBuilder(etampFactory);
++       public MyService(IETAMPBuilder<ETAMPType> etampBuilder)
++       {
++           _etampBuilder = etampBuilder;
++       }
+ 
+-// Create a signed ETAMP
+-var payload = new BasePayload();
+-var etamp = etampBuilder.CreateSignETAMP("update_type", payload).Build();
+-```
++       public ETAMPModel CreateEtamp()
++       {
++           var payload = new BasePayload();
++           return _etampBuilder.CreateETAMP(ETAMPType.Base, "update", payload).Build();
++       }
++   }
++   ```
+ 
+-### Creating an Encrypted ETAMP
++### Manual Factory Setup
+ 
+-```csharp
+-using ETAMPManagment.Encryption;
+-using ETAMPManagment.Factories;
++1. **Instantiate ETAMPFactory:**
+ 
+-// Create an encryption service factory
+-var encryptionServiceFactory = new EncryptionServiceFactory();
+-encryptionServiceFactory.RegisterEncryptionService("AES", () => new AesEncryptionService());
++   Manually create an instance of `ETAMPFactory` and register the necessary generators:
+ 
+-// Create an ETAMP factory
+-var etampFactory = new ETAMPFactory();
+-etampFactory.RegisterGenerator(ETAMPType.Encrypted, () => new ETAMPEncrypted(new EciesEncryptionService(new KeyExchanger(new KeyPairProvider()), encryptionServiceFactory, "AES")));
++   ```csharp
++   var etampFactory = new ETAMPFactory();
++   etampFactory.RegisterGenerator(ETAMPType.Base, () => new ETAMPBase(/* dependencies */));
++   // Register additional generators as needed
++   ```
+ 
+-// Create an ETAMP builder
+-var etampBuilder = new ETAMPBuilder(etampFactory);
++2. **Build ETAMP Instances:**
+ 
+-// Create an encrypted ETAMP
+-var payload = new BasePayload();
+-var etamp = etampBuilder.CreateEncryptedETAMP("update_type", payload).Build();
+-```
++   Use `ETAMPBuilder` with the factory to create ETAMP objects:
+ 
+-### Creating an Encrypted and Signed ETAMP
++   ```csharp
++   var etampBuilder = new ETAMPBuilder(etampFactory);
++   var payload = new BasePayload();
++   var etamp = etampBuilder.CreateETAMP(ETAMPType.Base, "update", payload).Build();
++   ```
+ 
+-```csharp
+-using System.Security.Cryptography;
+-using ETAMPManagment.Encryption;
+-using ETAMPManagment.Factories;
+-using ETAMPManagment.Wrapper;
++### Service Registration in ETAMPFactory
+ 
+-// Create a signature wrapper
+-var ecdsa = ECDsa.Create();
+-var signWrapper = new SignWrapper(ecdsa, HashAlgorithmName.SHA512);
++To dynamically manage ETAMP creation strategies, register services and generators within the `ETAMPFactory`:
+ 
+-// Create an encryption service factory
+-var encryptionServiceFactory = new EncryptionServiceFactory();
+-encryptionServiceFactory.RegisterEncryptionService("AES", () => new AesEncryptionService());
+-
+-// Create an ETAMP factory
++```csharp
+ var etampFactory = new ETAMPFactory();
+-etampFactory.RegisterGenerator(ETAMPType.EncryptedSign, () => new ETAMPEncryptedSigned(signWrapper, new EciesEncryptionService(new KeyExchanger(new KeyPairProvider()), encryptionServiceFactory, "AES")));
+-
+-// Create an ETAMP builder
+-var etampBuilder = new ETAMPBuilder(etampFactory);
+-
+-// Create an encrypted and signed ETAMP
+-var payload = new BasePayload();
+-var etamp = etampBuilder.CreateEncryptedSignETAMP("update_type", payload).Build();
++etampFactory.RegisterGenerator(ETAMPType.Base, () => new ETAMPBase(/* dependencies */));
++etampFactory.RegisterGenerator(ETAMPType.Sign, () => new ETAMPSign(/* dependencies */));
++etampFactory.RegisterGenerator(ETAMPType.Encrypted, () => new ETAMPEncrypted(/* dependencies */));
++etampFactory.RegisterGenerator(ETAMPType.EncryptedSign, () => new ETAMPEncryptedSigned(/* dependencies */));
+ ```
+ 
+-### Validating an ETAMP
++This approach allows for flexibility and scalability in generating different types of ETAMP objects based on the application's needs.
+ 
+-```csharp
+-using ETAMPManagment.Validators;
+-using Microsoft.IdentityModel.Tokens;
+-using System.Security.Cryptography;
+-
+-// Create an ETAMP validator
+-var ecdsa = ECDsa.Create();
+-var tokenSecurityKey = new ECDsaSecurityKey(ecdsa);
+-var jwtValidator = new JwtValidator();
+-var structureValidator = new StructureValidator(jwtValidator);
+-var signatureValidator = new SignatureValidator(new VerifyWrapper(ecdsa, HashAlgorithmName.SHA512));
+-var etampValidator = new ETAMPValidator(jwtValidator, structureValidator, signatureValidator);
+-
+-// Validate the ETAMP
+-var isValid = await etampValidator.ValidateETAMP(etamp.ToString(), "audience", "issuer", tokenSecurityKey);
+-```
+-
+-## License
++## Contributing
+ 
+-This project is licensed under the [MIT License](https://github.com/max2020204/ETAMP/blob/master/LICENSE.txt).
++We welcome contributions to ETAMP! To contribute, please fork the repository, make your changes, and submit a pull request.
+ 
+-## Contributing
++## License
+ 
+-Contributions are welcome! If you're interested in contributing, please feel free to submit pull requests or open issues for bugs and feature requests.
++ETAMP is licensed under the MIT License. See the [LICENSE](https://github.com/max2020204/ETAMP/blob/master/LICENSE.txt) file for more information.
+\ No newline at end of file
+diff --git a/ETAMPManagment/Services/ECDsaSigningCredentialsProvider.cs b/ETAMPManagment/Services/ECDsaSigningCredentialsProvider.cs
+index 1f3c04b..6830c47 100644
+--- a/ETAMPManagment/Services/ECDsaSigningCredentialsProvider.cs
++++ b/ETAMPManagment/Services/ECDsaSigningCredentialsProvider.cs
+@@ -55,7 +55,7 @@ namespace ETAMPManagment.Services
+         /// This method encapsulates the ECDsa instance and the chosen security algorithm into a SigningCredentials object, suitable for use in signing tokens.
+         /// </summary>
+         /// <returns>A new SigningCredentials instance configured with an ECDsaSecurityKey and the specified security algorithm.</returns>
+-        public virtual SigningCredentials CreateSigningCredentials()
++        public SigningCredentials CreateSigningCredentials()
+         {
+             return new SigningCredentials(new ECDsaSecurityKey(_ecdsa), _securityAlgorithm);
+         }
+diff --git a/ETAMPManagment/Wrapper/EcdsaWrapper.cs b/ETAMPManagment/Wrapper/EcdsaWrapper.cs
+deleted file mode 100644
+index 614cd03..0000000
+--- a/ETAMPManagment/Wrapper/EcdsaWrapper.cs
++++ /dev/null
+@@ -1,127 +0,0 @@
+-∩╗┐using ETAMPManagment.Wrapper.Interfaces;
+-using System.Security.Cryptography;
+-
+-namespace ETAMPManagment.Wrapper
+-{
+-    /// <summary>
+-    /// A factory class for creating cryptographic objects such as ECDsa and JwtSecurityTokenHandler.
+-    /// This factory allows for centralized creation and configuration of cryptographic components,
+-    /// facilitating easier management and potential customization of cryptographic operations.
+-    /// </summary>
+-    public class EcdsaWrapper : IEcdsaWrapper
+-    {
+-        /// <summary>
+-        /// Clears the PEM formatting from a private key string.
+-        /// This method removes the standard PEM headers and footers and any newline characters.
+-        /// </summary>
+-        /// <param name="privateKey">The PEM formatted private key string.</param>
+-        /// <returns>A Base64-encoded string representing the private key without PEM formatting.</returns>
+-        public virtual string ClearPEMPrivateKey(string privateKey)
+-        {
+-            return privateKey.Replace("-----BEGIN PRIVATE KEY-----", "")
+-                             .Replace("-----END PRIVATE KEY-----", "")
+-                             .Replace("\n", "")
+-                             .Replace("\r", "");
+-        }
+-
+-        /// <summary>
+-        /// Clears the PEM formatting from a public key string.
+-        /// This method removes the standard PEM headers and footers and any newline characters.
+-        /// </summary>
+-        /// <param name="publicKey">The PEM formatted public key string.</param>
+-        /// <returns>A Base64-encoded string representing the public key without PEM formatting.</returns>
+-        public virtual string ClearPEMPublicKey(string publicKey)
+-        {
+-            return publicKey.Replace("-----BEGIN PUBLIC KEY-----", "")
+-                            .Replace("-----END PUBLIC KEY-----", "")
+-                            .Replace("\n", "")
+-                            .Replace("\r", "");
+-        }
+-
+-        /// <summary>
+-        /// Creates a default ECDsa instance.
+-        /// This method is suitable for scenarios where no specific elliptic curve or public key is required.
+-        /// </summary>
+-        /// <returns>A new instance of ECDsa with default settings.</returns>
+-        public virtual ECDsa CreateECDsa()
+-        {
+-            return ECDsa.Create();
+-        }
+-
+-        /// <summary>
+-        /// Creates an ECDsa instance using a specified elliptic curve.
+-        /// This method allows for custom configuration of ECDsa using a specific curve,
+-        /// providing more control over the cryptographic characteristics.
+-        /// </summary>
+-        /// <param name="curve">The elliptic curve to use for creating the ECDsa instance.</param>
+-        /// <returns>A new instance of ECDsa configured with the specified curve.</returns>
+-        public virtual ECDsa CreateECDsa(ECCurve curve)
+-        {
+-            return ECDsa.Create(curve);
+-        }
+-
+-        /// <summary>
+-        /// Creates an ECDsa instance using a specified public key and elliptic curve.
+-        /// This method is ideal for use cases where both the public key and the elliptic curve are known,
+-        /// allowing for the creation of a pre-configured ECDsa instance.
+-        /// </summary>
+-        /// <param name="publicKey">The public key in Base64 string format.</param>
+-        /// <param name="curve">The elliptic curve to use for the ECDsa instance.</param>
+-        /// <returns>A new instance of ECDsa configured with the specified public key and curve.</returns>
+-        public virtual ECDsa CreateECDsa(string publicKey, ECCurve curve)
+-        {
+-            if (publicKey.Contains('-'))
+-                publicKey = ClearPEMPublicKey(publicKey);
+-
+-            ECDsa ecdsa = ECDsa.Create(curve);
+-            ecdsa.ImportSubjectPublicKeyInfo(Convert.FromBase64String(publicKey), out _);
+-            return ecdsa;
+-        }
+-
+-        /// <summary>
+-        /// Creates an ECDsa instance using a public key as a byte array and a specified elliptic curve.
+-        /// This method is tailored for scenarios where the public key is available in byte array format,
+-        /// enabling direct use of byte array keys for cryptographic operations.
+-        /// </summary>
+-        /// <param name="publicKey">The public key as a byte array.</param>
+-        /// <param name="curve">The elliptic curve to use for the ECDsa instance.</param>
+-        /// <returns>A new instance of ECDsa configured with the specified public key (byte array) and curve.</returns>
+-        public virtual ECDsa CreateECDsa(byte[] publicKey, ECCurve curve)
+-        {
+-            ECDsa ecdsa = ECDsa.Create(curve);
+-            ecdsa.ImportSubjectPublicKeyInfo(publicKey, out _);
+-            return ecdsa;
+-        }
+-
+-        /// <summary>
+-        /// Imports an ECDsa instance using a private key and a specified elliptic curve.
+-        /// </summary>
+-        /// <param name="privateKey">The private key as a byte array, derived from a PEM or PKCS8 format.</param>
+-        /// <param name="curve">The elliptic curve to use with the private key.</param>
+-        /// <returns>An ECDsa instance for cryptographic operations like signing and verifying.</returns>
+-        public virtual ECDsa ImportECDsa(byte[] privateKey, ECCurve curve)
+-        {
+-            ECDsa ecdsa = ECDsa.Create(curve);
+-            ecdsa.ImportPkcs8PrivateKey(privateKey, out _);
+-            return ecdsa;
+-        }
+-
+-        /// <summary>
+-        /// Imports an ECDsa instance using a private key in Base64 string format and a specified elliptic curve.
+-        /// This method allows for the creation of an ECDsa instance using a private key provided as a Base64 string,
+-        /// suitable for scenarios where the private key is stored or transmitted as a string.
+-        /// </summary>
+-        /// <param name="privateKey">The private key in Base64 string format.</param>
+-        /// <param name="curve">The elliptic curve to use for the ECDsa instance.</param>
+-        /// <returns>A new instance of ECDsa configured with the specified private key and curve.</returns>
+-        public virtual ECDsa ImportECDsa(string privateKey, ECCurve curve)
+-        {
+-            if (privateKey.Contains('-'))
+-                privateKey = ClearPEMPrivateKey(privateKey);
+-
+-            ECDsa ecdsa = ECDsa.Create(curve);
+-            ecdsa.ImportPkcs8PrivateKey(Convert.FromBase64String(privateKey), out _);
+-            return ecdsa;
+-        }
+-    }
+-}
+\ No newline at end of file
+diff --git a/ETAMPManagment/Wrapper/Interfaces/IEcdsaWrapper.cs b/ETAMPManagment/Wrapper/Interfaces/IEcdsaWrapper.cs
+deleted file mode 100644
+index cd67b68..0000000
+--- a/ETAMPManagment/Wrapper/Interfaces/IEcdsaWrapper.cs
++++ /dev/null
+@@ -1,69 +0,0 @@
+-∩╗┐using System.Security.Cryptography;
+-
+-namespace ETAMPManagment.Wrapper.Interfaces
+-{
+-    /// <summary>
+-    /// Provides a wrapper around ECDsa operations, offering creation, import, and cleanup functionalities for ECDsa keys.
+-    /// </summary>
+-    public interface IEcdsaWrapper
+-    {
+-        /// <summary>
+-        /// Creates a new ECDsa instance using the default parameters.
+-        /// </summary>
+-        /// <returns>A new ECDsa instance.</returns>
+-        ECDsa CreateECDsa();
+-
+-        /// <summary>
+-        /// Creates a new ECDsa instance using a specific ECCurve.
+-        /// </summary>
+-        /// <param name="curve">The ECCurve to use for the ECDsa key.</param>
+-        /// <returns>A new ECDsa instance configured with the specified curve.</returns>
+-        ECDsa CreateECDsa(ECCurve curve);
+-
+-        /// <summary>
+-        /// Creates a new ECDsa instance from a public key string and curve.
+-        /// </summary>
+-        /// <param name="publicKey">The public key in PEM format.</param>
+-        /// <param name="curve">The ECCurve associated with the public key.</param>
+-        /// <returns>A new ECDsa instance.</returns>
+-        ECDsa CreateECDsa(string publicKey, ECCurve curve);
+-
+-        /// <summary>
+-        /// Creates a new ECDsa instance from a public key byte array and curve.
+-        /// </summary>
+-        /// <param name="publicKey">The public key as a byte array.</param>
+-        /// <param name="curve">The ECCurve associated with the public key.</param>
+-        /// <returns>A new ECDsa instance.</returns>
+-        ECDsa CreateECDsa(byte[] publicKey, ECCurve curve);
+-
+-        /// <summary>
+-        /// Imports a private key from a byte array into an ECDsa instance.
+-        /// </summary>
+-        /// <param name="privateKey">The private key as a byte array.</param>
+-        /// <param name="curve">The ECCurve associated with the private key.</param>
+-        /// <returns>An ECDsa instance initialized with the given private key.</returns>
+-        ECDsa ImportECDsa(byte[] privateKey, ECCurve curve);
+-
+-        /// <summary>
+-        /// Imports a private key from a PEM-formatted string into an ECDsa instance.
+-        /// </summary>
+-        /// <param name="privateKey">The private key in PEM format.</param>
+-        /// <param name="curve">The ECCurve associated with the private key.</param>
+-        /// <returns>An ECDsa instance initialized with the given private key.</returns>
+-        ECDsa ImportECDsa(string privateKey, ECCurve curve);
+-
+-        /// <summary>
+-        /// Clears PEM formatting from a private key, preparing it for use.
+-        /// </summary>
+-        /// <param name="privateKey">The private key in PEM format.</param>
+-        /// <returns>The private key cleaned of PEM formatting.</returns>
+-        string ClearPEMPrivateKey(string privateKey);
+-
+-        /// <summary>
+-        /// Clears PEM formatting from a public key, preparing it for use.
+-        /// </summary>
+-        /// <param name="publicKey">The public key in PEM format.</param>
+-        /// <returns>The public key cleaned of PEM formatting.</returns>
+-        string ClearPEMPublicKey(string publicKey);
+-    }
+-}
+\ No newline at end of file
+diff --git a/ETAMPManagment/Wrapper/Interfaces/IVerifyWrapper.cs b/ETAMPManagment/Wrapper/Interfaces/IVerifyWrapper.cs
+index 742abae..3ea46a8 100644
+--- a/ETAMPManagment/Wrapper/Interfaces/IVerifyWrapper.cs
++++ b/ETAMPManagment/Wrapper/Interfaces/IVerifyWrapper.cs
+@@ -1,17 +1,10 @@
+-∩╗┐using System.Security.Cryptography;
+-
+-namespace ETAMPManagment.Wrapper.Interfaces
++∩╗┐namespace ETAMPManagment.Wrapper.Interfaces
+ {
+     /// <summary>
+     /// Provides functionality for verifying signatures using ECDsa.
+     /// </summary>
+     public interface IVerifyWrapper : IDisposable
+     {
+-        /// <summary>
+-        /// Gets the ECDsa instance used for verification.
+-        /// </summary>
+-        ECDsa ECDsa { get; }
+-
+         /// <summary>
+         /// Verifies the signature of a given string data.
+         /// </summary>
+@@ -27,21 +20,5 @@ namespace ETAMPManagment.Wrapper.Interfaces
+         /// <param name="signature">The signature as a byte array.</param>
+         /// <returns>True if the signature is valid; otherwise, false.</returns>
+         bool VerifyData(byte[] data, byte[] signature);
+-
+-        /// <summary>
+-        /// Verifies the signature of given string data against a byte array signature.
+-        /// </summary>
+-        /// <param name="data">The data in string format.</param>
+-        /// <param name="signature">The signature as a byte array.</param>
+-        /// <returns>True if the signature is valid; otherwise, false.</returns>
+-        bool VerifyData(string data, byte[] signature);
+-
+-        /// <summary>
+-        /// Verifies the signature of given byte array data against a string signature.
+-        /// </summary>
+-        /// <param name="data">The data as a byte array.</param>
+-        /// <param name="signature">The signature in string format.</param>
+-        /// <returns>True if the signature is valid; otherwise, false.</returns>
+-        bool VerifyData(byte[] data, string signature);
+     }
+ }
+\ No newline at end of file
+diff --git a/ETAMPManagment/Wrapper/SignWrapper.cs b/ETAMPManagment/Wrapper/SignWrapper.cs
+index 8c38adf..72f270d 100644
+--- a/ETAMPManagment/Wrapper/SignWrapper.cs
++++ b/ETAMPManagment/Wrapper/SignWrapper.cs
+@@ -1,4 +1,5 @@
+-∩╗┐using ETAMPManagment.Models;
++∩╗┐using ETAMPManagment.Encryption.ECDsaManager.Interfaces;
++using ETAMPManagment.Models;
+ using ETAMPManagment.Wrapper.Interfaces;
+ using Newtonsoft.Json;
+ using System.Security.Cryptography;
+@@ -10,9 +11,9 @@ namespace ETAMPManagment.Wrapper
+     /// Provides functionality for signing data using Elliptic Curve Digital Signature Algorithm (ECDsa).
+     /// </summary>
+     /// <remarks>
+-    /// This class allows for the creation of digital signatures using ECDsa, supporting multiple initializations
+-    /// including from a private key, an <see cref="ECDsa"/> instance, or an <see cref="IEcdsaWrapper"/> for custom
+-    /// implementation scenarios. It supports signing byte arrays, streams, and JSON representations of specific models.
++    /// This class enables the creation of digital signatures using ECDsa, facilitating multiple initialization methods,
++    /// including direct from an ECDsa instance or via an IEcdsaWrapper for enhanced flexibility and custom implementation scenarios.
++    /// It supports signing operations on byte arrays, streams, and JSON representations of models.
+     /// </remarks>
+     public class SignWrapper : ISignWrapper
+     {
+@@ -20,53 +21,31 @@ namespace ETAMPManagment.Wrapper
+         private readonly HashAlgorithmName _algorithmName;
+ 
+         /// <summary>
+-        /// Initializes a new instance of the <see cref="SignWrapper"/> class using an existing <see cref="ECDsa"/> instance.
++        /// Initializes a new instance of the <see cref="SignWrapper"/> class using an existing ECDsa instance.
+         /// </summary>
+-        /// <param name="ecdsa">The <see cref="ECDsa"/> instance for signing.</param>
++        /// <param name="ecdsa">The ECDsa instance to use for signing operations.</param>
+         /// <param name="algorithmName">The hash algorithm to use for signing.</param>
+         public SignWrapper(ECDsa ecdsa, HashAlgorithmName algorithmName)
+         {
+-            _ecdsa = ecdsa;
++            _ecdsa = ecdsa ?? throw new ArgumentNullException(nameof(ecdsa), "ECDsa instance cannot be null.");
+             _algorithmName = algorithmName;
+         }
+ 
+         /// <summary>
+-        /// Initializes a new instance of the <see cref="SignWrapper"/> class using a private key.
++        /// Initializes a new instance of the <see cref="SignWrapper"/> class using an IECDsaProvider.
++        /// The ECDsa instance for signing is obtained from the provided IECDsaProvider.
+         /// </summary>
+-        /// <param name="privateKey">The private key in PKCS#8 format.</param>
++        /// <param name="ecdsaProvider">The IECDsaProvider to use for obtaining the ECDsa instance.</param>
+         /// <param name="algorithmName">The hash algorithm to use for signing.</param>
+-        public SignWrapper(string privateKey, HashAlgorithmName algorithmName)
++        public SignWrapper(IECDsaProvider ecdsaProvider, HashAlgorithmName algorithmName)
+         {
+-            _ecdsa = ECDsa.Create();
+-            _ecdsa.ImportPkcs8PrivateKey(Convert.FromBase64String(privateKey), out _);
+-            _algorithmName = algorithmName;
+-        }
++            if (ecdsaProvider == null)
++                throw new ArgumentNullException(nameof(ecdsaProvider), "IECDsaProvider instance cannot be null.");
+ 
+-        /// <summary>
+-        /// Initializes a new instance of the <see cref="SignWrapper"/> class using an <see cref="IEcdsaWrapper"/> and a private key.
+-        /// </summary>
+-        /// <param name="ecdsaWrapper">The wrapper for ECDsa operations.</param>
+-        /// <param name="privateKey">The private key as a string.</param>
+-        /// <param name="curve">The ECCurve for the ECDsa.</param>
+-        /// <param name="algorithmName">The hash algorithm to use for signing.</param>
+-        public SignWrapper(IEcdsaWrapper ecdsaWrapper, string privateKey, ECCurve curve, HashAlgorithmName algorithmName)
+-        {
+-            _ecdsa = ecdsaWrapper.ImportECDsa(privateKey, curve);
+-            _algorithmName = algorithmName;
+-        }
++            _ecdsa = ecdsaProvider.GetECDsa();
++            if (_ecdsa == null)
++                throw new InvalidOperationException("ECDsa instance cannot be null after extraction from IECDsaProvider.");
+ 
+-        /// <summary>
+-        /// Initializes a new instance of the <see cref="SignWrapper"/> class. This constructor allows the creation of a signing utility
+-        /// by specifying an <see cref="IEcdsaWrapper"/> for elliptic curve cryptography operations, a private key as a byte array,
+-        /// the elliptic curve to use, and the hash algorithm for signing operations.
+-        /// </summary>
+-        /// <param name="ecdsaWrapper">The <see cref="IEcdsaWrapper"/> instance used for ECDsa operations, providing methods to create and import ECDsa keys.</param>
+-        /// <param name="privateKey">The private key used for signing operations, provided as a byte array. This change allows for a more straightforward handling of the private key data, accommodating scenarios where `ReadOnlySpan<byte>` cannot be directly used or is not preferred.</param>
+-        /// <param name="curve">The <see cref="ECCurve"/> specifying the elliptic curve parameters to use for the cryptographic operations. This parameter is essential for configuring the ECDsa instance with the correct curve.</param>
+-        /// <param name="algorithmName">The <see cref="HashAlgorithmName"/> specifying the hash algorithm to use for generating signatures. This determines how data will be hashed before being signed with the private key.</param>
+-        public SignWrapper(IEcdsaWrapper ecdsaWrapper, byte[] privateKey, ECCurve curve, HashAlgorithmName algorithmName)
+-        {
+-            _ecdsa = ecdsaWrapper.ImportECDsa(privateKey, curve);
+             _algorithmName = algorithmName;
+         }
+ 
+diff --git a/ETAMPManagment/Wrapper/VerifyWrapper.cs b/ETAMPManagment/Wrapper/VerifyWrapper.cs
+index 01f2e13..1f5b352 100644
+--- a/ETAMPManagment/Wrapper/VerifyWrapper.cs
++++ b/ETAMPManagment/Wrapper/VerifyWrapper.cs
+@@ -1,4 +1,5 @@
+-∩╗┐using ETAMPManagment.Wrapper.Interfaces;
++∩╗┐using ETAMPManagment.Encryption.ECDsaManager.Interfaces;
++using ETAMPManagment.Wrapper.Interfaces;
+ using System.Security.Cryptography;
+ using System.Text;
+ 
+@@ -6,89 +7,42 @@ namespace ETAMPManagment.Wrapper
+ {
+     /// <summary>
+     /// Provides a wrapper for cryptographic verification using the Elliptic Curve Digital Signature Algorithm (ECDSA).
+-    /// This class facilitates the verification of digital signatures on data, offering various constructors to support
+-    /// different initialization scenarios based on available cryptographic parameters.
++    /// This class facilitates the verification of digital signatures on data, offering simplified initialization to support
++    /// different cryptographic setups.
+     /// </summary>
+     public class VerifyWrapper : IVerifyWrapper
+     {
+-        private ECDsa _ecdsa;
+-
+-        /// <summary>
+-        /// Gets the underlying ECDsa instance used for cryptographic operations.
+-        /// </summary>
+-        public ECDsa ECDsa
+-        {
+-            get { return _ecdsa; }
+-        }
+-
++        private readonly ECDsa _ecdsa;
+         private readonly HashAlgorithmName _algorithm;
+ 
+         /// <summary>
+-        /// Initializes a new instance of the VerifyWrapper class using a token services factory to create a default ECDsa instance.
+-        /// This approach is suitable when the specific configuration of the ECDsa instance, including the elliptic curve, is managed externally.
+-        /// </summary>
+-        /// <param name="tokenServicesFactory">The factory used to create the ECDsa instance.</param>
+-        /// <param name="algorithm">The hashing algorithm to be used with ECDsa for cryptographic operations.</param>
+-        public VerifyWrapper(IEcdsaWrapper tokenServicesFactory, HashAlgorithmName algorithm)
+-        {
+-            _ecdsa = tokenServicesFactory.CreateECDsa();
+-            _algorithm = algorithm;
+-        }
+-
+-        /// <summary>
+-        /// Initializes a new instance of the VerifyWrapper class using a token services factory to create an ECDsa instance with a specified elliptic curve.
+-        /// This constructor is ideal for use cases where a specific elliptic curve needs to be explicitly provided for ECDsa.
++        /// Initializes a new instance of the <see cref="VerifyWrapper"/> class using an ECDsa instance provided by an IECDsaProvider.
++        /// This constructor is suitable for scenarios where ECDsa configuration, including the elliptic curve, is managed externally.
+         /// </summary>
+-        /// <param name="tokenServicesFactory">The factory used to create the ECDsa instance.</param>
+-        /// <param name="curve">The elliptic curve to be used for creating the ECDsa instance.</param>
++        /// <param name="ecdsaProvider">The IECDsaProvider instance used to obtain the ECDsa instance.</param>
+         /// <param name="algorithm">The hashing algorithm to be used with ECDsa for cryptographic operations.</param>
+-        public VerifyWrapper(IEcdsaWrapper tokenServicesFactory, ECCurve curve, HashAlgorithmName algorithm)
++        public VerifyWrapper(IECDsaProvider ecdsaProvider, HashAlgorithmName algorithm)
+         {
+-            _ecdsa = tokenServicesFactory.CreateECDsa(curve);
+-            _algorithm = algorithm;
+-        }
++            if (ecdsaProvider == null)
++                throw new ArgumentNullException(nameof(ecdsaProvider), "IECDsaProvider instance cannot be null.");
+ 
+-        /// <summary>
+-        /// Initializes a new instance of the VerifyWrapper class using a token services factory to create an ECDsa instance with a specified public key in string format and elliptic curve.
+-        /// This constructor is ideal for scenarios where both a specific elliptic curve and a public key in Base64 string format are provided for the configuration of the ECDsa instance.
+-        /// It allows for the configuration of ECDsa using a public key in a convenient string format along with the specified curve.
+-        /// </summary>
+-        /// <param name="tokenServicesFactory">The factory used to create the ECDsa instance.</param>
+-        /// <param name="publicKey">The public key in Base64 string format for the ECDsa instance.</param>
+-        /// <param name="curve">The elliptic curve to be used for creating the ECDsa instance.</param>
+-        /// <param name="algorithm">The hashing algorithm to be used with ECDsa for cryptographic operations.</param>
++            _ecdsa = ecdsaProvider.GetECDsa();
++            if (_ecdsa == null)
++                throw new InvalidOperationException("ECDsa instance cannot be null after extraction from IECDsaProvider.");
+ 
+-        public VerifyWrapper(IEcdsaWrapper tokenServicesFactory, string publicKey, ECCurve curve, HashAlgorithmName algorithm)
+-        {
+-            _ecdsa = tokenServicesFactory.CreateECDsa(publicKey, curve);
+-            _algorithm = algorithm;
+-        }
+-
+-        /// <summary>
+-        /// Initializes a new instance of the VerifyWrapper class using a token services factory to create an ECDsa instance with a specified public key as a byte array and elliptic curve.
+-        /// This constructor is designed for situations where the elliptic curve and public key are provided as a byte array, offering a direct approach to configure the ECDsa instance.
+-        /// It is useful in scenarios where public key and curve details are already available in byte array format, simplifying the ECDsa setup process.
+-        /// </summary>
+-        /// <param name="tokenServicesFactory">The factory used to create the ECDsa instance.</param>
+-        /// <param name="publicKey">The public key as a byte array for the ECDsa instance.</param>
+-        /// <param name="curve">The elliptic curve to be used for creating the ECDsa instance.</param>
+-        /// <param name="algorithm">The hashing algorithm to be used with ECDsa for cryptographic operations.</param>
+-        public VerifyWrapper(IEcdsaWrapper tokenServicesFactory, byte[] publicKey, ECCurve curve, HashAlgorithmName algorithm)
+-        {
+-            _ecdsa = tokenServicesFactory.CreateECDsa(publicKey, curve);
+             _algorithm = algorithm;
+         }
+ 
+         /// <summary>
+         /// Initializes a new instance of the VerifyWrapper class with a pre-configured ECDsa instance.
+-        /// This constructor is useful when an ECDsa instance has already been set up elsewhere in the application and needs to be reused.
+-        /// It allows for the integration of a custom-configured ECDsa instance, providing flexibility in how cryptographic operations are handled.
++        /// This constructor is useful when an ECDsa instance has already been set up elsewhere in the application and needs to be reused,
++        /// allowing for the integration of a custom-configured ECDsa instance and providing flexibility in cryptographic operations.
+         /// </summary>
+-        /// <param name="ecdsa">The pre-configured ECDsa instance to be used.</param>
++        /// <param name="ecdsa">The pre-configured ECDsa instance to be used for verification.</param>
+         /// <param name="algorithm">The hashing algorithm to be used with ECDsa for cryptographic operations.</param>
+         public VerifyWrapper(ECDsa ecdsa, HashAlgorithmName algorithm)
+         {
+-            _ecdsa = ecdsa;
++            _ecdsa = ecdsa ?? throw new ArgumentNullException(nameof(ecdsa), "ECDsa instance cannot be null.");
+             _algorithm = algorithm;
+         }
+ 
+@@ -117,30 +71,10 @@ namespace ETAMPManagment.Wrapper
+             return _ecdsa.VerifyData(data, signature, _algorithm);
+         }
+ 
+-        /// <summary>
+-        /// Verifies the given data string against the specified signature byte array.
+-        /// </summary>
+-        /// <param name="data">The data string to verify.</param>
+-        /// <param name="signature">The signature as a byte array to verify against.</param>
+-        public virtual bool VerifyData(string data, byte[] signature)
+-        {
+-            return _ecdsa.VerifyData(Encoding.UTF8.GetBytes(data), signature, _algorithm);
+-        }
+-
+-        /// <summary>
+-        /// Verifies the given data byte array against the specified signature string.
+-        /// </summary>
+-        /// <param name="data">The data as a byte array to verify.</param>
+-        /// <param name="signature">The signature string to verify against.</param>
+-        public virtual bool VerifyData(byte[] data, string signature)
+-        {
+-            return _ecdsa.VerifyData(data, Convert.FromBase64String(signature), _algorithm);
+-        }
+-
+         /// <summary>
+         /// Disposes the underlying ECDsa instance, releasing all associated resources.
+         /// </summary>
+-        public virtual void Dispose()
++        public void Dispose()
+         {
+             _ecdsa?.Dispose();
+         }
+diff --git a/ETAMPManagmentTests/ETAMPBuilderTests.cs b/ETAMPManagmentTests/ETAMPBuilderTests.cs
+index 47df493..0b95457 100644
+--- a/ETAMPManagmentTests/ETAMPBuilderTests.cs
++++ b/ETAMPManagmentTests/ETAMPBuilderTests.cs
+@@ -1,13 +1,8 @@
+-∩╗┐using ETAMPManagment.Encryption.Interfaces;
+-using ETAMPManagment.ETAMP.Base;
+-using ETAMPManagment.ETAMP.Base.Interfaces;
++∩╗┐using ETAMPManagment.ETAMP.Base;
+ using ETAMPManagment.ETAMP.Encrypted;
+-using ETAMPManagment.Factories.Interfaces;
++using ETAMPManagment.ETAMP.Encrypted.Interfaces;
+ using ETAMPManagment.Models;
+-using ETAMPManagment.Services;
+-using ETAMPManagment.Services.Interfaces;
+ using ETAMPManagment.Utils;
+-using ETAMPManagment.Wrapper.Interfaces;
+ using Moq;
+ using Xunit;
+ 
+@@ -15,42 +10,22 @@ namespace ETAMPManagment.Tests
+ {
+     public class ETAMPBuilderTests
+     {
+-        private readonly Mock<IETAMPFactory<ETAMPType>> _factoryMock;
+-        private readonly Mock<ISigningCredentialsProvider> _signingCredentialsProviderMock;
+-        private readonly Mock<IEciesEncryptionService> _eiesEncryptionServiceMock;
+-        private readonly Mock<ISignWrapper> _signWrapperMock;
++        private readonly Mock<IServiceProvider> _serviceProviderMock;
+         private readonly ETAMPBuilder _etampBuilder;
+ 
+-        private const string UpdateType = "update";
+-        private const double Version = 1.0;
+-
+         public ETAMPBuilderTests()
+         {
+-            _signWrapperMock = new Mock<ISignWrapper>();
+-            _eiesEncryptionServiceMock = new Mock<IEciesEncryptionService>();
+-            _signingCredentialsProviderMock = new Mock<ISigningCredentialsProvider>();
+-            _factoryMock = new Mock<IETAMPFactory<ETAMPType>>();
+-            _etampBuilder = new ETAMPBuilder(_factoryMock.Object);
+-        }
+-
+-        [Fact]
+-        public void CreateETAMP_ReturnsBuilderForChaining()
+-        {
+-            SetupFactoryMock(ETAMPType.Base);
+-
+-            var result = _etampBuilder.CreateETAMP(UpdateType, new BasePayload(), Version);
+-
+-            Assert.IsType<ETAMPBuilder>(result);
++            _serviceProviderMock = new Mock<IServiceProvider>();
++            _etampBuilder = new ETAMPBuilder(_serviceProviderMock.Object);
+         }
+ 
+         [Fact]
+         public void CreateSignETAMP_ReturnsBuilderForChaining()
+         {
+-            SetupSignMocks();
+-            var sign = new ETAMPSign(_signWrapperMock.Object, _signingCredentialsProviderMock.Object);
+-            _factoryMock.Setup(f => f.CreateGenerator(ETAMPType.Sign)).Returns(sign);
++            var signMock = new Mock<ETAMPSign>();
++            _serviceProviderMock.Setup(p => p.GetService(typeof(ETAMPSign))).Returns(signMock.Object);
+ 
+-            var result = _etampBuilder.CreateSignETAMP(UpdateType, new BasePayload(), Version);
++            var result = _etampBuilder.CreateETAMP(ETAMPType.Sign, "update_type", new BasePayload(), 1.0);
+ 
+             Assert.IsType<ETAMPBuilder>(result);
+         }
+@@ -58,9 +33,10 @@ namespace ETAMPManagment.Tests
+         [Fact]
+         public void CreateEncryptedETAMP_ReturnsBuilderForChaining()
+         {
+-            SetupFactoryMock(ETAMPType.Encrypted);
++            var encryptedMock = new Mock<IETAMPEncrypted>();
++            _serviceProviderMock.Setup(p => p.GetService(typeof(IETAMPEncrypted))).Returns(encryptedMock.Object);
+ 
+-            var result = _etampBuilder.CreateEncryptedETAMP(UpdateType, new BasePayload(), Version);
++            var result = _etampBuilder.CreateETAMP(ETAMPType.Encrypted, "update_type", new BasePayload(), 1.0);
+ 
+             Assert.IsType<ETAMPBuilder>(result);
+         }
+@@ -68,38 +44,24 @@ namespace ETAMPManagment.Tests
+         [Fact]
+         public void CreateEncryptedSignETAMP_ReturnsBuilderForChaining()
+         {
+-            SetupSignMocks();
+-            var encryptedSigned = new ETAMPEncryptedSigned(_signWrapperMock.Object, _eiesEncryptionServiceMock.Object, _signingCredentialsProviderMock.Object);
+-            _factoryMock.Setup(f => f.CreateGenerator(ETAMPType.EncryptedSign)).Returns(encryptedSigned);
++            var encryptedSignedMock = new Mock<ETAMPEncryptedSigned>();
++            _serviceProviderMock.Setup(p => p.GetService(typeof(ETAMPEncryptedSigned))).Returns(encryptedSignedMock.Object);
+ 
+-            var result = _etampBuilder.CreateEncryptedSignETAMP(UpdateType, new BasePayload(), Version);
++            var result = _etampBuilder.CreateETAMP(ETAMPType.EncryptedSign, "update_type", new BasePayload(), 1.0);
+ 
+             Assert.IsType<ETAMPBuilder>(result);
+         }
+ 
+         [Fact]
+-        public void Build_ReturnsETAMPModel()
++        public void Build_ThrowsException_WhenETAMPModelIsNotCreated()
+         {
+-            SetupSignMocks();
+-            var etampBase = new ETAMPBase(_signingCredentialsProviderMock.Object);
+-            _factoryMock.Setup(f => f.CreateGenerator(It.IsAny<ETAMPType>())).Returns(etampBase);
+-
+-            _etampBuilder.CreateETAMP(UpdateType, new BasePayload());
+-
+-            var result = _etampBuilder.Build();
+-
+-            Assert.IsType<ETAMPModel>(result);
++            Assert.Throws<InvalidOperationException>(() => _etampBuilder.Build());
+         }
+ 
+-        private void SetupFactoryMock(ETAMPType type)
+-        {
+-            _factoryMock.Setup(f => f.CreateGenerator(type)).Returns(new Mock<IETAMPData>().Object);
+-        }
+-
+-        private void SetupSignMocks()
++        [Fact]
++        public void CreateETAMP_ThrowsException_WhenETAMPTypeIsUnsupported()
+         {
+-            _signWrapperMock.Setup(x => x.SignEtampModel(It.IsAny<ETAMPModel>())).Returns((ETAMPModel model) => model);
+-            _signingCredentialsProviderMock.Setup(x => x.CreateSigningCredentials()).Returns(new ECDsaSigningCredentialsProvider().CreateSigningCredentials());
++            Assert.Throws<ArgumentException>(() => _etampBuilder.CreateETAMP((ETAMPType)99, "update_type", new BasePayload(), 1.0));
+         }
+     }
+ }
+\ No newline at end of file
+diff --git a/ETAMPManagmentTests/Encryption/EciesEncryptionServiceTests.cs b/ETAMPManagmentTests/Encryption/EciesEncryptionServiceTests.cs
+index 92388e5..fc27c4d 100644
+--- a/ETAMPManagmentTests/Encryption/EciesEncryptionServiceTests.cs
++++ b/ETAMPManagmentTests/Encryption/EciesEncryptionServiceTests.cs
+@@ -1,6 +1,5 @@
+ ∩╗┐using ETAMPManagment.Encryption;
+ using ETAMPManagment.Encryption.Interfaces;
+-using ETAMPManagment.Factories.Interfaces;
+ using Moq;
+ using System.Text;
+ using Xunit;
+@@ -10,18 +9,14 @@ namespace ETAMPManagment.Services.Tests
+     public class EciesEncryptionServiceTests
+     {
+         private readonly Mock<IKeyExchanger> _keyExchangerMock;
+-        private readonly Mock<IEncryptionServiceFactory> _encryptionServiceFactoryMock;
+         private readonly Mock<IEncryptionService> _encryptionServiceMock;
+         private readonly EciesEncryptionService _eciesEncryptionService;
+ 
+         public EciesEncryptionServiceTests()
+         {
+-            _encryptionServiceFactoryMock = new Mock<IEncryptionServiceFactory>();
+             _keyExchangerMock = new Mock<IKeyExchanger>();
+             _encryptionServiceMock = new Mock<IEncryptionService>();
+-
+-            _encryptionServiceFactoryMock.Setup(x => x.CreateEncryptionService("AES")).Returns(_encryptionServiceMock.Object);
+-            _eciesEncryptionService = new EciesEncryptionService(_keyExchangerMock.Object, _encryptionServiceFactoryMock.Object, "AES");
++            _eciesEncryptionService = new EciesEncryptionService(_keyExchangerMock.Object, _encryptionServiceMock.Object);
+         }
+ 
+         [Fact]
+diff --git a/ETAMPManagmentTests/Encryption/KeyPairProviderTests.cs b/ETAMPManagmentTests/Encryption/KeyPairProviderTests.cs
+index 34a47cc..a1a7042 100644
+--- a/ETAMPManagmentTests/Encryption/KeyPairProviderTests.cs
++++ b/ETAMPManagmentTests/Encryption/KeyPairProviderTests.cs
+@@ -37,8 +37,8 @@ namespace ETAMPManagment.Encryption.Tests
+             using var eCDiffieHellman = ECDiffieHellman.Create();
+             var provider = new KeyPairProvider(eCDiffieHellman);
+ 
+-            Assert.NotNull(provider.PrivateKey);
+-            Assert.NotNull(provider.PublicKey);
++            Assert.NotNull(provider.KeyModelProvider.PrivateKey);
++            Assert.NotNull(provider.KeyModelProvider.PublicKey);
+         }
+ 
+         [Fact]
+@@ -47,8 +47,8 @@ namespace ETAMPManagment.Encryption.Tests
+             var parameters = ECDiffieHellman.Create().ExportParameters(true);
+             var provider = new KeyPairProvider(parameters);
+ 
+-            Assert.NotNull(provider.PrivateKey);
+-            Assert.NotNull(provider.PublicKey);
++            Assert.NotNull(provider.KeyModelProvider.PrivateKey);
++            Assert.NotNull(provider.KeyModelProvider.PublicKey);
+         }
+ 
+         [Fact]
+@@ -58,7 +58,7 @@ namespace ETAMPManagment.Encryption.Tests
+             var publicKeyInfo = eCDiffieHellman.ExportSubjectPublicKeyInfo();
+             var provider = new KeyPairProvider(publicKeyInfo);
+ 
+-            Assert.NotNull(provider.PublicKey);
++            Assert.NotNull(provider.KeyModelProvider.PublicKey);
+         }
+ 
+         [Fact]
+@@ -66,8 +66,8 @@ namespace ETAMPManagment.Encryption.Tests
+         {
+             var provider = new KeyPairProvider();
+ 
+-            Assert.False(string.IsNullOrEmpty(provider.PrivateKey));
+-            Assert.False(string.IsNullOrEmpty(provider.PublicKey));
++            Assert.False(string.IsNullOrEmpty(provider.KeyModelProvider.PrivateKey));
++            Assert.False(string.IsNullOrEmpty(provider.KeyModelProvider.PublicKey));
+         }
+ 
+         [Fact]
+@@ -76,8 +76,8 @@ namespace ETAMPManagment.Encryption.Tests
+             var curve = ECCurve.NamedCurves.nistP256;
+             var provider = new KeyPairProvider(curve);
+ 
+-            Assert.False(string.IsNullOrEmpty(provider.PrivateKey));
+-            Assert.False(string.IsNullOrEmpty(provider.PublicKey));
++            Assert.False(string.IsNullOrEmpty(provider.KeyModelProvider.PrivateKey));
++            Assert.False(string.IsNullOrEmpty(provider.KeyModelProvider.PublicKey));
+         }
+ 
+         [Fact]
+diff --git a/ETAMPManagmentTests/Factories/ETAMPFactoryTests.cs b/ETAMPManagmentTests/Factories/ETAMPFactoryTests.cs
+deleted file mode 100644
+index fde362a..0000000
+--- a/ETAMPManagmentTests/Factories/ETAMPFactoryTests.cs
++++ /dev/null
+@@ -1,63 +0,0 @@
+-∩╗┐using ETAMPManagment.ETAMP.Base.Interfaces;
+-using ETAMPManagment.Utils;
+-using Moq;
+-using Xunit;
+-
+-namespace ETAMPManagment.Factories.Tests
+-{
+-    public class ETAMPFactoryTests
+-    {
+-        private readonly ETAMPFactory _factory;
+-        private readonly Mock<IETAMPData> _mockGenerator;
+-
+-        public ETAMPFactoryTests()
+-        {
+-            _factory = new ETAMPFactory();
+-            _mockGenerator = new Mock<IETAMPData>();
+-        }
+-
+-        private void RegisterBaseGenerator()
+-        {
+-            _factory.RegisterGenerator(ETAMPType.Base, () => _mockGenerator.Object);
+-        }
+-
+-        [Fact]
+-        public void RegisterGenerator_AddsGeneratorSuccessfully()
+-        {
+-            RegisterBaseGenerator();
+-            Assert.Contains(ETAMPType.Base, _factory.Factory.Keys);
+-        }
+-
+-        [Fact]
+-        public void CreateGenerator_ReturnsCorrectGenerator()
+-        {
+-            RegisterBaseGenerator();
+-            var result = _factory.CreateGenerator(ETAMPType.Base);
+-            Assert.Equal(_mockGenerator.Object, result);
+-        }
+-
+-        [Fact]
+-        public void CreateGenerator_WithUnregisteredType_ThrowsArgumentException()
+-        {
+-            var exception = Assert.Throws<ArgumentException>(() => _factory.CreateGenerator(ETAMPType.Sign));
+-            Assert.Equal("type", exception.ParamName);
+-        }
+-
+-        [Fact]
+-        public void RegisterGenerator_WithExistingType_ThrowsArgumentException()
+-        {
+-            RegisterBaseGenerator();
+-            var exception = Assert.Throws<ArgumentException>(() => _factory.RegisterGenerator(ETAMPType.Base, () => _mockGenerator.Object));
+-            Assert.Equal("type", exception.ParamName);
+-        }
+-
+-        [Fact]
+-        public void UnregisterETAMPGenerator_RemovesGeneratorSuccessfully()
+-        {
+-            RegisterBaseGenerator();
+-            var unregisterResult = _factory.UnregisterETAMPGenerator(ETAMPType.Base);
+-            Assert.True(unregisterResult);
+-            Assert.DoesNotContain(ETAMPType.Base, _factory.Factory.Keys);
+-        }
+-    }
+-}
+\ No newline at end of file
+diff --git a/ETAMPManagmentTests/Factories/EncryptionServiceFactoryTests.cs b/ETAMPManagmentTests/Factories/EncryptionServiceFactoryTests.cs
+deleted file mode 100644
+index 1270367..0000000
+--- a/ETAMPManagmentTests/Factories/EncryptionServiceFactoryTests.cs
++++ /dev/null
+@@ -1,86 +0,0 @@
+-∩╗┐using ETAMPManagment.Encryption.Interfaces;
+-using Moq;
+-using Xunit;
+-
+-namespace ETAMPManagment.Factories.Tests
+-{
+-    public class EncryptionServiceFactoryTests
+-    {
+-        private readonly EncryptionServiceFactory _factory;
+-        private const string TestServiceName = "TestService";
+-
+-        public EncryptionServiceFactoryTests()
+-        {
+-            _factory = new EncryptionServiceFactory();
+-        }
+-
+-        [Fact]
+-        public void RegisterEncryptionService_ShouldStoreServiceCreator()
+-        {
+-            Func<IEncryptionService> serviceCreator = () => Mock.Of<IEncryptionService>();
+-
+-            _factory.RegisterEncryptionService(TestServiceName, serviceCreator);
+-
+-            Assert.Contains(TestServiceName, _factory.Services.Keys);
+-        }
+-
+-        [Fact]
+-        public void CreateEncryptionService_ShouldReturnRegisteredServiceInstance()
+-        {
+-            var mockService = new Mock<IEncryptionService>();
+-            Func<IEncryptionService> serviceCreator = () => mockService.Object;
+-            _factory.RegisterEncryptionService(TestServiceName, serviceCreator);
+-
+-            var service = _factory.CreateEncryptionService(TestServiceName);
+-
+-            Assert.NotNull(service);
+-            Assert.IsAssignableFrom<IEncryptionService>(service);
+-        }
+-
+-        [Fact]
+-        public void CreateEncryptionService_WithUnsupportedName_ShouldThrowArgumentException()
+-        {
+-            Assert.Throws<ArgumentException>(() => _factory.CreateEncryptionService("UnsupportedService"));
+-        }
+-
+-        [Fact]
+-        public void CreateEncryptionService_AfterRegisteringMultipleServices_ShouldReturnCorrectService()
+-        {
+-            var mockService1 = new Mock<IEncryptionService>();
+-            var mockService2 = new Mock<IEncryptionService>();
+-            _factory.RegisterEncryptionService("Service1", () => mockService1.Object);
+-            _factory.RegisterEncryptionService("Service2", () => mockService2.Object);
+-
+-            var service1 = _factory.CreateEncryptionService("Service1");
+-            var service2 = _factory.CreateEncryptionService("Service2");
+-
+-            Assert.Equal(mockService1.Object, service1);
+-            Assert.Equal(mockService2.Object, service2);
+-        }
+-
+-        [Fact]
+-        public void RegisterEncryptionService_WithDuplicateName_ShouldThrowArgumentException()
+-        {
+-            Func<IEncryptionService> serviceCreator = () => Mock.Of<IEncryptionService>();
+-            _factory.RegisterEncryptionService(TestServiceName, serviceCreator);
+-
+-            var exception = Assert.Throws<ArgumentException>(() => _factory.RegisterEncryptionService(TestServiceName, serviceCreator));
+-
+-            Assert.Equal("name", exception.ParamName);
+-            Assert.Contains(TestServiceName, exception.Message);
+-        }
+-
+-        [Fact]
+-        public void UnregisterEncryptionService_ShouldRemoveService()
+-        {
+-            var mockService = new Mock<IEncryptionService>();
+-            Func<IEncryptionService> serviceCreator = () => mockService.Object;
+-            _factory.RegisterEncryptionService(TestServiceName, serviceCreator);
+-
+-            var result = _factory.UnregisterEncryptionService(TestServiceName);
+-
+-            Assert.True(result);
+-            Assert.DoesNotContain(TestServiceName, _factory.Services.Keys);
+-        }
+-    }
+-}
+\ No newline at end of file
+diff --git a/ETAMPManagmentTests/Wrapper/EcdsaWrapperTests.cs b/ETAMPManagmentTests/Wrapper/EcdsaWrapperTests.cs
+deleted file mode 100644
+index 4c1ddec..0000000
+--- a/ETAMPManagmentTests/Wrapper/EcdsaWrapperTests.cs
++++ /dev/null
+@@ -1,128 +0,0 @@
+-∩╗┐using System.Security.Cryptography;
+-using Xunit;
+-
+-namespace ETAMPManagment.Wrapper.Tests
+-{
+-    public class EcdsaWrapperTests
+-    {
+-        private readonly EcdsaWrapper _wrapper;
+-
+-        public EcdsaWrapperTests()
+-        {
+-            _wrapper = new EcdsaWrapper();
+-        }
+-
+-        [Fact]
+-        public void CreateDefaultECDsa_ShouldReturnNonNullInstance()
+-        {
+-            var result = _wrapper.CreateECDsa();
+-            Assert.NotNull(result);
+-        }
+-
+-        [Theory]
+-        [InlineData("nistP256", 256)]
+-        [InlineData("nistP384", 384)]
+-        [InlineData("nistP521", 521)]
+-        public void CreateECDsa_UsingSpecifiedCurve_ShouldReturnInstanceWithCorrectKeySize(string curve, int size)
+-        {
+-            ECCurve ecCurve = ECCurve.CreateFromFriendlyName(curve);
+-            using var ecdsa = _wrapper.CreateECDsa(ecCurve);
+-            Assert.NotNull(ecdsa);
+-            Assert.Equal(ecdsa.KeySize, size);
+-        }
+-
+-        [Fact]
+-        public void CreateECDsa_FromPemPublicKey_ShouldCorrectlyImportPublicKey()
+-        {
+-            using ECDsa ecdsa = ECDsa.Create(ECCurve.NamedCurves.nistP521);
+-            string publicKey = ecdsa.ExportSubjectPublicKeyInfoPem().Replace("-----BEGIN PUBLIC KEY-----", "")
+-                                                                .Replace("-----END PUBLIC KEY-----", "")
+-                                                                .Replace("\n", "");
+-
+-            var result = _wrapper.CreateECDsa(publicKey, ECCurve.NamedCurves.nistP521);
+-
+-            Assert.NotNull(result);
+-            Assert.Equal(result.ExportSubjectPublicKeyInfoPem().Replace("-----BEGIN PUBLIC KEY-----", "")
+-                                                                .Replace("-----END PUBLIC KEY-----", "")
+-                                                                .Replace("\n", ""), publicKey);
+-            Assert.Equal(521, result.KeySize);
+-        }
+-
+-        [Fact]
+-        public void CreateECDsa_FromPublicKeyBytes_ShouldCorrectlyImportPublicKey()
+-        {
+-            using ECDsa ecdsa = ECDsa.Create(ECCurve.NamedCurves.nistP521);
+-            string publicKey = ecdsa.ExportSubjectPublicKeyInfoPem().Replace("-----BEGIN PUBLIC KEY-----", "")
+-                                                                .Replace("-----END PUBLIC KEY-----", "")
+-                                                                .Replace("\n", "");
+-
+-            var result = _wrapper.CreateECDsa(Convert.FromBase64String(publicKey), ECCurve.NamedCurves.nistP521);
+-
+-            Assert.NotNull(result);
+-            Assert.Equal(result.ExportSubjectPublicKeyInfoPem().Replace("-----BEGIN PUBLIC KEY-----", "")
+-                                                                .Replace("-----END PUBLIC KEY-----", "")
+-                                                                .Replace("\n", ""), publicKey);
+-
+-            Assert.Equal(521, result.KeySize);
+-        }
+-
+-        [Fact]
+-        public void StripPEMFormatting_FromPrivateKey_ShouldReturnBase64String()
+-        {
+-            ECDsa ecdsa = ECDsa.Create();
+-            string key = ecdsa.ExportECPrivateKeyPem();
+-            string clearKey = key.Replace("-----BEGIN PRIVATE KEY-----", "")
+-                             .Replace("-----END PRIVATE KEY-----", "")
+-                             .Replace("\n", "")
+-                             .Replace("\r", "");
+-            string result = _wrapper.ClearPEMPrivateKey(key);
+-
+-            Assert.Equal(clearKey, result);
+-        }
+-
+-        [Fact]
+-        public void StripPEMFormatting_FromPublicKey_ShouldReturnBase64String()
+-        {
+-            ECDsa ecdsa = ECDsa.Create();
+-            string key = ecdsa.ExportSubjectPublicKeyInfoPem();
+-            string clearKey = key.Replace("-----BEGIN PUBLIC KEY-----", "")
+-                            .Replace("-----END PUBLIC KEY-----", "")
+-                            .Replace("\n", "")
+-                            .Replace("\r", "");
+-            string result = _wrapper.ClearPEMPublicKey(key);
+-
+-            Assert.Equal(clearKey, result);
+-        }
+-
+-        [Fact]
+-        public void ImportECDsa_FromPemPrivateKey_ShouldCorrectlyImportPrivateKey()
+-        {
+-            ECDsa ecdsa = ECDsa.Create(ECCurve.NamedCurves.nistP521);
+-            string key = ecdsa.ExportPkcs8PrivateKeyPem();
+-            ECDsa result = _wrapper.ImportECDsa(key, ECCurve.NamedCurves.nistP521);
+-
+-            Assert.Equal(ecdsa.ExportECPrivateKeyPem(), result.ExportECPrivateKeyPem());
+-        }
+-
+-        [Fact]
+-        public void CreateECDsa_FromBase64PublicKey_ShouldCorrectlyImportPublicKey()
+-        {
+-            ECDsa ecdsa = ECDsa.Create(ECCurve.NamedCurves.nistP521);
+-            string key = ecdsa.ExportSubjectPublicKeyInfoPem();
+-            ECDsa result = _wrapper.CreateECDsa(key, ECCurve.NamedCurves.nistP521);
+-
+-            Assert.Equal(ecdsa.ExportSubjectPublicKeyInfoPem(), result.ExportSubjectPublicKeyInfoPem());
+-        }
+-
+-        [Fact]
+-        public void ImportECDsa_ReturnsECDsaInstanceWithGivenPrivateKeyAndCurve()
+-        {
+-            var curve = ECCurve.NamedCurves.nistP256;
+-            ECDsa ecdsa = ECDsa.Create();
+-            byte[] key = ecdsa.ExportPkcs8PrivateKey();
+-            var result = _wrapper.ImportECDsa(key, curve);
+-            Assert.NotNull(result);
+-            Assert.Equal(result.ExportPkcs8PrivateKey(), ecdsa.ExportPkcs8PrivateKey());
+-        }
+-    }
+-}
+\ No newline at end of file
+diff --git a/ETAMPManagmentTests/Wrapper/SignWrapperTests.cs b/ETAMPManagmentTests/Wrapper/SignWrapperTests.cs
+index 21456ad..edfe1a9 100644
+--- a/ETAMPManagmentTests/Wrapper/SignWrapperTests.cs
++++ b/ETAMPManagmentTests/Wrapper/SignWrapperTests.cs
+@@ -1,6 +1,4 @@
+ ∩╗┐using ETAMPManagment.Models;
+-using ETAMPManagment.Wrapper.Interfaces;
+-using Moq;
+ using Newtonsoft.Json;
+ using System.Security.Cryptography;
+ using Xunit;
+@@ -12,6 +10,7 @@ namespace ETAMPManagment.Wrapper.Tests
+         private readonly ECDsa _ecdsa;
+         private readonly SignWrapper _signWrapper;
+ 
++        //TODO make valid tests
+         public SignWrapperTests()
+         {
+             _ecdsa = ECDsa.Create();
+@@ -69,60 +68,6 @@ namespace ETAMPManagment.Wrapper.Tests
+             Assert.NotNull(updatedEtampModel.SignatureMessage);
+         }
+ 
+-        [Fact]
+-        public void Constructor_WithStringPrivateKey_InitializesCorrectly()
+-        {
+-            string key = _ecdsa.ExportPkcs8PrivateKeyPem().Replace("-----BEGIN PRIVATE KEY-----", "")
+-                             .Replace("-----END PRIVATE KEY-----", "")
+-                             .Replace("\n", "")
+-                             .Replace("\r", "");
+-            var signWrapper = new SignWrapper(key, HashAlgorithmName.SHA256);
+-
+-            Assert.NotNull(signWrapper);
+-        }
+-
+-        [Fact]
+-        public void Constructor_WithEcdsaWrapperAndStringPrivateKey_InitializesCorrectly()
+-        {
+-            var mockEcdsaWrapper = new Mock<IEcdsaWrapper>();
+-            var curve = ECCurve.NamedCurves.nistP256;
+-            ECDsa ecdsa = ECDsa.Create();
+-            var algorithmName = HashAlgorithmName.SHA256;
+-
+-            string key = ecdsa.ExportPkcs8PrivateKeyPem().Replace("-----BEGIN PRIVATE KEY-----", "")
+-                             .Replace("-----END PRIVATE KEY-----", "")
+-                             .Replace("\n", "")
+-                             .Replace("\r", "");
+-
+-            mockEcdsaWrapper.Setup(m => m.ImportECDsa(It.IsAny<string>(), It.IsAny<ECCurve>())).Returns(ECDsa.Create(curve));
+-
+-            var signWrapper = new SignWrapper(mockEcdsaWrapper.Object, key, curve, algorithmName);
+-
+-            Assert.NotNull(signWrapper);
+-            mockEcdsaWrapper.Verify(m => m.ImportECDsa(key, curve), Times.Once());
+-        }
+-
+-        [Fact]
+-        public void Constructor_WithEcdsaWrapperAndByteArrayPrivateKey_InitializesCorrectly()
+-        {
+-            var mockEcdsaWrapper = new Mock<IEcdsaWrapper>();
+-            var curve = ECCurve.NamedCurves.nistP256;
+-            ECDsa ecdsa = ECDsa.Create();
+-            var algorithmName = HashAlgorithmName.SHA256;
+-
+-            byte[] key = Convert.FromBase64String(ecdsa.ExportPkcs8PrivateKeyPem().Replace("-----BEGIN PRIVATE KEY-----", "")
+-                             .Replace("-----END PRIVATE KEY-----", "")
+-                             .Replace("\n", "")
+-                             .Replace("\r", ""));
+-
+-            mockEcdsaWrapper.Setup(m => m.ImportECDsa(It.IsAny<byte[]>(), It.IsAny<ECCurve>())).Returns(ECDsa.Create(curve));
+-
+-            var signWrapper = new SignWrapper(mockEcdsaWrapper.Object, key, curve, algorithmName);
+-
+-            Assert.NotNull(signWrapper);
+-            mockEcdsaWrapper.Verify(m => m.ImportECDsa(key, curve), Times.Once());
+-        }
+-
+         [Fact]
+         public void SignEtampModel_UpdatesSignatureFields()
+         {
+diff --git a/ETAMPManagmentTests/Wrapper/VerifyWrapperTests.cs b/ETAMPManagmentTests/Wrapper/VerifyWrapperTests.cs
+index 6ebaef3..a721406 100644
+--- a/ETAMPManagmentTests/Wrapper/VerifyWrapperTests.cs
++++ b/ETAMPManagmentTests/Wrapper/VerifyWrapperTests.cs
+@@ -1,5 +1,4 @@
+-∩╗┐using System.Security.Cryptography;
+-using System.Text;
++∩╗┐using System.Text;
+ using Xunit;
+ 
+ namespace ETAMPManagment.Wrapper.Tests
+@@ -10,11 +9,9 @@ namespace ETAMPManagment.Wrapper.Tests
+         private readonly string _data = "testdata";
+         private byte[] sign;
+ 
++        //TODO Make Valid tests
+         public VerifyWrapperTests()
+         {
+-            _verifyWrapper = new VerifyWrapper(new EcdsaWrapper(), HashAlgorithmName.SHA256);
+-            ECDsa ecdsa = _verifyWrapper.ECDsa;
+-            sign = ecdsa.SignData(Encoding.UTF8.GetBytes(_data), HashAlgorithmName.SHA256);
+         }
+ 
+         [Fact]
+@@ -24,13 +21,6 @@ namespace ETAMPManagment.Wrapper.Tests
+             Assert.True(result);
+         }
+ 
+-        [Fact]
+-        public void VerifyData_WithCorrectDataInStringAndSignInBytes_ReturnTrue()
+-        {
+-            var result = _verifyWrapper.VerifyData(_data, sign);
+-            Assert.True(result);
+-        }
+-
+         [Fact]
+         public void VerifyData_WithCorrectDataInStringAndSignInString_ReturnTrue()
+         {
+@@ -38,13 +28,6 @@ namespace ETAMPManagment.Wrapper.Tests
+             Assert.True(result);
+         }
+ 
+-        [Fact]
+-        public void VerifyData_WithCorrectDataInBytesAndSignInString_ReturnTrue()
+-        {
+-            var result = _verifyWrapper.VerifyData(Encoding.UTF8.GetBytes(_data), Convert.ToBase64String(sign));
+-            Assert.True(result);
+-        }
+-
+         [Fact]
+         public void VerifyData_WithIncorrectSignature_ReturnsFalse()
+         {
+@@ -52,46 +35,5 @@ namespace ETAMPManagment.Wrapper.Tests
+             var result = _verifyWrapper.VerifyData(Encoding.UTF8.GetBytes(_data), incorrectSignature);
+             Assert.False(result);
+         }
+-
+-        [Fact]
+-        public void VerifyWrapper_WithCustomCurve_ReturnCorrect()
+-        {
+-            VerifyWrapper verifyWrapper = new VerifyWrapper(new EcdsaWrapper(), ECCurve.NamedCurves.nistP521, HashAlgorithmName.SHA256);
+-            Assert.NotNull(verifyWrapper);
+-            Assert.Equal(521, verifyWrapper.ECDsa.KeySize);
+-        }
+-
+-        [Fact]
+-        public void VerifyWrapper_WithPublickeyAndCustomCurve_ReturnCorrect()
+-        {
+-            ECDsa ecdsa = ECDsa.Create();
+-            string publicKey = ecdsa.ExportSubjectPublicKeyInfoPem().Replace("-----BEGIN PUBLIC KEY-----", "")
+-                                                                   .Replace("-----END PUBLIC KEY-----", "")
+-                                                                   .Replace("\n", "");
+-            VerifyWrapper verifyWrapper = new VerifyWrapper(new EcdsaWrapper(), publicKey, ECCurve.NamedCurves.nistP521, HashAlgorithmName.SHA256);
+-            Assert.NotNull(verifyWrapper);
+-            Assert.Equal(521, verifyWrapper.ECDsa.KeySize);
+-        }
+-
+-        [Fact]
+-        public void VerifyWrapper_WithPublickeyInBytesAndCustomCurve_ReturnCorrect()
+-        {
+-            ECDsa ecdsa = ECDsa.Create();
+-            string publicKey = ecdsa.ExportSubjectPublicKeyInfoPem().Replace("-----BEGIN PUBLIC KEY-----", "")
+-                                                                   .Replace("-----END PUBLIC KEY-----", "")
+-                                                                   .Replace("\n", "");
+-            VerifyWrapper verifyWrapper = new VerifyWrapper(new EcdsaWrapper(), Convert.FromBase64String(publicKey), ECCurve.NamedCurves.nistP521, HashAlgorithmName.SHA256);
+-            Assert.NotNull(verifyWrapper);
+-            Assert.Equal(521, verifyWrapper.ECDsa.KeySize);
+-        }
+-
+-        [Fact]
+-        public void VerifyWrapper_InputECDsa_ReturnSame()
+-        {
+-            ECDsa ecdsa = ECDsa.Create();
+-            VerifyWrapper verifyWrapper = new VerifyWrapper(ecdsa, HashAlgorithmName.SHA256);
+-            Assert.NotNull(verifyWrapper);
+-            Assert.Equal(ecdsa.ExportECPrivateKeyPem(), verifyWrapper.ECDsa.ExportECPrivateKeyPem());
+-        }
+     }
+ }
+\ No newline at end of file

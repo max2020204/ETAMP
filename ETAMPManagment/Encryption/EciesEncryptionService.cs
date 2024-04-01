@@ -1,5 +1,4 @@
 ﻿using ETAMPManagment.Encryption.Interfaces;
-using ETAMPManagment.Factories.Interfaces;
 using System.Text;
 
 namespace ETAMPManagment.Encryption
@@ -14,11 +13,13 @@ namespace ETAMPManagment.Encryption
     /// <param name="factory">The factory to create the encryption service based on a specified encryption type.</param>
     /// <param name="encryptionType">The type of encryption to be used by the encryption service.</param>
     /// <exception cref="ArgumentNullException">Thrown if <paramref name="keyExchanger"/> or the encryption service creation fails.</exception>
-    public class EciesEncryptionService(IKeyExchanger keyExchanger, IEncryptionServiceFactory factory, string encryptionType) : IEciesEncryptionService
+    public class EciesEncryptionService(IKeyExchanger keyExchanger, IEncryptionService encryptionService) : IEciesEncryptionService
     {
-        private readonly IKeyExchanger _keyExchanger = keyExchanger ?? throw new ArgumentNullException(nameof(keyExchanger));
+        private readonly IKeyExchanger _keyExchanger = keyExchanger ??
+            throw new ArgumentNullException(nameof(keyExchanger));
 
-        private readonly IEncryptionService _encryptionService = factory.CreateEncryptionService(encryptionType) ?? throw new ArgumentNullException("Encryption service creation failed.");
+        private readonly IEncryptionService _encryptionService = encryptionService ??
+            throw new ArgumentNullException("Encryption service creation failed.");
 
         /// <summary>
         /// Encrypts a given message using ECIES.

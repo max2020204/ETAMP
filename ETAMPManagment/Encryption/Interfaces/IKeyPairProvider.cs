@@ -1,41 +1,38 @@
-﻿using System.Security.Cryptography;
+﻿using ETAMPManagment.Models;
+using System.Security.Cryptography;
 
 namespace ETAMPManagment.Encryption.Interfaces
 {
     /// <summary>
-    /// Provides functionality for managing an Elliptic Curve Diffie-Hellman (ECDH) key pair and accessing its components.
+    /// Defines a contract for managing Elliptic Curve Diffie-Hellman (ECDH) key pairs and facilitates access to their components,
+    /// including the public and private keys. This interface abstracts the functionality necessary to work with ECDH keys
+    /// in various cryptographic operations.
     /// </summary>
     public interface IKeyPairProvider : IDisposable
     {
         /// <summary>
-        /// Gets the private key of the ECDH key pair in a string format.
+        /// Gets the key model provider that contains the private and public keys in PEM format.
         /// </summary>
         /// <value>
-        /// The private key as a string.
+        /// The <see cref="ECDKeyModelProvider"/> that holds the private and public key information.
         /// </value>
-        string PrivateKey { get; }
+        ECDKeyModelProvider KeyModelProvider { get; }
 
         /// <summary>
-        /// Gets the public key of the ECDH key pair in a string format.
+        /// Gets the public key component of the ECDH key pair.
         /// </summary>
         /// <value>
-        /// The public key as a string.
-        /// </value>
-        string PublicKey { get; }
-
-        /// <summary>
-        /// Gets the public key of the ECDH key pair as an <see cref="ECDiffieHellmanPublicKey"/>.
-        /// </summary>
-        /// <value>
-        /// The public key as an <see cref="ECDiffieHellmanPublicKey"/>.
+        /// The public key as an <see cref="ECDiffieHellmanPublicKey"/>, which can be used in cryptographic operations
+        /// such as key agreement or signature verification.
         /// </value>
         ECDiffieHellmanPublicKey HellmanPublicKey { get; }
 
         /// <summary>
-        /// Gets the <see cref="ECDiffieHellman"/> instance representing the ECDH key pair.
+        /// Retrieves the underlying <see cref="ECDiffieHellman"/> instance representing the ECDH key pair,
+        /// allowing for direct cryptographic operations such as key exchange.
         /// </summary>
         /// <returns>
-        /// An <see cref="ECDiffieHellman"/> instance used for cryptographic operations.
+        /// An <see cref="ECDiffieHellman"/> instance representing the ECDH key pair, suitable for cryptographic operations.
         /// </returns>
         ECDiffieHellman GetECDiffieHellman();
     }

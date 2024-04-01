@@ -1,6 +1,4 @@
 ﻿using ETAMPManagment.Models;
-using ETAMPManagment.Wrapper.Interfaces;
-using Moq;
 using Newtonsoft.Json;
 using System.Security.Cryptography;
 using Xunit;
@@ -12,6 +10,7 @@ namespace ETAMPManagment.Wrapper.Tests
         private readonly ECDsa _ecdsa;
         private readonly SignWrapper _signWrapper;
 
+        //TODO make valid tests
         public SignWrapperTests()
         {
             _ecdsa = ECDsa.Create();
@@ -67,60 +66,6 @@ namespace ETAMPManagment.Wrapper.Tests
             Assert.NotNull(updatedEtampModel);
             Assert.NotNull(updatedEtampModel.SignatureToken);
             Assert.NotNull(updatedEtampModel.SignatureMessage);
-        }
-
-        [Fact]
-        public void Constructor_WithStringPrivateKey_InitializesCorrectly()
-        {
-            string key = _ecdsa.ExportPkcs8PrivateKeyPem().Replace("-----BEGIN PRIVATE KEY-----", "")
-                             .Replace("-----END PRIVATE KEY-----", "")
-                             .Replace("\n", "")
-                             .Replace("\r", "");
-            var signWrapper = new SignWrapper(key, HashAlgorithmName.SHA256);
-
-            Assert.NotNull(signWrapper);
-        }
-
-        [Fact]
-        public void Constructor_WithEcdsaWrapperAndStringPrivateKey_InitializesCorrectly()
-        {
-            var mockEcdsaWrapper = new Mock<IEcdsaWrapper>();
-            var curve = ECCurve.NamedCurves.nistP256;
-            ECDsa ecdsa = ECDsa.Create();
-            var algorithmName = HashAlgorithmName.SHA256;
-
-            string key = ecdsa.ExportPkcs8PrivateKeyPem().Replace("-----BEGIN PRIVATE KEY-----", "")
-                             .Replace("-----END PRIVATE KEY-----", "")
-                             .Replace("\n", "")
-                             .Replace("\r", "");
-
-            mockEcdsaWrapper.Setup(m => m.ImportECDsa(It.IsAny<string>(), It.IsAny<ECCurve>())).Returns(ECDsa.Create(curve));
-
-            var signWrapper = new SignWrapper(mockEcdsaWrapper.Object, key, curve, algorithmName);
-
-            Assert.NotNull(signWrapper);
-            mockEcdsaWrapper.Verify(m => m.ImportECDsa(key, curve), Times.Once());
-        }
-
-        [Fact]
-        public void Constructor_WithEcdsaWrapperAndByteArrayPrivateKey_InitializesCorrectly()
-        {
-            var mockEcdsaWrapper = new Mock<IEcdsaWrapper>();
-            var curve = ECCurve.NamedCurves.nistP256;
-            ECDsa ecdsa = ECDsa.Create();
-            var algorithmName = HashAlgorithmName.SHA256;
-
-            byte[] key = Convert.FromBase64String(ecdsa.ExportPkcs8PrivateKeyPem().Replace("-----BEGIN PRIVATE KEY-----", "")
-                             .Replace("-----END PRIVATE KEY-----", "")
-                             .Replace("\n", "")
-                             .Replace("\r", ""));
-
-            mockEcdsaWrapper.Setup(m => m.ImportECDsa(It.IsAny<byte[]>(), It.IsAny<ECCurve>())).Returns(ECDsa.Create(curve));
-
-            var signWrapper = new SignWrapper(mockEcdsaWrapper.Object, key, curve, algorithmName);
-
-            Assert.NotNull(signWrapper);
-            mockEcdsaWrapper.Verify(m => m.ImportECDsa(key, curve), Times.Once());
         }
 
         [Fact]

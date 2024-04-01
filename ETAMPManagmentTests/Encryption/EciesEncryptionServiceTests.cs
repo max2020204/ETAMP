@@ -1,6 +1,5 @@
 ﻿using ETAMPManagment.Encryption;
 using ETAMPManagment.Encryption.Interfaces;
-using ETAMPManagment.Factories.Interfaces;
 using Moq;
 using System.Text;
 using Xunit;
@@ -10,18 +9,14 @@ namespace ETAMPManagment.Services.Tests
     public class EciesEncryptionServiceTests
     {
         private readonly Mock<IKeyExchanger> _keyExchangerMock;
-        private readonly Mock<IEncryptionServiceFactory> _encryptionServiceFactoryMock;
         private readonly Mock<IEncryptionService> _encryptionServiceMock;
         private readonly EciesEncryptionService _eciesEncryptionService;
 
         public EciesEncryptionServiceTests()
         {
-            _encryptionServiceFactoryMock = new Mock<IEncryptionServiceFactory>();
             _keyExchangerMock = new Mock<IKeyExchanger>();
             _encryptionServiceMock = new Mock<IEncryptionService>();
-
-            _encryptionServiceFactoryMock.Setup(x => x.CreateEncryptionService("AES")).Returns(_encryptionServiceMock.Object);
-            _eciesEncryptionService = new EciesEncryptionService(_keyExchangerMock.Object, _encryptionServiceFactoryMock.Object, "AES");
+            _eciesEncryptionService = new EciesEncryptionService(_keyExchangerMock.Object, _encryptionServiceMock.Object);
         }
 
         [Fact]

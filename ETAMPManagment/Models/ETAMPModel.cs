@@ -1,4 +1,6 @@
-﻿namespace ETAMPManagment.Models
+﻿using Newtonsoft.Json;
+
+namespace ETAMPManagment.Models
 {
     /// <summary>
     /// Represents the model for the ETAMP (Encrypted Token And Message Protocol) structure.
@@ -38,5 +40,10 @@
         /// Gets or sets the signature for the message, adding an additional layer of security by safeguarding the integrity of the message within the ETAMP structure.
         /// </summary>
         public string? SignatureMessage { get; set; }
+
+        public override string ToString()
+        {
+            return JsonConvert.SerializeObject(this);
+        }
     }
 }

@@ -48,12 +48,11 @@ namespace ETAMPManagment.ETAMP.Base
         public virtual ETAMPModel CreateETAMPModel<T>(string updateType, T payload, double version = 1) where T : BasePayload
         {
             Guid messageId = Guid.NewGuid();
-            string token = CreateEtampData(messageId.ToString(), payload);
             return new()
             {
                 Id = messageId,
                 Version = version,
-                Token = token,
+                Token = CreateEtampData(messageId.ToString(), payload),
                 UpdateType = updateType
             };
         }

@@ -55,7 +55,7 @@ namespace ETAMPManagment.Services
         /// This method encapsulates the ECDsa instance and the chosen security algorithm into a SigningCredentials object, suitable for use in signing tokens.
         /// </summary>
         /// <returns>A new SigningCredentials instance configured with an ECDsaSecurityKey and the specified security algorithm.</returns>
-        public virtual SigningCredentials CreateSigningCredentials()
+        public SigningCredentials CreateSigningCredentials()
         {
             return new SigningCredentials(new ECDsaSecurityKey(_ecdsa), _securityAlgorithm);
         }

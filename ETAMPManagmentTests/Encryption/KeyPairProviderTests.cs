@@ -37,8 +37,8 @@ namespace ETAMPManagment.Encryption.Tests
             using var eCDiffieHellman = ECDiffieHellman.Create();
             var provider = new KeyPairProvider(eCDiffieHellman);
 
-            Assert.NotNull(provider.PrivateKey);
-            Assert.NotNull(provider.PublicKey);
+            Assert.NotNull(provider.KeyModelProvider.PrivateKey);
+            Assert.NotNull(provider.KeyModelProvider.PublicKey);
         }
 
         [Fact]
@@ -47,8 +47,8 @@ namespace ETAMPManagment.Encryption.Tests
             var parameters = ECDiffieHellman.Create().ExportParameters(true);
             var provider = new KeyPairProvider(parameters);
 
-            Assert.NotNull(provider.PrivateKey);
-            Assert.NotNull(provider.PublicKey);
+            Assert.NotNull(provider.KeyModelProvider.PrivateKey);
+            Assert.NotNull(provider.KeyModelProvider.PublicKey);
         }
 
         [Fact]
@@ -58,7 +58,7 @@ namespace ETAMPManagment.Encryption.Tests
             var publicKeyInfo = eCDiffieHellman.ExportSubjectPublicKeyInfo();
             var provider = new KeyPairProvider(publicKeyInfo);
 
-            Assert.NotNull(provider.PublicKey);
+            Assert.NotNull(provider.KeyModelProvider.PublicKey);
         }
 
         [Fact]
@@ -66,8 +66,8 @@ namespace ETAMPManagment.Encryption.Tests
         {
             var provider = new KeyPairProvider();
 
-            Assert.False(string.IsNullOrEmpty(provider.PrivateKey));
-            Assert.False(string.IsNullOrEmpty(provider.PublicKey));
+            Assert.False(string.IsNullOrEmpty(provider.KeyModelProvider.PrivateKey));
+            Assert.False(string.IsNullOrEmpty(provider.KeyModelProvider.PublicKey));
         }
 
         [Fact]
@@ -76,8 +76,8 @@ namespace ETAMPManagment.Encryption.Tests
             var curve = ECCurve.NamedCurves.nistP256;
             var provider = new KeyPairProvider(curve);
 
-            Assert.False(string.IsNullOrEmpty(provider.PrivateKey));
-            Assert.False(string.IsNullOrEmpty(provider.PublicKey));
+            Assert.False(string.IsNullOrEmpty(provider.KeyModelProvider.PrivateKey));
+            Assert.False(string.IsNullOrEmpty(provider.KeyModelProvider.PublicKey));
         }
 
         [Fact]

@@ -1,4 +1,5 @@
-﻿using ETAMPManagment.Models;
+﻿using ETAMPManagment.ETAMP.Base.Interfaces;
+using ETAMPManagment.Models;
 using ETAMPManagment.Services.Interfaces;
 using ETAMPManagment.Wrapper.Interfaces;
 using Newtonsoft.Json;

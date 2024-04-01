@@ -1,4 +1,5 @@
-﻿using ETAMPManagment.Models;
+﻿using ETAMPManagment.Encryption.ECDsaManager.Interfaces;
+using ETAMPManagment.Models;
 using ETAMPManagment.Wrapper.Interfaces;
 using Newtonsoft.Json;
 using System.Security.Cryptography;
@@ -10,9 +11,9 @@ namespace ETAMPManagment.Wrapper
     /// Provides functionality for signing data using Elliptic Curve Digital Signature Algorithm (ECDsa).
     /// </summary>
     /// <remarks>
-    /// This class allows for the creation of digital signatures using ECDsa, supporting multiple initializations
-    /// including from a private key, an <see cref="ECDsa"/> instance, or an <see cref="IEcdsaWrapper"/> for custom
-    /// implementation scenarios. It supports signing byte arrays, streams, and JSON representations of specific models.
+    /// This class enables the creation of digital signatures using ECDsa, facilitating multiple initialization methods,
+    /// including direct from an ECDsa instance or via an IEcdsaWrapper for enhanced flexibility and custom implementation scenarios.
+    /// It supports signing operations on byte arrays, streams, and JSON representations of models.
     /// </remarks>
     public class SignWrapper : ISignWrapper
     {
@@ -20,53 +21,31 @@ namespace ETAMPManagment.Wrapper
         private readonly HashAlgorithmName _algorithmName;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SignWrapper"/> class using an existing <see cref="ECDsa"/> instance.
+        /// Initializes a new instance of the <see cref="SignWrapper"/> class using an existing ECDsa instance.
         /// </summary>
-        /// <param name="ecdsa">The <see cref="ECDsa"/> instance for signing.</param>
+        /// <param name="ecdsa">The ECDsa instance to use for signing operations.</param>
         /// <param name="algorithmName">The hash algorithm to use for signing.</param>
         public SignWrapper(ECDsa ecdsa, HashAlgorithmName algorithmName)
         {
-            _ecdsa = ecdsa;
+            _ecdsa = ecdsa ?? throw new ArgumentNullException(nameof(ecdsa), "ECDsa instance cannot be null.");
             _algorithmName = algorithmName;
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SignWrapper"/> class using a private key.
+        /// Initializes a new instance of the <see cref="SignWrapper"/> class using an IECDsaProvider.
+        /// The ECDsa instance for signing is obtained from the provided IECDsaProvider.
         /// </summary>
-        /// <param name="privateKey">The private key in PKCS#8 format.</param>
+        /// <param name="ecdsaProvider">The IECDsaProvider to use for obtaining the ECDsa instance.</param>
         /// <param name="algorithmName">The hash algorithm to use for signing.</param>
-        public SignWrapper(string privateKey, HashAlgorithmName algorithmName)
+        public SignWrapper(IECDsaProvider ecdsaProvider, HashAlgorithmName algorithmName)
         {
-            _ecdsa = ECDsa.Create();
-            _ecdsa.ImportPkcs8PrivateKey(Convert.FromBase64String(privateKey), out _);
-            _algorithmName = algorithmName;
-        }
+            if (ecdsaProvider == null)
+                throw new ArgumentNullException(nameof(ecdsaProvider), "IECDsaProvider instance cannot be null.");
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="SignWrapper"/> class using an <see cref="IEcdsaWrapper"/> and a private key.
-        /// </summary>
-        /// <param name="ecdsaWrapper">The wrapper for ECDsa operations.</param>
-        /// <param name="privateKey">The private key as a string.</param>
-        /// <param name="curve">The ECCurve for the ECDsa.</param>
-        /// <param name="algorithmName">The hash algorithm to use for signing.</param>
-        public SignWrapper(IEcdsaWrapper ecdsaWrapper, string privateKey, ECCurve curve, HashAlgorithmName algorithmName)
-        {
-            _ecdsa = ecdsaWrapper.ImportECDsa(privateKey, curve);
-            _algorithmName = algorithmName;
-        }
+            _ecdsa = ecdsaProvider.GetECDsa();
+            if (_ecdsa == null)
+                throw new InvalidOperationException("ECDsa instance cannot be null after extraction from IECDsaProvider.");
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="SignWrapper"/> class. This constructor allows the creation of a signing utility
-        /// by specifying an <see cref="IEcdsaWrapper"/> for elliptic curve cryptography operations, a private key as a byte array,
-        /// the elliptic curve to use, and the hash algorithm for signing operations.
-        /// </summary>
-        /// <param name="ecdsaWrapper">The <see cref="IEcdsaWrapper"/> instance used for ECDsa operations, providing methods to create and import ECDsa keys.</param>
-        /// <param name="privateKey">The private key used for signing operations, provided as a byte array. This change allows for a more straightforward handling of the private key data, accommodating scenarios where `ReadOnlySpan<byte>` cannot be directly used or is not preferred.</param>
-        /// <param name="curve">The <see cref="ECCurve"/> specifying the elliptic curve parameters to use for the cryptographic operations. This parameter is essential for configuring the ECDsa instance with the correct curve.</param>
-        /// <param name="algorithmName">The <see cref="HashAlgorithmName"/> specifying the hash algorithm to use for generating signatures. This determines how data will be hashed before being signed with the private key.</param>
-        public SignWrapper(IEcdsaWrapper ecdsaWrapper, byte[] privateKey, ECCurve curve, HashAlgorithmName algorithmName)
-        {
-            _ecdsa = ecdsaWrapper.ImportECDsa(privateKey, curve);
             _algorithmName = algorithmName;
         }
 
