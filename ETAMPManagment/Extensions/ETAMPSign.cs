@@ -17,8 +17,8 @@ namespace ETAMPManagment.Extensions
         /// <exception cref="ArgumentNullException">Thrown if either <paramref name="model"/> or <paramref name="sign"/> is null.</exception>
         public static ETAMPModel Sign(this ETAMPModel model, ISignWrapper sign)
         {
-            ArgumentNullException.ThrowIfNull(nameof(model));
-            ArgumentNullException.ThrowIfNull(nameof(sign));
+            ArgumentNullException.ThrowIfNull(model);
+            ArgumentNullException.ThrowIfNull(sign);
 
             return sign.SignEtampModel(model);
         }

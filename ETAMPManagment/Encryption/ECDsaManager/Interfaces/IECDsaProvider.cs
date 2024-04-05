@@ -11,6 +11,6 @@ namespace ETAMPManagment.Encryption.ECDsaManager.Interfaces
         /// Retrieves the ECDsa instance managed by the provider.
         /// </summary>
         /// <returns>The ECDsa instance for cryptographic operations.</returns>
-        ECDsa GetECDsa();
+        ECDsa? GetECDsa();
     }
 }

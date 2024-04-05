@@ -25,10 +25,8 @@ namespace ETAMPManagment.Services
             byte[] bytes = Encoding.UTF8.GetBytes(data);
 
             using var outputStream = new MemoryStream();
-            using (GZipStream gzipStream = new(outputStream, CompressionMode.Compress))
-            {
-                gzipStream.Write(bytes, 0, bytes.Length);
-            }
+            using GZipStream gzipStream = new(outputStream, CompressionMode.Compress);
+            gzipStream.Write(bytes, 0, bytes.Length);
 
             return Base64UrlEncoder.Encode(outputStream.ToArray());
         }
@@ -51,6 +49,7 @@ namespace ETAMPManagment.Services
             using var gzipStream = new GZipStream(inputStream, CompressionMode.Decompress);
             using var outputStream = new MemoryStream();
             gzipStream.CopyTo(outputStream);
+
             byte[] decompressedBytes = outputStream.ToArray();
 
             return Encoding.UTF8.GetString(decompressedBytes);

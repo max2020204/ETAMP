@@ -1,7 +1,6 @@
 ﻿using ETAMPManagment.Encryption.ECDsaManager.Interfaces;
 using Microsoft.IdentityModel.Tokens;
 using Moq;
-using System.Reflection;
 using System.Security.Cryptography;
 using Xunit;
 

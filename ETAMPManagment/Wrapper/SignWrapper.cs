@@ -18,7 +18,7 @@ namespace ETAMPManagment.Wrapper
     /// </remarks>
     public class SignWrapper : ISignWrapper
     {
-        private readonly ECDsa _ecdsa;
+        private readonly ECDsa? _ecdsa;
         private readonly HashAlgorithmName _algorithmName;
 
         /// <summary>
@@ -54,7 +54,7 @@ namespace ETAMPManagment.Wrapper
         public virtual string SignEtamp(string jsonEtamp)
         {
             ETAMPModel? etamp = JsonConvert.DeserializeObject<ETAMPModel>(jsonEtamp);
-            ArgumentNullException.ThrowIfNull(etamp, nameof(etamp));
+            ArgumentNullException.ThrowIfNull(etamp);
 
             etamp.SignatureToken = Base64UrlEncoder.Encode(Sign(Encoding.UTF8.GetBytes(etamp.Token)));
             etamp.SignatureMessage = Base64UrlEncoder.Encode(Sign(Encoding.UTF8.GetBytes($"{etamp.Id}{etamp.Version}{etamp.Token}{etamp.UpdateType}{etamp.SignatureToken}")));

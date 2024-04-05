@@ -20,8 +20,10 @@ namespace ETAMPManagment.Validators
         /// <exception cref="ArgumentNullException">Thrown if either verifyWrapper or structureValidator is null.</exception>
         public SignatureValidator(IVerifyWrapper verifyWrapper, IStructureValidator structureValidator)
         {
-            _verifyWrapper = verifyWrapper ?? throw new ArgumentNullException(nameof(verifyWrapper));
-            _structureValidator = structureValidator ?? throw new ArgumentNullException(nameof(structureValidator));
+            _verifyWrapper = verifyWrapper
+                ?? throw new ArgumentNullException(nameof(verifyWrapper));
+            _structureValidator = structureValidator
+                ?? throw new ArgumentNullException(nameof(structureValidator));
         }
 
         /// <summary>

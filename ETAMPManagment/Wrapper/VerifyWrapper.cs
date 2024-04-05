@@ -10,9 +10,9 @@ namespace ETAMPManagment.Wrapper
     /// This class facilitates the verification of digital signatures on data, offering simplified initialization to support
     /// different cryptographic setups.
     /// </summary>
-    public class VerifyWrapper : IVerifyWrapper
+    public sealed class VerifyWrapper : IVerifyWrapper
     {
-        private readonly ECDsa _ecdsa;
+        private readonly ECDsa? _ecdsa;
         private readonly HashAlgorithmName _algorithm;
 
         /// <summary>

@@ -1,5 +1,4 @@
 ﻿using ETAMPManagment.Encryption.ECDsaManager.Interfaces;
-using Microsoft.IdentityModel.Tokens;
 using Moq;
 using System.Security.Cryptography;
 using System.Text;

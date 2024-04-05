@@ -13,7 +13,7 @@ namespace ETAMPManagmentTests.Encryption
 
         public AesEncryptionServiceTests()
         {
-            _service = new AesEncryptionService();
+            _service = new AesEncryptionService(null);
             _key = new byte[32];
             new Random().NextBytes(_key);
             _iv = new byte[16];
@@ -83,7 +83,7 @@ namespace ETAMPManagmentTests.Encryption
         [Fact]
         public void Decrypt_WithInvalidIV_ThrowsInvalidOperationException()
         {
-            AesEncryptionService service = new AesEncryptionService();
+            AesEncryptionService service = new AesEncryptionService(null);
             byte[] encryptedData = Encoding.UTF8.GetBytes("TestData");
 
             Assert.Throws<InvalidOperationException>(() => service.Decrypt(encryptedData, _key));

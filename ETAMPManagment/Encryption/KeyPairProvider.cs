@@ -7,7 +7,7 @@ namespace ETAMPManagment.Encryption
     /// <summary>
     /// Provides an implementation for managing Elliptic Curve Diffie-Hellman (ECDH) key pairs and facilitating cryptographic operations.
     /// </summary>
-    public class KeyPairProvider : IKeyPairProvider
+    public sealed class KeyPairProvider : IKeyPairProvider
     {
         /// <summary>
         /// Provides access to the model provider which contains the public and private keys.
@@ -28,8 +28,8 @@ namespace ETAMPManagment.Encryption
         /// <param name="ecDiffieHellman">An existing instance of ECDiffieHellman for cryptographic operations.</param>
         public KeyPairProvider(ECDiffieHellman ecDiffieHellman)
         {
-            _eCDiffieHellman = ecDiffieHellman ??
-                throw new ArgumentNullException(nameof(ecDiffieHellman));
+            _eCDiffieHellman = ecDiffieHellman
+                ?? throw new ArgumentNullException(nameof(ecDiffieHellman));
             KeyModelProvider = new ECDKeyModelProvider
             {
                 PrivateKey = _eCDiffieHellman.ExportECPrivateKeyPem(),
@@ -43,9 +43,9 @@ namespace ETAMPManagment.Encryption
         /// cryptographic operations like key exchange.
         /// </summary>
         /// <param name="publicKey">The public key as a byte array.</param>
-        public KeyPairProvider(byte[] publicKey)
+        public KeyPairProvider(byte[]? publicKey)
         {
-            ArgumentNullException.ThrowIfNull(publicKey, nameof(publicKey));
+            ArgumentNullException.ThrowIfNull(publicKey);
 
             _eCDiffieHellman = ECDiffieHellman.Create();
             _eCDiffieHellman.ImportSubjectPublicKeyInfo(publicKey, out _);

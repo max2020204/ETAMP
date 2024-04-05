@@ -6,7 +6,7 @@ namespace ETAMPManagment.Interfaces
     /// Defines a builder interface for creating ETAMP (Encrypted Token And Message Protocol) models.
     /// </summary>
     /// <typeparam name="Type">An enum defining the different types of ETAMP that can be built.</typeparam>
-    public interface IETAMPBuilder<Type> where Type : struct, Enum
+    public interface IETAMPBuilder<in Type> where Type : struct, Enum
     {
         /// <summary>
         /// Builds and returns the final ETAMP model.

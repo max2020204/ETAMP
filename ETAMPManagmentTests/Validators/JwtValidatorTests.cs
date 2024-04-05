@@ -59,7 +59,7 @@ namespace ETAMPManagment.Validators.Tests
         [Fact]
         public void IsValidJwtToken_WithNullOrEmptyToken_ThrowsArgumentException()
         {
-            var result = _jwtValidator.IsValidJwtToken(null);
+            var result = _jwtValidator.IsValidJwtToken("");
 
             Assert.False(result.IsValid);
             Assert.Equal("The token cannot be null or empty", result.ErrorMessage);

@@ -11,7 +11,7 @@ namespace ETAMPManagment.Encryption.Interfaces
         /// Retrieves the shared secret generated from the key exchange process.
         /// </summary>
         /// <returns>A byte array representing the shared secret.</returns>
-        byte[] GetSharedSecret();
+        byte[]? GetSharedSecret();
 
         /// <summary>
         /// Derives a key using the hash-based method from the given public key and additional parameters.

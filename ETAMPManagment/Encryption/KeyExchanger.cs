@@ -12,7 +12,7 @@ namespace ETAMPManagment.Encryption
     /// <param name="keyPairProvider">The provider for ECDH key pair.</param>
     public class KeyExchanger(IKeyPairProvider keyPairProvider) : IKeyExchanger
     {
-        private byte[] _sharedSecret;
+        private byte[]? _sharedSecret;
 
         /// <summary>
         /// Provides access to the key pair used in the ECDH algorithm.
@@ -46,21 +46,6 @@ namespace ETAMPManagment.Encryption
         }
 
         /// <summary>
-        /// Derives a key using HMAC from the given public key, hash algorithm, and optional data.
-        /// </summary>
-        /// <param name="publicKey">The public key of the other party.</param>
-        /// <param name="hash">The hash algorithm to use for HMAC.</param>
-        /// <param name="hmacKey">The key to use for HMAC.</param>
-        /// <param name="secretPrepend">Optional data to prepend to the derived secret before applying HMAC.</param>
-        /// <param name="secretAppend">Optional data to append to the derived secret before applying HMAC.</param>
-        /// <returns>A byte array representing the derived key.</returns>
-        public byte[] DeriveKeyHmac(ECDiffieHellmanPublicKey publicKey, HashAlgorithmName hash, byte[]? hmacKey, byte[]? secretPrepend, byte[]? secretAppend)
-        {
-            ArgumentNullException.ThrowIfNull(publicKey);
-            return _sharedSecret = _keyProvider.GetECDiffieHellman().DeriveKeyFromHmac(publicKey, hash, hmacKey, secretPrepend, secretAppend);
-        }
-
-        /// <summary>
         /// Derives a key material from a raw byte array representing the other party's public key.
         /// </summary>
         /// <param name="otherPartyPublicKey">The raw byte array of the other party's public key.</param>
@@ -76,10 +61,25 @@ namespace ETAMPManagment.Encryption
         }
 
         /// <summary>
+        /// Derives a key using HMAC from the given public key, hash algorithm, and optional data.
+        /// </summary>
+        /// <param name="publicKey">The public key of the other party.</param>
+        /// <param name="hash">The hash algorithm to use for HMAC.</param>
+        /// <param name="hmacKey">The key to use for HMAC.</param>
+        /// <param name="secretPrepend">Optional data to prepend to the derived secret before applying HMAC.</param>
+        /// <param name="secretAppend">Optional data to append to the derived secret before applying HMAC.</param>
+        /// <returns>A byte array representing the derived key.</returns>
+        public byte[] DeriveKeyHmac(ECDiffieHellmanPublicKey publicKey, HashAlgorithmName hash, byte[]? hmacKey, byte[]? secretPrepend, byte[]? secretAppend)
+        {
+            ArgumentNullException.ThrowIfNull(publicKey);
+            return _sharedSecret = _keyProvider.GetECDiffieHellman().DeriveKeyFromHmac(publicKey, hash, hmacKey, secretPrepend, secretAppend);
+        }
+
+        /// <summary>
         /// Retrieves the shared secret generated from the key exchange process.
         /// </summary>
         /// <returns>A byte array representing the shared secret.</returns>
-        public byte[] GetSharedSecret()
+        public byte[]? GetSharedSecret()
         {
             return _sharedSecret;
         }

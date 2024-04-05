@@ -2,7 +2,6 @@
 using ETAMPManagment.Models;
 using ETAMPManagment.Validators.Interfaces;
 using Moq;
-using Newtonsoft.Json;
 using Xunit;
 
 namespace ETAMPManagment.ETAMP.Encrypted.Tests

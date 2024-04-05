@@ -14,7 +14,8 @@ namespace ETAMPManagment
 
         public ETAMPBuilder(IServiceProvider serviceProvider)
         {
-            _serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
+            _serviceProvider = serviceProvider
+                ?? throw new ArgumentNullException(nameof(serviceProvider));
         }
 
         public ETAMPModel Build()
@@ -33,13 +34,13 @@ namespace ETAMPManagment
             {
                 case ETAMPType.Base:
                     IETAMPBase etampBase = _serviceProvider.GetRequiredService<IETAMPBase>();
-                    ArgumentNullException.ThrowIfNull(etampBase, nameof(etampBase));
+                    ArgumentNullException.ThrowIfNull(etampBase);
                     _model = etampBase.CreateETAMPModel(updateType, payload, version);
                     break;
 
                 case ETAMPType.Encrypted:
                     IETAMPEncrypted encrypted = _serviceProvider.GetRequiredService<IETAMPEncrypted>();
-                    ArgumentNullException.ThrowIfNull(encrypted, nameof(encrypted));
+                    ArgumentNullException.ThrowIfNull(encrypted);
                     _model = encrypted.CreateEncryptETAMPModel(updateType, payload, version);
 
                     break;

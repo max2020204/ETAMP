@@ -12,13 +12,13 @@ namespace ETAMPManagment.Encryption.ECDsaManager
     /// </remarks>
     public class ECDsaProvider : IECDsaProvider, IECDsaRegistrar
     {
-        private ECDsa _ecdsa;
+        private ECDsa? _ecdsa;
 
         /// <summary>
         /// Retrieves the registered ECDsa instance.
         /// </summary>
         /// <returns>The currently registered ECDsa instance.</returns>
-        public ECDsa GetECDsa()
+        public ECDsa? GetECDsa()
         {
             return _ecdsa;
         }

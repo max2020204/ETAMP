@@ -22,9 +22,11 @@ namespace ETAMPManagment.Services
         /// <param name="securityAlgorithm">The security algorithm identifier to use for signing, such as "ES256", "ES384", or "ES512".</param>
         public ECDsaSigningCredentialsProvider(IECDsaProvider ecdsaProvider, string securityAlgorithm)
         {
-            ArgumentNullException.ThrowIfNull(nameof(ecdsaProvider));
-            _ecdsa = ecdsaProvider.GetECDsa() ?? throw new InvalidOperationException("ECDsa instance cannot be null.");
-            _securityAlgorithm = securityAlgorithm ?? throw new ArgumentNullException(nameof(securityAlgorithm));
+            ArgumentNullException.ThrowIfNull(ecdsaProvider);
+            _ecdsa = ecdsaProvider.GetECDsa()
+                ?? throw new InvalidOperationException("ECDsa instance cannot be null.");
+            _securityAlgorithm = securityAlgorithm
+                ?? throw new ArgumentNullException(securityAlgorithm);
         }
 
         /// <summary>

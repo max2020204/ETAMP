@@ -18,8 +18,8 @@ namespace ETAMPManagment.Extensions
         public static string Compress(this ETAMPModel model, Func<ICompressionService> compressionServiceFactory)
         {
             // Utilizes the provided compression service to compress the model's string representation
-            ArgumentNullException.ThrowIfNull(nameof(model));
-            ArgumentNullException.ThrowIfNull(nameof(compressionServiceFactory));
+            ArgumentNullException.ThrowIfNull(model);
+            ArgumentNullException.ThrowIfNull(compressionServiceFactory);
 
             return compressionServiceFactory().CompressString(model.ToString());
         }
@@ -35,10 +35,11 @@ namespace ETAMPManagment.Extensions
         /// <exception cref="InvalidOperationException">Thrown if the compression service fails to decompress the string.</exception>
         public static ETAMPModel Decompress(this string jsonEtamp, Func<ICompressionService> compressionServiceFactory)
         {
-            ArgumentException.ThrowIfNullOrWhiteSpace(nameof(jsonEtamp));
-            ArgumentNullException.ThrowIfNull(nameof(compressionServiceFactory));
+            ArgumentException.ThrowIfNullOrWhiteSpace(jsonEtamp);
+            ArgumentNullException.ThrowIfNull(compressionServiceFactory);
 
-            var compressionService = compressionServiceFactory() ?? throw new InvalidOperationException("Failed to create a compression service instance.");
+            var compressionService = compressionServiceFactory()
+                ?? throw new InvalidOperationException("Failed to create a compression service instance.");
 
             string decompressedString;
             try
@@ -57,7 +58,7 @@ namespace ETAMPManagment.Extensions
             }
             catch (JsonException ex)
             {
-                throw new ArgumentException("The decompressed string is not in a valid JSON format.", nameof(jsonEtamp), ex);
+                throw new ArgumentException("The decompressed string is not in a valid JSON format.", jsonEtamp, ex);
             }
         }
     }

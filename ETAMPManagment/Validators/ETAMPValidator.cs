@@ -28,7 +28,7 @@ namespace ETAMPManagment.Validators
             return new List<bool>()
             {
                 structureValidator.ValidateETAMPStructure(etamp).IsValid,
-                (await jwtValidator.ValidateToken(etamp.Token,audience,issuer,tokenSecurityKey)).IsValid,
+                (await jwtValidator.ValidateToken(etamp.Token, audience,issuer,tokenSecurityKey)).IsValid,
                 signatureValidator.ValidateToken(etamp.Token,etamp.SignatureToken),
                 signatureValidator.ValidateETAMPMessage(etamp)
             }.TrueForAll(x => x);
