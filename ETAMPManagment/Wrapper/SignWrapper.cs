@@ -9,24 +9,18 @@ using System.Text;
 namespace ETAMPManagment.Wrapper
 {
     /// <summary>
-    /// Provides functionality for signing data using Elliptic Curve Digital Signature Algorithm (ECDsa).
+    /// Signs data using Elliptic Curve Digital Signature Algorithm (ECDsa).
     /// </summary>
-    /// <remarks>
-    /// This class enables the creation of digital signatures using ECDsa, facilitating multiple initialization methods,
-    /// including direct from an ECDsa instance or via an IEcdsaWrapper for enhanced flexibility and custom implementation scenarios.
-    /// It supports signing operations on byte arrays, streams, and JSON representations of models.
-    /// </remarks>
     public class SignWrapper : ISignWrapper
     {
         private readonly ECDsa? _ecdsa;
         private readonly HashAlgorithmName _algorithmName;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SignWrapper"/> class using an IECDsaProvider.
-        /// The ECDsa instance for signing is obtained from the provided IECDsaProvider.
+        /// Initializes a new instance with an ECDsa provider and hash algorithm.
         /// </summary>
-        /// <param name="ecdsaProvider">The IECDsaProvider to use for obtaining the ECDsa instance.</param>
-        /// <param name="algorithmName">The hash algorithm to use for signing.</param>
+        /// <param name="ecdsaProvider">The provider for ECDsa instances.</param>
+        /// <param name="algorithmName">The hash algorithm for signing.</param>
         public SignWrapper(IECDsaProvider ecdsaProvider, HashAlgorithmName algorithmName)
         {
             if (ecdsaProvider == null)

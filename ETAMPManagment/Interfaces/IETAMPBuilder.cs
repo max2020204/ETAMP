@@ -22,8 +22,8 @@ namespace ETAMPManagment.Interfaces
         /// <param name="type">The specific ETAMP type to create, as defined by the enum <typeparamref name="Type"/>.</param>
         /// <param name="updateType">A string identifier describing the nature or purpose of the ETAMP being created.</param>
         /// <param name="payload">The payload object to include in the ETAMP model.</param>
-        /// <param name="version">The version number of the ETAMP protocol to use.</param>
+        /// <param name="version">The version number of the ETAMP protocol to use, defaulting to 1.</param>
         /// <returns>A reference to the builder instance for chaining method calls.</returns>
-        ETAMPBuilder CreateETAMP<T>(Type type, string updateType, T payload, double version = 1) where T : BasePayload;
+        IETAMPBuilder<Type> CreateETAMP<T>(Type type, string updateType, T payload, double version = 1) where T : BasePayload;
     }
 }

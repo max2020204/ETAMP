@@ -41,6 +41,10 @@ namespace ETAMPManagment.Models
         /// </summary>
         public string? SignatureMessage { get; set; }
 
+        /// <summary>
+        /// Converts the ETAMP model instance to its JSON string representation.
+        /// </summary>
+        /// <returns>A JSON string representing the current state of the ETAMPModel instance.</returns>
         public override string ToString()
         {
             return JsonConvert.SerializeObject(this);

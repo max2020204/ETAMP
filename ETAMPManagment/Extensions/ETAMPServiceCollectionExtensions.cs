@@ -39,10 +39,10 @@ namespace ETAMPManagment.Extensions
             services.AddScoped<IEciesEncryptionService, EciesEncryptionService>();
 
             // Register wrapper services for cryptographic operations
+            services.AddScoped<IECDsaRegistrar, ECDsaProvider>();
+            services.AddScoped<IECDsaProvider, ECDsaProvider>();
             services.AddScoped<IEcdsaCreator, EcdsaCreator>();
             services.AddScoped<IEcdsaKeyManager, EcdsaKeyManager>();
-            services.AddScoped<IECDsaProvider, ECDsaProvider>();
-            services.AddScoped<IECDsaRegistrar, ECDsaProvider>();
             services.AddScoped<IPemKeyCleaner, PemKeyCleaner>();
 
             // Register ETAMP processing services

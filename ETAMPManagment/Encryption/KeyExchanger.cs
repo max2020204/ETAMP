@@ -5,20 +5,26 @@ namespace ETAMPManagment.Encryption
 {
     /// <summary>
     /// Manages key exchange and key derivation operations using Elliptic Curve Diffie-Hellman (ECDH) algorithm.
-    /// </summary>
-    /// <remarks>
     /// Initializes a new instance of the KeyExchanger class with a specified key pair provider.
-    /// </remarks>
-    /// <param name="keyPairProvider">The provider for ECDH key pair.</param>
-    public class KeyExchanger(IKeyPairProvider keyPairProvider) : IKeyExchanger
+    /// </summary>
+    public class KeyExchanger : IKeyExchanger
     {
         private byte[]? _sharedSecret;
 
         /// <summary>
         /// Provides access to the key pair used in the ECDH algorithm.
         /// </summary>
-        private readonly IKeyPairProvider _keyProvider = keyPairProvider ??
-            throw new ArgumentNullException(nameof(keyPairProvider));
+        private readonly IKeyPairProvider _keyProvider;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="KeyExchanger"/> class with a specified key pair provider.
+        /// </summary>
+        /// <param name="keyPairProvider">The provider for ECDH key pair.</param>
+        public KeyExchanger(IKeyPairProvider keyPairProvider)
+        {
+            _keyProvider = keyPairProvider
+                ?? throw new ArgumentNullException(nameof(keyPairProvider));
+        }
 
         /// <summary>
         /// Derives a key using a hash function from the given public key and optional prepended or appended data.

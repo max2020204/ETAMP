@@ -16,8 +16,8 @@
         /// Decrypts an encrypted message back to its plain text form using ECIES.
         /// </summary>
         /// <param name="encryptedMessageBase64">The encrypted message as a Base64-encoded string.</param>
-        /// <param name="publicKey">The public key used for decryption, matching the private key used during encryption.</param>
+        /// <param name="privateKey">The private key used for decryption, matching the public key used during encryption.</param>
         /// <returns>The decrypted plain text message.</returns>
-        string Decrypt(string encryptedMessageBase64, byte[] publicKey);
+        string Decrypt(string encryptedMessageBase64, byte[] privateKey);
     }
 }

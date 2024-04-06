@@ -25,7 +25,7 @@ namespace ETAMPManagment.Extensions
         }
 
         /// <summary>
-        /// Decompresses a string into an ETAMPModel instance.
+        /// Decompresses a compressed string into an ETAMPModel instance.
         /// </summary>
         /// <param name="jsonEtamp">The compressed string representation of the ETAMPModel.</param>
         /// <param name="compressionServiceFactory">A factory method that creates an instance of ICompressionService.</param>

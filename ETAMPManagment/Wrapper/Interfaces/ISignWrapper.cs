@@ -8,24 +8,24 @@ namespace ETAMPManagment.Wrapper.Interfaces
     public interface ISignWrapper
     {
         /// <summary>
-        /// Signs an ETAMP message given as a JSON string.
+        /// Signs an ETAMP message provided as a JSON string and returns the signed message as a string.
         /// </summary>
         /// <param name="jsonEtamp">The ETAMP message in JSON format.</param>
-        /// <returns>The signed ETAMP message as a string.</returns>
+        /// <returns>The signed ETAMP message as a JSON string.</returns>
         string SignEtamp(string jsonEtamp);
 
         /// <summary>
-        /// Signs an ETAMP message provided as an ETAMPModel.
+        /// Signs an ETAMP message provided as an ETAMPModel and returns the signed message as a string.
         /// </summary>
         /// <param name="etamp">The ETAMP message as an ETAMPModel.</param>
         /// <returns>The signed ETAMP message as a string.</returns>
         string SignEtamp(ETAMPModel etamp);
 
         /// <summary>
-        /// Signs an ETAMPModel and returns a modified ETAMPModel with the signature.
+        /// Signs an ETAMPModel and returns a new ETAMPModel that includes the signature.
         /// </summary>
         /// <param name="etamp">The ETAMPModel to be signed.</param>
-        /// <returns>A new ETAMPModel that includes the signature.</returns>
+        /// <returns>A new ETAMPModel that includes the signature, enhancing the original model.</returns>
         ETAMPModel SignEtampModel(ETAMPModel etamp);
     }
 }

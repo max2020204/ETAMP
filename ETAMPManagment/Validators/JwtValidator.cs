@@ -73,24 +73,24 @@ namespace ETAMPManagment.Validators
         {
             var structuralValidation = IsValidJwtToken(token);
             if (!structuralValidation.IsValid)
-                return structuralValidation;
+                return await Task.FromResult(structuralValidation);
 
             try
             {
                 TokenValidationResult result = await _jwtSecurityTokenHandler.ValidateTokenAsync(token, GetValidationParameters(securityKey));
-                return new ValidationResult(result.IsValid, result.IsValid ? null : "Token's lifetime validation failed.");
+                return await Task.FromResult(new ValidationResult(result.IsValid, result.IsValid ? null : "Token's lifetime validation failed."));
             }
             catch (SecurityTokenExpiredException ex)
             {
-                return new ValidationResult(false, $"Token has expired: {ex.Message}");
+                return await Task.FromResult(new ValidationResult(false, $"Token has expired: {ex.Message}"));
             }
             catch (SecurityTokenNotYetValidException ex)
             {
-                return new ValidationResult(false, $"Token is not yet valid: {ex.Message}");
+                return await Task.FromResult(new ValidationResult(false, $"Token is not yet valid: {ex.Message}"));
             }
             catch (Exception ex)
             {
-                return new ValidationResult(false, $"Token validation failed: {ex.Message}");
+                return await Task.FromResult(new ValidationResult(false, $"Token validation failed: {ex.Message}"));
             }
         }
 
@@ -112,28 +112,28 @@ namespace ETAMPManagment.Validators
         {
             var structuralValidation = IsValidJwtToken(token);
             if (!structuralValidation.IsValid)
-                return structuralValidation;
+                return await Task.FromResult(structuralValidation);
 
             try
             {
                 TokenValidationResult result = await _jwtSecurityTokenHandler.ValidateTokenAsync(token, GetValidationParameters(securityKey, audience, issuer));
-                return new ValidationResult(result.IsValid, result.IsValid ? null : "Invalid JWT token claims.");
+                return await Task.FromResult(new ValidationResult(result.IsValid, result.IsValid ? null : "Invalid JWT token claims."));
             }
             catch (SecurityTokenExpiredException ex)
             {
-                return new ValidationResult(false, $"Token is expired: {ex.Message}");
+                return await Task.FromResult(new ValidationResult(false, $"Token is expired: {ex.Message}"));
             }
             catch (SecurityTokenNotYetValidException ex)
             {
-                return new ValidationResult(false, $"Token is not yet valid: {ex.Message}");
+                return await Task.FromResult(new ValidationResult(false, $"Token is not yet valid: {ex.Message}"));
             }
             catch (SecurityTokenInvalidSignatureException ex)
             {
-                return new ValidationResult(false, $"Invalid token signature: {ex.Message}");
+                return await Task.FromResult(new ValidationResult(false, $"Invalid token signature: {ex.Message}"));
             }
             catch (Exception ex)
             {
-                return new ValidationResult(false, $"Token validation failed: {ex.Message}");
+                return await Task.FromResult(new ValidationResult(false, $"Token validation failed: {ex.Message}"));
             }
         }
 

@@ -32,11 +32,11 @@ namespace ETAMPManagment.Encryption
         /// Decrypts a given encrypted message back into its plain text form using ECIES.
         /// </summary>
         /// <param name="encryptedMessageBase64">The encrypted message in Base64 encoding to decrypt.</param>
-        /// <param name="publicKey">The public key used to derive the shared secret for decryption.</param>
+        /// <param name="privateKey">The private key used to derive the shared secret for decryption.</param>
         /// <returns>The decrypted plain text message.</returns>
         /// <exception cref="InvalidOperationException">Thrown if the shared secret is not initialized or empty.</exception>
         /// <exception cref="FormatException">Thrown if the encrypted message is not in a valid Base64 format.</exception>
-        public virtual string Decrypt(string encryptedMessageBase64, byte[] publicKey)
+        public virtual string Decrypt(string encryptedMessageBase64, byte[] privateKey)
         {
             if (_keyExchanger.GetSharedSecret() == null || _keyExchanger.GetSharedSecret().Length == 0)
                 throw new InvalidOperationException("KeyExchanger is null. The ECDH key wrapper must be initialized with key material.");
@@ -51,7 +51,7 @@ namespace ETAMPManagment.Encryption
                 throw new FormatException("The encrypted message is not in a valid Base64 format.", ex);
             }
 
-            byte[] secretKey = _keyExchanger.DeriveKey(publicKey);
+            byte[] secretKey = _keyExchanger.DeriveKey(privateKey);
             byte[] decryptedMessage = _encryptionService.Decrypt(encryptedMessage, secretKey);
 
             return Encoding.UTF8.GetString(decryptedMessage);

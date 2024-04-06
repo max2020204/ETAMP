@@ -5,24 +5,21 @@ using Microsoft.IdentityModel.Tokens;
 namespace ETAMPManagment.Validators
 {
     /// <summary>
-    /// Provides functionalities for validating ETAMP tokens, including JWT validation, structural integrity checks, and signature verification.
+    /// Validates ETAMP tokens, combining JWT validation, structural checks, and signature verification.
     /// </summary>
-    /// <remarks>
-    /// This class integrates various validation mechanisms to ensure the security and integrity of ETAMP tokens.
-    /// </remarks>
-    /// <param name="jwtValidator">The JWT validator used for validating token lifetime and claims.</param>
-    /// <param name="structureValidator">The structure validator used for checking ETAMP token format and structure.</param>
-    /// <param name="signatureValidator">The signature validator used for verifying the authenticity of tokens and messages.</param>
-    public class ETAMPValidator(IJwtValidator jwtValidator, IStructureValidator structureValidator, ISignatureValidator signatureValidator) : IETAMPValidator
+    /// <param name="jwtValidator">Validator for JWT token attributes.</param>
+    /// <param name="structureValidator">Validator for ETAMP token structure.</param>
+    /// <param name="signatureValidator">Validator for token and message signatures.</param>
+    public class ETAMPValidator(IJwtValidator jwtValidator, IStructureValidator structureValidator, ISignatureValidator signatureValidator)
     {
         /// <summary>
-        /// Validates an ETAMP token, including checks for JWT validation, structure, and signature, against expected audience and issuer values.
+        /// Validates an ETAMP token against audience, issuer, and signature requirements.
         /// </summary>
-        /// <param name="etamp">The ETAMP token model to be validated.</param>
-        /// <param name="audience">The expected audience (aud) claim.</param>
-        /// <param name="issuer">The expected issuer (iss) claim.</param>
-        /// <param name="tokenSecurityKey">The ECDsa security key for signature verification.</param>
-        /// <returns>A task that represents the asynchronous operation, yielding true if the ETAMP token passes all validations; otherwise, false.</returns>
+        /// <param name="etamp">ETAMP token model to validate.</param>
+        /// <param name="audience">Expected audience claim.</param>
+        /// <param name="issuer">Expected issuer claim.</param>
+        /// <param name="tokenSecurityKey">ECDsa security key for signature verification.</param>
+        /// <returns>True if the ETAMP token is valid; otherwise, false.</returns>
         public virtual async Task<bool> ValidateETAMP(ETAMPModel etamp, string audience, string issuer, ECDsaSecurityKey tokenSecurityKey)
         {
             return new List<bool>()
@@ -35,11 +32,11 @@ namespace ETAMPManagment.Validators
         }
 
         /// <summary>
-        /// Validates the structure and signature of an ETAMP token and checks the token's lifetime using a specified security key.
+        /// Validates the ETAMP token's structure, signature, and lifetime.
         /// </summary>
-        /// <param name="etamp">The ETAMP token model to be validated.</param>
-        /// <param name="tokenSecurityKey">The ECDsa security key for signature verification.</param>
-        /// <returns>A task that represents the asynchronous operation, yielding true if the ETAMP token passes all validations; otherwise, false.</returns>
+        /// <param name="etamp">ETAMP token model to validate.</param>
+        /// <param name="tokenSecurityKey">ECDsa security key for lifetime validation.</param>
+        /// <returns>True if the ETAMP token is valid; otherwise, false.</returns>
         public virtual async Task<bool> ValidateETAMP(ETAMPModel etamp, ECDsaSecurityKey tokenSecurityKey)
         {
             return new List<bool>()
@@ -52,11 +49,11 @@ namespace ETAMPManagment.Validators
         }
 
         /// <summary>
-        /// Performs a lightweight validation of an ETAMP token, focusing on structure and signature checks.
+        /// Performs a basic validation of the ETAMP token's structure and lifetime.
         /// </summary>
-        /// <param name="etamp">The ETAMP token model to be validated.</param>
-        /// <param name="tokenSecurityKey">The ECDsa security key for validating the token's lifetime.</param>
-        /// <returns>A task that represents the asynchronous operation, yielding true if the ETAMP token's structure and lifetime are valid; otherwise, false.</returns>
+        /// <param name="etamp">ETAMP token model to validate.</param>
+        /// <param name="tokenSecurityKey">ECDsa security key for lifetime validation.</param>
+        /// <returns>True if the basic structure and lifetime of the ETAMP token are valid; otherwise, false.</returns>
         public virtual async Task<bool> ValidateETAMPLite(ETAMPModel etamp, ECDsaSecurityKey tokenSecurityKey)
         {
             return new List<bool>()

@@ -12,9 +12,9 @@ namespace ETAMPManagment.Encryption
         /// <summary>
         /// Provides access to the model provider which contains the public and private keys.
         /// </summary>
-        public ECDKeyModelProvider KeyModelProvider { get; }
+        public ECDKeyModelProvider KeyModelProvider { get; private set; }
 
-        private readonly ECDiffieHellman _eCDiffieHellman;
+        private ECDiffieHellman _eCDiffieHellman;
 
         /// <summary>
         /// Gets the public key component of the ECDH key pair, allowing for public key exchange operations.
@@ -32,25 +32,20 @@ namespace ETAMPManagment.Encryption
                 ?? throw new ArgumentNullException(nameof(ecDiffieHellman));
             KeyModelProvider = new ECDKeyModelProvider
             {
-                PrivateKey = _eCDiffieHellman.ExportECPrivateKeyPem(),
+                PrivateKey = _eCDiffieHellman.ExportPkcs8PrivateKeyPem(),
                 PublicKey = _eCDiffieHellman.ExportSubjectPublicKeyInfoPem()
             };
         }
 
         /// <summary>
-        /// Initializes a new instance of the KeyPairProvider class using a public key in byte array format.
-        /// This allows for the creation of a key pair provider based on an external public key, typically used for
-        /// cryptographic operations like key exchange.
+        /// Initializes a new instance of the KeyPairProvider class, creating a new ECDiffieHellman key pair.
         /// </summary>
-        /// <param name="publicKey">The public key as a byte array.</param>
-        public KeyPairProvider(byte[]? publicKey)
+        public KeyPairProvider()
         {
-            ArgumentNullException.ThrowIfNull(publicKey);
-
             _eCDiffieHellman = ECDiffieHellman.Create();
-            _eCDiffieHellman.ImportSubjectPublicKeyInfo(publicKey, out _);
             KeyModelProvider = new ECDKeyModelProvider
             {
+                PrivateKey = _eCDiffieHellman.ExportPkcs8PrivateKeyPem(),
                 PublicKey = _eCDiffieHellman.ExportSubjectPublicKeyInfoPem()
             };
         }
@@ -62,6 +57,37 @@ namespace ETAMPManagment.Encryption
         public ECDiffieHellman GetECDiffieHellman()
         {
             return _eCDiffieHellman;
+        }
+
+        /// <summary>
+        /// Imports a private key into the ECDH key pair provider.
+        /// </summary>
+        /// <param name="privateKey">The private key as a byte array to import into the provider.</param>
+        public void ImportPrivateKey(byte[] privateKey)
+        {
+            ArgumentNullException.ThrowIfNull(privateKey, nameof(privateKey));
+
+            _eCDiffieHellman.ImportPkcs8PrivateKey(privateKey, out _);
+            KeyModelProvider = new ECDKeyModelProvider
+            {
+                PrivateKey = _eCDiffieHellman.ExportPkcs8PrivateKeyPem(),
+                PublicKey = _eCDiffieHellman.ExportSubjectPublicKeyInfoPem()
+            };
+        }
+
+        /// <summary>
+        /// Imports a public key into the ECDH key pair provider.
+        /// </summary>
+        /// <param name="publicKey">The public key as a byte array to import into the provider.</param>
+        public void ImportPublicKey(byte[] publicKey)
+        {
+            ArgumentNullException.ThrowIfNull(publicKey, nameof(publicKey));
+
+            _eCDiffieHellman.ImportSubjectPublicKeyInfo(publicKey, out _);
+            KeyModelProvider = new ECDKeyModelProvider
+            {
+                PublicKey = _eCDiffieHellman.ExportSubjectPublicKeyInfoPem()
+            };
         }
 
         /// <summary>

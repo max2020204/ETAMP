@@ -3,9 +3,7 @@
 namespace ETAMPManagment.Models
 {
     /// <summary>
-    /// Represents the base payload structure for a JSON Web Token (JWT).
-    /// This class automatically initializes default values for JTI, IssuedAt, and Expires properties.
-    /// When using default parameters, ensure to manually set 'Issuer' and 'Audience' as they are essential for token validation.
+    /// Represents the base structure for a JWT payload, initializing default values for essential properties.
     /// </summary>
     public class BasePayload
     {
@@ -41,18 +39,10 @@ namespace ETAMPManagment.Models
         public DateTimeOffset Expires { get; set; }
 
         /// <summary>
-        /// Initializes a new instance of the BasePayload class with optional default parameters.
-        /// This constructor allows for the automatic setting of essential token metadata such as JTI (JWT ID), 'IssuedAt', and 'Expires'.
+        /// Initializes a new instance with optional default values for JTI, IssuedAt, and Expires.
         /// </summary>
-        /// <remarks>
-        /// When 'defaultParameters' is set to true, the constructor initializes the payload with default values:
-        /// a unique JTI, the current timestamp for 'IssuedAt', and an 'Expires' time set to a specified number of hours from the current time.
-        /// The 'Issuer' and 'Audience' properties must be manually set after initialization as they are essential for token validation but not auto-generated.
-        /// </remarks>
-        /// <param name="defaultParameters">If true, initializes the payload with default values for JTI, IssuedAt, and Expires.
-        /// If false, these properties must be manually set after object creation. Default is true.</param>
-        /// <param name="expiresHour">The number of hours from the current time when the token should expire.
-        /// This parameter is used to calculate the 'Expires' property. Default is 1 hour.</param>
+        /// <param name="defaultParameters">If true, sets default values; otherwise, manual setting is required.</param>
+        /// <param name="expiresHour">The number of hours until expiration, used when defaultParameters is true.</param>
         public BasePayload(bool defaultParameters = true, int expiresHour = 1)
         {
             if (defaultParameters)
@@ -64,16 +54,11 @@ namespace ETAMPManagment.Models
         }
 
         /// <summary>
-        /// Initializes a new instance of the BasePayload class using specific values for JTI, issued at date and time, and expiration time.
+        /// Initializes a new instance with specific values for JTI, IssuedAt, and Expires.
         /// </summary>
-        /// <remarks>
-        /// This constructor is suitable for scenarios where explicit control over the token's metadata is required, allowing the caller to specify
-        /// exact values for the JTI, 'IssuedAt', and 'Expires' properties. It's important to ensure that these values are correctly set to maintain
-        /// the validity and integrity of the token.
-        /// </remarks>
-        /// <param name="jti">The JWT ID (JTI), a unique identifier for the token. This value should be a unique GUID.</param>
-        /// <param name="issuedAt">The date and time when the token is issued (IAT). This should represent the time of token creation in UTC.</param>
-        /// <param name="expires">The expiration time (EXP) for the token. This should be a future time in UTC when the token will no longer be valid.</param>
+        /// <param name="jti">A unique identifier for the token.</param>
+        /// <param name="issuedAt">The issuance time of the token.</param>
+        /// <param name="expires">The expiration time of the token.</param>
         public BasePayload(Guid jti, DateTime issuedAt, DateTime expires)
         {
             JTI = jti;
@@ -81,4 +66,3 @@ namespace ETAMPManagment.Models
             Expires = expires.ToUniversalTime();
         }
     }
-}

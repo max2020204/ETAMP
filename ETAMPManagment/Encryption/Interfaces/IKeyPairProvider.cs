@@ -31,9 +31,19 @@ namespace ETAMPManagment.Encryption.Interfaces
         /// Retrieves the underlying <see cref="ECDiffieHellman"/> instance representing the ECDH key pair,
         /// allowing for direct cryptographic operations such as key exchange.
         /// </summary>
-        /// <returns>
-        /// An <see cref="ECDiffieHellman"/> instance representing the ECDH key pair, suitable for cryptographic operations.
-        /// </returns>
+        /// <returns>An <see cref="ECDiffieHellman"/> instance representing the ECDH key pair, suitable for cryptographic operations.</returns>
         ECDiffieHellman GetECDiffieHellman();
+
+        /// <summary>
+        /// Imports a private key into the ECDH key pair provider.
+        /// </summary>
+        /// <param name="privateKey">The private key as a byte array to import into the provider.</param>
+        void ImportPrivateKey(byte[] privateKey);
+
+        /// <summary>
+        /// Imports a public key into the ECDH key pair provider.
+        /// </summary>
+        /// <param name="publicKey">The public key as a byte array to import into the provider.</param>
+        void ImportPublicKey(byte[] publicKey);
     }
 }

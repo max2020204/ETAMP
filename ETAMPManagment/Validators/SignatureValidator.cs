@@ -5,7 +5,7 @@ using ETAMPManagment.Wrapper.Interfaces;
 namespace ETAMPManagment.Validators
 {
     /// <summary>
-    /// Provides functionalities for validating ETAMP messages and tokens, including signature verification.
+    /// Validates ETAMP messages and tokens for authenticity and integrity by verifying their signatures.
     /// </summary>
     public class SignatureValidator : ISignatureValidator
     {

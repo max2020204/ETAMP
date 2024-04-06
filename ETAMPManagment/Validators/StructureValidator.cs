@@ -6,15 +6,17 @@ using System.IdentityModel.Tokens.Jwt;
 namespace ETAMPManagment.Validators
 {
     /// <summary>
-    /// Provides functionality for validating the structure of ETAMP messages, including JSON format, field consistency, and signature presence.
+    /// Validates the structure of ETAMP messages and tokens to ensure their conformity to expected formats and standards.
     /// </summary>
-    /// <remarks>
-    /// Initializes a new instance of the StructureValidator class with a specified JWT validator.
-    /// </remarks>
-    /// <param name="jwtValidator">The JWT validator to use for JWT token validation.</param>
-    public class StructureValidator(IJwtValidator jwtValidator) : IStructureValidator
+    /// <param name="jwtValidator">Used for JWT token validation within ETAMP messages.</param>
+    public class StructureValidator : IStructureValidator
     {
-        private readonly IJwtValidator _jwtValidator = jwtValidator;
+        private readonly IJwtValidator _jwtValidator;
+
+        public StructureValidator(IJwtValidator jwtValidator)
+        {
+            _jwtValidator = jwtValidator ?? throw new ArgumentNullException(nameof(jwtValidator));
+        }
 
         /// <summary>
         /// Validates the format of a given ETAMP string to ensure it's a valid JSON and can be deserialized into an ETAMP model.
