@@ -10,7 +10,7 @@ namespace ETAMPManagment.Validators
     /// <param name="jwtValidator">Validator for JWT token attributes.</param>
     /// <param name="structureValidator">Validator for ETAMP token structure.</param>
     /// <param name="signatureValidator">Validator for token and message signatures.</param>
-    public class ETAMPValidator(IJwtValidator jwtValidator, IStructureValidator structureValidator, ISignatureValidator signatureValidator)
+    public class ETAMPValidator(IJwtValidator jwtValidator, IStructureValidator structureValidator, ISignatureValidator signatureValidator) : IETAMPValidator
     {
         /// <summary>
         /// Validates an ETAMP token against audience, issuer, and signature requirements.

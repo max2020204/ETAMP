@@ -66,3 +66,4 @@ namespace ETAMPManagment.Models
             Expires = expires.ToUniversalTime();
         }
     }
+}

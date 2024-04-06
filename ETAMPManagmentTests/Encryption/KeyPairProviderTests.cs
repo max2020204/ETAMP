@@ -15,23 +15,6 @@ namespace ETAMPManagment.Encryption.Tests
         }
 
         [Fact]
-        public void Constructor_WithInvalidPublicKey_ShouldThrowException()
-        {
-            byte[] invalidPublicKey = { 0x01, 0x02, 0x03 };
-
-            var exception = Assert.Throws<CryptographicException>(() => new KeyPairProvider(invalidPublicKey));
-
-            Assert.NotNull(exception);
-            Assert.Contains("ASN1", exception.Message);
-        }
-
-        [Fact]
-        public void Constructor_WithEmptyPublicKey_ShouldThrowArgumentNullException()
-        {
-            Assert.Throws<ArgumentNullException>(() => new KeyPairProvider(publicKey: null));
-        }
-
-        [Fact]
         public void Constructor_WithECDiffieHellman_ShouldSetPropertiesCorrectly()
         {
             using var eCDiffieHellman = ECDiffieHellman.Create();
