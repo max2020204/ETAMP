@@ -14,7 +14,8 @@ namespace ETAMPManagment.Services.Tests
             string algorithm = "ES256";
             var providerMock = new Mock<IECDsaProvider>();
             providerMock.Setup(x => x.GetECDsa()).Returns(ECDsa.Create());
-            var provider = new ECDsaSigningCredentialsProvider(providerMock.Object, algorithm);
+            var provider = new ECDsaSigningCredentialsProvider(providerMock.Object);
+            provider.SecurityAlgorithm = algorithm;
 
             var signingCredentials = provider.CreateSigningCredentials();
             Assert.NotNull(signingCredentials);

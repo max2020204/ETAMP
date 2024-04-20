@@ -7,6 +7,8 @@ namespace ETAMPManagment.Services.Interfaces
     /// </summary>
     public interface ISigningCredentialsProvider
     {
+        public string SecurityAlgorithm { get; set; }
+
         /// <summary>
         /// Creates signing credentials for use in signing a token.
         /// </summary>

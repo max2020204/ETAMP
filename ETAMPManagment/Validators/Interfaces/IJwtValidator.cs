@@ -1,5 +1,6 @@
 ﻿using ETAMPManagment.Models;
 using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace ETAMPManagment.Validators.Interfaces
 {

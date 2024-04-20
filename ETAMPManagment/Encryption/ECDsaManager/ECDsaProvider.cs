@@ -10,6 +10,11 @@ namespace ETAMPManagment.Encryption.ECDsaManager
     {
         private ECDsa? _ecdsa;
 
+        public ECDsaProvider()
+        {
+            _ecdsa = ECDsa.Create();
+        }
+
         /// <summary>
         /// Retrieves the registered ECDsa instance.
         /// </summary>

@@ -19,15 +19,6 @@ namespace ETAMPManagment.Validators
         }
 
         /// <summary>
-        /// Initializes a new instance of the JwtValidator class with a custom JwtSecurityTokenHandler.
-        /// </summary>
-        /// <param name="jwtSecurityTokenHandler">The JwtSecurityTokenHandler used for processing JWT tokens.</param>
-        public JwtValidator(JwtSecurityTokenHandler jwtSecurityTokenHandler)
-        {
-            _jwtSecurityTokenHandler = jwtSecurityTokenHandler;
-        }
-
-        /// <summary>
         /// Determines whether the provided JWT token is valid based on its structure and header information.
         /// </summary>
         /// <param name="token">The JWT token to validate.</param>

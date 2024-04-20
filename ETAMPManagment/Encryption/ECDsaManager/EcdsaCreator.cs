@@ -14,7 +14,7 @@ namespace ETAMPManagment.Encryption.ECDsaManager
         /// Initializes a new instance of the EcdsaCreator class with a registrar for ECDsa instances.
         /// </summary>
         /// <param name="ecdsaRegistrar">The registrar used to register ECDsa instances.</param>
-        internal EcdsaCreator(IECDsaRegistrar ecdsaRegistrar)
+        public EcdsaCreator(IECDsaRegistrar ecdsaRegistrar)
         {
             _ecdsaRegistrar = ecdsaRegistrar ??
                 throw new ArgumentNullException(nameof(ecdsaRegistrar), "ECDsa registrar cannot be null.");

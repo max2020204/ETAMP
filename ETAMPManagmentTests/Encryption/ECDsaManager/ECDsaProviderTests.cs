@@ -16,13 +16,5 @@ namespace ETAMPManagment.Encryption.ECDsaManager.Tests
             Assert.Same(ecdsa, provider.GetECDsa());
             Assert.Same(provider, returnedProvider);
         }
-
-        [Fact]
-        public void GetECDsa_ShouldReturnNull_WhenNotRegistered()
-        {
-            var provider = new ECDsaProvider();
-
-            Assert.Null(provider.GetECDsa());
-        }
     }
 }

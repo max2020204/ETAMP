@@ -32,9 +32,10 @@ namespace ETAMPManagment.ETAMP.Base.Tests
 
         private string GenerateToken(string ecdsaAlgorithm)
         {
+            ECDsaSigningCredentialsProvider ecdsa = new ECDsaSigningCredentialsProvider(_providerMock.Object);
+            ecdsa.SecurityAlgorithm = ecdsaAlgorithm;
             _signMock.Setup(x => x.CreateSigningCredentials())
-                .Returns(new ECDsaSigningCredentialsProvider(_providerMock.Object, ecdsaAlgorithm)
-                .CreateSigningCredentials());
+                .Returns(ecdsa.CreateSigningCredentials());
 
             ETAMPData data = new ETAMPData(_signMock.Object);
             return data.CreateEtampData(_messageId, _payload);
@@ -47,6 +48,7 @@ namespace ETAMPManagment.ETAMP.Base.Tests
         public void CreateEtampData_ShouldGenerateTokenWithCorrectAlgorithm(string securityAlgorithm, string ecdsaAlgorithm)
         {
             string token = GenerateToken(ecdsaAlgorithm);
+
             var readToken = _jwtHandler.ReadJwtToken(token);
 
             Assert.Equal(securityAlgorithm, readToken.Header.Alg);

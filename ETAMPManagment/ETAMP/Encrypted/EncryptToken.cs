@@ -10,8 +10,8 @@ namespace ETAMPManagment.ETAMP.Encrypted
     /// </summary>
     public class EncryptToken : IEncryptToken
     {
-        private readonly IStructureValidator structureValidator;
-        private readonly IEciesEncryptionService eciesEncryptionService;
+        private readonly IStructureValidator _structureValidator;
+        private readonly IEciesEncryptionService _eciesEncryptionService;
 
         /// <summary>
         /// Initializes a new instance of the EncryptToken class with the specified structure validator and ECIES encryption service.
@@ -20,8 +20,8 @@ namespace ETAMPManagment.ETAMP.Encrypted
         /// <param name="eciesEncryptionService">The encryption service to encrypt ETAMP tokens.</param>
         public EncryptToken(IStructureValidator structureValidator, IEciesEncryptionService eciesEncryptionService)
         {
-            this.structureValidator = structureValidator;
-            this.eciesEncryptionService = eciesEncryptionService;
+            _structureValidator = structureValidator;
+            _eciesEncryptionService = eciesEncryptionService;
         }
 
         /// <summary>
@@ -32,9 +32,9 @@ namespace ETAMPManagment.ETAMP.Encrypted
         /// <exception cref="InvalidOperationException">Thrown if the ETAMP data is invalid.</exception>
         public virtual ETAMPModel EncryptETAMP(string jsonEtamp)
         {
-            var model = structureValidator.IsValidEtampFormat(jsonEtamp);
+            var model = _structureValidator.IsValidEtampFormat(jsonEtamp);
             ArgumentException.ThrowIfNullOrWhiteSpace(model.Token);
-            model.Token = eciesEncryptionService.Encrypt(model.Token);
+            model.Token = _eciesEncryptionService.Encrypt(model.Token);
             return model;
         }
     }
