@@ -8,7 +8,6 @@ using ETAMPManagment.ETAMP.Encrypted;
 using ETAMPManagment.ETAMP.Encrypted.Interfaces;
 using ETAMPManagment.Factory;
 using ETAMPManagment.Factory.Interfaces;
-using ETAMPManagment.Interfaces;
 using ETAMPManagment.Services;
 using ETAMPManagment.Services.Interfaces;
 using ETAMPManagment.Validators;
@@ -51,7 +50,6 @@ namespace ETAMPManagment.Extensions
 
             // Register token and encryption services
             services.AddScoped<IEncryptToken, EncryptToken>();
-            services.AddScoped<IETAMPEncrypted, ETAMPEncrypted>();
 
             // Register compression services
             services.AddScoped<ICompressionService, DeflateCompressionService>();
@@ -70,9 +68,6 @@ namespace ETAMPManagment.Extensions
 
             services.AddScoped<ISignWrapper, SignWrapper>();
             services.AddScoped<IVerifyWrapper, VerifyWrapper>();
-
-            // Register the ETAMP builder service
-            services.AddScoped<IETAMPBuilder<string>, ETAMPBuilder>();
 
             return services;
         }

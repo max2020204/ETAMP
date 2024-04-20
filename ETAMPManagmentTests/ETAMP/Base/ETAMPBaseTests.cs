@@ -1,4 +1,5 @@
-﻿using ETAMPManagment.Models;
+﻿using ETAMPManagment.ETAMP.Base.Interfaces;
+using ETAMPManagment.Models;
 using ETAMPManagment.Services.Interfaces;
 using Moq;
 using Xunit;
@@ -13,7 +14,8 @@ namespace ETAMPManagment.ETAMP.Base.Tests
 
         public ETAMPBaseTests()
         {
-            _etampBase = new ETAMPBase(new Mock<ISigningCredentialsProvider>().Object);
+            Mock<ISigningCredentialsProvider> signatureMock = new Mock<ISigningCredentialsProvider>();
+            _etampBase = new ETAMPBase(signatureMock.Object, new ETAMPData(signatureMock.Object));
             _basePayload = new BasePayload();
         }
 
