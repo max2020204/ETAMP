@@ -1,16 +1,18 @@
 ﻿using ETAMPManagment.ETAMP.Base.Interfaces;
 using ETAMPManagment.ETAMP.Encrypted.Interfaces;
 using ETAMPManagment.Interfaces;
+using ETAMPManagment.Managment;
 using ETAMPManagment.Models;
-using ETAMPManagment.Utils;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ETAMPManagment
 {
     /// <summary>
     /// Builds ETAMP (Encrypted Token And Message Protocol) models based on specified parameters and types.
+    /// This builder facilitates the creation of various ETAMP model types, leveraging dependency injection
+    /// to obtain the specific services needed for the model construction.
     /// </summary>
-    public class ETAMPBuilder : IETAMPBuilder<ETAMPType>
+    public class ETAMPBuilder : IETAMPBuilder<string>
     {
         private ETAMPModel? _model;
         private readonly IServiceProvider _serviceProvider;
@@ -36,26 +38,27 @@ namespace ETAMPManagment
         }
 
         /// <summary>
-        /// Begins the creation of an ETAMP model based on the specified type and details.
+        /// Starts the creation process of an ETAMP model based on the specified type and details.
+        /// This method configures the builder with the type-specific settings required to build the ETAMP model.
         /// </summary>
-        /// <param name="type">The type of ETAMP to create.</param>
-        /// <param name="updateType">The update type of the ETAMP model.</param>
-        /// <param name="payload">The payload of the ETAMP model.</param>
-        /// <param name="version">The version of the ETAMP protocol.</param>
-        /// <typeparam name="T">The type of the payload.</typeparam>
-        /// <returns>The builder instance for fluent configuration.</returns>
-        /// <exception cref="ArgumentException">Thrown if the ETAMP type is unsupported.</exception>
-        public virtual IETAMPBuilder<ETAMPType> CreateETAMP<T>(ETAMPType type, string updateType, T payload, double version = 1) where T : BasePayload
+        /// <param name="type">The type of ETAMP to create, determining the specific ETAMP service to use.</param>
+        /// <param name="updateType">The update type of the ETAMP model, defining how the model will be updated.</param>
+        /// <param name="payload">The data payload of the ETAMP model.</param>
+        /// <param name="version">The version of the ETAMP protocol to be used (default is 1).</param>
+        /// <typeparam name="T">The type of the payload, must inherit from BasePayload.</typeparam>
+        /// <returns>The builder instance for fluent configuration, allowing additional modifications.</returns>
+        /// <exception cref="ArgumentException">Thrown if the specified ETAMP type is unsupported or invalid.</exception>
+        public virtual IETAMPBuilder<string> CreateETAMP<T>(string type, string updateType, T payload, double version = 1) where T : BasePayload
         {
             switch (type)
             {
-                case ETAMPType.Base:
+                case ETAMPTypeNames.Base:
                     IETAMPBase etampBase = _serviceProvider.GetRequiredService<IETAMPBase>();
                     ArgumentNullException.ThrowIfNull(etampBase);
                     _model = etampBase.CreateETAMPModel(updateType, payload, version);
                     break;
 
-                case ETAMPType.Encrypted:
+                case ETAMPTypeNames.Encrypted:
                     IETAMPEncrypted encrypted = _serviceProvider.GetRequiredService<IETAMPEncrypted>();
                     ArgumentNullException.ThrowIfNull(encrypted);
                     _model = encrypted.CreateEncryptETAMPModel(updateType, payload, version);

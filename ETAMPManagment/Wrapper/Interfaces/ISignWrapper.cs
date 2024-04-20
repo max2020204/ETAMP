@@ -1,4 +1,6 @@
-﻿using ETAMPManagment.Models;
+﻿using ETAMPManagment.Encryption.ECDsaManager.Interfaces;
+using ETAMPManagment.Models;
+using System.Security.Cryptography;
 
 namespace ETAMPManagment.Wrapper.Interfaces
 {
@@ -7,6 +9,13 @@ namespace ETAMPManagment.Wrapper.Interfaces
     /// </summary>
     public interface ISignWrapper
     {
+        /// Initializes the verifier with an ECDsa instance and a hash algorithm.
+        /// This method should be called before performing any verification operations.
+        /// </summary>
+        /// <param name="ecdsaProvider">The provider for obtaining the ECDsa instance.</param>
+        /// <param name="algorithm">The hash algorithm to use for signature verification.</param>
+        void Initialize(IECDsaProvider ecdsaProvider, HashAlgorithmName algorithmName);
+
         /// <summary>
         /// Signs an ETAMP message provided as a JSON string and returns the signed message as a string.
         /// </summary>

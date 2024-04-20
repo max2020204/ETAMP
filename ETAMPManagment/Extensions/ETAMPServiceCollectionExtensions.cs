@@ -6,10 +6,11 @@ using ETAMPManagment.ETAMP.Base;
 using ETAMPManagment.ETAMP.Base.Interfaces;
 using ETAMPManagment.ETAMP.Encrypted;
 using ETAMPManagment.ETAMP.Encrypted.Interfaces;
+using ETAMPManagment.Factory;
+using ETAMPManagment.Factory.Interfaces;
 using ETAMPManagment.Interfaces;
 using ETAMPManagment.Services;
 using ETAMPManagment.Services.Interfaces;
-using ETAMPManagment.Utils;
 using ETAMPManagment.Validators;
 using ETAMPManagment.Validators.Interfaces;
 using ETAMPManagment.Wrapper;
@@ -35,7 +36,6 @@ namespace ETAMPManagment.Extensions
             services.AddTransient<IKeyPairProvider, KeyPairProvider>();
 
             // Register cryptographic services
-            services.AddScoped<IAesEncryptionService, AesEncryptionService>();
             services.AddScoped<IEciesEncryptionService, EciesEncryptionService>();
 
             // Register wrapper services for cryptographic operations
@@ -57,6 +57,10 @@ namespace ETAMPManagment.Extensions
             services.AddScoped<ICompressionService, DeflateCompressionService>();
             services.AddScoped<ICompressionService, GZipCompressionService>();
 
+            //Factory
+            services.AddSingleton<ICompressionServiceFactory, CompressionServiceFactory>();
+            services.AddScoped<IKeyPairProviderFactory, KeyPairProviderFactory>();
+
             // Register signing and validation services
             services.AddTransient<ISigningCredentialsProvider, ECDsaSigningCredentialsProvider>();
             services.AddScoped<IETAMPValidator, ETAMPValidator>();
@@ -68,7 +72,7 @@ namespace ETAMPManagment.Extensions
             services.AddScoped<IVerifyWrapper, VerifyWrapper>();
 
             // Register the ETAMP builder service
-            services.AddScoped<IETAMPBuilder<ETAMPType>, ETAMPBuilder>();
+            services.AddScoped<IETAMPBuilder<string>, ETAMPBuilder>();
 
             return services;
         }

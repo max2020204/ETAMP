@@ -20,6 +20,7 @@ namespace ETAMPManagment.Services
         /// </remarks>
         public virtual string CompressString(string data)
         {
+            ArgumentException.ThrowIfNullOrEmpty(data);
             byte[] inputBytes = Encoding.UTF8.GetBytes(data);
 
             using var output = new MemoryStream();
@@ -41,6 +42,7 @@ namespace ETAMPManagment.Services
         /// </remarks>
         public virtual string DecompressString(string base64CompressedData)
         {
+            ArgumentException.ThrowIfNullOrEmpty(base64CompressedData);
             byte[] inputBytes = Base64UrlEncoder.DecodeBytes(base64CompressedData);
 
             using var inputStream = new MemoryStream(inputBytes);

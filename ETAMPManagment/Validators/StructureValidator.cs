@@ -8,7 +8,6 @@ namespace ETAMPManagment.Validators
     /// <summary>
     /// Validates the structure of ETAMP messages and tokens to ensure their conformity to expected formats and standards.
     /// </summary>
-    /// <param name="jwtValidator">Used for JWT token validation within ETAMP messages.</param>
     public class StructureValidator : IStructureValidator
     {
         private readonly IJwtValidator _jwtValidator;
@@ -122,15 +121,12 @@ namespace ETAMPManagment.Validators
         /// <exception cref="InvalidOperationException">Thrown when the JWT validator is not initialized.</exception>
         public virtual bool ValidateIdConsistency(string etamp)
         {
-            if (_jwtValidator == null)
-                throw new InvalidOperationException("JWT validator is not initialized. Ensure that a JWT validator is provided.");
-
             var model = IsValidEtampFormat(etamp);
             if (_jwtValidator.IsValidJwtToken(model.Token).IsValid)
             {
                 JwtSecurityTokenHandler jwtSecurityTokenHandler = new();
                 var tokenData = jwtSecurityTokenHandler.ReadJwtToken(model.Token).Payload.ToDictionary();
-                return tokenData.ContainsKey("MessageId") && tokenData["MessageId"].ToString().Equals(model.Id.ToString(), StringComparison.CurrentCultureIgnoreCase);
+                return tokenData.ContainsKey("MessageId") && tokenData["MessageId"]!.ToString().Equals(model.Id.ToString(), StringComparison.CurrentCultureIgnoreCase);
             }
             return false;
         }

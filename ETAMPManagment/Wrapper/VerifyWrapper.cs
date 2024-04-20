@@ -10,23 +10,23 @@ namespace ETAMPManagment.Wrapper
     /// </summary>>
     public sealed class VerifyWrapper : IVerifyWrapper
     {
-        private readonly ECDsa? _ecdsa;
-        private readonly HashAlgorithmName _algorithm;
+        private ECDsa? _ecdsa;
+        private HashAlgorithmName _algorithm;
 
         /// <summary>
-        /// Initializes the class with an ECDsa instance from an IECDsaProvider and a hashing algorithm.
+        /// Initializes the <see cref="VerifyWrapper"/> with an ECDsa instance and a hash algorithm.
+        /// This method should be called before performing any verification operations.
         /// </summary>
         /// <param name="ecdsaProvider">Provider to obtain the ECDsa instance.</param>
         /// <param name="algorithm">Hashing algorithm for verification.</param>
-        public VerifyWrapper(IECDsaProvider ecdsaProvider, HashAlgorithmName algorithm)
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="ecdsaProvider"/> is null.</exception>
+        /// <exception cref="InvalidOperationException">Thrown if ECDsa instance cannot be obtained from the provider.</exception>
+        public void Initialize(IECDsaProvider ecdsaProvider, HashAlgorithmName algorithm)
         {
             if (ecdsaProvider == null)
                 throw new ArgumentNullException(nameof(ecdsaProvider), "IECDsaProvider instance cannot be null.");
 
-            _ecdsa = ecdsaProvider.GetECDsa();
-            if (_ecdsa == null)
-                throw new InvalidOperationException("ECDsa instance cannot be null after extraction from IECDsaProvider.");
-
+            _ecdsa = ecdsaProvider.GetECDsa() ?? throw new InvalidOperationException("ECDsa instance cannot be null after extraction from IECDsaProvider.");
             _algorithm = algorithm;
         }
 
@@ -38,7 +38,7 @@ namespace ETAMPManagment.Wrapper
         /// <returns>True if the signature is valid; otherwise, false.</returns>
         public bool VerifyData(string data, string signature)
         {
-            return _ecdsa.VerifyData(Encoding.UTF8.GetBytes(data), Convert.FromBase64String(signature), _algorithm);
+            return _ecdsa!.VerifyData(Encoding.UTF8.GetBytes(data), Convert.FromBase64String(signature), _algorithm);
         }
 
         /// <summary>
@@ -49,7 +49,7 @@ namespace ETAMPManagment.Wrapper
         /// <returns>True if the signature is valid; otherwise, false.</returns>
         public bool VerifyData(byte[] data, byte[] signature)
         {
-            return _ecdsa.VerifyData(data, signature, _algorithm);
+            return _ecdsa!.VerifyData(data, signature, _algorithm);
         }
 
         /// <summary>

@@ -34,10 +34,8 @@ namespace ETAMPManagment.Validators
         /// <exception cref="InvalidOperationException">Thrown if IStructureValidator is not initialized.</exception>
         public virtual bool ValidateETAMPMessage(string etamp)
         {
-            if (_structureValidator == null)
-                throw new InvalidOperationException("IStructureValidator is not initialized. Ensure that validator is provided.");
-
             var model = _structureValidator.IsValidEtampFormat(etamp);
+            ArgumentException.ThrowIfNullOrEmpty(model.SignatureMessage);
             if (_structureValidator.ValidateETAMPStructure(model).IsValid)
                 return _verifyWrapper.VerifyData($"{model.Id}{model.Version}{model.Token}{model.UpdateType}{model.SignatureToken}", model.SignatureMessage);
 

@@ -33,6 +33,7 @@ namespace ETAMPManagment.ETAMP.Encrypted
         public virtual ETAMPModel EncryptETAMP(string jsonEtamp)
         {
             var model = structureValidator.IsValidEtampFormat(jsonEtamp);
+            ArgumentException.ThrowIfNullOrWhiteSpace(model.Token);
             model.Token = eciesEncryptionService.Encrypt(model.Token);
             return model;
         }

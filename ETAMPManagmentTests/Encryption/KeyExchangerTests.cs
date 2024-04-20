@@ -16,13 +16,8 @@ namespace ETAMPManagment.Encryption.Tests
             _keyProviderMock = new Mock<IKeyPairProvider>();
             _eCDiffieHellmanMock = new Mock<ECDiffieHellman>();
             _keyProviderMock.Setup(x => x.GetECDiffieHellman()).Returns(_eCDiffieHellmanMock.Object);
-            _exchanger = new KeyExchanger(_keyProviderMock.Object);
-        }
-
-        [Fact]
-        public void Constructor_ThrowsArgumentNullException_WhenKeyPairProviderIsNull()
-        {
-            Assert.Throws<ArgumentNullException>(() => new KeyExchanger(null));
+            _exchanger = new KeyExchanger();
+            _exchanger.Initialize(_keyProviderMock.Object);
         }
 
         [Fact]

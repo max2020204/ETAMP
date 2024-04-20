@@ -6,6 +6,13 @@
     public interface IEciesEncryptionService
     {
         /// <summary>
+        /// Initializes the ECIES encryption service with the necessary key exchange and encryption components.
+        /// </summary>
+        /// <param name="keyExchanger">The key exchanger used for deriving the shared secret.</param>
+        /// <param name="encryptionService">The underlying encryption service used for encrypting and decrypting the message.</param>
+        void Initialize(IKeyExchanger keyExchanger, IEncryptionService encryptionService);
+
+        /// <summary>
         /// Encrypts a plain text message using ECIES.
         /// </summary>
         /// <param name="message">The plain text message to be encrypted.</param>
@@ -16,8 +23,7 @@
         /// Decrypts an encrypted message back to its plain text form using ECIES.
         /// </summary>
         /// <param name="encryptedMessageBase64">The encrypted message as a Base64-encoded string.</param>
-        /// <param name="privateKey">The private key used for decryption, matching the public key used during encryption.</param>
         /// <returns>The decrypted plain text message.</returns>
-        string Decrypt(string encryptedMessageBase64, byte[] privateKey);
+        string Decrypt(string encryptedMessageBase64);
     }
 }

@@ -1,6 +1,6 @@
 ﻿using ETAMPManagment.ETAMP.Encrypted.Interfaces;
+using ETAMPManagment.Managment;
 using ETAMPManagment.Models;
-using ETAMPManagment.Utils;
 using Moq;
 using Xunit;
 
@@ -23,7 +23,7 @@ namespace ETAMPManagment.Tests
             var encryptedMock = new Mock<IETAMPEncrypted>();
             _serviceProviderMock.Setup(p => p.GetService(typeof(IETAMPEncrypted))).Returns(encryptedMock.Object);
 
-            var result = _etampBuilder.CreateETAMP(ETAMPType.Encrypted, "update_type", new BasePayload(), 1.0);
+            var result = _etampBuilder.CreateETAMP(ETAMPTypeNames.Encrypted, "update_type", new BasePayload(), 1.0);
 
             Assert.IsType<ETAMPBuilder>(result);
         }
@@ -37,7 +37,7 @@ namespace ETAMPManagment.Tests
         [Fact]
         public void CreateETAMP_ThrowsException_WhenETAMPTypeIsUnsupported()
         {
-            Assert.Throws<ArgumentException>(() => _etampBuilder.CreateETAMP((ETAMPType)99, "update_type", new BasePayload(), 1.0));
+            Assert.Throws<ArgumentException>(() => _etampBuilder.CreateETAMP("", "update_type", new BasePayload(), 1.0));
         }
     }
 }

@@ -22,6 +22,8 @@ namespace ETAMPManagment.Validators
         /// <returns>True if the ETAMP token is valid; otherwise, false.</returns>
         public virtual async Task<bool> ValidateETAMP(ETAMPModel etamp, string audience, string issuer, ECDsaSecurityKey tokenSecurityKey)
         {
+            ArgumentException.ThrowIfNullOrWhiteSpace(etamp.Token);
+            ArgumentException.ThrowIfNullOrWhiteSpace(etamp.SignatureToken);
             return new List<bool>()
             {
                 structureValidator.ValidateETAMPStructure(etamp).IsValid,
@@ -39,6 +41,8 @@ namespace ETAMPManagment.Validators
         /// <returns>True if the ETAMP token is valid; otherwise, false.</returns>
         public virtual async Task<bool> ValidateETAMP(ETAMPModel etamp, ECDsaSecurityKey tokenSecurityKey)
         {
+            ArgumentException.ThrowIfNullOrWhiteSpace(etamp.Token);
+            ArgumentException.ThrowIfNullOrWhiteSpace(etamp.SignatureToken);
             return new List<bool>()
             {
                structureValidator.ValidateETAMPStructure(etamp).IsValid,
@@ -56,6 +60,7 @@ namespace ETAMPManagment.Validators
         /// <returns>True if the basic structure and lifetime of the ETAMP token are valid; otherwise, false.</returns>
         public virtual async Task<bool> ValidateETAMPLite(ETAMPModel etamp, ECDsaSecurityKey tokenSecurityKey)
         {
+            ArgumentException.ThrowIfNullOrWhiteSpace(etamp.Token);
             return new List<bool>()
             {
                structureValidator.ValidateETAMPStructureLite(etamp).IsValid,

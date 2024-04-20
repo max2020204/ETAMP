@@ -35,6 +35,13 @@ namespace ETAMPManagment.Encryption.Interfaces
         ECDiffieHellman GetECDiffieHellman();
 
         /// <summary>
+        /// Initializes the provider with a specific <see cref="ECDiffieHellman"/> instance, allowing for custom configuration
+        /// and use of an existing ECDiffieHellman instance for cryptographic operations.
+        /// </summary>
+        /// <param name="eCDiffieHellman">An existing instance of ECDiffieHellman to be used by the provider.</param>
+        void Initialize(ECDiffieHellman eCDiffieHellman);
+
+        /// <summary>
         /// Imports a private key into the ECDH key pair provider.
         /// </summary>
         /// <param name="privateKey">The private key as a byte array to import into the provider.</param>

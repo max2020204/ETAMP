@@ -13,7 +13,7 @@ namespace ETAMPManagmentTests.Encryption
 
         public AesEncryptionServiceTests()
         {
-            _service = new AesEncryptionService(null);
+            _service = new AesEncryptionService();
             _key = new byte[32];
             new Random().NextBytes(_key);
             _iv = new byte[16];
@@ -21,19 +21,11 @@ namespace ETAMPManagmentTests.Encryption
         }
 
         [Fact]
-        public void Constructor_WhenInitializedWithIV_SetsIVProperty()
-        {
-            var serviceWithIV = new AesEncryptionService(_iv);
-
-            Assert.Equal(_iv, serviceWithIV.IV);
-        }
-
-        [Fact]
         public void Encrypt_WithValidDataAndKey_ReturnsEncryptedData()
         {
             byte[] dataToEncrypt = Encoding.UTF8.GetBytes("Test data");
 
-            byte[] encryptedData = _service.Encrypt(dataToEncrypt, _key);
+            byte[] encryptedData = _service.Encrypt(dataToEncrypt, _key, null);
 
             Assert.NotNull(encryptedData);
             Assert.NotEqual(dataToEncrypt, encryptedData);
@@ -42,7 +34,7 @@ namespace ETAMPManagmentTests.Encryption
         [Fact]
         public void Encrypt_WhenDataIsNull_ThrowsArgumentNullException()
         {
-            Assert.Throws<ArgumentNullException>(() => _service.Encrypt(null, _key));
+            Assert.Throws<ArgumentNullException>(() => _service.Encrypt(null, _key, null));
         }
 
         [Fact]
@@ -50,7 +42,7 @@ namespace ETAMPManagmentTests.Encryption
         {
             byte[] dataToEncrypt = Encoding.UTF8.GetBytes("Test data");
 
-            Assert.Throws<ArgumentNullException>(() => _service.Encrypt(dataToEncrypt, null));
+            Assert.Throws<ArgumentNullException>(() => _service.Encrypt(dataToEncrypt, null, null));
         }
 
         [Fact]
@@ -58,10 +50,10 @@ namespace ETAMPManagmentTests.Encryption
         {
             byte[] originalData = Encoding.UTF8.GetBytes("TestData");
 
-            var service = new AesEncryptionService(_iv);
-            byte[] encryptedData = service.Encrypt(originalData, _key);
+            var service = new AesEncryptionService();
+            byte[] encryptedData = service.Encrypt(originalData, _key, null);
 
-            byte[] decryptedData = service.Decrypt(encryptedData, _key);
+            byte[] decryptedData = service.Decrypt(encryptedData, _key, service.IV);
 
             Assert.Equal(originalData, decryptedData);
         }
@@ -69,7 +61,7 @@ namespace ETAMPManagmentTests.Encryption
         [Fact]
         public void Decrypt_WhenDataIsNull_ThrowsArgumentNullException()
         {
-            Assert.Throws<ArgumentNullException>(() => _service.Decrypt(null, _key));
+            Assert.Throws<ArgumentNullException>(() => _service.Decrypt(null, _key, _service.IV));
         }
 
         [Fact]
@@ -77,16 +69,7 @@ namespace ETAMPManagmentTests.Encryption
         {
             byte[] encryptedData = Encoding.UTF8.GetBytes("TestData");
 
-            Assert.Throws<ArgumentNullException>(() => _service.Decrypt(encryptedData, null));
-        }
-
-        [Fact]
-        public void Decrypt_WithInvalidIV_ThrowsInvalidOperationException()
-        {
-            AesEncryptionService service = new AesEncryptionService(null);
-            byte[] encryptedData = Encoding.UTF8.GetBytes("TestData");
-
-            Assert.Throws<InvalidOperationException>(() => service.Decrypt(encryptedData, _key));
+            Assert.Throws<ArgumentNullException>(() => _service.Decrypt(encryptedData, null, _service.IV));
         }
 
         [Fact]
@@ -96,10 +79,10 @@ namespace ETAMPManagmentTests.Encryption
             byte[] wrongKey = new byte[32];
             new Random().NextBytes(wrongKey);
 
-            var service = new AesEncryptionService(_iv);
-            byte[] encryptedData = service.Encrypt(originalData, _key);
+            var service = new AesEncryptionService();
+            byte[] encryptedData = service.Encrypt(originalData, _key, null);
 
-            Assert.Throws<CryptographicException>(() => service.Decrypt(encryptedData, wrongKey));
+            Assert.Throws<CryptographicException>(() => service.Decrypt(encryptedData, wrongKey, service.IV));
         }
 
         [Fact]
@@ -108,9 +91,9 @@ namespace ETAMPManagmentTests.Encryption
             byte[] largeData = new byte[10 * 1024 * 1024];
             new Random().NextBytes(largeData);
 
-            var service = new AesEncryptionService(_iv);
-            byte[] encryptedData = service.Encrypt(largeData, _key);
-            byte[] decryptedData = service.Decrypt(encryptedData, _key);
+            var service = new AesEncryptionService();
+            byte[] encryptedData = service.Encrypt(largeData, _key, null);
+            byte[] decryptedData = service.Decrypt(encryptedData, _key, service.IV);
 
             Assert.Equal(largeData, decryptedData);
         }

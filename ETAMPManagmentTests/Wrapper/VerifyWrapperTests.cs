@@ -19,13 +19,10 @@ namespace ETAMPManagment.Wrapper.Tests
             _providerMock = new Mock<IECDsaProvider>();
             _ecdsa = ECDsa.Create(ECCurve.NamedCurves.nistP256);
 
-            // Setup the ECDsa instance to return from the provider mock
             _providerMock.Setup(x => x.GetECDsa()).Returns(_ecdsa);
 
-            // Initialize the wrapper with the mocked provider
-            _verifyWrapper = new VerifyWrapper(_providerMock.Object, HashAlgorithmName.SHA256);
-
-            // Generate a signature for the test data
+            _verifyWrapper = new VerifyWrapper();
+            _verifyWrapper.Initialize(_providerMock.Object, HashAlgorithmName.SHA256);
             _signature = _ecdsa.SignData(Encoding.UTF8.GetBytes(_data), HashAlgorithmName.SHA256);
         }
 

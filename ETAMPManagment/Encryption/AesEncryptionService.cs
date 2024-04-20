@@ -6,23 +6,9 @@ namespace ETAMPManagment.Encryption
     /// <summary>
     /// Provides AES encryption and decryption services.
     /// </summary>
-    public class AesEncryptionService : IAesEncryptionService
+    public class AesEncryptionService : IEncryptionService
     {
-        private byte[]? _iv;
-
-        /// <summary>
-        /// Gets the initialization vector (IV) used in encryption or decryption.
-        /// </summary>
-        public byte[]? IV
-        {
-            get { return _iv; }
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the AesEncryptionService class with a specific IV.
-        /// </summary>
-        /// <param name="iv">The initialization vector (IV) to use for encryption and decryption.</param>
-        public AesEncryptionService(byte[]? iv) => _iv = iv;
+        public byte[]? IV { get; private set; }
 
         /// <summary>
         /// Encrypts the specified data using the AES algorithm.
@@ -31,14 +17,14 @@ namespace ETAMPManagment.Encryption
         /// <param name="key">The encryption key.</param>
         /// <returns>The encrypted data.</returns>
         /// <exception cref="ArgumentNullException">Thrown when data or key is null.</exception>
-        public virtual byte[] Encrypt(byte[] data, byte[] key)
+        public virtual byte[] Encrypt(byte[] data, byte[] key, byte[]? iv)
         {
-            ArgumentNullException.ThrowIfNull(data);
-            ArgumentNullException.ThrowIfNull(key);
+            ArgumentNullException.ThrowIfNull(data, nameof(data));
+            ArgumentNullException.ThrowIfNull(key, nameof(key));
             using Aes aes = Aes.Create();
             aes.Key = key;
-            _iv = aes.IV;
-
+            aes.IV = iv ?? aes.IV;
+            IV = aes.IV;
             using ICryptoTransform encryptor = aes.CreateEncryptor();
             return encryptor.TransformFinalBlock(data, 0, data.Length);
         }
@@ -51,18 +37,15 @@ namespace ETAMPManagment.Encryption
         /// <returns>The decrypted data.</returns>
         /// <exception cref="ArgumentNullException">Thrown when data or key is null.</exception>
         /// <exception cref="InvalidOperationException">Thrown when the IV is not set.</exception>
-
-        public virtual byte[] Decrypt(byte[] data, byte[] key)
+        public virtual byte[] Decrypt(byte[] data, byte[] key, byte[] iv)
         {
-            ArgumentNullException.ThrowIfNull(data);
-            ArgumentNullException.ThrowIfNull(key);
-
-            if (IV == null)
-                throw new InvalidOperationException("IV is not set.");
+            ArgumentNullException.ThrowIfNull(data, nameof(data));
+            ArgumentNullException.ThrowIfNull(key, nameof(key));
+            ArgumentNullException.ThrowIfNull(iv, nameof(iv));
 
             using Aes aes = Aes.Create();
             aes.Key = key;
-            aes.IV = IV;
+            aes.IV = iv;
 
             using ICryptoTransform decryptor = aes.CreateDecryptor();
             return decryptor.TransformFinalBlock(data, 0, data.Length);

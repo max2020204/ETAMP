@@ -11,73 +11,71 @@ namespace ETAMPManagment.Services.Tests
     {
         private readonly Mock<IKeyExchanger> _keyExchangerMock;
         private readonly Mock<IEncryptionService> _encryptionServiceMock;
-        private readonly EciesEncryptionService _eciesEncryptionService;
+        private EciesEncryptionService _eciesEncryptionService;
 
         public EciesEncryptionServiceTests()
         {
             _keyExchangerMock = new Mock<IKeyExchanger>();
             _encryptionServiceMock = new Mock<IEncryptionService>();
-            _eciesEncryptionService = new EciesEncryptionService(_keyExchangerMock.Object, _encryptionServiceMock.Object);
+            _eciesEncryptionService = new EciesEncryptionService();
+            _eciesEncryptionService.Initialize(_keyExchangerMock.Object, _encryptionServiceMock.Object);
         }
 
         [Fact]
-        public void Encrypt_SharedSecretNullOrEmpty_ThrowsInvalidOperationException()
+        public void Encrypt_ShouldThrowInvalidOperationException_WhenSharedSecretIsEmpty()
         {
-            Assert.Throws<InvalidOperationException>(() => _eciesEncryptionService.Encrypt(""));
+            // Arrange
+            _keyExchangerMock.Setup(x => x.GetSharedSecret()).Returns(Array.Empty<byte>());
+
+            // Act & Assert
+            Assert.Throws<InvalidOperationException>(() => _eciesEncryptionService.Encrypt("Hello World"));
         }
 
         [Fact]
-        public void Encrypt_ValidMessage_ReturnsEncryptedMessage()
+        public void Encrypt_ShouldReturnEncryptedMessage()
         {
-            byte[] secretKey = { 1, 2, 3 };
+            // Arrange
+            string message = "Hello World";
+            byte[] sharedSecret = Encoding.UTF8.GetBytes("secret");
             byte[] encryptedData = Encoding.UTF8.GetBytes("encrypted");
-            string message = "encrypted";
+            _keyExchangerMock.Setup(x => x.GetSharedSecret()).Returns(sharedSecret);
+            _encryptionServiceMock.Setup(x => x.Encrypt(It.IsAny<byte[]>(), It.IsAny<byte[]>(), It.IsAny<byte[]>())).Returns(encryptedData);
+            _encryptionServiceMock.Setup(x => x.IV).Returns(new byte[16]);  // Initialization vector
 
-            _keyExchangerMock.Setup(x => x.GetSharedSecret()).Returns(secretKey);
-            _encryptionServiceMock.Setup(x => x.Encrypt(It.IsAny<byte[]>(), secretKey)).Returns(encryptedData);
-
+            // Act
             var result = _eciesEncryptionService.Encrypt(message);
 
+            // Assert
             Assert.Equal(Base64UrlEncoder.Encode(encryptedData), result);
         }
 
         [Fact]
-        public void Decrypt_SharedSecretNullOrEmpty_ThrowsInvalidOperationException()
+        public void Decrypt_ShouldThrowInvalidOperationException_WhenSharedSecretIsEmpty()
         {
-            Assert.Throws<InvalidOperationException>(() => _eciesEncryptionService.Decrypt("", new byte[] { 1, 2, 3 }));
+            // Arrange
+            _keyExchangerMock.Setup(x => x.GetSharedSecret()).Returns(Array.Empty<byte>());
+
+            // Act & Assert
+            Assert.Throws<InvalidOperationException>(() => _eciesEncryptionService.Decrypt("invalid_base64"));
         }
 
         [Fact]
-        public void Decrypt_ValidEncryptedMessage_ReturnsDecryptedMessage()
+        public void Decrypt_ShouldReturnDecryptedMessage()
         {
-            byte[] secretKey = { 1, 2, 3 };
-            byte[] decryptedData = Encoding.UTF8.GetBytes("Test message");
-            string encryptedMessage = Base64UrlEncoder.Encode(decryptedData);
+            byte[] message = Encoding.UTF8.GetBytes("encrypted_message");
+            string encryptedMessageBase64 = Base64UrlEncoder.Encode(message);
+            byte[] sharedSecret = Encoding.UTF8.GetBytes("secret");
+            string data = "Hello World";
+            byte[] decryptedData = Encoding.UTF8.GetBytes(data);
 
-            _keyExchangerMock.Setup(x => x.GetSharedSecret())
-                .Returns(secretKey);
-            _encryptionServiceMock.Setup(x => x.Decrypt(decryptedData, It.IsAny<byte[]>()))
+            _keyExchangerMock.Setup(x => x.GetSharedSecret()).Returns(sharedSecret);
+            _encryptionServiceMock.Setup(x => x.IV).Returns(new byte[16]);
+            _encryptionServiceMock.Setup(x => x.Decrypt(message, sharedSecret, new byte[16]))
                 .Returns(decryptedData);
 
-            var result = _eciesEncryptionService.Decrypt(encryptedMessage, [1, 2, 3]);
+            string result = _eciesEncryptionService.Decrypt(encryptedMessageBase64);
 
-            Assert.Equal("Test message", result);
-        }
-
-        [Fact]
-        public void Decrypt_CallsDeriveKeyWithCorrectArguments()
-        {
-            byte[] publicKey = { 4, 5, 6 };
-            byte[] secretKey = { 1, 2, 3 };
-            byte[] encryptedData = Encoding.UTF8.GetBytes("encrypted message");
-            string base64EncryptedMessage = Base64UrlEncoder.Encode(encryptedData);
-
-            _keyExchangerMock.Setup(x => x.GetSharedSecret()).Returns(secretKey);
-            _encryptionServiceMock.Setup(x => x.Decrypt(encryptedData, secretKey)).Returns(Encoding.UTF8.GetBytes("decrypted message"));
-
-            _eciesEncryptionService.Decrypt(base64EncryptedMessage, publicKey);
-
-            _keyExchangerMock.Verify(x => x.DeriveKey(publicKey), Times.Once);
+            Assert.Equal(data, result);
         }
     }
 }

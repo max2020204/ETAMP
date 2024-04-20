@@ -13,29 +13,30 @@ namespace ETAMPManagment.Wrapper
     /// </summary>
     public class SignWrapper : ISignWrapper
     {
-        private readonly ECDsa? _ecdsa;
-        private readonly HashAlgorithmName _algorithmName;
+        private ECDsa? _ecdsa;
+        private HashAlgorithmName _algorithmName;
 
         /// <summary>
-        /// Initializes a new instance with an ECDsa provider and hash algorithm.
+        /// Initializes the <see cref="SignWrapper"/> with an ECDsa instance and a hash algorithm.
+        /// This method should be called before performing any signature operations.
         /// </summary>
         /// <param name="ecdsaProvider">The provider for ECDsa instances.</param>
-        /// <param name="algorithmName">The hash algorithm for signing.</param>
-        public SignWrapper(IECDsaProvider ecdsaProvider, HashAlgorithmName algorithmName)
+        /// <param name="algorithmName">The hash algorithm to use for signing.</param>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="ecdsaProvider"/> is null.</exception>
+        /// <exception cref="InvalidOperationException">Thrown if ECDsa instance cannot be obtained from the provider.</exception>
+        public void Initialize(IECDsaProvider ecdsaProvider, HashAlgorithmName algorithmName)
         {
             if (ecdsaProvider == null)
                 throw new ArgumentNullException(nameof(ecdsaProvider), "IECDsaProvider instance cannot be null.");
 
-            _ecdsa = ecdsaProvider.GetECDsa();
-            if (_ecdsa == null)
-                throw new InvalidOperationException("ECDsa instance cannot be null after extraction from IECDsaProvider.");
-
+            _ecdsa = ecdsaProvider.GetECDsa()
+                ?? throw new InvalidOperationException("ECDsa instance cannot be null after extraction from IECDsaProvider.");
             _algorithmName = algorithmName;
         }
 
         private byte[] Sign(byte[] data)
         {
-            return _ecdsa.SignData(data, _algorithmName);
+            return _ecdsa!.SignData(data, _algorithmName);
         }
 
         /// <summary>
@@ -48,7 +49,9 @@ namespace ETAMPManagment.Wrapper
         public virtual string SignEtamp(string jsonEtamp)
         {
             ETAMPModel? etamp = JsonConvert.DeserializeObject<ETAMPModel>(jsonEtamp);
+
             ArgumentNullException.ThrowIfNull(etamp);
+            ArgumentException.ThrowIfNullOrEmpty(etamp.Token);
 
             etamp.SignatureToken = Base64UrlEncoder.Encode(Sign(Encoding.UTF8.GetBytes(etamp.Token)));
             etamp.SignatureMessage = Base64UrlEncoder.Encode(Sign(Encoding.UTF8.GetBytes($"{etamp.Id}{etamp.Version}{etamp.Token}{etamp.UpdateType}{etamp.SignatureToken}")));
@@ -62,6 +65,8 @@ namespace ETAMPManagment.Wrapper
         /// <returns>A JSON string of the ETAMP data with updated signature fields.</returns>
         public virtual string SignEtamp(ETAMPModel etamp)
         {
+            ArgumentException.ThrowIfNullOrWhiteSpace(etamp.Token);
+
             etamp.SignatureToken = Base64UrlEncoder.Encode(Sign(Encoding.UTF8.GetBytes(etamp.Token)));
             etamp.SignatureMessage = Base64UrlEncoder.Encode(Sign(Encoding.UTF8.GetBytes($"{etamp.Id}{etamp.Version}{etamp.Token}{etamp.UpdateType}{etamp.SignatureToken}")));
             return JsonConvert.SerializeObject(etamp);
@@ -74,6 +79,8 @@ namespace ETAMPManagment.Wrapper
         /// <returns>The ETAMP model with updated signature fields.</returns>
         public virtual ETAMPModel SignEtampModel(ETAMPModel etamp)
         {
+            ArgumentException.ThrowIfNullOrWhiteSpace(etamp.Token);
+
             etamp.SignatureToken = Base64UrlEncoder.Encode(Sign(Encoding.UTF8.GetBytes(etamp.Token)));
             etamp.SignatureMessage = Base64UrlEncoder.Encode(Sign(Encoding.UTF8.GetBytes($"{etamp.Id}{etamp.Version}{etamp.Token}{etamp.UpdateType}{etamp.SignatureToken}")));
             return etamp;

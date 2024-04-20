@@ -14,16 +14,16 @@ namespace ETAMPManagment.Encryption
         /// <summary>
         /// Provides access to the key pair used in the ECDH algorithm.
         /// </summary>
-        private readonly IKeyPairProvider _keyProvider;
+        private IKeyPairProvider _keyProvider;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="KeyExchanger"/> class with a specified key pair provider.
+        /// Initializes or reinitializes the key exchanger with a new key pair provider, effectively resetting any existing shared secret.
         /// </summary>
-        /// <param name="keyPairProvider">The provider for ECDH key pair.</param>
-        public KeyExchanger(IKeyPairProvider keyPairProvider)
+        /// <param name="keyPairProvider">The new provider for ECDH key pairs to be used for subsequent operations.</param>
+        public void Initialize(IKeyPairProvider keyPairProvider)
         {
-            _keyProvider = keyPairProvider
-                ?? throw new ArgumentNullException(nameof(keyPairProvider));
+            _keyProvider = keyPairProvider ?? throw new ArgumentNullException(nameof(keyPairProvider));
+            _sharedSecret = null; // Reset shared secret when reinitializing
         }
 
         /// <summary>

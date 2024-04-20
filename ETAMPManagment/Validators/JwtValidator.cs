@@ -13,6 +13,11 @@ namespace ETAMPManagment.Validators
     {
         private readonly JwtSecurityTokenHandler _jwtSecurityTokenHandler;
 
+        public JwtValidator()
+        {
+            _jwtSecurityTokenHandler = new JwtSecurityTokenHandler();
+        }
+
         /// <summary>
         /// Initializes a new instance of the JwtValidator class with a custom JwtSecurityTokenHandler.
         /// </summary>

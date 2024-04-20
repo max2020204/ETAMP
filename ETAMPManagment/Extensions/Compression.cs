@@ -1,5 +1,5 @@
-﻿using ETAMPManagment.Models;
-using ETAMPManagment.Services.Interfaces;
+﻿using ETAMPManagment.Factory.Interfaces;
+using ETAMPManagment.Models;
 using Newtonsoft.Json;
 
 namespace ETAMPManagment.Extensions
@@ -14,14 +14,17 @@ namespace ETAMPManagment.Extensions
         /// </summary>
         /// <param name="model">The ETAMPModel instance to be compressed.</param>
         /// <param name="compressionServiceFactory">A factory method that creates an instance of ICompressionService.</param>
+        /// <param name="compressionType">The type of compression to be used.</param>
         /// <returns>A compressed string representation of the ETAMPModel.</returns>
-        public static string Compress(this ETAMPModel model, Func<ICompressionService> compressionServiceFactory)
+        /// <exception cref="ArgumentNullException">Thrown if the model, compressionServiceFactory, or compressionType is null.</exception>
+        /// <exception cref="ArgumentException">Thrown if compressionType is whitespace.</exception>
+        public static string Compress(this ETAMPModel model, ICompressionServiceFactory compressionServiceFactory, string compressionType)
         {
-            // Utilizes the provided compression service to compress the model's string representation
             ArgumentNullException.ThrowIfNull(model);
             ArgumentNullException.ThrowIfNull(compressionServiceFactory);
-
-            return compressionServiceFactory().CompressString(model.ToString());
+            ArgumentException.ThrowIfNullOrWhiteSpace(compressionType);
+            var compressionService = compressionServiceFactory.Create(compressionType);
+            return compressionService.CompressString(model.ToString());
         }
 
         /// <summary>
@@ -29,18 +32,18 @@ namespace ETAMPManagment.Extensions
         /// </summary>
         /// <param name="jsonEtamp">The compressed string representation of the ETAMPModel.</param>
         /// <param name="compressionServiceFactory">A factory method that creates an instance of ICompressionService.</param>
+        /// <param name="compressionType">The type of compression used for the string.</param>
         /// <returns>The decompressed ETAMPModel instance.</returns>
-        /// <exception cref="ArgumentNullException">Thrown if the provided jsonEtamp string is null or empty.</exception>
-        /// <exception cref="ArgumentException">Thrown if the decompressed string is not in a valid JSON format.</exception>
-        /// <exception cref="InvalidOperationException">Thrown if the compression service fails to decompress the string.</exception>
-        public static ETAMPModel Decompress(this string jsonEtamp, Func<ICompressionService> compressionServiceFactory)
+        /// <exception cref="ArgumentNullException">Thrown if jsonEtamp, compressionServiceFactory, or compressionType is null or empty.</exception>
+        /// <exception cref="ArgumentException">Thrown if jsonEtamp or compressionType is whitespace.</exception>
+        /// <exception cref="InvalidOperationException">Thrown if decompression fails.</exception>
+        public static ETAMPModel Decompress(this string jsonEtamp, ICompressionServiceFactory compressionServiceFactory, string compressionType)
         {
-            ArgumentException.ThrowIfNullOrWhiteSpace(jsonEtamp);
             ArgumentNullException.ThrowIfNull(compressionServiceFactory);
+            ArgumentException.ThrowIfNullOrWhiteSpace(jsonEtamp);
+            ArgumentException.ThrowIfNullOrWhiteSpace(compressionType);
 
-            var compressionService = compressionServiceFactory()
-                ?? throw new InvalidOperationException("Failed to create a compression service instance.");
-
+            var compressionService = compressionServiceFactory.Create(compressionType);
             string decompressedString;
             try
             {

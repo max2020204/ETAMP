@@ -14,6 +14,12 @@ namespace ETAMPManagment.Encryption.Interfaces
         byte[]? GetSharedSecret();
 
         /// <summary>
+        /// Initializes the key exchanger with a key pair provider for subsequent cryptographic operations.
+        /// </summary>
+        /// <param name="keyPairProvider">The provider of ECDH key pairs used for deriving shared secrets.</param>
+        void Initialize(IKeyPairProvider keyPairProvider);
+
+        /// <summary>
         /// Derives a key using the hash-based method from the given public key and additional parameters.
         /// </summary>
         /// <param name="publicKey">The public key of the other party.</param>

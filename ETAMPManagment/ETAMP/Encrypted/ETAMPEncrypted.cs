@@ -35,6 +35,7 @@ namespace ETAMPManagment.ETAMP.Encrypted
         public virtual ETAMPModel CreateEncryptETAMPModel<T>(string updateType, T payload, double version = 1) where T : BasePayload
         {
             ETAMPModel model = base.CreateETAMPModel(updateType, payload, version);
+            ArgumentException.ThrowIfNullOrWhiteSpace(model.Token);
             model.Token = eciesEncryptionService.Encrypt(model.Token);
             return model;
         }

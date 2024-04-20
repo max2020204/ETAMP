@@ -22,14 +22,13 @@ namespace ETAMPManagment.Encryption
         public ECDiffieHellmanPublicKey HellmanPublicKey => _eCDiffieHellman.PublicKey;
 
         /// <summary>
-        /// Initializes a new instance of the KeyPairProvider class with a specific instance of ECDiffieHellman,
-        /// allowing for custom configuration and use of an existing ECDiffieHellman instance.
+        /// Initializes the provider with a specific ECDiffieHellman instance, allowing for custom configuration
+        /// and use of an existing ECDiffieHellman instance for cryptographic operations.
         /// </summary>
-        /// <param name="ecDiffieHellman">An existing instance of ECDiffieHellman for cryptographic operations.</param>
-        public KeyPairProvider(ECDiffieHellman ecDiffieHellman)
+        /// <param name="eCDiffieHellman">An existing instance of ECDiffieHellman for cryptographic operations.</param>
+        public void Initialize(ECDiffieHellman eCDiffieHellman)
         {
-            _eCDiffieHellman = ecDiffieHellman
-                ?? throw new ArgumentNullException(nameof(ecDiffieHellman));
+            _eCDiffieHellman = eCDiffieHellman ?? throw new ArgumentNullException(nameof(eCDiffieHellman));
             KeyModelProvider = new ECDKeyModelProvider
             {
                 PrivateKey = _eCDiffieHellman.ExportPkcs8PrivateKeyPem(),
@@ -65,7 +64,7 @@ namespace ETAMPManagment.Encryption
         /// <param name="privateKey">The private key as a byte array to import into the provider.</param>
         public void ImportPrivateKey(byte[] privateKey)
         {
-            ArgumentNullException.ThrowIfNull(privateKey, nameof(privateKey));
+            ArgumentNullException.ThrowIfNull(privateKey);
 
             _eCDiffieHellman.ImportPkcs8PrivateKey(privateKey, out _);
             KeyModelProvider = new ECDKeyModelProvider
@@ -81,7 +80,7 @@ namespace ETAMPManagment.Encryption
         /// <param name="publicKey">The public key as a byte array to import into the provider.</param>
         public void ImportPublicKey(byte[] publicKey)
         {
-            ArgumentNullException.ThrowIfNull(publicKey, nameof(publicKey));
+            ArgumentNullException.ThrowIfNull(publicKey);
 
             _eCDiffieHellman.ImportSubjectPublicKeyInfo(publicKey, out _);
             KeyModelProvider = new ECDKeyModelProvider

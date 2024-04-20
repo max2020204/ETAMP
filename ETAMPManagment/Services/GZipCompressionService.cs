@@ -22,11 +22,15 @@ namespace ETAMPManagment.Services
         /// </remarks>
         public virtual string CompressString(string data)
         {
+            ArgumentException.ThrowIfNullOrEmpty(data);
             byte[] bytes = Encoding.UTF8.GetBytes(data);
 
             using var outputStream = new MemoryStream();
-            using GZipStream gzipStream = new(outputStream, CompressionMode.Compress);
-            gzipStream.Write(bytes, 0, bytes.Length);
+            using (var gzipStream = new GZipStream(outputStream, CompressionMode.Compress, true))
+            {
+                gzipStream.Write(bytes, 0, bytes.Length);
+            }
+            outputStream.Seek(0, SeekOrigin.Begin);
 
             return Base64UrlEncoder.Encode(outputStream.ToArray());
         }
@@ -43,6 +47,7 @@ namespace ETAMPManagment.Services
         /// </remarks>
         public virtual string DecompressString(string base64CompressedData)
         {
+            ArgumentException.ThrowIfNullOrEmpty(base64CompressedData);
             byte[] compressedBytes = Base64UrlEncoder.DecodeBytes(base64CompressedData);
 
             using var inputStream = new MemoryStream(compressedBytes);

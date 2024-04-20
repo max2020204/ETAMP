@@ -6,10 +6,6 @@ namespace ETAMPManagment.Encryption.ECDsaManager
     /// <summary>
     /// Provides an implementation for managing an ECDsa instance.
     /// </summary>
-    /// <remarks>
-    /// This class serves as a provider for ECDsa instances, allowing for registration and retrieval of ECDsa objects.
-    /// It implements both the provider and registrar interfaces to encapsulate the lifecycle management of ECDsa instances.
-    /// </remarks>
     public class ECDsaProvider : IECDsaProvider, IECDsaRegistrar
     {
         private ECDsa? _ecdsa;
