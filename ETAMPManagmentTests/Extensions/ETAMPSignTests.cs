@@ -3,60 +3,59 @@ using ETAMPManagment.Wrapper.Interfaces;
 using Moq;
 using Xunit;
 
-namespace ETAMPManagment.Extensions.Tests
+namespace ETAMPManagment.Extensions.Tests;
+
+public class ETAMPSignTests
 {
-    public class ETAMPSignTests
+    private readonly ETAMPModel _etampModel;
+    private readonly Mock<ISignWrapper> _signWrapperMock;
+
+    public ETAMPSignTests()
     {
-        private readonly Mock<ISignWrapper> _signWrapperMock;
-        private readonly ETAMPModel _etampModel;
-
-        public ETAMPSignTests()
+        _signWrapperMock = new Mock<ISignWrapper>();
+        _etampModel = new ETAMPModel
         {
-            _signWrapperMock = new Mock<ISignWrapper>();
-            _etampModel = new ETAMPModel
-            {
-                Id = Guid.NewGuid(),
-                Version = 1.0,
-                Token = "sampleToken",
-                UpdateType = "Update",
-                SignatureToken = "",
-                SignatureMessage = ""
-            };
-        }
+            Id = Guid.NewGuid(),
+            Version = 1.0,
+            Token = "sampleToken",
+            UpdateType = "Update",
+            SignatureToken = "",
+            SignatureMessage = ""
+        };
+    }
 
-        [Fact]
-        public void Sign_NullModel_ThrowsArgumentNullException()
+    [Fact]
+    public void Sign_NullModel_ThrowsArgumentNullException()
+    {
+        Assert.Throws<ArgumentNullException>(() => ETAMPSign.Sign(null, _signWrapperMock.Object));
+    }
+
+    [Fact]
+    public void Sign_NullSignWrapper_ThrowsArgumentNullException()
+    {
+        Assert.Throws<ArgumentNullException>(() => _etampModel.Sign(null));
+    }
+
+    [Fact]
+    public void Sign_ValidInputs_ReturnsSignedModel()
+    {
+        var signedModel = new ETAMPModel
         {
-            Assert.Throws<ArgumentNullException>(() => ETAMPSign.Sign(null, _signWrapperMock.Object));
-        }
+            Id = _etampModel.Id,
+            Version = _etampModel.Version,
+            Token = _etampModel.Token,
+            UpdateType = _etampModel.UpdateType,
+            SignatureToken = "signedToken",
+            SignatureMessage = "signedMessage"
+        };
 
-        [Fact]
-        public void Sign_NullSignWrapper_ThrowsArgumentNullException()
-        {
-            Assert.Throws<ArgumentNullException>(() => _etampModel.Sign(null));
-        }
+        _signWrapperMock.Setup(sw => sw.SignEtampModel(_etampModel)).Returns(signedModel);
 
-        [Fact]
-        public void Sign_ValidInputs_ReturnsSignedModel()
-        {
-            var signedModel = new ETAMPModel
-            {
-                Id = _etampModel.Id,
-                Version = _etampModel.Version,
-                Token = _etampModel.Token,
-                UpdateType = _etampModel.UpdateType,
-                SignatureToken = "signedToken",
-                SignatureMessage = "signedMessage"
-            };
+        var result = _etampModel.Sign(_signWrapperMock.Object);
 
-            _signWrapperMock.Setup(sw => sw.SignEtampModel(_etampModel)).Returns(signedModel);
-
-            var result = _etampModel.Sign(_signWrapperMock.Object);
-
-            Assert.NotNull(result);
-            Assert.Equal("signedToken", result.SignatureToken);
-            Assert.Equal("signedMessage", result.SignatureMessage);
-            _signWrapperMock.Verify(sw => sw.SignEtampModel(_etampModel), Times.Once);
-        }
+        Assert.NotNull(result);
+        Assert.Equal("signedToken", result.SignatureToken);
+        Assert.Equal("signedMessage", result.SignatureMessage);
+        _signWrapperMock.Verify(sw => sw.SignEtampModel(_etampModel), Times.Once);
     }
 }

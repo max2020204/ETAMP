@@ -1,38 +1,37 @@
-﻿using ETAMPManagment.Encryption.ECDsaManager.Interfaces;
-using System.Security.Cryptography;
+﻿using System.Security.Cryptography;
+using ETAMPManagment.Encryption.ECDsaManager.Interfaces;
 
-namespace ETAMPManagment.Encryption.ECDsaManager
+namespace ETAMPManagment.Encryption.ECDsaManager;
+
+/// <summary>
+///     Provides an implementation for managing an ECDsa instance.
+/// </summary>
+public class ECDsaProvider : IECDsaProvider, IECDsaRegistrar
 {
-    /// <summary>
-    /// Provides an implementation for managing an ECDsa instance.
-    /// </summary>
-    public class ECDsaProvider : IECDsaProvider, IECDsaRegistrar
+    private ECDsa? _ecdsa;
+
+    public ECDsaProvider()
     {
-        private ECDsa? _ecdsa;
+        _ecdsa = ECDsa.Create();
+    }
 
-        public ECDsaProvider()
-        {
-            _ecdsa = ECDsa.Create();
-        }
+    /// <summary>
+    ///     Retrieves the registered ECDsa instance.
+    /// </summary>
+    /// <returns>The currently registered ECDsa instance.</returns>
+    public ECDsa? GetECDsa()
+    {
+        return _ecdsa;
+    }
 
-        /// <summary>
-        /// Retrieves the registered ECDsa instance.
-        /// </summary>
-        /// <returns>The currently registered ECDsa instance.</returns>
-        public ECDsa? GetECDsa()
-        {
-            return _ecdsa;
-        }
-
-        /// <summary>
-        /// Registers an ECDsa instance with the provider.
-        /// </summary>
-        /// <param name="ecdsa">The ECDsa instance to register.</param>
-        /// <returns>The provider itself, allowing for method chaining.</returns>
-        public IECDsaProvider RegisterEcdsa(ECDsa ecdsa)
-        {
-            _ecdsa = ecdsa;
-            return this;
-        }
+    /// <summary>
+    ///     Registers an ECDsa instance with the provider.
+    /// </summary>
+    /// <param name="ecdsa">The ECDsa instance to register.</param>
+    /// <returns>The provider itself, allowing for method chaining.</returns>
+    public IECDsaProvider RegisterEcdsa(ECDsa ecdsa)
+    {
+        _ecdsa = ecdsa;
+        return this;
     }
 }

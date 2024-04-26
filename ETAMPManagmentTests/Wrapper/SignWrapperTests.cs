@@ -1,99 +1,98 @@
-﻿using ETAMPManagment.Encryption.ECDsaManager.Interfaces;
+﻿using System.Security.Cryptography;
+using ETAMPManagment.Encryption.ECDsaManager.Interfaces;
 using ETAMPManagment.Models;
 using Moq;
 using Newtonsoft.Json;
-using System.Security.Cryptography;
 using Xunit;
 
-namespace ETAMPManagment.Wrapper.Tests
+namespace ETAMPManagment.Wrapper.Tests;
+
+public class SignWrapperTests
 {
-    public class SignWrapperTests
+    private readonly Mock<IECDsaProvider> _providerMock;
+    private readonly SignWrapper _signWrapper;
+
+    //TODO make valid tests
+    public SignWrapperTests()
     {
-        private readonly Mock<IECDsaProvider> _providerMock;
-        private readonly SignWrapper _signWrapper;
+        _providerMock = new Mock<IECDsaProvider>();
+        _providerMock.Setup(x => x.GetECDsa()).Returns(ECDsa.Create());
+        _signWrapper = new SignWrapper();
+        _signWrapper.Initialize(_providerMock.Object, HashAlgorithmName.SHA256);
+    }
 
-        //TODO make valid tests
-        public SignWrapperTests()
+    [Fact]
+    public void SignEtamp_WithValidJson_ReturnsUpdatedEtampModel()
+    {
+        var etampModel = new ETAMPModel
         {
-            _providerMock = new Mock<IECDsaProvider>();
-            _providerMock.Setup(x => x.GetECDsa()).Returns(ECDsa.Create());
-            _signWrapper = new SignWrapper();
-            _signWrapper.Initialize(_providerMock.Object, HashAlgorithmName.SHA256);
-        }
+            Id = Guid.NewGuid(),
+            Token = "someToken"
+        };
+        var jsonEtamp = JsonConvert.SerializeObject(etampModel);
 
-        [Fact]
-        public void SignEtamp_WithValidJson_ReturnsUpdatedEtampModel()
+        var signedJson = _signWrapper.SignEtamp(jsonEtamp);
+        var signedEtampModel = JsonConvert.DeserializeObject<ETAMPModel>(signedJson);
+
+        Assert.NotNull(signedEtampModel);
+        Assert.NotNull(signedEtampModel.SignatureToken);
+        Assert.NotNull(signedEtampModel.SignatureMessage);
+
+        Assert.NotEmpty(signedEtampModel.SignatureToken);
+        Assert.NotEmpty(signedEtampModel.SignatureMessage);
+    }
+
+    [Fact]
+    public void SignEtamp_WithNullInput_ThrowsArgumentNullException()
+    {
+        var ecdsa = ECDsa.Create();
+        var signWrapper = new SignWrapper();
+        signWrapper.Initialize(_providerMock.Object, HashAlgorithmName.SHA256);
+        var exception = Assert.Throws<ArgumentNullException>(() => signWrapper.SignEtamp(""));
+        Assert.Equal("etamp", exception.ParamName);
+    }
+
+    [Fact]
+    public void SignEtampModel_UpdatesSignatureFieldsCorrectly()
+    {
+        var ecdsa = ECDsa.Create();
+        var signWrapper = new SignWrapper();
+        signWrapper.Initialize(_providerMock.Object, HashAlgorithmName.SHA256);
+        var etampModel = new ETAMPModel
         {
-            var etampModel = new ETAMPModel
-            {
-                Id = Guid.NewGuid(),
-                Token = "someToken",
-            };
-            var jsonEtamp = JsonConvert.SerializeObject(etampModel);
+            Id = Guid.NewGuid(),
+            Version = 1.0,
+            Token = "testToken",
+            UpdateType = "updateType"
+        };
 
-            var signedJson = _signWrapper.SignEtamp(jsonEtamp);
-            var signedEtampModel = JsonConvert.DeserializeObject<ETAMPModel>(signedJson);
+        var signedJson = signWrapper.SignEtamp(etampModel);
+        var updatedEtampModel = JsonConvert.DeserializeObject<ETAMPModel>(signedJson);
 
-            Assert.NotNull(signedEtampModel);
-            Assert.NotNull(signedEtampModel.SignatureToken);
-            Assert.NotNull(signedEtampModel.SignatureMessage);
+        Assert.NotNull(updatedEtampModel);
+        Assert.NotNull(updatedEtampModel.SignatureToken);
+        Assert.NotNull(updatedEtampModel.SignatureMessage);
+    }
 
-            Assert.NotEmpty(signedEtampModel.SignatureToken);
-            Assert.NotEmpty(signedEtampModel.SignatureMessage);
-        }
-
-        [Fact]
-        public void SignEtamp_WithNullInput_ThrowsArgumentNullException()
+    [Fact]
+    public void SignEtampModel_UpdatesSignatureFields()
+    {
+        var etamp = new ETAMPModel
         {
-            var ecdsa = ECDsa.Create();
-            var signWrapper = new SignWrapper();
-            signWrapper.Initialize(_providerMock.Object, HashAlgorithmName.SHA256);
-            var exception = Assert.Throws<ArgumentNullException>(() => signWrapper.SignEtamp(""));
-            Assert.Equal("etamp", exception.ParamName);
-        }
+            Id = Guid.NewGuid(),
+            Version = 1.0,
+            Token = "token",
+            UpdateType = "update",
+            SignatureMessage = "",
+            SignatureToken = ""
+        };
 
-        [Fact]
-        public void SignEtampModel_UpdatesSignatureFieldsCorrectly()
-        {
-            var ecdsa = ECDsa.Create();
-            var signWrapper = new SignWrapper();
-            signWrapper.Initialize(_providerMock.Object, HashAlgorithmName.SHA256);
-            var etampModel = new ETAMPModel
-            {
-                Id = Guid.NewGuid(),
-                Version = 1.0,
-                Token = "testToken",
-                UpdateType = "updateType"
-            };
+        var signedEtamp = _signWrapper.SignEtampModel(etamp);
 
-            var signedJson = signWrapper.SignEtamp(etampModel);
-            var updatedEtampModel = JsonConvert.DeserializeObject<ETAMPModel>(signedJson);
-
-            Assert.NotNull(updatedEtampModel);
-            Assert.NotNull(updatedEtampModel.SignatureToken);
-            Assert.NotNull(updatedEtampModel.SignatureMessage);
-        }
-
-        [Fact]
-        public void SignEtampModel_UpdatesSignatureFields()
-        {
-            var etamp = new ETAMPModel
-            {
-                Id = Guid.NewGuid(),
-                Version = 1.0,
-                Token = "token",
-                UpdateType = "update",
-                SignatureMessage = "",
-                SignatureToken = ""
-            };
-
-            var signedEtamp = _signWrapper.SignEtampModel(etamp);
-
-            Assert.NotNull(signedEtamp);
-            Assert.NotNull(signedEtamp.SignatureToken);
-            Assert.NotNull(signedEtamp.SignatureMessage);
-            Assert.NotEmpty(signedEtamp.SignatureToken);
-            Assert.NotEmpty(signedEtamp.SignatureMessage);
-        }
+        Assert.NotNull(signedEtamp);
+        Assert.NotNull(signedEtamp.SignatureToken);
+        Assert.NotNull(signedEtamp.SignatureMessage);
+        Assert.NotEmpty(signedEtamp.SignatureToken);
+        Assert.NotEmpty(signedEtamp.SignatureMessage);
     }
 }

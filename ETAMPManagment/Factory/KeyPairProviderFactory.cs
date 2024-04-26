@@ -3,34 +3,33 @@ using ETAMPManagment.Encryption.Interfaces;
 using ETAMPManagment.Factory.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace ETAMPManagment.Factory
+namespace ETAMPManagment.Factory;
+
+/// <summary>
+///     Factory class for creating instances of <see cref="KeyPairProvider" />.
+///     This factory utilizes the ActivatorUtilities class to create new instances of KeyPairProvider,
+///     allowing for dependency injection in the created instances.
+/// </summary>
+public class KeyPairProviderFactory : IKeyPairProviderFactory
 {
+    private readonly IServiceProvider _serviceProvider;
+
     /// <summary>
-    /// Factory class for creating instances of <see cref="KeyPairProvider"/>.
-    /// This factory utilizes the ActivatorUtilities class to create new instances of KeyPairProvider,
-    /// allowing for dependency injection in the created instances.
+    ///     Initializes a new instance of the <see cref="KeyPairProviderFactory" /> class with the specified service provider.
     /// </summary>
-    public class KeyPairProviderFactory : IKeyPairProviderFactory
+    /// <param name="serviceProvider">The service provider to use for creating instances of KeyPairProvider.</param>
+    public KeyPairProviderFactory(IServiceProvider serviceProvider)
     {
-        private readonly IServiceProvider _serviceProvider;
+        _serviceProvider = serviceProvider
+                           ?? throw new ArgumentNullException(nameof(serviceProvider));
+    }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="KeyPairProviderFactory"/> class with the specified service provider.
-        /// </summary>
-        /// <param name="serviceProvider">The service provider to use for creating instances of KeyPairProvider.</param>
-        public KeyPairProviderFactory(IServiceProvider serviceProvider)
-        {
-            _serviceProvider = serviceProvider
-                ?? throw new ArgumentNullException(nameof(serviceProvider));
-        }
-
-        /// <summary>
-        /// Creates a new instance of <see cref="KeyPairProvider"/> using the registered services in the service provider.
-        /// </summary>
-        /// <returns>A new instance of <see cref="KeyPairProvider"/>.</returns>
-        public virtual IKeyPairProvider CreateInstance()
-        {
-            return ActivatorUtilities.CreateInstance<KeyPairProvider>(_serviceProvider);
-        }
+    /// <summary>
+    ///     Creates a new instance of <see cref="KeyPairProvider" /> using the registered services in the service provider.
+    /// </summary>
+    /// <returns>A new instance of <see cref="KeyPairProvider" />.</returns>
+    public virtual IKeyPairProvider CreateInstance()
+    {
+        return ActivatorUtilities.CreateInstance<KeyPairProvider>(_serviceProvider);
     }
 }

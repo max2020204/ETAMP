@@ -4,49 +4,48 @@ using ETAMPManagment.Validators.Interfaces;
 using Moq;
 using Xunit;
 
-namespace ETAMPManagment.ETAMP.Encrypted.Tests
+namespace ETAMPManagment.ETAMP.Encrypted.Tests;
+
+public class EncryptTokenTests
 {
-    public class EncryptTokenTests
+    private readonly Mock<IEciesEncryptionService> _eciesEncryptionServiceMock;
+    private readonly EncryptToken _encryptToken;
+    private readonly string _expectedEncryptedToken;
+    private readonly ETAMPModel _expectedModel;
+    private readonly string _jsonEtampInvalid;
+    private readonly string _jsonEtampValid;
+    private readonly Mock<IStructureValidator> _structureValidatorMock;
+
+    public EncryptTokenTests()
     {
-        private readonly Mock<IStructureValidator> _structureValidatorMock;
-        private readonly Mock<IEciesEncryptionService> _eciesEncryptionServiceMock;
-        private readonly EncryptToken _encryptToken;
-        private readonly string _jsonEtampValid;
-        private readonly string _jsonEtampInvalid;
-        private readonly ETAMPModel _expectedModel;
-        private readonly string _expectedEncryptedToken;
+        _structureValidatorMock = new Mock<IStructureValidator>();
+        _eciesEncryptionServiceMock = new Mock<IEciesEncryptionService>();
+        _encryptToken = new EncryptToken(_structureValidatorMock.Object, _eciesEncryptionServiceMock.Object);
 
-        public EncryptTokenTests()
-        {
-            _structureValidatorMock = new Mock<IStructureValidator>();
-            _eciesEncryptionServiceMock = new Mock<IEciesEncryptionService>();
-            _encryptToken = new EncryptToken(_structureValidatorMock.Object, _eciesEncryptionServiceMock.Object);
+        _jsonEtampValid = "{\"token\":\"example\"}";
+        _jsonEtampInvalid = "{\"invalid\":\"data\"}";
+        _expectedModel = new ETAMPModel { Token = "encryptedToken" };
+        _expectedEncryptedToken = "encryptedToken";
 
-            _jsonEtampValid = "{\"token\":\"example\"}";
-            _jsonEtampInvalid = "{\"invalid\":\"data\"}";
-            _expectedModel = new ETAMPModel { Token = "encryptedToken" };
-            _expectedEncryptedToken = "encryptedToken";
+        _structureValidatorMock.Setup(m => m.IsValidEtampFormat(_jsonEtampValid))
+            .Returns(new ETAMPModel { Token = "example" });
+        _structureValidatorMock.Setup(m => m.IsValidEtampFormat(_jsonEtampInvalid))
+            .Returns((ETAMPModel model) => model);
+        _eciesEncryptionServiceMock.Setup(m => m.Encrypt(It.IsAny<string>()))
+            .Returns(_expectedEncryptedToken);
+    }
 
-            _structureValidatorMock.Setup(m => m.IsValidEtampFormat(_jsonEtampValid))
-                                   .Returns(new ETAMPModel() { Token = "example" });
-            _structureValidatorMock.Setup(m => m.IsValidEtampFormat(_jsonEtampInvalid))
-                                   .Returns((ETAMPModel model) => model);
-            _eciesEncryptionServiceMock.Setup(m => m.Encrypt(It.IsAny<string>()))
-                                       .Returns(_expectedEncryptedToken);
-        }
+    [Fact]
+    public void EncryptETAMP_WithValidToken_ReturnsEncryptedModel()
+    {
+        var result = _encryptToken.EncryptETAMP(_jsonEtampValid);
 
-        [Fact]
-        public void EncryptETAMP_WithValidToken_ReturnsEncryptedModel()
-        {
-            var result = _encryptToken.EncryptETAMP(_jsonEtampValid);
+        Assert.Equal(_expectedModel.Token, result.Token);
+    }
 
-            Assert.Equal(_expectedModel.Token, result.Token);
-        }
-
-        [Fact]
-        public void EncryptETAMP_WithInvalidToken_ThrowsInvalidOperationException()
-        {
-            Assert.Throws<ArgumentException>(() => _encryptToken.EncryptETAMP(_jsonEtampInvalid));
-        }
+    [Fact]
+    public void EncryptETAMP_WithInvalidToken_ThrowsInvalidOperationException()
+    {
+        Assert.Throws<ArgumentException>(() => _encryptToken.EncryptETAMP(_jsonEtampInvalid));
     }
 }

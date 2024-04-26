@@ -1,69 +1,68 @@
-﻿using ETAMPManagment.Encryption.ECDsaManager.Interfaces;
+﻿using System.IdentityModel.Tokens.Jwt;
+using System.Security.Cryptography;
+using ETAMPManagment.Encryption.ECDsaManager.Interfaces;
 using ETAMPManagment.Models;
 using ETAMPManagment.Services;
 using ETAMPManagment.Services.Interfaces;
 using Microsoft.IdentityModel.Tokens;
 using Moq;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Cryptography;
 using Xunit;
 
-namespace ETAMPManagment.ETAMP.Base.Tests
+namespace ETAMPManagment.ETAMP.Base.Tests;
+
+public class ETAMPDataTests
 {
-    public class ETAMPDataTests
+    private readonly JwtSecurityTokenHandler _jwtHandler;
+    private readonly string _messageId;
+
+    private readonly BasePayload _payload;
+
+    private readonly Mock<IECDsaProvider> _providerMock;
+    private readonly Mock<ISigningCredentialsProvider> _signMock;
+
+    public ETAMPDataTests()
     {
-        private readonly Mock<ISigningCredentialsProvider> _signMock;
+        _messageId = Guid.NewGuid().ToString();
+        _providerMock = new Mock<IECDsaProvider>();
+        _providerMock.Setup(x => x.GetECDsa()).Returns(ECDsa.Create());
+        _payload = new BasePayload();
+        _signMock = new Mock<ISigningCredentialsProvider>();
+        _jwtHandler = new JwtSecurityTokenHandler();
+    }
 
-        private readonly Mock<IECDsaProvider> _providerMock;
-        private readonly string _messageId;
+    private string GenerateToken(string ecdsaAlgorithm)
+    {
+        var ecdsa = new ECDsaSigningCredentialsProvider(_providerMock.Object);
+        ecdsa.SecurityAlgorithm = ecdsaAlgorithm;
+        _signMock.Setup(x => x.CreateSigningCredentials())
+            .Returns(ecdsa.CreateSigningCredentials());
 
-        private readonly BasePayload _payload;
-        private readonly JwtSecurityTokenHandler _jwtHandler;
+        var data = new ETAMPData(_signMock.Object);
+        return data.CreateEtampData(_messageId, _payload);
+    }
 
-        public ETAMPDataTests()
-        {
-            _messageId = Guid.NewGuid().ToString();
-            _providerMock = new Mock<IECDsaProvider>();
-            _providerMock.Setup(x => x.GetECDsa()).Returns(ECDsa.Create());
-            _payload = new BasePayload();
-            _signMock = new Mock<ISigningCredentialsProvider>();
-            _jwtHandler = new JwtSecurityTokenHandler();
-        }
+    [Theory]
+    [InlineData("ES256", SecurityAlgorithms.EcdsaSha256Signature)]
+    [InlineData("ES384", SecurityAlgorithms.EcdsaSha384Signature)]
+    [InlineData("ES512", SecurityAlgorithms.EcdsaSha512Signature)]
+    public void CreateEtampData_ShouldGenerateTokenWithCorrectAlgorithm(string securityAlgorithm, string ecdsaAlgorithm)
+    {
+        var token = GenerateToken(ecdsaAlgorithm);
 
-        private string GenerateToken(string ecdsaAlgorithm)
-        {
-            ECDsaSigningCredentialsProvider ecdsa = new ECDsaSigningCredentialsProvider(_providerMock.Object);
-            ecdsa.SecurityAlgorithm = ecdsaAlgorithm;
-            _signMock.Setup(x => x.CreateSigningCredentials())
-                .Returns(ecdsa.CreateSigningCredentials());
+        var readToken = _jwtHandler.ReadJwtToken(token);
 
-            ETAMPData data = new ETAMPData(_signMock.Object);
-            return data.CreateEtampData(_messageId, _payload);
-        }
+        Assert.Equal(securityAlgorithm, readToken.Header.Alg);
+    }
 
-        [Theory]
-        [InlineData("ES256", SecurityAlgorithms.EcdsaSha256Signature)]
-        [InlineData("ES384", SecurityAlgorithms.EcdsaSha384Signature)]
-        [InlineData("ES512", SecurityAlgorithms.EcdsaSha512Signature)]
-        public void CreateEtampData_ShouldGenerateTokenWithCorrectAlgorithm(string securityAlgorithm, string ecdsaAlgorithm)
-        {
-            string token = GenerateToken(ecdsaAlgorithm);
+    [Fact]
+    public void CreateEtampData_ShouldSetCorrectHeaderAndContainCorrectClaims()
+    {
+        var token = GenerateToken(SecurityAlgorithms.EcdsaSha256Signature);
+        var readToken = _jwtHandler.ReadJwtToken(token);
 
-            var readToken = _jwtHandler.ReadJwtToken(token);
+        Assert.Equal("ES256", readToken.Header.Alg);
+        Assert.Equal("ETAMP", readToken.Header.Typ);
 
-            Assert.Equal(securityAlgorithm, readToken.Header.Alg);
-        }
-
-        [Fact]
-        public void CreateEtampData_ShouldSetCorrectHeaderAndContainCorrectClaims()
-        {
-            string token = GenerateToken(SecurityAlgorithms.EcdsaSha256Signature);
-            var readToken = _jwtHandler.ReadJwtToken(token);
-
-            Assert.Equal("ES256", readToken.Header.Alg);
-            Assert.Equal("ETAMP", readToken.Header.Typ);
-
-            Assert.Contains(readToken.Claims, c => c.Type == "MessageId" && c.Value == _messageId);
-        }
+        Assert.Contains(readToken.Claims, c => c.Type == "MessageId" && c.Value == _messageId);
     }
 }

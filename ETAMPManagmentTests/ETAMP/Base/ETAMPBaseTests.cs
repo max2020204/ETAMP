@@ -1,34 +1,32 @@
-﻿using ETAMPManagment.ETAMP.Base.Interfaces;
-using ETAMPManagment.Models;
+﻿using ETAMPManagment.Models;
 using ETAMPManagment.Services.Interfaces;
 using Moq;
 using Xunit;
 
-namespace ETAMPManagment.ETAMP.Base.Tests
+namespace ETAMPManagment.ETAMP.Base.Tests;
+
+public class ETAMPBaseTests
 {
-    public class ETAMPBaseTests
+    private const string UpdateType = "updateType";
+    private readonly BasePayload _basePayload;
+    private readonly ETAMPBase _etampBase;
+
+    public ETAMPBaseTests()
     {
-        private readonly ETAMPBase _etampBase;
-        private readonly BasePayload _basePayload;
-        private const string UpdateType = "updateType";
+        var signatureMock = new Mock<ISigningCredentialsProvider>();
+        _etampBase = new ETAMPBase(signatureMock.Object, new ETAMPData(signatureMock.Object));
+        _basePayload = new BasePayload();
+    }
 
-        public ETAMPBaseTests()
-        {
-            Mock<ISigningCredentialsProvider> signatureMock = new Mock<ISigningCredentialsProvider>();
-            _etampBase = new ETAMPBase(signatureMock.Object, new ETAMPData(signatureMock.Object));
-            _basePayload = new BasePayload();
-        }
+    [Fact]
+    public void CreateETAMPModel_ReturnsCorrectModelInstance()
+    {
+        var result = _etampBase.CreateETAMPModel(UpdateType, _basePayload);
 
-        [Fact]
-        public void CreateETAMPModel_ReturnsCorrectModelInstance()
-        {
-            var result = _etampBase.CreateETAMPModel(UpdateType, _basePayload);
-
-            Assert.NotNull(result);
-            Assert.IsType<ETAMPModel>(result);
-            Assert.Equal(UpdateType, result.UpdateType);
-            Assert.NotNull(result.Token);
-            Assert.True(result.Version > 0);
-        }
+        Assert.NotNull(result);
+        Assert.IsType<ETAMPModel>(result);
+        Assert.Equal(UpdateType, result.UpdateType);
+        Assert.NotNull(result.Token);
+        Assert.True(result.Version > 0);
     }
 }

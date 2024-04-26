@@ -1,21 +1,20 @@
-﻿namespace ETAMPManagment.Managment
+﻿namespace ETAMPManagment.Managment;
+
+/// <summary>
+///     Provides constants for identifying the compression algorithms used within the application.
+///     These constants allow for consistent naming and usage of compression services throughout the application.
+/// </summary>
+public static class CompressionNames
 {
     /// <summary>
-    /// Provides constants for identifying the compression algorithms used within the application.
-    /// These constants allow for consistent naming and usage of compression services throughout the application.
+    ///     Represents the Deflate compression algorithm.
+    ///     This constant is used to identify and select the Deflate compression service.
     /// </summary>
-    public static class CompressionNames
-    {
-        /// <summary>
-        /// Represents the Deflate compression algorithm.
-        /// This constant is used to identify and select the Deflate compression service.
-        /// </summary>
-        public const string Deflate = "Deflate";
+    public const string Deflate = "Deflate";
 
-        /// <summary>
-        /// Represents the GZip compression algorithm.
-        /// This constant is used to identify and select the GZip compression service.
-        /// </summary>
-        public const string GZip = "GZip";
-    }
+    /// <summary>
+    ///     Represents the GZip compression algorithm.
+    ///     This constant is used to identify and select the GZip compression service.
+    /// </summary>
+    public const string GZip = "GZip";
 }

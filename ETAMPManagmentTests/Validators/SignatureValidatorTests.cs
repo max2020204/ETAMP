@@ -4,76 +4,79 @@ using ETAMPManagment.Wrapper.Interfaces;
 using Moq;
 using Xunit;
 
-namespace ETAMPManagment.Validators.Tests
+namespace ETAMPManagment.Validators.Tests;
+
+public class SignatureValidatorTests
 {
-    public class SignatureValidatorTests
+    private readonly SignatureValidator _signatureValidator;
+    private readonly Mock<IStructureValidator> _structureValidatorMock;
+    private readonly Mock<IVerifyWrapper> _verifyWrapperMock;
+
+    public SignatureValidatorTests()
     {
-        private readonly Mock<IVerifyWrapper> _verifyWrapperMock;
-        private readonly Mock<IStructureValidator> _structureValidatorMock;
-        private readonly SignatureValidator _signatureValidator;
+        _verifyWrapperMock = new Mock<IVerifyWrapper>();
+        _structureValidatorMock = new Mock<IStructureValidator>();
+        _signatureValidator = new SignatureValidator(_verifyWrapperMock.Object, _structureValidatorMock.Object);
+    }
 
-        public SignatureValidatorTests()
+    [Fact]
+    public void ValidateETAMPMessage_WithString_ReturnsTrueIfValid()
+    {
+        var model = new ETAMPModel
         {
-            _verifyWrapperMock = new Mock<IVerifyWrapper>();
-            _structureValidatorMock = new Mock<IStructureValidator>();
-            _signatureValidator = new SignatureValidator(_verifyWrapperMock.Object, _structureValidatorMock.Object);
-        }
+            Id = Guid.NewGuid(),
+            Version = 1,
+            Token = "abs",
+            UpdateType = "update",
+            SignatureToken = "signToken",
+            SignatureMessage = "signature"
+        };
+        var etamp =
+            "{\"Id\": \"123\", \"Version\": 1, \"Token\": \"abc\", \"UpdateType\": \"update\", \"SignatureToken\": \"signToken\", \"SignatureMessage\": \"signature\"}";
+        _structureValidatorMock.Setup(v => v.IsValidEtampFormat(etamp)).Returns(model);
+        _structureValidatorMock.Setup(v => v.ValidateETAMPStructure(It.IsAny<ETAMPModel>()))
+            .Returns(new ValidationResult(true));
 
-        [Fact]
-        public void ValidateETAMPMessage_WithString_ReturnsTrueIfValid()
+        _verifyWrapperMock.Setup(v =>
+            v.VerifyData($"{model.Id}{model.Version}{model.Token}{model.UpdateType}{model.SignatureToken}",
+                model.SignatureMessage)).Returns(true);
+
+        var validator = new SignatureValidator(_verifyWrapperMock.Object, _structureValidatorMock.Object);
+        var result = validator.ValidateETAMPMessage(etamp);
+
+        Assert.True(result);
+    }
+
+    [Fact]
+    public void ValidateETAMPMessage_WithModel_ReturnsTrueIfValid()
+    {
+        var etampModel = new ETAMPModel
         {
-            ETAMPModel model = new ETAMPModel()
-            {
-                Id = Guid.NewGuid(),
-                Version = 1,
-                Token = "abs",
-                UpdateType = "update",
-                SignatureToken = "signToken",
-                SignatureMessage = "signature"
-            };
-            string etamp = "{\"Id\": \"123\", \"Version\": 1, \"Token\": \"abc\", \"UpdateType\": \"update\", \"SignatureToken\": \"signToken\", \"SignatureMessage\": \"signature\"}";
-            _structureValidatorMock.Setup(v => v.IsValidEtampFormat(etamp)).Returns(model);
-            _structureValidatorMock.Setup(v => v.ValidateETAMPStructure(It.IsAny<ETAMPModel>())).Returns(new ValidationResult(true));
+            Id = Guid.NewGuid(),
+            Version = 1,
+            Token = "abc",
+            UpdateType = "update",
+            SignatureToken = "sigToken",
+            SignatureMessage = "signature"
+        };
 
-            _verifyWrapperMock.Setup(v => v.VerifyData($"{model.Id}{model.Version}{model.Token}{model.UpdateType}{model.SignatureToken}", model.SignatureMessage)).Returns(true);
+        _verifyWrapperMock.Setup(v => v.VerifyData(It.IsAny<string>(), It.IsAny<string>())).Returns(true);
 
-            var validator = new SignatureValidator(_verifyWrapperMock.Object, _structureValidatorMock.Object);
-            bool result = validator.ValidateETAMPMessage(etamp);
+        var result = _signatureValidator.ValidateETAMPMessage(etampModel);
 
-            Assert.True(result);
-        }
+        Assert.True(result);
+    }
 
-        [Fact]
-        public void ValidateETAMPMessage_WithModel_ReturnsTrueIfValid()
-        {
-            var etampModel = new ETAMPModel
-            {
-                Id = Guid.NewGuid(),
-                Version = 1,
-                Token = "abc",
-                UpdateType = "update",
-                SignatureToken = "sigToken",
-                SignatureMessage = "signature"
-            };
+    [Fact]
+    public void ValidateToken_ReturnsTrueIfValid()
+    {
+        var token = "token";
+        var tokenSignature = "signature";
 
-            _verifyWrapperMock.Setup(v => v.VerifyData(It.IsAny<string>(), It.IsAny<string>())).Returns(true);
+        _verifyWrapperMock.Setup(v => v.VerifyData(token, tokenSignature)).Returns(true);
 
-            bool result = _signatureValidator.ValidateETAMPMessage(etampModel);
+        var result = _signatureValidator.ValidateToken(token, tokenSignature);
 
-            Assert.True(result);
-        }
-
-        [Fact]
-        public void ValidateToken_ReturnsTrueIfValid()
-        {
-            string token = "token";
-            string tokenSignature = "signature";
-
-            _verifyWrapperMock.Setup(v => v.VerifyData(token, tokenSignature)).Returns(true);
-
-            bool result = _signatureValidator.ValidateToken(token, tokenSignature);
-
-            Assert.True(result);
-        }
+        Assert.True(result);
     }
 }

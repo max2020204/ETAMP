@@ -1,21 +1,20 @@
 ﻿using Xunit;
 
-namespace ETAMPManagment.Models.Tests
+namespace ETAMPManagment.Models.Tests;
+
+public class BasePayloadTests
 {
-    public class BasePayloadTests
+    [Fact]
+    public void Constructor_WithSpecificValues_InitializesPropertiesCorrectly()
     {
-        [Fact]
-        public void Constructor_WithSpecificValues_InitializesPropertiesCorrectly()
-        {
-            var expectedJTI = Guid.NewGuid();
-            var expectedIssuedAt = DateTime.UtcNow;
-            var expectedExpires = expectedIssuedAt.AddHours(1);
+        var expectedJTI = Guid.NewGuid();
+        var expectedIssuedAt = DateTime.UtcNow;
+        var expectedExpires = expectedIssuedAt.AddHours(1);
 
-            var payload = new BasePayload(expectedJTI, expectedIssuedAt, expectedExpires);
+        var payload = new BasePayload(expectedJTI, expectedIssuedAt, expectedExpires);
 
-            Assert.Equal(expectedJTI, payload.JTI);
-            Assert.Equal(expectedIssuedAt, payload.IssuedAt.UtcDateTime);
-            Assert.Equal(expectedExpires, payload.Expires.UtcDateTime);
-        }
+        Assert.Equal(expectedJTI, payload.JTI);
+        Assert.Equal(expectedIssuedAt, payload.IssuedAt.UtcDateTime);
+        Assert.Equal(expectedExpires, payload.Expires.UtcDateTime);
     }
 }

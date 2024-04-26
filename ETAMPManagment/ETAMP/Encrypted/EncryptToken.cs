@@ -3,39 +3,39 @@ using ETAMPManagment.ETAMP.Encrypted.Interfaces;
 using ETAMPManagment.Models;
 using ETAMPManagment.Validators.Interfaces;
 
-namespace ETAMPManagment.ETAMP.Encrypted
+namespace ETAMPManagment.ETAMP.Encrypted;
+
+/// <summary>
+///     Provides functionalities for encrypting ETAMP tokens using the Elliptic Curve Integrated Encryption Scheme (ECIES).
+/// </summary>
+public class EncryptToken : IEncryptToken
 {
+    private readonly IEciesEncryptionService _eciesEncryptionService;
+    private readonly IStructureValidator _structureValidator;
+
     /// <summary>
-    /// Provides functionalities for encrypting ETAMP tokens using the Elliptic Curve Integrated Encryption Scheme (ECIES).
+    ///     Initializes a new instance of the EncryptToken class with the specified structure validator and ECIES encryption
+    ///     service.
     /// </summary>
-    public class EncryptToken : IEncryptToken
+    /// <param name="structureValidator">The validator used to ensure the integrity and structure of ETAMP tokens.</param>
+    /// <param name="eciesEncryptionService">The encryption service to encrypt ETAMP tokens.</param>
+    public EncryptToken(IStructureValidator structureValidator, IEciesEncryptionService eciesEncryptionService)
     {
-        private readonly IStructureValidator _structureValidator;
-        private readonly IEciesEncryptionService _eciesEncryptionService;
+        _structureValidator = structureValidator;
+        _eciesEncryptionService = eciesEncryptionService;
+    }
 
-        /// <summary>
-        /// Initializes a new instance of the EncryptToken class with the specified structure validator and ECIES encryption service.
-        /// </summary>
-        /// <param name="structureValidator">The validator used to ensure the integrity and structure of ETAMP tokens.</param>
-        /// <param name="eciesEncryptionService">The encryption service to encrypt ETAMP tokens.</param>
-        public EncryptToken(IStructureValidator structureValidator, IEciesEncryptionService eciesEncryptionService)
-        {
-            _structureValidator = structureValidator;
-            _eciesEncryptionService = eciesEncryptionService;
-        }
-
-        /// <summary>
-        /// Encrypts an ETAMP token and returns the encrypted token as an ETAMPModel.
-        /// </summary>
-        /// <param name="jsonEtamp">The JSON string representation of an ETAMP token to be encrypted.</param>
-        /// <returns>An ETAMPModel instance containing the encrypted token.</returns>
-        /// <exception cref="InvalidOperationException">Thrown if the ETAMP data is invalid.</exception>
-        public virtual ETAMPModel EncryptETAMP(string jsonEtamp)
-        {
-            var model = _structureValidator.IsValidEtampFormat(jsonEtamp);
-            ArgumentException.ThrowIfNullOrWhiteSpace(model.Token);
-            model.Token = _eciesEncryptionService.Encrypt(model.Token);
-            return model;
-        }
+    /// <summary>
+    ///     Encrypts an ETAMP token and returns the encrypted token as an ETAMPModel.
+    /// </summary>
+    /// <param name="jsonEtamp">The JSON string representation of an ETAMP token to be encrypted.</param>
+    /// <returns>An ETAMPModel instance containing the encrypted token.</returns>
+    /// <exception cref="InvalidOperationException">Thrown if the ETAMP data is invalid.</exception>
+    public virtual ETAMPModel EncryptETAMP(string jsonEtamp)
+    {
+        var model = _structureValidator.IsValidEtampFormat(jsonEtamp);
+        ArgumentException.ThrowIfNullOrWhiteSpace(model.Token);
+        model.Token = _eciesEncryptionService.Encrypt(model.Token);
+        return model;
     }
 }
