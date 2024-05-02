@@ -1,8 +1,12 @@
-﻿using ETAMPManagment.Models;
+﻿#region
+
+using ETAMPManagment.Models;
 using ETAMPManagment.Validators.Interfaces;
 using ETAMPManagment.Wrapper.Interfaces;
 using Moq;
 using Xunit;
+
+#endregion
 
 namespace ETAMPManagment.Validators.Tests;
 

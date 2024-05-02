@@ -1,5 +1,9 @@
-﻿using System.Security.Cryptography;
+﻿#region
+
+using System.Security.Cryptography;
 using ETAMPManagment.Models;
+
+#endregion
 
 namespace ETAMPManagment.Encryption.Interfaces;
 

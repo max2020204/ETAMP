@@ -1,8 +1,12 @@
-﻿using System.IdentityModel.Tokens.Jwt;
+﻿#region
+
+using System.IdentityModel.Tokens.Jwt;
 using ETAMPManagment.Models;
 using ETAMPManagment.Validators.Interfaces;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
+
+#endregion
 
 namespace ETAMPManagment.Validators;
 
@@ -10,10 +14,14 @@ namespace ETAMPManagment.Validators;
 ///     Provides functionality for validating JSON Web Tokens (JWT), including checks for structure, lifetime, and claims
 ///     validation.
 /// </summary>
-public class JwtValidator : IJwtValidator
+public sealed class JwtValidator : IJwtValidator
 {
     private readonly JwtSecurityTokenHandler _jwtSecurityTokenHandler;
 
+    /// <summary>
+    ///     Provides functionality for validating JSON Web Tokens (JWT), including checks for structure, lifetime, and claims
+    ///     validation.
+    /// </summary>
     public JwtValidator()
     {
         _jwtSecurityTokenHandler = new JwtSecurityTokenHandler();
@@ -27,7 +35,7 @@ public class JwtValidator : IJwtValidator
     ///     A JwtValidationResult indicating whether the token is a well-formed JWT and containing the error message if
     ///     it's not.
     /// </returns>
-    public virtual ValidationResult IsValidJwtToken(string token)
+    public ValidationResult IsValidJwtToken(string token)
     {
         if (string.IsNullOrEmpty(token))
             return new ValidationResult(false, "The token cannot be null or empty");
@@ -63,17 +71,16 @@ public class JwtValidator : IJwtValidator
     /// <param name="token">The JWT token to validate.</param>
     /// <param name="securityKey">The ECDsaSecurityKey used for signature validation.</param>
     /// <returns>
-    ///     A task that represents the asynchronous validation operation, yielding a <see cref="ValidationResult" /> that
-    ///     contains the validation outcome.
+    ///     A task that represents the asynchronous validation operation, yielding a ValidationResult that contains the
+    ///     validation outcome.
     /// </returns>
     /// <remarks>
-    ///     This method first checks if the token is well-formed and has a valid structure using <see cref="IsValidJwtToken" />
-    ///     .
+    ///     This method first checks if the token is well-formed and has a valid structure using IsValidJwtToken.
     ///     Then it validates the token's lifetime against the provided security key.
     ///     The method returns a detailed validation result, indicating whether the token's lifetime is valid.
     ///     Specific lifetime-related issues are reported in the validation result.
     /// </remarks>
-    public virtual async Task<ValidationResult> ValidateLifeTime(string token, ECDsaSecurityKey securityKey)
+    public async Task<ValidationResult> ValidateLifeTime(string token, ECDsaSecurityKey securityKey)
     {
         var structuralValidation = IsValidJwtToken(token);
         if (!structuralValidation.IsValid)
@@ -108,8 +115,8 @@ public class JwtValidator : IJwtValidator
     /// <param name="issuer">The expected issuer (iss) claim in the JWT token.</param>
     /// <param name="securityKey">The ECDsaSecurityKey used for token signature validation.</param>
     /// <returns>
-    ///     A task that represents the asynchronous validation operation, yielding a <see cref="ValidationResult" /> that
-    ///     contains the validation outcome.
+    ///     A task that represents the asynchronous validation operation, yielding a ValidationResult that contains the
+    ///     validation outcome.
     /// </returns>
     /// <remarks>
     ///     This method first performs a structural validation of the JWT token to ensure it is well-formed.
@@ -120,7 +127,7 @@ public class JwtValidator : IJwtValidator
     ///     The method returns a detailed validation result, indicating whether all aspects of the token are valid or not, and
     ///     provides specific error messages for different types of validation failures.
     /// </remarks>
-    public virtual async Task<ValidationResult> ValidateToken(string token, string audience, string issuer,
+    public async Task<ValidationResult> ValidateToken(string token, string audience, string issuer,
         ECDsaSecurityKey securityKey)
     {
         var structuralValidation = IsValidJwtToken(token);
@@ -154,7 +161,7 @@ public class JwtValidator : IJwtValidator
     }
 
     /// <summary>
-    ///     Constructs the TokenValidationParameters used for JWT validation.
+    ///     Retrieves the TokenValidationParameters used for JWT validation.
     /// </summary>
     /// <param name="issuerSigningKey">The ECDsaSecurityKey used for validating the issuer's signing key.</param>
     /// <param name="validAudience">The expected audience value.</param>

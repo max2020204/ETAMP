@@ -1,20 +1,24 @@
-﻿using System.Security.Cryptography;
+﻿#region
+
+using System.Security.Cryptography;
 using ETAMPManagment.Encryption.ECDsaManager.Interfaces;
+
+#endregion
 
 namespace ETAMPManagment.Encryption.ECDsaManager;
 
 /// <summary>
 ///     Facilitates the creation of ECDsa instances and registers them for later use.
 /// </summary>
-public class EcdsaCreator : IEcdsaCreator
+public class ECDsaCreator : IECDsaCreator
 {
     private readonly IECDsaRegistrar _ecdsaRegistrar;
 
     /// <summary>
-    ///     Initializes a new instance of the EcdsaCreator class with a registrar for ECDsa instances.
+    ///     Initializes a new instance of the ECDsaECDsaCreator class with a registrar for ECDsa instances.
     /// </summary>
     /// <param name="ecdsaRegistrar">The registrar used to register ECDsa instances.</param>
-    public EcdsaCreator(IECDsaRegistrar ecdsaRegistrar)
+    public ECDsaCreator(IECDsaRegistrar ecdsaRegistrar)
     {
         _ecdsaRegistrar = ecdsaRegistrar ??
                           throw new ArgumentNullException(nameof(ecdsaRegistrar), "ECDsa registrar cannot be null.");
@@ -27,7 +31,7 @@ public class EcdsaCreator : IEcdsaCreator
     public IECDsaProvider CreateECDsa()
     {
         var ecdsa = ECDsa.Create();
-        return _ecdsaRegistrar.RegisterEcdsa(ecdsa);
+        return _ecdsaRegistrar.RegisterECDsa(ecdsa);
     }
 
     /// <summary>
@@ -38,7 +42,7 @@ public class EcdsaCreator : IEcdsaCreator
     public IECDsaProvider CreateECDsa(ECCurve curve)
     {
         var ecdsa = ECDsa.Create(curve);
-        return _ecdsaRegistrar.RegisterEcdsa(ecdsa);
+        return _ecdsaRegistrar.RegisterECDsa(ecdsa);
     }
 
     /// <summary>
@@ -51,7 +55,7 @@ public class EcdsaCreator : IEcdsaCreator
     {
         var ecdsa = ECDsa.Create(curve);
         ecdsa.ImportSubjectPublicKeyInfo(Convert.FromBase64String(publicKey), out _);
-        return _ecdsaRegistrar.RegisterEcdsa(ecdsa);
+        return _ecdsaRegistrar.RegisterECDsa(ecdsa);
     }
 
     /// <summary>
@@ -64,6 +68,6 @@ public class EcdsaCreator : IEcdsaCreator
     {
         var ecdsa = ECDsa.Create(curve);
         ecdsa.ImportSubjectPublicKeyInfo(publicKey, out _);
-        return _ecdsaRegistrar.RegisterEcdsa(ecdsa);
+        return _ecdsaRegistrar.RegisterECDsa(ecdsa);
     }
 }

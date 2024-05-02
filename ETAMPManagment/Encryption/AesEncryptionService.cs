@@ -1,5 +1,9 @@
-﻿using System.Security.Cryptography;
+﻿#region
+
+using System.Security.Cryptography;
 using ETAMPManagment.Encryption.Interfaces;
+
+#endregion
 
 namespace ETAMPManagment.Encryption;
 
@@ -11,13 +15,13 @@ public class AesEncryptionService : IEncryptionService
     public byte[]? IV { get; private set; }
 
     /// <summary>
-    ///     Encrypts the specified data using the AES algorithm.
+    ///     Encrypts the provided data using AES encryption algorithm.
     /// </summary>
-    /// <param name="data">The data to encrypt.</param>
+    /// <param name="data">The data to be encrypted.</param>
     /// <param name="key">The encryption key.</param>
+    /// <param name="iv">The initialization vector.</param>
     /// <returns>The encrypted data.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when data or key is null.</exception>
-    public virtual byte[] Encrypt(byte[] data, byte[] key, byte[]? iv)
+    public byte[] Encrypt(byte[] data, byte[] key, byte[]? iv)
     {
         ArgumentNullException.ThrowIfNull(data, nameof(data));
         ArgumentNullException.ThrowIfNull(key, nameof(key));
@@ -30,14 +34,13 @@ public class AesEncryptionService : IEncryptionService
     }
 
     /// <summary>
-    ///     Decrypts the specified data using the AES algorithm.
+    ///     Decrypts the provided data using the given key and IV.
     /// </summary>
-    /// <param name="data">The data to decrypt.</param>
-    /// <param name="key">The decryption key.</param>
+    /// <param name="data">The data to be decrypted.</param>
+    /// <param name="key">The key used for decryption.</param>
+    /// <param name="iv">The initialization vector used for decryption.</param>
     /// <returns>The decrypted data.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when data or key is null.</exception>
-    /// <exception cref="InvalidOperationException">Thrown when the IV is not set.</exception>
-    public virtual byte[] Decrypt(byte[] data, byte[] key, byte[] iv)
+    public byte[] Decrypt(byte[] data, byte[] key, byte[] iv)
     {
         ArgumentNullException.ThrowIfNull(data, nameof(data));
         ArgumentNullException.ThrowIfNull(key, nameof(key));

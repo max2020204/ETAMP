@@ -1,9 +1,14 @@
-﻿using System.Security.Cryptography;
+﻿#region
+
+using System.Security.Cryptography;
+using ETAMPManagment.Encryption.ECDsaManager;
 using Xunit;
 
-namespace ETAMPManagment.Encryption.ECDsaManager.Tests;
+#endregion
 
-public class ECDsaProviderTests
+namespace ETAMPManagment.Encryption.ECDSAManager.Tests;
+
+public class EcdsaProviderTests
 {
     [Fact]
     public void RegisterEcdsa_ShouldSetEcdsaInstance()
@@ -11,7 +16,7 @@ public class ECDsaProviderTests
         var provider = new ECDsaProvider();
         var ecdsa = ECDsa.Create();
 
-        var returnedProvider = provider.RegisterEcdsa(ecdsa);
+        var returnedProvider = provider.RegisterECDsa(ecdsa);
 
         Assert.Same(ecdsa, provider.GetECDsa());
         Assert.Same(provider, returnedProvider);

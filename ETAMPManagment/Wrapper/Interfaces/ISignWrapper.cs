@@ -1,6 +1,10 @@
-﻿using System.Security.Cryptography;
+﻿#region
+
+using System.Security.Cryptography;
 using ETAMPManagment.Encryption.ECDsaManager.Interfaces;
 using ETAMPManagment.Models;
+
+#endregion
 
 namespace ETAMPManagment.Wrapper.Interfaces;
 

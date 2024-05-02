@@ -1,11 +1,15 @@
-﻿using System.Security.Cryptography;
+﻿#region
+
+using System.Security.Cryptography;
+
+#endregion
 
 namespace ETAMPManagment.Encryption.ECDsaManager.Interfaces;
 
 /// <summary>
 ///     Defines methods for creating instances of ECDsa (Elliptic Curve Digital Signature Algorithm).
 /// </summary>
-public interface IEcdsaCreator
+public interface IECDsaCreator
 {
     /// <summary>
     ///     Creates a new ECDsa instance using the default parameters.

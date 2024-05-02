@@ -1,11 +1,15 @@
-﻿using System.Security.Cryptography;
+﻿#region
+
+using System.Security.Cryptography;
+
+#endregion
 
 namespace ETAMPManagment.Encryption.ECDsaManager.Interfaces;
 
 /// <summary>
 ///     Provides methods for importing private keys into ECDsa instances, managing the underlying cryptographic keys.
 /// </summary>
-public interface IEcdsaKeyManager
+public interface IECDsaKeyManager
 {
     /// <summary>
     ///     Imports a private key with a specified elliptic curve into an ECDsa instance.

@@ -1,9 +1,13 @@
-﻿using ETAMPManagment.Factory.Interfaces;
+﻿#region
+
+using ETAMPManagment.Factory.Interfaces;
 using ETAMPManagment.Models;
 using ETAMPManagment.Services.Interfaces;
 using Moq;
 using Newtonsoft.Json;
 using Xunit;
+
+#endregion
 
 namespace ETAMPManagment.Extensions.Tests;
 

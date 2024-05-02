@@ -1,7 +1,11 @@
-﻿using ETAMPManagment.Encryption.Interfaces;
+﻿#region
+
+using ETAMPManagment.Encryption.Interfaces;
 using ETAMPManagment.ETAMP.Encrypted.Interfaces;
 using ETAMPManagment.Models;
 using ETAMPManagment.Validators.Interfaces;
+
+#endregion
 
 namespace ETAMPManagment.ETAMP.Encrypted;
 
@@ -10,15 +14,19 @@ namespace ETAMPManagment.ETAMP.Encrypted;
 /// </summary>
 public class EncryptToken : IEncryptToken
 {
+    /// <summary>
+    ///     Provides functionalities for encrypting ETAMP tokens using the Elliptic Curve Integrated Encryption Scheme (ECIES).
+    /// </summary>
     private readonly IEciesEncryptionService _eciesEncryptionService;
+
+    /// <summary>
+    ///     Handles the validation of the structure and consistency of ETAMP tokens and models.
+    /// </summary>
     private readonly IStructureValidator _structureValidator;
 
     /// <summary>
-    ///     Initializes a new instance of the EncryptToken class with the specified structure validator and ECIES encryption
-    ///     service.
+    ///     Provides functionalities for encrypting ETAMP tokens using the Elliptic Curve Integrated Encryption Scheme (ECIES).
     /// </summary>
-    /// <param name="structureValidator">The validator used to ensure the integrity and structure of ETAMP tokens.</param>
-    /// <param name="eciesEncryptionService">The encryption service to encrypt ETAMP tokens.</param>
     public EncryptToken(IStructureValidator structureValidator, IEciesEncryptionService eciesEncryptionService)
     {
         _structureValidator = structureValidator;
@@ -31,7 +39,7 @@ public class EncryptToken : IEncryptToken
     /// <param name="jsonEtamp">The JSON string representation of an ETAMP token to be encrypted.</param>
     /// <returns>An ETAMPModel instance containing the encrypted token.</returns>
     /// <exception cref="InvalidOperationException">Thrown if the ETAMP data is invalid.</exception>
-    public virtual ETAMPModel EncryptETAMP(string jsonEtamp)
+    public ETAMPModel EncryptETAMP(string jsonEtamp)
     {
         var model = _structureValidator.IsValidEtampFormat(jsonEtamp);
         ArgumentException.ThrowIfNullOrWhiteSpace(model.Token);

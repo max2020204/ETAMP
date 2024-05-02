@@ -1,6 +1,10 @@
-﻿using ETAMPManagment.Factory.Interfaces;
+﻿#region
+
+using ETAMPManagment.Factory.Interfaces;
 using ETAMPManagment.Models;
 using Newtonsoft.Json;
+
+#endregion
 
 namespace ETAMPManagment.Extensions;
 

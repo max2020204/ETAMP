@@ -1,17 +1,21 @@
-﻿using System.Text;
+﻿#region
+
+using System.Text;
 using ETAMPManagment.Encryption;
 using ETAMPManagment.Encryption.Interfaces;
 using Microsoft.IdentityModel.Tokens;
 using Moq;
 using Xunit;
 
+#endregion
+
 namespace ETAMPManagment.Services.Tests;
 
 public class EciesEncryptionServiceTests
 {
+    private readonly EciesEncryptionService _eciesEncryptionService;
     private readonly Mock<IEncryptionService> _encryptionServiceMock;
     private readonly Mock<IKeyExchanger> _keyExchangerMock;
-    private readonly EciesEncryptionService _eciesEncryptionService;
 
     public EciesEncryptionServiceTests()
     {

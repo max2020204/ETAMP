@@ -1,7 +1,11 @@
-﻿using System.Security.Cryptography;
+﻿#region
+
+using System.Security.Cryptography;
 using ETAMPManagment.Encryption.ECDsaManager.Interfaces;
 using ETAMPManagment.Services.Interfaces;
 using Microsoft.IdentityModel.Tokens;
+
+#endregion
 
 namespace ETAMPManagment.Services;
 
@@ -11,19 +15,17 @@ namespace ETAMPManagment.Services;
 /// </summary>
 public class ECDsaSigningCredentialsProvider : ISigningCredentialsProvider
 {
+    /// <summary>
+    ///     Provides signing credentials using the ECDsa cryptographic algorithm.
+    ///     This provider facilitates the creation of signing credentials that can be used for digital signatures.
+    /// </summary>
     private readonly ECDsa _ecdsa;
 
     /// <summary>
-    ///     Initializes a new instance of the <see cref="ECDsaSigningCredentialsProvider" /> class using a provider for ECDsa
-    ///     instances and a security algorithm.
-    ///     This constructor allows for the flexible use of an ECDsa instance provided by the <see cref="IECDsaProvider" /> for
-    ///     signing operations.
+    ///     Initializes a new instance of the ECDsaSigningCredentialsProvider class using a provider for ECDsa instances and a
+    ///     security algorithm.
     /// </summary>
     /// <param name="ecdsaProvider">The provider for obtaining an ECDsa instance to use for signing.</param>
-    /// <param name="securityAlgorithm">
-    ///     The security algorithm identifier to use for signing, such as "ES256", "ES384", or
-    ///     "ES512".
-    /// </param>
     public ECDsaSigningCredentialsProvider(IECDsaProvider ecdsaProvider)
     {
         ArgumentNullException.ThrowIfNull(ecdsaProvider);
@@ -32,6 +34,9 @@ public class ECDsaSigningCredentialsProvider : ISigningCredentialsProvider
         SecurityAlgorithm = SecurityAlgorithms.EcdsaSha256Signature;
     }
 
+    /// <summary>
+    ///     Represents the security algorithm used for signing credentials.
+    /// </summary>
     public string SecurityAlgorithm { get; set; }
 
     /// <summary>

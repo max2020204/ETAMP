@@ -1,5 +1,9 @@
-﻿using ETAMPManagment.Models;
+﻿#region
+
+using ETAMPManagment.Models;
 using Microsoft.IdentityModel.Tokens;
+
+#endregion
 
 namespace ETAMPManagment.Validators.Interfaces;
 

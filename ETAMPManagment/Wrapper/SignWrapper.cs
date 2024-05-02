@@ -1,4 +1,6 @@
-﻿using System.Security.Cryptography;
+﻿#region
+
+using System.Security.Cryptography;
 using System.Text;
 using ETAMPManagment.Encryption.ECDsaManager.Interfaces;
 using ETAMPManagment.Models;
@@ -6,12 +8,14 @@ using ETAMPManagment.Wrapper.Interfaces;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 
+#endregion
+
 namespace ETAMPManagment.Wrapper;
 
 /// <summary>
 ///     Signs data using Elliptic Curve Digital Signature Algorithm (ECDsa).
 /// </summary>
-public class SignWrapper : ISignWrapper
+public sealed class SignWrapper : ISignWrapper
 {
     private HashAlgorithmName _algorithmName;
     private ECDsa? _ecdsa;
@@ -44,7 +48,7 @@ public class SignWrapper : ISignWrapper
     ///     Thrown when the input JSON string is null, empty,
     ///     or cannot be deserialized into an ETAMP model.
     /// </exception>
-    public virtual string SignEtamp(string jsonEtamp)
+    public string SignEtamp(string jsonEtamp)
     {
         var etamp = JsonConvert.DeserializeObject<ETAMPModel>(jsonEtamp);
 
@@ -62,7 +66,7 @@ public class SignWrapper : ISignWrapper
     /// </summary>
     /// <param name="etamp">The ETAMP model to be signed.</param>
     /// <returns>A JSON string of the ETAMP data with updated signature fields.</returns>
-    public virtual string SignEtamp(ETAMPModel etamp)
+    public string SignEtamp(ETAMPModel etamp)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(etamp.Token);
 
@@ -77,7 +81,7 @@ public class SignWrapper : ISignWrapper
     /// </summary>
     /// <param name="etamp">The ETAMP model to be signed.</param>
     /// <returns>The ETAMP model with updated signature fields.</returns>
-    public virtual ETAMPModel SignEtampModel(ETAMPModel etamp)
+    public ETAMPModel SignEtampModel(ETAMPModel etamp)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(etamp.Token);
 
@@ -87,6 +91,13 @@ public class SignWrapper : ISignWrapper
         return etamp;
     }
 
+    /// <summary>
+    ///     Signs the provided ETAMP model by encoding and appending a signature token and signature message to it.
+    /// </summary>
+    /// <param name="etamp">The ETAMP model to be signed.</param>
+    /// <returns>The signed ETAMP model as a JSON string.</returns>
+    /// <exception cref="ArgumentNullException">Thrown if <paramref name="etamp" /> is null.</exception>
+    /// <exception cref="ArgumentException">Thrown if the Token property of <paramref name="etamp" /> is null or empty.</exception>
     private byte[] Sign(byte[] data)
     {
         return _ecdsa!.SignData(data, _algorithmName);

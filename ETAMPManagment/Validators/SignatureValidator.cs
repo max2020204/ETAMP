@@ -1,13 +1,17 @@
-﻿using ETAMPManagment.Models;
+﻿#region
+
+using ETAMPManagment.Models;
 using ETAMPManagment.Validators.Interfaces;
 using ETAMPManagment.Wrapper.Interfaces;
+
+#endregion
 
 namespace ETAMPManagment.Validators;
 
 /// <summary>
 ///     Validates ETAMP messages and tokens for authenticity and integrity by verifying their signatures.
 /// </summary>
-public class SignatureValidator : ISignatureValidator
+public sealed class SignatureValidator : ISignatureValidator
 {
     private readonly IStructureValidator _structureValidator;
     private readonly IVerifyWrapper _verifyWrapper;
@@ -32,7 +36,7 @@ public class SignatureValidator : ISignatureValidator
     /// <param name="etamp">The ETAMP message as a JSON string.</param>
     /// <returns>True if the message signature is valid, false otherwise.</returns>
     /// <exception cref="InvalidOperationException">Thrown if IStructureValidator is not initialized.</exception>
-    public virtual bool ValidateETAMPMessage(string etamp)
+    public bool ValidateETAMPMessage(string etamp)
     {
         var model = _structureValidator.IsValidEtampFormat(etamp);
         ArgumentException.ThrowIfNullOrEmpty(model.SignatureMessage);
@@ -49,7 +53,7 @@ public class SignatureValidator : ISignatureValidator
     /// </summary>
     /// <param name="etamp">The ETAMP message as an ETAMPModel.</param>
     /// <returns>True if the message signature is valid, false otherwise.</returns>
-    public virtual bool ValidateETAMPMessage(ETAMPModel etamp)
+    public bool ValidateETAMPMessage(ETAMPModel etamp)
     {
         return _verifyWrapper.VerifyData(
             $"{etamp.Id}{etamp.Version}{etamp.Token}{etamp.UpdateType}{etamp.SignatureToken}", etamp.SignatureMessage);
@@ -61,7 +65,7 @@ public class SignatureValidator : ISignatureValidator
     /// <param name="token">The token to validate.</param>
     /// <param name="tokenSignature">The signature of the token.</param>
     /// <returns>True if the token signature is valid, false otherwise.</returns>
-    public virtual bool ValidateToken(string token, string tokenSignature)
+    public bool ValidateToken(string token, string tokenSignature)
     {
         return _verifyWrapper.VerifyData(token, tokenSignature);
     }

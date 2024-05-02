@@ -1,7 +1,11 @@
-﻿using System.Security.Cryptography;
+﻿#region
+
+using System.Security.Cryptography;
 using System.Text;
 using ETAMPManagment.Encryption;
 using Xunit;
+
+#endregion
 
 namespace ETAMPManagmentTests.Encryption;
 

@@ -1,14 +1,18 @@
-﻿using System.IdentityModel.Tokens.Jwt;
+﻿#region
+
+using System.IdentityModel.Tokens.Jwt;
 using ETAMPManagment.Models;
 using ETAMPManagment.Validators.Interfaces;
 using Newtonsoft.Json;
+
+#endregion
 
 namespace ETAMPManagment.Validators;
 
 /// <summary>
 ///     Validates the structure of ETAMP messages and tokens to ensure their conformity to expected formats and standards.
 /// </summary>
-public class StructureValidator : IStructureValidator
+public sealed class StructureValidator : IStructureValidator
 {
     private readonly IJwtValidator _jwtValidator;
 
@@ -27,7 +31,7 @@ public class StructureValidator : IStructureValidator
     ///     Thrown when the ETAMP string is invalid or cannot be deserialized into an ETAMP
     ///     model.
     /// </exception>
-    public virtual ETAMPModel IsValidEtampFormat(string etamp)
+    public ETAMPModel IsValidEtampFormat(string etamp)
     {
         ArgumentException.ThrowIfNullOrEmpty(etamp);
 
@@ -50,7 +54,7 @@ public class StructureValidator : IStructureValidator
     /// </summary>
     /// <param name="etamp">The ETAMP string to validate.</param>
     /// <returns>A ValidationResult indicating whether the ETAMP structure is valid.</returns>
-    public virtual ValidationResult ValidateETAMPStructure(string etamp)
+    public ValidationResult ValidateETAMPStructure(string etamp)
     {
         var model = IsValidEtampFormat(etamp);
         if (model == null ||
@@ -68,7 +72,7 @@ public class StructureValidator : IStructureValidator
     /// </summary>
     /// <param name="model">The ETAMP model to validate.</param>
     /// <returns>A ValidationResult indicating whether the ETAMP model structure is valid.</returns>
-    public virtual ValidationResult ValidateETAMPStructure(ETAMPModel model)
+    public ValidationResult ValidateETAMPStructure(ETAMPModel model)
     {
         if (model == null ||
             model.Id == Guid.Empty ||
@@ -86,7 +90,7 @@ public class StructureValidator : IStructureValidator
     /// </summary>
     /// <param name="etamp">The ETAMP string to validate.</param>
     /// <returns>A ValidationResult indicating whether the simplified ETAMP structure is valid.</returns>
-    public virtual ValidationResult ValidateETAMPStructureLite(string etamp)
+    public ValidationResult ValidateETAMPStructureLite(string etamp)
     {
         var model = IsValidEtampFormat(etamp);
         if (model == null ||
@@ -102,7 +106,7 @@ public class StructureValidator : IStructureValidator
     /// </summary>
     /// <param name="model">The ETAMP model to validate.</param>
     /// <returns>A ValidationResult indicating whether the simplified ETAMP model structure is valid.</returns>
-    public virtual ValidationResult ValidateETAMPStructureLite(ETAMPModel model)
+    public ValidationResult ValidateETAMPStructureLite(ETAMPModel model)
     {
         if (model == null ||
             model.Id == Guid.Empty ||
@@ -119,7 +123,7 @@ public class StructureValidator : IStructureValidator
     /// <param name="etamp">The ETAMP string to validate.</param>
     /// <returns>True if the ETAMP ID is consistent, false otherwise.</returns>
     /// <exception cref="InvalidOperationException">Thrown when the JWT validator is not initialized.</exception>
-    public virtual bool ValidateIdConsistency(string etamp)
+    public bool ValidateIdConsistency(string etamp)
     {
         var model = IsValidEtampFormat(etamp);
         if (_jwtValidator.IsValidJwtToken(model.Token).IsValid)

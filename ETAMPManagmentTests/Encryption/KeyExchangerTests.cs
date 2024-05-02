@@ -1,15 +1,19 @@
-﻿using System.Security.Cryptography;
+﻿#region
+
+using System.Security.Cryptography;
 using ETAMPManagment.Encryption.Interfaces;
 using Moq;
 using Xunit;
+
+#endregion
 
 namespace ETAMPManagment.Encryption.Tests;
 
 public class KeyExchangerTests
 {
+    private readonly Mock<ECDiffieHellman> _eCDiffieHellmanMock;
     private readonly KeyExchanger _exchanger;
     private readonly Mock<IKeyPairProvider> _keyProviderMock;
-    private readonly Mock<ECDiffieHellman> _eCDiffieHellmanMock;
 
     public KeyExchangerTests()
     {

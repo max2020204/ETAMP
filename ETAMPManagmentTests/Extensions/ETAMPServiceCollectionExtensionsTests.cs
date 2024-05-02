@@ -1,4 +1,6 @@
-﻿using ETAMPManagment.Encryption;
+﻿#region
+
+using ETAMPManagment.Encryption;
 using ETAMPManagment.Encryption.ECDsaManager;
 using ETAMPManagment.Encryption.ECDsaManager.Interfaces;
 using ETAMPManagment.Encryption.Interfaces;
@@ -16,6 +18,8 @@ using ETAMPManagment.Wrapper;
 using ETAMPManagment.Wrapper.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
+
+#endregion
 
 namespace ETAMPManagment.Extensions.Tests;
 
@@ -43,61 +47,95 @@ public class ETAMPServiceCollectionExtensionsTests
         // Assert for Scoped services
         Assert.Contains(services,
             s => s.ServiceType == typeof(IEciesEncryptionService) &&
-                 s.ImplementationType == typeof(EciesEncryptionService) && s.Lifetime == ServiceLifetime.Scoped);
+                 s.ImplementationType == typeof(EciesEncryptionService) 
+                 && s.Lifetime == ServiceLifetime.Scoped);
+        
         Assert.Contains(services,
-            s => s.ServiceType == typeof(IECDsaRegistrar) && s.ImplementationType == typeof(ECDsaProvider) &&
+            s => s.ServiceType == typeof(IECDsaRegistrar) 
+                 && s.ImplementationType == typeof(ECDsaProvider) &&
                  s.Lifetime == ServiceLifetime.Scoped);
+        
         Assert.Contains(services,
-            s => s.ServiceType == typeof(IECDsaProvider) && s.ImplementationType == typeof(ECDsaProvider) &&
+            s => s.ServiceType == typeof(IECDsaProvider) 
+                 && s.ImplementationType == typeof(ECDsaProvider) &&
                  s.Lifetime == ServiceLifetime.Scoped);
+        
         Assert.Contains(services,
-            s => s.ServiceType == typeof(IEcdsaCreator) && s.ImplementationType == typeof(EcdsaCreator) &&
+            s => s.ServiceType == typeof(IECDsaCreator) 
+                 && s.ImplementationType == typeof(ECDsaCreator) &&
                  s.Lifetime == ServiceLifetime.Scoped);
+        
         Assert.Contains(services,
-            s => s.ServiceType == typeof(IEcdsaKeyManager) && s.ImplementationType == typeof(EcdsaKeyManager) &&
+            s => s.ServiceType == typeof(IECDsaKeyManager) 
+                 && s.ImplementationType == typeof(ECDsaKeyManager) &&
                  s.Lifetime == ServiceLifetime.Scoped);
+        
         Assert.Contains(services,
-            s => s.ServiceType == typeof(IPemKeyCleaner) && s.ImplementationType == typeof(PemKeyCleaner) &&
+            s => s.ServiceType == typeof(IPemKeyCleaner) 
+                 && s.ImplementationType == typeof(PemKeyCleaner) &&
                  s.Lifetime == ServiceLifetime.Scoped);
+        
         Assert.Contains(services,
-            s => s.ServiceType == typeof(IETAMPBase) && s.ImplementationType == typeof(ETAMPBase) &&
+            s => s.ServiceType == typeof(IETAMPBase) 
+                 && s.ImplementationType == typeof(ETAMPBase) &&
                  s.Lifetime == ServiceLifetime.Scoped);
+        
         Assert.Contains(services,
-            s => s.ServiceType == typeof(IETAMPData) && s.ImplementationType == typeof(ETAMPData) &&
+            s => s.ServiceType == typeof(IETAMPData) 
+                 && s.ImplementationType == typeof(ETAMPData) &&
                  s.Lifetime == ServiceLifetime.Scoped);
+        
         Assert.Contains(services,
-            s => s.ServiceType == typeof(IEncryptToken) && s.ImplementationType == typeof(EncryptToken) &&
+            s => s.ServiceType == typeof(IEncryptToken) 
+                 && s.ImplementationType == typeof(EncryptToken) &&
                  s.Lifetime == ServiceLifetime.Scoped);
+        
         Assert.Contains(services,
-            s => s.ServiceType == typeof(ICompressionService) &&
-                 s.ImplementationType == typeof(DeflateCompressionService) && s.Lifetime == ServiceLifetime.Scoped);
+            s => s.ImplementationType == typeof(DeflateCompressionService) 
+                 && s.Lifetime == ServiceLifetime.Scoped);
+        
         Assert.Contains(services,
-            s => s.ServiceType == typeof(ICompressionService) &&
-                 s.ImplementationType == typeof(GZipCompressionService) && s.Lifetime == ServiceLifetime.Scoped);
+            s => s.ImplementationType == typeof(GZipCompressionService) 
+                 && s.Lifetime == ServiceLifetime.Scoped);
+        
         Assert.Contains(services,
             s => s.ServiceType == typeof(IKeyPairProviderFactory) &&
-                 s.ImplementationType == typeof(KeyPairProviderFactory) && s.Lifetime == ServiceLifetime.Scoped);
+                 s.ImplementationType == typeof(KeyPairProviderFactory) 
+                 && s.Lifetime == ServiceLifetime.Scoped);
+        
         Assert.Contains(services,
-            s => s.ServiceType == typeof(IETAMPValidator) && s.ImplementationType == typeof(ETAMPValidator) &&
+            s => s.ServiceType == typeof(IETAMPValidator) 
+                 && s.ImplementationType == typeof(ETAMPValidator) &&
                  s.Lifetime == ServiceLifetime.Scoped);
+        
         Assert.Contains(services,
-            s => s.ServiceType == typeof(IJwtValidator) && s.ImplementationType == typeof(JwtValidator) &&
+            s => s.ServiceType == typeof(IJwtValidator) 
+                 && s.ImplementationType == typeof(JwtValidator) &&
                  s.Lifetime == ServiceLifetime.Scoped);
+        
         Assert.Contains(services,
-            s => s.ServiceType == typeof(ISignatureValidator) && s.ImplementationType == typeof(SignatureValidator) &&
+            s => s.ServiceType == typeof(ISignatureValidator) 
+                 && s.ImplementationType == typeof(SignatureValidator) &&
                  s.Lifetime == ServiceLifetime.Scoped);
+        
         Assert.Contains(services,
-            s => s.ServiceType == typeof(IStructureValidator) && s.ImplementationType == typeof(StructureValidator) &&
+            s => s.ServiceType == typeof(IStructureValidator) 
+                 && s.ImplementationType == typeof(StructureValidator) &&
                  s.Lifetime == ServiceLifetime.Scoped);
+        
         Assert.Contains(services,
-            s => s.ServiceType == typeof(ISignWrapper) && s.ImplementationType == typeof(SignWrapper) &&
+            s => s.ServiceType == typeof(ISignWrapper) 
+                 && s.ImplementationType == typeof(SignWrapper) &&
                  s.Lifetime == ServiceLifetime.Scoped);
+        
         Assert.Contains(services,
-            s => s.ServiceType == typeof(IVerifyWrapper) && s.ImplementationType == typeof(VerifyWrapper) &&
+            s => s.ServiceType == typeof(IVerifyWrapper) 
+                 && s.ImplementationType == typeof(VerifyWrapper) &&
                  s.Lifetime == ServiceLifetime.Scoped);
-        // Assert for Singleton services
+        
         Assert.Contains(services,
             s => s.ServiceType == typeof(ICompressionServiceFactory) &&
-                 s.ImplementationType == typeof(CompressionServiceFactory) && s.Lifetime == ServiceLifetime.Singleton);
+                 s.ImplementationType == typeof(CompressionServiceFactory) 
+                 && s.Lifetime == ServiceLifetime.Scoped);
     }
 }

@@ -1,4 +1,8 @@
-﻿using ETAMPManagment.Models;
+﻿#region
+
+using ETAMPManagment.Models;
+
+#endregion
 
 namespace ETAMPManagmentTests.Models;
 

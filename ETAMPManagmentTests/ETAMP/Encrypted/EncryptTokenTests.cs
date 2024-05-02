@@ -1,8 +1,12 @@
-﻿using ETAMPManagment.Encryption.Interfaces;
+﻿#region
+
+using ETAMPManagment.Encryption.Interfaces;
 using ETAMPManagment.Models;
 using ETAMPManagment.Validators.Interfaces;
 using Moq;
 using Xunit;
+
+#endregion
 
 namespace ETAMPManagment.ETAMP.Encrypted.Tests;
 
@@ -10,7 +14,6 @@ public class EncryptTokenTests
 {
     private readonly Mock<IEciesEncryptionService> _eciesEncryptionServiceMock;
     private readonly EncryptToken _encryptToken;
-    private readonly string _expectedEncryptedToken;
     private readonly ETAMPModel _expectedModel;
     private readonly string _jsonEtampInvalid;
     private readonly string _jsonEtampValid;
@@ -25,14 +28,14 @@ public class EncryptTokenTests
         _jsonEtampValid = "{\"token\":\"example\"}";
         _jsonEtampInvalid = "{\"invalid\":\"data\"}";
         _expectedModel = new ETAMPModel { Token = "encryptedToken" };
-        _expectedEncryptedToken = "encryptedToken";
+        var expectedEncryptedToken = "encryptedToken";
 
         _structureValidatorMock.Setup(m => m.IsValidEtampFormat(_jsonEtampValid))
             .Returns(new ETAMPModel { Token = "example" });
         _structureValidatorMock.Setup(m => m.IsValidEtampFormat(_jsonEtampInvalid))
             .Returns((ETAMPModel model) => model);
         _eciesEncryptionServiceMock.Setup(m => m.Encrypt(It.IsAny<string>()))
-            .Returns(_expectedEncryptedToken);
+            .Returns(expectedEncryptedToken);
     }
 
     [Fact]

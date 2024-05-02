@@ -1,4 +1,6 @@
-﻿using System.IdentityModel.Tokens.Jwt;
+﻿#region
+
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Cryptography;
 using ETAMPManagment.Encryption.ECDsaManager.Interfaces;
 using ETAMPManagment.Models;
@@ -7,6 +9,8 @@ using ETAMPManagment.Services.Interfaces;
 using Microsoft.IdentityModel.Tokens;
 using Moq;
 using Xunit;
+
+#endregion
 
 namespace ETAMPManagment.ETAMP.Base.Tests;
 

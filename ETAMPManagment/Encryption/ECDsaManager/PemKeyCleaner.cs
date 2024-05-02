@@ -1,5 +1,9 @@
-﻿using ETAMPManagment.Encryption.ECDsaManager.Interfaces;
+﻿#region
+
+using ETAMPManagment.Encryption.ECDsaManager.Interfaces;
 using ETAMPManagment.Models;
+
+#endregion
 
 namespace ETAMPManagment.Encryption.ECDsaManager;
 

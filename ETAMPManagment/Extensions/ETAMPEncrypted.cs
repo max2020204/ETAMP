@@ -1,5 +1,9 @@
-﻿using ETAMPManagment.Encryption.Interfaces;
+﻿#region
+
+using ETAMPManagment.Encryption.Interfaces;
 using ETAMPManagment.Models;
+
+#endregion
 
 namespace ETAMPManagment.Extensions;
 
@@ -9,27 +13,11 @@ namespace ETAMPManagment.Extensions;
 public static class ETAMPEncrypted
 {
     /// <summary>
-    ///     Encrypts the token within an ETAMPModel instance using the provided ECIES encryption service.
+    ///     Encrypts the token in the ETAMPModel using the provided IEciesEncryptionService.
     /// </summary>
-    /// <param name="model">
-    ///     The ETAMPModel instance whose token is to be encrypted. This model must already contain a valid
-    ///     token.
-    /// </param>
-    /// <param name="eciesEncryptionService">
-    ///     The encryption service used to encrypt the token. The service must implement the
-    ///     IEciesEncryptionService interface.
-    /// </param>
-    /// <returns>
-    ///     The ETAMPModel instance with the encrypted token. The original model is modified in-place, and the same
-    ///     reference is returned.
-    /// </returns>
-    /// <exception cref="ArgumentException">Thrown if the token in the model is null or whitespace.</exception>
-    /// <exception cref="ArgumentNullException">Thrown if the provided ECIES encryption service is null.</exception>
-    /// <remarks>
-    ///     This method extends the ETAMPModel to include encryption of its token, providing an additional layer of security by
-    ///     ensuring that the token contents are not readable without proper decryption. This is particularly useful in
-    ///     scenarios where sensitive information needs to be securely transmitted over unsecured channels.
-    /// </remarks>
+    /// <param name="model">The ETAMPModel instance.</param>
+    /// <param name="eciesEncryptionService">The IEciesEncryptionService instance used for encryption.</param>
+    /// <returns>The ETAMPModel instance with the encrypted token.</returns>
     public static ETAMPModel EncryptToken(this ETAMPModel model, IEciesEncryptionService eciesEncryptionService)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(model.Token);

@@ -1,5 +1,9 @@
-﻿using System.Security.Cryptography;
+﻿#region
+
+using System.Security.Cryptography;
 using ETAMPManagment.Encryption.ECDsaManager.Interfaces;
+
+#endregion
 
 namespace ETAMPManagment.Encryption.ECDsaManager;
 
@@ -29,7 +33,7 @@ public class ECDsaProvider : IECDsaProvider, IECDsaRegistrar
     /// </summary>
     /// <param name="ecdsa">The ECDsa instance to register.</param>
     /// <returns>The provider itself, allowing for method chaining.</returns>
-    public IECDsaProvider RegisterEcdsa(ECDsa ecdsa)
+    public IECDsaProvider RegisterECDsa(ECDsa ecdsa)
     {
         _ecdsa = ecdsa;
         return this;

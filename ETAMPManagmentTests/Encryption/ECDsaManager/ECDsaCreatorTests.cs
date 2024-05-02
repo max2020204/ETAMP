@@ -1,17 +1,21 @@
-﻿using System.Security.Cryptography;
+﻿#region
+
+using System.Security.Cryptography;
 using ETAMPManagment.Encryption.ECDsaManager.Interfaces;
 using Moq;
 using Xunit;
 
+#endregion
+
 namespace ETAMPManagment.Encryption.ECDsaManager.Tests;
 
-public class EcdsaCreatorTests
+public class ECDsaCreatorTests
 {
     [Fact]
     public void CreateECDsa_ShouldRegisterAndReturnProvider()
     {
         var registrar = new ECDsaProvider();
-        var creator = new EcdsaCreator(registrar);
+        var creator = new ECDsaCreator(registrar);
 
         var provider = creator.CreateECDsa();
 
@@ -22,7 +26,7 @@ public class EcdsaCreatorTests
     public void CreateECDsa_WithCurve_ShouldRegisterAndReturnProvider()
     {
         var registrar = new ECDsaProvider();
-        var creator = new EcdsaCreator(registrar);
+        var creator = new ECDsaCreator(registrar);
         var curve = ECCurve.NamedCurves.nistP256;
 
         var provider = creator.CreateECDsa(curve);
@@ -35,7 +39,7 @@ public class EcdsaCreatorTests
     {
         // Arrange
         var mockRegistrar = new Mock<IECDsaRegistrar>();
-        var creator = new EcdsaCreator(mockRegistrar.Object);
+        var creator = new ECDsaCreator(mockRegistrar.Object);
         var ecdsa = ECDsa.Create();
         var publicKey = ecdsa.ExportSubjectPublicKeyInfoPem().Replace("-----BEGIN PUBLIC KEY-----", "")
             .Replace("-----END PUBLIC KEY-----", "")
@@ -43,12 +47,12 @@ public class EcdsaCreatorTests
             .Replace("\r", "");
         var curve = ECCurve.NamedCurves.nistP256;
 
-        mockRegistrar.Setup(r => r.RegisterEcdsa(It.IsAny<ECDsa>()))
+        mockRegistrar.Setup(r => r.RegisterECDsa(It.IsAny<ECDsa>()))
             .Returns(new ECDsaProvider());
 
         var result = creator.CreateECDsa(publicKey, curve);
 
-        mockRegistrar.Verify(r => r.RegisterEcdsa(It.IsAny<ECDsa>()), Times.Once);
+        mockRegistrar.Verify(r => r.RegisterECDsa(It.IsAny<ECDsa>()), Times.Once);
         Assert.NotNull(result);
     }
 
@@ -56,17 +60,17 @@ public class EcdsaCreatorTests
     public void CreateECDsa_WithPublicKeyByteArray_ShouldRegisterECDsa()
     {
         var mockRegistrar = new Mock<IECDsaRegistrar>();
-        var creator = new EcdsaCreator(mockRegistrar.Object);
+        var creator = new ECDsaCreator(mockRegistrar.Object);
         var ecdsa = ECDsa.Create();
         var publicKey = ecdsa.ExportSubjectPublicKeyInfo();
         var curve = ECCurve.NamedCurves.nistP256;
 
-        mockRegistrar.Setup(r => r.RegisterEcdsa(It.IsAny<ECDsa>()))
+        mockRegistrar.Setup(r => r.RegisterECDsa(It.IsAny<ECDsa>()))
             .Returns(new ECDsaProvider());
 
         var result = creator.CreateECDsa(publicKey, curve);
 
-        mockRegistrar.Verify(r => r.RegisterEcdsa(It.IsAny<ECDsa>()), Times.Once);
+        mockRegistrar.Verify(r => r.RegisterECDsa(It.IsAny<ECDsa>()), Times.Once);
         Assert.NotNull(result);
     }
 }

@@ -1,7 +1,11 @@
-﻿using ETAMPManagment.Encryption;
+﻿#region
+
+using ETAMPManagment.Encryption;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using Xunit;
+
+#endregion
 
 namespace ETAMPManagment.Factory.Tests;
 

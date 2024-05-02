@@ -1,7 +1,11 @@
-﻿using ETAMPManagment.Encryption.Interfaces;
+﻿#region
+
+using ETAMPManagment.Encryption.Interfaces;
 using ETAMPManagment.Models;
 using Moq;
 using Xunit;
+
+#endregion
 
 namespace ETAMPManagment.Extensions.Tests;
 

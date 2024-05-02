@@ -1,29 +1,31 @@
-﻿using System.Security.Cryptography;
+﻿#region
+
+using System.Security.Cryptography;
 using System.Text;
 using ETAMPManagment.Encryption.ECDsaManager.Interfaces;
 using Moq;
 using Xunit;
+
+#endregion
 
 namespace ETAMPManagment.Wrapper.Tests;
 
 public class VerifyWrapperTests
 {
     private readonly string _data = "testdata";
-    private readonly Mock<IECDsaProvider> _providerMock;
-    private readonly ECDsa _ecdsa;
     private readonly byte[] _signature;
     private readonly VerifyWrapper _verifyWrapper;
 
     public VerifyWrapperTests()
     {
-        _providerMock = new Mock<IECDsaProvider>();
-        _ecdsa = ECDsa.Create(ECCurve.NamedCurves.nistP256);
+        Mock<IECDsaProvider> providerMock = new();
+        var ecdsa = ECDsa.Create(ECCurve.NamedCurves.nistP256);
 
-        _providerMock.Setup(x => x.GetECDsa()).Returns(_ecdsa);
+        providerMock.Setup(x => x.GetECDsa()).Returns(ecdsa);
 
         _verifyWrapper = new VerifyWrapper();
-        _verifyWrapper.Initialize(_providerMock.Object, HashAlgorithmName.SHA256);
-        _signature = _ecdsa.SignData(Encoding.UTF8.GetBytes(_data), HashAlgorithmName.SHA256);
+        _verifyWrapper.Initialize(providerMock.Object, HashAlgorithmName.SHA256);
+        _signature = ecdsa.SignData(Encoding.UTF8.GetBytes(_data), HashAlgorithmName.SHA256);
     }
 
     [Fact]

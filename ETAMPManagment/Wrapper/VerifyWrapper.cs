@@ -1,12 +1,16 @@
-﻿using System.Security.Cryptography;
+﻿#region
+
+using System.Security.Cryptography;
 using System.Text;
 using ETAMPManagment.Encryption.ECDsaManager.Interfaces;
 using ETAMPManagment.Wrapper.Interfaces;
 
+#endregion
+
 namespace ETAMPManagment.Wrapper;
 
 /// <summary>
-///     Provides cryptographic verification using ECDSA, supporting both string and byte array data formats.
+///     Provides cryptographic verification using ECDsa, supporting both string and byte array data formats.
 /// </summary>
 /// >
 public sealed class VerifyWrapper : IVerifyWrapper

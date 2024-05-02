@@ -1,9 +1,13 @@
-﻿using ETAMPManagment.Managment;
+﻿#region
+
+using ETAMPManagment.Managment;
 using ETAMPManagment.Services;
 using ETAMPManagment.Services.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using Xunit;
+
+#endregion
 
 namespace ETAMPManagment.Factory.Tests;
 

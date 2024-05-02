@@ -1,6 +1,10 @@
-﻿using ETAMPManagment.Models;
+﻿#region
+
+using ETAMPManagment.Models;
 using ETAMPManagment.Validators.Interfaces;
 using Microsoft.IdentityModel.Tokens;
+
+#endregion
 
 namespace ETAMPManagment.Validators;
 
@@ -10,7 +14,7 @@ namespace ETAMPManagment.Validators;
 /// <param name="jwtValidator">Validator for JWT token attributes.</param>
 /// <param name="structureValidator">Validator for ETAMP token structure.</param>
 /// <param name="signatureValidator">Validator for token and message signatures.</param>
-public class ETAMPValidator(
+public sealed class ETAMPValidator(
     IJwtValidator jwtValidator,
     IStructureValidator structureValidator,
     ISignatureValidator signatureValidator) : IETAMPValidator
@@ -23,7 +27,7 @@ public class ETAMPValidator(
     /// <param name="issuer">Expected issuer claim.</param>
     /// <param name="tokenSecurityKey">ECDsa security key for signature verification.</param>
     /// <returns>True if the ETAMP token is valid; otherwise, false.</returns>
-    public virtual async Task<bool> ValidateETAMP(ETAMPModel etamp, string audience, string issuer,
+    public async Task<bool> ValidateETAMP(ETAMPModel etamp, string audience, string issuer,
         ECDsaSecurityKey tokenSecurityKey)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(etamp.Token);
@@ -43,7 +47,7 @@ public class ETAMPValidator(
     /// <param name="etamp">ETAMP token model to validate.</param>
     /// <param name="tokenSecurityKey">ECDsa security key for lifetime validation.</param>
     /// <returns>True if the ETAMP token is valid; otherwise, false.</returns>
-    public virtual async Task<bool> ValidateETAMP(ETAMPModel etamp, ECDsaSecurityKey tokenSecurityKey)
+    public async Task<bool> ValidateETAMP(ETAMPModel etamp, ECDsaSecurityKey tokenSecurityKey)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(etamp.Token);
         ArgumentException.ThrowIfNullOrWhiteSpace(etamp.SignatureToken);
@@ -62,7 +66,7 @@ public class ETAMPValidator(
     /// <param name="etamp">ETAMP token model to validate.</param>
     /// <param name="tokenSecurityKey">ECDsa security key for lifetime validation.</param>
     /// <returns>True if the basic structure and lifetime of the ETAMP token are valid; otherwise, false.</returns>
-    public virtual async Task<bool> ValidateETAMPLite(ETAMPModel etamp, ECDsaSecurityKey tokenSecurityKey)
+    public async Task<bool> ValidateETAMPLite(ETAMPModel etamp, ECDsaSecurityKey tokenSecurityKey)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(etamp.Token);
         return new List<bool>

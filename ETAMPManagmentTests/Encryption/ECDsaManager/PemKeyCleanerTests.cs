@@ -1,6 +1,11 @@
-﻿using Xunit;
+﻿#region
 
-namespace ETAMPManagment.Encryption.ECDsaManager.Tests;
+using ETAMPManagment.Encryption.ECDsaManager;
+using Xunit;
+
+#endregion
+
+namespace ETAMPManagment.Encryption.ECDSAManager.Tests;
 
 public class PemKeyCleanerTests
 {

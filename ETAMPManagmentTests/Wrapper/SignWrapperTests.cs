@@ -1,9 +1,13 @@
-﻿using System.Security.Cryptography;
+﻿#region
+
+using System.Security.Cryptography;
 using ETAMPManagment.Encryption.ECDsaManager.Interfaces;
 using ETAMPManagment.Models;
 using Moq;
 using Newtonsoft.Json;
 using Xunit;
+
+#endregion
 
 namespace ETAMPManagment.Wrapper.Tests;
 

@@ -1,4 +1,8 @@
-﻿using ETAMPManagment.Encryption.Interfaces;
+﻿#region
+
+using ETAMPManagment.Encryption.Interfaces;
+
+#endregion
 
 namespace ETAMPManagment.Factory.Interfaces;
 

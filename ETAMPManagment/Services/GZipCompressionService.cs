@@ -1,14 +1,18 @@
-﻿using System.IO.Compression;
+﻿#region
+
+using System.IO.Compression;
 using System.Text;
 using ETAMPManagment.Services.Interfaces;
 using Microsoft.IdentityModel.Tokens;
+
+#endregion
 
 namespace ETAMPManagment.Services;
 
 /// <summary>
 ///     Provides methods for compressing and decompressing strings using GZip algorithm and Base64 URL encoding.
 /// </summary>
-public class GZipCompressionService : ICompressionService
+public sealed class GZipCompressionService : ICompressionService
 {
     /// <summary>
     ///     Compresses the specified string using GZip compression and then encodes the compressed bytes to a Base64
@@ -23,7 +27,7 @@ public class GZipCompressionService : ICompressionService
     ///     URL-encoded string
     ///     to ensure safe transmission and storage in environments that support only text data.
     /// </remarks>
-    public virtual string CompressString(string data)
+    public string CompressString(string data)
     {
         ArgumentException.ThrowIfNullOrEmpty(data);
         var bytes = Encoding.UTF8.GetBytes(data);
@@ -49,7 +53,7 @@ public class GZipCompressionService : ICompressionService
     ///     and then decompressing the data using the GZip algorithm. It restores the original string data,
     ///     making it suitable for use where the original data needs to be recovered from a compressed format.
     /// </remarks>
-    public virtual string DecompressString(string base64CompressedData)
+    public string DecompressString(string base64CompressedData)
     {
         ArgumentException.ThrowIfNullOrEmpty(base64CompressedData);
         var compressedBytes = Base64UrlEncoder.DecodeBytes(base64CompressedData);
@@ -60,6 +64,7 @@ public class GZipCompressionService : ICompressionService
         {
             gzipStream.CopyTo(outputStream);
         }
+
         outputStream.Position = 0;
         var decompressedBytes = outputStream.ToArray();
 

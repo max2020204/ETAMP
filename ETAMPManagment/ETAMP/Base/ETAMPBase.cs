@@ -1,25 +1,36 @@
-﻿using ETAMPManagment.ETAMP.Base.Interfaces;
+﻿#region
+
+using ETAMPManagment.ETAMP.Base.Interfaces;
 using ETAMPManagment.Models;
 using ETAMPManagment.Services.Interfaces;
+
+#endregion
 
 namespace ETAMPManagment.ETAMP.Base;
 
 /// <summary>
-///     Provides a base implementation for generating ETAMP payloads and managing digital signatures.
-///     This class integrates ETAMP data handling and digital signature management to facilitate the creation of ETAMP
-///     models with optional custom signing mechanisms.
+///     This class represents the base implementation of the ETAMP (Encrypted Token And Message Protocol) functionality.
 /// </summary>
-public class ETAMPBase : IETAMPBase
+public sealed class ETAMPBase : IETAMPBase
 {
+    /// <summary>
+    ///     Represents the ETAMP data processing for creating digitally signed ETAMP token data.
+    /// </summary>
+    /// <remarks>
+    ///     This class provides the functionality to create ETAMP tokens and models,
+    ///     supporting dynamic encryption and digital signing capabilities.
+    /// </remarks>
     private readonly IETAMPData _etampData;
-    private readonly ISigningCredentialsProvider _signingCredentialsProvider;
 
     /// <summary>
-    ///     Initializes a new instance of the <see cref="ETAMPBase" /> class using the provided signing credentials provider
-    ///     and ETAMP data handler.
+    ///     Represents a provider for creating signing credentials used in the authentication process.
     /// </summary>
-    /// <param name="signingCredentialsProvider">The default provider for creating signing credentials.</param>
-    /// <param name="etampData">The handler responsible for creating ETAMP token data.</param>
+    private readonly ISigningCredentialsProvider _signingCredentialsProvider;
+
+
+    /// <summary>
+    ///     Represents the ETAMPBase class.
+    /// </summary>
     public ETAMPBase(ISigningCredentialsProvider signingCredentialsProvider, IETAMPData etampData)
     {
         _signingCredentialsProvider = signingCredentialsProvider ??
@@ -27,23 +38,17 @@ public class ETAMPBase : IETAMPBase
         _etampData = etampData ?? throw new ArgumentNullException(nameof(etampData));
     }
 
+
     /// <summary>
-    ///     Creates an ETAMP model with the specified details. This method allows specifying an alternative signing credentials
-    ///     provider to be used for this specific model creation.
+    ///     Creates an ETAMPModel based on the specified update type, payload, version, and signing credentials provider.
     /// </summary>
-    /// <typeparam name="T">The payload type to be included in the ETAMP model.</typeparam>
-    /// <param name="updateType">The update type identifier for the ETAMP model, describing the nature of the update.</param>
-    /// <param name="payload">The payload for the ETAMP model.</param>
-    /// <param name="version">
-    ///     The ETAMP protocol version, defaulting to 1. Specifies the version of the protocol to ensure
-    ///     compatibility.
-    /// </param>
-    /// <param name="provider">
-    ///     Optional. An alternative provider for signing credentials. If not provided, the default provider
-    ///     is used.
-    /// </param>
-    /// <returns>An ETAMP model instance containing the digitally signed payload.</returns>
-    public virtual ETAMPModel CreateETAMPModel<T>(string updateType, T payload, double version = 1,
+    /// <typeparam name="T">The type of the payload.</typeparam>
+    /// <param name="updateType">The update type.</param>
+    /// <param name="payload">The payload.</param>
+    /// <param name="version">The version of the ETAMPModel. Default is 1.</param>
+    /// <param name="provider">The signing credentials provider. Optional.</param>
+    /// <returns>An instance of the ETAMPModel class.</returns>
+    public ETAMPModel CreateETAMPModel<T>(string updateType, T payload, double version = 1,
         ISigningCredentialsProvider? provider = null) where T : BasePayload
     {
         var credentialsProvider = provider ?? _signingCredentialsProvider;

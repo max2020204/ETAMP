@@ -1,6 +1,10 @@
-﻿using System.Security.Cryptography;
+﻿#region
+
+using System.Security.Cryptography;
 using Microsoft.IdentityModel.Tokens;
 using Xunit;
+
+#endregion
 
 namespace ETAMPManagment.Validators.Tests;
 

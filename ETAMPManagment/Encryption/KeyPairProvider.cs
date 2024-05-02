@@ -1,19 +1,28 @@
-﻿using System.Security.Cryptography;
+﻿#region
+
+using System.Security.Cryptography;
 using ETAMPManagment.Encryption.Interfaces;
+using ETAMPManagment.Helper;
 using ETAMPManagment.Models;
+
+#endregion
 
 namespace ETAMPManagment.Encryption;
 
 /// <summary>
-///     Provides an implementation for managing Elliptic Curve Diffie-Hellman (ECDH) key pairs and facilitating
-///     cryptographic operations.
+///     Provides key pair generation and management for ECDiffieHellman encryption.
 /// </summary>
-public sealed class KeyPairProvider : IKeyPairProvider
+public sealed class KeyPairProvider : InitializeBase, IKeyPairProvider
 {
+    /// <summary>
+    ///     The variable _eCDiffieHellman is an instance of the ECDiffieHellman class used for managing Elliptic Curve
+    ///     Diffie-Hellman (ECDH) key pairs and facilitating access to their components, including the public and private keys.
+    ///     This variable is part of the KeyPairProvider class that implements the IKeyPairProvider interface.
+    /// </summary>
     private ECDiffieHellman _eCDiffieHellman;
 
     /// <summary>
-    ///     Initializes a new instance of the KeyPairProvider class, creating a new ECDiffieHellman key pair.
+    ///     Represents a provider that manages asymmetric key pairs using the ECDiffieHellman algorithm.
     /// </summary>
     public KeyPairProvider()
     {
@@ -22,20 +31,24 @@ public sealed class KeyPairProvider : IKeyPairProvider
     }
 
     /// <summary>
-    ///     Provides access to the model provider which contains the public and private keys.
+    ///     Represents a provider for managing key models.
     /// </summary>
-    public ECDKeyModelProvider KeyModelProvider { get; private set; }
+    public ECDKeyModelProvider? KeyModelProvider { get; private set; }
 
     /// <summary>
-    ///     Gets the public key component of the ECDH key pair, allowing for public key exchange operations.
+    ///     Represents the public key of the Elliptic Curve Diffie-Hellman (ECDH) key pair.
     /// </summary>
+    /// <remarks>
+    ///     This property provides access to the public key component of an ECDH key pair.
+    ///     The public key is used for key exchange with another party in a cryptographic operation.
+    /// </remarks>
     public ECDiffieHellmanPublicKey HellmanPublicKey => _eCDiffieHellman.PublicKey;
 
     /// <summary>
-    ///     Initializes the provider with a specific ECDiffieHellman instance, allowing for custom configuration
+    ///     Initializes the provider with a specific <see cref="ECDiffieHellman" /> instance, allowing for custom configuration
     ///     and use of an existing ECDiffieHellman instance for cryptographic operations.
     /// </summary>
-    /// <param name="eCDiffieHellman">An existing instance of ECDiffieHellman for cryptographic operations.</param>
+    /// <param name="eCDiffieHellman">An existing instance of ECDiffieHellman to be used by the provider.</param>
     public void Initialize(ECDiffieHellman eCDiffieHellman)
     {
         _eCDiffieHellman = eCDiffieHellman ?? throw new ArgumentNullException(nameof(eCDiffieHellman));
@@ -43,9 +56,9 @@ public sealed class KeyPairProvider : IKeyPairProvider
     }
 
     /// <summary>
-    ///     Provides access to the underlying ECDiffieHellman instance for advanced cryptographic operations.
+    ///     Gets the <see cref="ECDiffieHellman" /> instance used for key exchange.
     /// </summary>
-    /// <returns>The ECDiffieHellman instance used by this provider.</returns>
+    /// <returns>The <see cref="ECDiffieHellman" /> instance.</returns>
     public ECDiffieHellman GetECDiffieHellman()
     {
         return _eCDiffieHellman;
@@ -58,7 +71,6 @@ public sealed class KeyPairProvider : IKeyPairProvider
     public void ImportPrivateKey(byte[] privateKey)
     {
         ArgumentNullException.ThrowIfNull(privateKey);
-
         _eCDiffieHellman.ImportPkcs8PrivateKey(privateKey, out _);
         InitializeKeys();
     }
@@ -86,6 +98,18 @@ public sealed class KeyPairProvider : IKeyPairProvider
         _eCDiffieHellman.Dispose();
     }
 
+    /// <summary>
+    ///     Initializes the key pair provider by generating new key pair or importing existing keys.
+    /// </summary>
+    /// <remarks>
+    ///     This method initializes the KeyPairProvider by generating a new key pair using the ECDiffieHellman algorithm
+    ///     if no existing ECDiffieHellman instance is provided. If an existing ECDiffieHellman instance is provided,
+    ///     it initializes the KeyPairProvider by importing the provided ECDiffieHellman instance.
+    /// </remarks>
+    /// <param name="eCDiffieHellman">
+    ///     The existing ECDiffieHellman instance to be imported. If null, a new key pair will be
+    ///     generated.
+    /// </param>
     private void InitializeKeys()
     {
         KeyModelProvider = new ECDKeyModelProvider

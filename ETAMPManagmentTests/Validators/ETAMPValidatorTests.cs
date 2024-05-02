@@ -1,9 +1,13 @@
-﻿using System.Security.Cryptography;
+﻿#region
+
+using System.Security.Cryptography;
 using ETAMPManagment.Models;
 using ETAMPManagment.Validators.Interfaces;
 using Microsoft.IdentityModel.Tokens;
 using Moq;
 using Xunit;
+
+#endregion
 
 namespace ETAMPManagment.Validators.Tests;
 

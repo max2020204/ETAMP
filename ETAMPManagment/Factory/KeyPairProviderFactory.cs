@@ -1,7 +1,11 @@
-﻿using ETAMPManagment.Encryption;
+﻿#region
+
+using ETAMPManagment.Encryption;
 using ETAMPManagment.Encryption.Interfaces;
 using ETAMPManagment.Factory.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
+
+#endregion
 
 namespace ETAMPManagment.Factory;
 
@@ -10,7 +14,7 @@ namespace ETAMPManagment.Factory;
 ///     This factory utilizes the ActivatorUtilities class to create new instances of KeyPairProvider,
 ///     allowing for dependency injection in the created instances.
 /// </summary>
-public class KeyPairProviderFactory : IKeyPairProviderFactory
+public sealed class KeyPairProviderFactory : IKeyPairProviderFactory
 {
     private readonly IServiceProvider _serviceProvider;
 
@@ -28,7 +32,7 @@ public class KeyPairProviderFactory : IKeyPairProviderFactory
     ///     Creates a new instance of <see cref="KeyPairProvider" /> using the registered services in the service provider.
     /// </summary>
     /// <returns>A new instance of <see cref="KeyPairProvider" />.</returns>
-    public virtual IKeyPairProvider CreateInstance()
+    public IKeyPairProvider CreateInstance()
     {
         return ActivatorUtilities.CreateInstance<KeyPairProvider>(_serviceProvider);
     }

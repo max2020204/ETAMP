@@ -1,4 +1,8 @@
-﻿using Microsoft.IdentityModel.Tokens;
+﻿#region
+
+using Microsoft.IdentityModel.Tokens;
+
+#endregion
 
 namespace ETAMPManagment.Services.Interfaces;
 

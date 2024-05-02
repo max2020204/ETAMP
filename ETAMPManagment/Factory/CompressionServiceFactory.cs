@@ -1,9 +1,13 @@
-﻿using System.Collections.Concurrent;
+﻿#region
+
+using System.Collections.Concurrent;
 using ETAMPManagment.Factory.Interfaces;
 using ETAMPManagment.Managment;
 using ETAMPManagment.Services;
 using ETAMPManagment.Services.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
+
+#endregion
 
 namespace ETAMPManagment.Factory;
 
@@ -11,7 +15,7 @@ namespace ETAMPManagment.Factory;
 ///     Factory for creating compression service instances based on the specified compression type.
 ///     Utilizes the service provider to resolve the requested compression service dynamically at runtime.
 /// </summary>
-public class CompressionServiceFactory : ICompressionServiceFactory
+public sealed class CompressionServiceFactory : ICompressionServiceFactory
 {
     /// <summary>
     ///     Initializes a new instance of the <see cref="CompressionServiceFactory" /> class.
@@ -39,7 +43,7 @@ public class CompressionServiceFactory : ICompressionServiceFactory
     /// </param>
     /// <returns>An instance of the requested compression service.</returns>
     /// <exception cref="KeyNotFoundException">Thrown if the specified compression type is not recognized or supported.</exception>
-    public virtual ICompressionService Create(string compressionType)
+    public ICompressionService Create(string compressionType)
     {
         if (Factory.TryGetValue(compressionType, out var serviceFactory)) return serviceFactory;
 

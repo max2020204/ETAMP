@@ -1,14 +1,18 @@
-﻿using System.IO.Compression;
+﻿#region
+
+using System.IO.Compression;
 using System.Text;
 using ETAMPManagment.Services.Interfaces;
 using Microsoft.IdentityModel.Tokens;
+
+#endregion
 
 namespace ETAMPManagment.Services;
 
 /// <summary>
 ///     Provides methods for compressing and decompressing strings using Deflate algorithm and Base64 URL encoding.
 /// </summary>
-public class DeflateCompressionService : ICompressionService
+public sealed class DeflateCompressionService : ICompressionService
 {
     /// <summary>
     ///     Compresses the given string using Deflate compression and then encodes the compressed bytes to a Base64 URL-encoded
@@ -20,13 +24,13 @@ public class DeflateCompressionService : ICompressionService
     ///     This method is useful for reducing the size of string data and making it safe for transmission over URL-friendly
     ///     environments.
     /// </remarks>
-    public virtual string CompressString(string data)
+    public string CompressString(string data)
     {
         ArgumentException.ThrowIfNullOrEmpty(data);
         var inputBytes = Encoding.UTF8.GetBytes(data);
 
         using var output = new MemoryStream();
-        using (var compressor = new DeflateStream(output, CompressionMode.Compress, leaveOpen: true))
+        using (var compressor = new DeflateStream(output, CompressionMode.Compress, true))
         {
             compressor.Write(inputBytes, 0, inputBytes.Length);
         }
@@ -44,7 +48,7 @@ public class DeflateCompressionService : ICompressionService
     ///     This method reverses the compression and encoding done by <see cref="CompressString" />, restoring the original
     ///     string data.
     /// </remarks>
-    public virtual string DecompressString(string base64CompressedData)
+    public string DecompressString(string base64CompressedData)
     {
         ArgumentException.ThrowIfNullOrEmpty(base64CompressedData);
         var inputBytes = Base64UrlEncoder.DecodeBytes(base64CompressedData);
@@ -55,6 +59,7 @@ public class DeflateCompressionService : ICompressionService
         {
             decompressor.CopyTo(outputStream);
         }
+
         outputStream.Position = 0;
         var outputBytes = outputStream.ToArray();
 

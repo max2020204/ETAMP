@@ -1,4 +1,6 @@
-﻿using ETAMPManagment.Encryption;
+﻿#region
+
+using ETAMPManagment.Encryption;
 using ETAMPManagment.Encryption.ECDsaManager;
 using ETAMPManagment.Encryption.ECDsaManager.Interfaces;
 using ETAMPManagment.Encryption.Interfaces;
@@ -15,6 +17,8 @@ using ETAMPManagment.Validators.Interfaces;
 using ETAMPManagment.Wrapper;
 using ETAMPManagment.Wrapper.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
+
+#endregion
 
 namespace ETAMPManagment.Extensions;
 
@@ -40,8 +44,8 @@ public static class ETAMPServiceCollectionExtensions
         // Register wrapper services for cryptographic operations
         services.AddScoped<IECDsaRegistrar, ECDsaProvider>();
         services.AddScoped<IECDsaProvider, ECDsaProvider>();
-        services.AddScoped<IEcdsaCreator, EcdsaCreator>();
-        services.AddScoped<IEcdsaKeyManager, EcdsaKeyManager>();
+        services.AddScoped<IECDsaCreator, ECDsaCreator>();
+        services.AddScoped<IECDsaKeyManager, ECDsaKeyManager>();
         services.AddScoped<IPemKeyCleaner, PemKeyCleaner>();
 
         // Register ETAMP processing services
