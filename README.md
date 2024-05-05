@@ -178,7 +178,3 @@ Contributions to ETAMP are welcome! Please fork the repository, make your change
 ## License
 
 ETAMP is licensed under the MIT License. For more information, see the [LICENSE](https://github.com/max2020204/ETAMP/blob/master/LICENSE.txt) file in the repository.
-
----
-
-This README section aims to provide clear and practical insights into integrating and utilizing the ETAMP library, emphasizing its robustness and versatility in handling secure transactions.
