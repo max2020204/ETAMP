@@ -19,7 +19,8 @@ public class ECDsaSigningCredentialsProviderTests
         var algorithm = "ES256";
         var providerMock = new Mock<IECDsaProvider>();
         providerMock.Setup(x => x.GetECDsa()).Returns(ECDsa.Create());
-        var provider = new ECDsaSigningCredentialsProvider(providerMock.Object);
+        var provider = new ECDsaSigningCredentialsProvider();
+        provider.Initialize(providerMock.Object);
         provider.SecurityAlgorithm = algorithm;
 
         var signingCredentials = provider.CreateSigningCredentials();

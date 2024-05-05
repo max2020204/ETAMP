@@ -37,9 +37,10 @@ public class ETAMPDataTests
 
     private string GenerateToken(string ecdsaAlgorithm)
     {
-        var ecdsa = new ECDsaSigningCredentialsProvider(_providerMock.Object);
+        var ecdsa = new ECDsaSigningCredentialsProvider();
+        ecdsa.Initialize(_providerMock.Object);
         ecdsa.SecurityAlgorithm = ecdsaAlgorithm;
-        _signMock.Setup(x => x.CreateSigningCredentials())
+        _signMock.Setup(x => x.CreateSigningCredentials(false))
             .Returns(ecdsa.CreateSigningCredentials());
 
         var data = new ETAMPData(_signMock.Object);

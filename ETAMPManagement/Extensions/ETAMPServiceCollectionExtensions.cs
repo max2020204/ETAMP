@@ -39,6 +39,7 @@ public static class ETAMPServiceCollectionExtensions
         services.AddTransient<IKeyPairProvider, KeyPairProvider>();
 
         // Register cryptographic services
+        services.AddScoped<IEncryptionService, AesEncryptionService>();
         services.AddScoped<IEciesEncryptionService, EciesEncryptionService>();
 
         // Register wrapper services for cryptographic operations
