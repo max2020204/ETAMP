@@ -3,9 +3,9 @@
 using System.Security.Cryptography;
 using System.Text;
 using ETAMPManagement.Encryption.ECDsaManager.Interfaces;
+using ETAMPManagement.Helper;
 using ETAMPManagement.Models;
 using ETAMPManagement.Wrapper.Interfaces;
-using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 
 #endregion
@@ -40,64 +40,23 @@ public sealed class SignWrapper : ISignWrapper
     }
 
     /// <summary>
-    ///     Signs the ETAMP data given as a JSON string and updates its signature fields.
+    ///     SignEtampModel method signs an ETAMPModel instance and updates the signature fields.
     /// </summary>
-    /// <param name="jsonEtamp">The ETAMP data in JSON format.</param>
-    /// <returns>A JSON string of the ETAMP data with updated signature fields.</returns>
-    /// <exception cref="ArgumentNullException">
-    ///     Thrown when the input JSON string is null, empty,
-    ///     or cannot be deserialized into an ETAMP model.
-    /// </exception>
-    public string SignEtamp(string jsonEtamp)
+    /// <typeparam name="T">The type of the token.</typeparam>
+    /// <param name="etamp">The ETAMPModel instance to sign.</param>
+    /// <returns>The signed ETAMPModel instance.</returns>
+    /// <exception cref="ArgumentException">Thrown if etamp.Token is null.</exception>
+    public ETAMPModel<T> SignEtampModel<T>(ETAMPModel<T> etamp) where T : Token
     {
-        var etamp = JsonConvert.DeserializeObject<ETAMPModel>(jsonEtamp);
+        if (etamp.Token == null) throw new ArgumentException(nameof(etamp.Token));
 
-        ArgumentNullException.ThrowIfNull(etamp);
-        ArgumentException.ThrowIfNullOrEmpty(etamp.Token);
-
-        etamp.SignatureToken = Base64UrlEncoder.Encode(Sign(Encoding.UTF8.GetBytes(etamp.Token)));
-        etamp.SignatureMessage = Base64UrlEncoder.Encode(Sign(
-            Encoding.UTF8.GetBytes($"{etamp.Id}{etamp.Version}{etamp.Token}{etamp.UpdateType}{etamp.SignatureToken}")));
-        return JsonConvert.SerializeObject(etamp);
-    }
-
-    /// <summary>
-    ///     Signs the ETAMP model and updates its signature fields.
-    /// </summary>
-    /// <param name="etamp">The ETAMP model to be signed.</param>
-    /// <returns>A JSON string of the ETAMP data with updated signature fields.</returns>
-    public string SignEtamp(ETAMPModel etamp)
-    {
-        ArgumentException.ThrowIfNullOrWhiteSpace(etamp.Token);
-
-        etamp.SignatureToken = Base64UrlEncoder.Encode(Sign(Encoding.UTF8.GetBytes(etamp.Token)));
-        etamp.SignatureMessage = Base64UrlEncoder.Encode(Sign(
-            Encoding.UTF8.GetBytes($"{etamp.Id}{etamp.Version}{etamp.Token}{etamp.UpdateType}{etamp.SignatureToken}")));
-        return JsonConvert.SerializeObject(etamp);
-    }
-
-    /// <summary>
-    ///     Signs the ETAMP model and returns the model with updated signature fields.
-    /// </summary>
-    /// <param name="etamp">The ETAMP model to be signed.</param>
-    /// <returns>The ETAMP model with updated signature fields.</returns>
-    public ETAMPModel SignEtampModel(ETAMPModel etamp)
-    {
-        ArgumentException.ThrowIfNullOrWhiteSpace(etamp.Token);
-
-        etamp.SignatureToken = Base64UrlEncoder.Encode(Sign(Encoding.UTF8.GetBytes(etamp.Token)));
+        etamp.SignatureToken =
+            Base64UrlEncoder.Encode(Sign(Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(etamp.Token))));
         etamp.SignatureMessage = Base64UrlEncoder.Encode(Sign(
             Encoding.UTF8.GetBytes($"{etamp.Id}{etamp.Version}{etamp.Token}{etamp.UpdateType}{etamp.SignatureToken}")));
         return etamp;
     }
 
-    /// <summary>
-    ///     Signs the provided ETAMP model by encoding and appending a signature token and signature message to it.
-    /// </summary>
-    /// <param name="etamp">The ETAMP model to be signed.</param>
-    /// <returns>The signed ETAMP model as a JSON string.</returns>
-    /// <exception cref="ArgumentNullException">Thrown if <paramref name="etamp" /> is null.</exception>
-    /// <exception cref="ArgumentException">Thrown if the Token property of <paramref name="etamp" /> is null or empty.</exception>
     private byte[] Sign(byte[] data)
     {
         return _ecdsa!.SignData(data, _algorithmName);

@@ -12,11 +12,12 @@ namespace ETAMPManagement.Wrapper.Interfaces;
 /// </summary>
 public interface IVerifyWrapper : IDisposable
 {
-    /// Initializes the verifier with an ECDsa instance and a hash algorithm.
-    /// This method should be called before performing any verification operations.
+    /// <summary>
+    ///     Initializes the <see cref="VerifyWrapper" /> with an ECDsa instance and a hash algorithm.
+    ///     This method should be called before performing any verification operations.
     /// </summary>
-    /// <param name="ecdsaProvider">The provider for obtaining the ECDsa instance.</param>
-    /// <param name="algorithm">The hash algorithm to use for signature verification.</param>
+    /// <param name="ecdsaProvider">The provider to obtain the ECDsa instance.</param>
+    /// <param name="algorithm">The hashing algorithm for verification.</param>
     void Initialize(IECDsaProvider ecdsaProvider, HashAlgorithmName algorithm);
 
     /// <summary>

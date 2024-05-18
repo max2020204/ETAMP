@@ -30,9 +30,9 @@ public class PemKeyCleaner : IPemKeyCleaner
     /// </summary>
     /// <param name="privateKey">The private key string with PEM formatting.</param>
     /// <returns>The current instance of <see cref="PemKeyCleaner" />, allowing for method chaining.</returns>
-    public IPemKeyCleaner ClearPEMPrivateKey(string privateKey)
+    public IPemKeyCleaner ClearPemPrivateKey(string privateKey)
     {
-        KeyModelProvider.PrivateKey = ClearPEMFormatting(privateKey);
+        KeyModelProvider.PrivateKey = ClearPemFormatting(privateKey);
         return this;
     }
 
@@ -41,9 +41,9 @@ public class PemKeyCleaner : IPemKeyCleaner
     /// </summary>
     /// <param name="publicKey">The public key string with PEM formatting.</param>
     /// <returns>The current instance of <see cref="PemKeyCleaner" />, allowing for method chaining.</returns>
-    public IPemKeyCleaner ClearPEMPublicKey(string publicKey)
+    public IPemKeyCleaner ClearPemPublicKey(string publicKey)
     {
-        KeyModelProvider.PublicKey = ClearPEMFormatting(publicKey);
+        KeyModelProvider.PublicKey = ClearPemFormatting(publicKey);
         return this;
     }
 
@@ -52,7 +52,7 @@ public class PemKeyCleaner : IPemKeyCleaner
     /// </summary>
     /// <param name="key">The key string with PEM formatting.</param>
     /// <returns>A string representing the key without PEM headers and footers.</returns>
-    private static string ClearPEMFormatting(string key)
+    private static string ClearPemFormatting(string key)
     {
         return key.Replace("-----BEGIN PRIVATE KEY-----", "")
             .Replace("-----END PRIVATE KEY-----", "")

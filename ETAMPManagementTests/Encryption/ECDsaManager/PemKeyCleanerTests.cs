@@ -15,7 +15,7 @@ public class PemKeyCleanerTests
         var cleaner = new PemKeyCleaner();
         var privateKeyWithPEM = "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqh...\r-----END PRIVATE KEY-----";
 
-        cleaner.ClearPEMPrivateKey(privateKeyWithPEM);
+        cleaner.ClearPemPrivateKey(privateKeyWithPEM);
 
         Assert.DoesNotContain("-----BEGIN PRIVATE KEY-----", cleaner.KeyModelProvider.PrivateKey);
         Assert.DoesNotContain("-----END PRIVATE KEY-----", cleaner.KeyModelProvider.PrivateKey);
@@ -30,7 +30,7 @@ public class PemKeyCleanerTests
         var publicKeyWithPEM =
             "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8A...\r-----END PUBLIC KEY-----";
 
-        cleaner.ClearPEMPublicKey(publicKeyWithPEM);
+        cleaner.ClearPemPublicKey(publicKeyWithPEM);
 
         Assert.DoesNotContain("-----BEGIN PUBLIC KEY-----", cleaner.KeyModelProvider.PublicKey);
         Assert.DoesNotContain("-----END PUBLIC KEY-----", cleaner.KeyModelProvider.PublicKey);
@@ -44,7 +44,7 @@ public class PemKeyCleanerTests
         var cleaner = new PemKeyCleaner();
         var privateKeyWithPEM = "some key";
 
-        var result = cleaner.ClearPEMPrivateKey(privateKeyWithPEM);
+        var result = cleaner.ClearPemPrivateKey(privateKeyWithPEM);
 
         Assert.Same(cleaner, result);
     }
@@ -55,7 +55,7 @@ public class PemKeyCleanerTests
         var cleaner = new PemKeyCleaner();
         var publicKeyWithPEM = "some key";
 
-        var result = cleaner.ClearPEMPublicKey(publicKeyWithPEM);
+        var result = cleaner.ClearPemPublicKey(publicKeyWithPEM);
 
         Assert.Same(cleaner, result);
     }

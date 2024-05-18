@@ -50,7 +50,7 @@ public class AesEncryptionService : IEncryptionService
         aes.Key = key;
         aes.IV = iv;
 
-        using var decryptor = aes.CreateDecryptor();
-        return decryptor.TransformFinalBlock(data, 0, data.Length);
+        using var decrypt = aes.CreateDecryptor();
+        return decrypt.TransformFinalBlock(data, 0, data.Length);
     }
 }

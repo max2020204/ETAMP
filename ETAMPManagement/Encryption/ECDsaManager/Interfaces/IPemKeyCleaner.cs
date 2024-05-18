@@ -22,12 +22,12 @@ public interface IPemKeyCleaner
     /// </summary>
     /// <param name="privateKey">The private key in PEM format to be cleaned.</param>
     /// <returns>An instance of <see cref="IPemKeyCleaner" /> to allow method chaining.</returns>
-    IPemKeyCleaner ClearPEMPrivateKey(string privateKey);
+    IPemKeyCleaner ClearPemPrivateKey(string privateKey);
 
     /// <summary>
     ///     Removes PEM formatting from a public key, converting it into a format suitable for cryptographic operations.
     /// </summary>
     /// <param name="publicKey">The public key in PEM format to be cleaned.</param>
     /// <returns>An instance of <see cref="IPemKeyCleaner" /> to allow method chaining.</returns>
-    IPemKeyCleaner ClearPEMPublicKey(string publicKey);
+    IPemKeyCleaner ClearPemPublicKey(string publicKey);
 }

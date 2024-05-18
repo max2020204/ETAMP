@@ -3,7 +3,7 @@
 using System.Text;
 using ETAMPManagement.Encryption;
 using ETAMPManagement.Encryption.Interfaces;
-using Microsoft.IdentityModel.Tokens;
+using ETAMPManagement.Helper;
 using Moq;
 using Xunit;
 
@@ -24,7 +24,7 @@ public class EciesEncryptionServiceTests
         _eciesEncryptionService = new EciesEncryptionService();
         _eciesEncryptionService.Initialize(_keyExchangerMock.Object, _encryptionServiceMock.Object);
     }
-    
+
     [Fact]
     public void Encrypt_ShouldReturnEncryptedMessage()
     {
@@ -43,7 +43,7 @@ public class EciesEncryptionServiceTests
         // Assert
         Assert.Equal(Base64UrlEncoder.Encode(encryptedData), result);
     }
-    
+
 
     [Fact]
     public void Decrypt_ShouldReturnDecryptedMessage()

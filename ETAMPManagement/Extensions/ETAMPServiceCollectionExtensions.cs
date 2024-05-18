@@ -1,17 +1,15 @@
 ﻿#region
 
+using ETAMPManagement.Codec;
 using ETAMPManagement.Encryption;
 using ETAMPManagement.Encryption.ECDsaManager;
 using ETAMPManagement.Encryption.ECDsaManager.Interfaces;
 using ETAMPManagement.Encryption.Interfaces;
-using ETAMPManagement.ETAMP.Base;
-using ETAMPManagement.ETAMP.Base.Interfaces;
-using ETAMPManagement.ETAMP.Encrypted;
-using ETAMPManagement.ETAMP.Encrypted.Interfaces;
+using ETAMPManagement.ETAMP;
+using ETAMPManagement.ETAMP.Interfaces;
 using ETAMPManagement.Factory;
 using ETAMPManagement.Factory.Interfaces;
-using ETAMPManagement.Services;
-using ETAMPManagement.Services.Interfaces;
+using ETAMPManagement.Helper;
 using ETAMPManagement.Validators;
 using ETAMPManagement.Validators.Interfaces;
 using ETAMPManagement.Wrapper;
@@ -51,10 +49,7 @@ public static class ETAMPServiceCollectionExtensions
 
         // Register ETAMP processing services
         services.AddScoped<IETAMPBase, ETAMPBase>();
-        services.AddScoped<IETAMPData, ETAMPData>();
 
-        // Register token and encryption services
-        services.AddScoped<IEncryptToken, EncryptToken>();
 
         // Register compression services
         services.AddScoped<DeflateCompressionService>();
@@ -65,14 +60,19 @@ public static class ETAMPServiceCollectionExtensions
         services.AddScoped<IKeyPairProviderFactory, KeyPairProviderFactory>();
 
         // Register signing and validation services
-        services.AddTransient<ISigningCredentialsProvider, ECDsaSigningCredentialsProvider>();
         services.AddScoped<IETAMPValidator, ETAMPValidator>();
-        services.AddScoped<IJwtValidator, JwtValidator>();
         services.AddScoped<ISignatureValidator, SignatureValidator>();
         services.AddScoped<IStructureValidator, StructureValidator>();
 
         services.AddScoped<ISignWrapper, SignWrapper>();
         services.AddScoped<IVerifyWrapper, VerifyWrapper>();
+
+        services.AddSingleton<VersionInfo>(_ =>
+        {
+            var versionInfo = new VersionInfo();
+            versionInfo.GetVersionInfo();
+            return versionInfo;
+        });
 
         return services;
     }

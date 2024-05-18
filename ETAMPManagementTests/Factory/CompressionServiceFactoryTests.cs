@@ -1,9 +1,9 @@
 ﻿#region
 
+using ETAMPManagement.Codec;
+using ETAMPManagement.Codec.Interfaces;
 using ETAMPManagement.Factory;
 using ETAMPManagement.Managment;
-using ETAMPManagement.Services;
-using ETAMPManagement.Services.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using Xunit;

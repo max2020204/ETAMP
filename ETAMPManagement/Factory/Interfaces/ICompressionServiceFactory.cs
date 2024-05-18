@@ -1,7 +1,7 @@
 ﻿#region
 
 using System.Collections.Concurrent;
-using ETAMPManagement.Services.Interfaces;
+using ETAMPManagement.Codec.Interfaces;
 
 #endregion
 
@@ -27,6 +27,7 @@ public interface ICompressionServiceFactory
     /// <returns>An instance of <see cref="ICompressionService" /> that corresponds to the specified compression type.</returns>
     ICompressionService Create(string compressionType);
 
+
     /// <summary>
     ///     Registers a new compression service under a specified compression type.
     /// </summary>
@@ -34,7 +35,7 @@ public interface ICompressionServiceFactory
     /// <param name="serviceFactory">The compression service instance to be registered.</param>
     /// <exception cref="ArgumentNullException">
     ///     Thrown if either <paramref name="compressionType" /> or
-    ///     <paramref name="service" /> is null.
+    ///     <paramref name="serviceFactory" /> is null.
     /// </exception>
     void RegisterCompressionService(string compressionType, ICompressionService serviceFactory);
 

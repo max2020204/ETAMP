@@ -9,19 +9,24 @@ using ETAMPManagement.Wrapper.Interfaces;
 namespace ETAMPManagement.Validators;
 
 /// <summary>
-///     Validates ETAMP messages and tokens for authenticity and integrity by verifying their signatures.
+///     Validates the signature of ETAMP messages.
 /// </summary>
 public sealed class SignatureValidator : ISignatureValidator
 {
+    /// <summary>
+    ///     Validates the structure and consistency of ETAMP tokens and models.
+    /// </summary>
     private readonly IStructureValidator _structureValidator;
+
+    /// <summary>
+    ///     This class is responsible for validating signatures in ETAMP messages.
+    /// </summary>
     private readonly IVerifyWrapper _verifyWrapper;
 
     /// <summary>
-    ///     Initializes a new instance of the SignatureValidator class with specified verify and structure validators.
+    ///     SignatureValidator is a class that implements the ISignatureValidator interface.
+    ///     It is responsible for validating signatures in ETAMP messages.
     /// </summary>
-    /// <param name="verifyWrapper">The verify wrapper used for signature verification.</param>
-    /// <param name="structureValidator">The structure validator used for ETAMP message structure validation.</param>
-    /// <exception cref="ArgumentNullException">Thrown if either verifyWrapper or structureValidator is null.</exception>
     public SignatureValidator(IVerifyWrapper verifyWrapper, IStructureValidator structureValidator)
     {
         _verifyWrapper = verifyWrapper
@@ -31,40 +36,32 @@ public sealed class SignatureValidator : ISignatureValidator
     }
 
     /// <summary>
-    ///     Validates the signature of an ETAMP message given as a JSON string.
+    ///     Validates the ETAMP message by verifying its signature.
     /// </summary>
-    /// <param name="etamp">The ETAMP message as a JSON string.</param>
-    /// <returns>True if the message signature is valid, false otherwise.</returns>
-    /// <exception cref="InvalidOperationException">Thrown if IStructureValidator is not initialized.</exception>
-    public bool ValidateETAMPMessage(string etamp)
+    /// <typeparam name="T">The type of the token used in the ETAMP model.</typeparam>
+    /// <param name="etamp">The ETAMP model to be validated.</param>
+    /// <returns>ValidationResult indicating whether the ETAMP message is valid or not.</returns>
+    public ValidationResult ValidateETAMPMessage<T>(ETAMPModel<T> etamp) where T : Token
     {
-        var model = _structureValidator.IsValidEtampFormat(etamp);
-        ArgumentException.ThrowIfNullOrEmpty(model.SignatureMessage);
-        if (_structureValidator.ValidateETAMPStructure(model).IsValid)
-            return _verifyWrapper.VerifyData(
-                $"{model.Id}{model.Version}{model.Token}{model.UpdateType}{model.SignatureToken}",
-                model.SignatureMessage);
+        var structureValidationResult = _structureValidator.ValidateETAMP(etamp);
+        if (!structureValidationResult.IsValid)
+            return new ValidationResult(false, "Invalid ETAMP Model.");
 
-        return false;
+        if (string.IsNullOrWhiteSpace(etamp.SignatureMessage))
+            return new ValidationResult(false, "SignatureMessage is missing in the ETAMP model.");
+
+        var dataToVerify = $"{etamp.Id}{etamp.Version}{etamp.Token}{etamp.UpdateType}{etamp.SignatureToken}";
+        var isVerified = _verifyWrapper.VerifyData(dataToVerify, etamp.SignatureMessage);
+
+        return isVerified ? new ValidationResult(true) : new ValidationResult(false, "Failed to verify data.");
     }
 
     /// <summary>
-    ///     Validates the signature of an ETAMP message provided as an ETAMPModel.
-    /// </summary>
-    /// <param name="etamp">The ETAMP message as an ETAMPModel.</param>
-    /// <returns>True if the message signature is valid, false otherwise.</returns>
-    public bool ValidateETAMPMessage(ETAMPModel etamp)
-    {
-        return _verifyWrapper.VerifyData(
-            $"{etamp.Id}{etamp.Version}{etamp.Token}{etamp.UpdateType}{etamp.SignatureToken}", etamp.SignatureMessage);
-    }
-
-    /// <summary>
-    ///     Validates a token against its signature.
+    ///     Validates the given token and its signature.
     /// </summary>
     /// <param name="token">The token to validate.</param>
     /// <param name="tokenSignature">The signature of the token.</param>
-    /// <returns>True if the token signature is valid, false otherwise.</returns>
+    /// <returns>True if the token and its signature are valid; otherwise, false.</returns>
     public bool ValidateToken(string token, string tokenSignature)
     {
         return _verifyWrapper.VerifyData(token, tokenSignature);

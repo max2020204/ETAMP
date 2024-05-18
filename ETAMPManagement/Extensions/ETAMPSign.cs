@@ -13,13 +13,13 @@ namespace ETAMPManagement.Extensions;
 public static class ETAMPSign
 {
     /// <summary>
-    ///     Signs an ETAMPModel using the provided signature wrapper.
+    ///     Provides functionality to digitally sign an ETAMPModel using a specified signature wrapper.
     /// </summary>
+    /// <typeparam name="T">The type of Token.</typeparam>
     /// <param name="model">The ETAMPModel to be signed.</param>
-    /// <param name="sign">The ISignWrapper used to apply the digital signature to the model.</param>
-    /// <returns>A new ETAMPModel instance that includes the digital signature.</returns>
-    /// <exception cref="ArgumentNullException">Thrown if either <paramref name="model" /> or <paramref name="sign" /> is null.</exception>
-    public static ETAMPModel Sign(this ETAMPModel model, ISignWrapper sign)
+    /// <param name="sign">The instance of ISignWrapper used for signing.</param>
+    /// <returns>The signed ETAMPModel.</returns>
+    public static ETAMPModel<T> Sign<T>(this ETAMPModel<T> model, ISignWrapper sign) where T : Token
     {
         ArgumentNullException.ThrowIfNull(model);
         ArgumentNullException.ThrowIfNull(sign);

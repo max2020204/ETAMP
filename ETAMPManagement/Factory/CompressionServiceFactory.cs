@@ -1,10 +1,10 @@
 ﻿#region
 
 using System.Collections.Concurrent;
+using ETAMPManagement.Codec;
+using ETAMPManagement.Codec.Interfaces;
 using ETAMPManagement.Factory.Interfaces;
 using ETAMPManagement.Managment;
-using ETAMPManagement.Services;
-using ETAMPManagement.Services.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 
 #endregion
@@ -50,6 +50,7 @@ public sealed class CompressionServiceFactory : ICompressionServiceFactory
         throw new KeyNotFoundException($"Compression service '{compressionType}' not recognized.");
     }
 
+
     /// <summary>
     ///     Registers a new compression service under a specified compression type.
     /// </summary>
@@ -57,7 +58,7 @@ public sealed class CompressionServiceFactory : ICompressionServiceFactory
     /// <param name="serviceFactory">The compression service instance to be registered.</param>
     /// <exception cref="ArgumentNullException">
     ///     Thrown if either <paramref name="compressionType" /> or
-    ///     <paramref name="service" /> is null.
+    ///     <paramref name="serviceFactory" /> is null.
     /// </exception>
     public void RegisterCompressionService(string compressionType, ICompressionService serviceFactory)
     {

@@ -16,7 +16,7 @@ public interface IECDsaRegistrar
     ///     Registers an ECDsa instance with the cryptographic provider and returns an associated provider.
     ///     Enables dynamic management of cryptographic operations tailored to specific requirements.
     /// </summary>
-    /// <param name="ECDsa">The ECDsa instance to register, already configured for use.</param>
+    /// <param name="ecdsa">The ECDsa instance to register, already configured for use.</param>
     /// <returns>An IECDsaProvider that manages the registered ECDsa, facilitating access to its cryptographic functionalities.</returns>
-    IECDsaProvider RegisterECDsa(ECDsa ECDsa);
+    IECDsaProvider RegisterECDsa(ECDsa ecdsa);
 }

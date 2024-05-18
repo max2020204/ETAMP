@@ -14,16 +14,16 @@ namespace ETAMPManagement.Extensions;
 public static class Compression
 {
     /// <summary>
-    ///     Compresses the ETAMPModel instance into a compressed string format.
+    ///     Compresses the provided ETAMPModel as a string using the specified compression service factory and compression
+    ///     type.
     /// </summary>
-    /// <param name="model">The ETAMPModel instance to be compressed.</param>
-    /// <param name="compressionServiceFactory">A factory method that creates an instance of ICompressionService.</param>
-    /// <param name="compressionType">The type of compression to be used.</param>
-    /// <returns>A compressed string representation of the ETAMPModel.</returns>
-    /// <exception cref="ArgumentNullException">Thrown if the model, compressionServiceFactory, or compressionType is null.</exception>
-    /// <exception cref="ArgumentException">Thrown if compressionType is whitespace.</exception>
-    public static string Compress(this ETAMPModel model, ICompressionServiceFactory compressionServiceFactory,
-        string compressionType)
+    /// <typeparam name="T">The type of Token in the ETAMPModel.</typeparam>
+    /// <param name="model">The ETAMPModel to compress.</param>
+    /// <param name="compressionServiceFactory">The compression service factory to use.</param>
+    /// <param name="compressionType">The compression type to use.</param>
+    /// <returns>The compressed ETAMPModel as a string.</returns>
+    public static string? Compress<T>(this ETAMPModel<T> model, ICompressionServiceFactory compressionServiceFactory,
+        string compressionType) where T : Token
     {
         ArgumentNullException.ThrowIfNull(model);
         ArgumentNullException.ThrowIfNull(compressionServiceFactory);
@@ -33,20 +33,17 @@ public static class Compression
     }
 
     /// <summary>
-    ///     Decompresses a compressed string into an ETAMPModel instance.
+    ///     Decompresses the provided string as an ETAMPModel using the specified compression service factory and compression
+    ///     type.
     /// </summary>
-    /// <param name="jsonEtamp">The compressed string representation of the ETAMPModel.</param>
-    /// <param name="compressionServiceFactory">A factory method that creates an instance of ICompressionService.</param>
-    /// <param name="compressionType">The type of compression used for the string.</param>
-    /// <returns>The decompressed ETAMPModel instance.</returns>
-    /// <exception cref="ArgumentNullException">
-    ///     Thrown if jsonEtamp, compressionServiceFactory, or compressionType is null or
-    ///     empty.
-    /// </exception>
-    /// <exception cref="ArgumentException">Thrown if jsonEtamp or compressionType is whitespace.</exception>
-    /// <exception cref="InvalidOperationException">Thrown if decompression fails.</exception>
-    public static ETAMPModel Decompress(this string jsonEtamp, ICompressionServiceFactory compressionServiceFactory,
-        string compressionType)
+    /// <typeparam name="T">The type of Token in the ETAMPModel.</typeparam>
+    /// <param name="jsonEtamp">The compressed ETAMPModel as a string.</param>
+    /// <param name="compressionServiceFactory">The compression service factory to use.</param>
+    /// <param name="compressionType">The compression type to use.</param>
+    /// <returns>The decompressed ETAMPModel.</returns>
+    public static ETAMPModel<T> Decompress<T>(this string? jsonEtamp,
+        ICompressionServiceFactory compressionServiceFactory,
+        string compressionType) where T : Token
     {
         ArgumentNullException.ThrowIfNull(compressionServiceFactory);
         ArgumentException.ThrowIfNullOrWhiteSpace(jsonEtamp);
@@ -63,14 +60,7 @@ public static class Compression
             throw new InvalidOperationException("Decompression of the ETAMP string failed.", ex);
         }
 
-        try
-        {
-            return JsonConvert.DeserializeObject<ETAMPModel>(decompressedString)
-                   ?? throw new InvalidOperationException("Decompressed string resulted in a null ETAMPModel.");
-        }
-        catch (JsonException ex)
-        {
-            throw new ArgumentException("The decompressed string is not in a valid JSON format.", jsonEtamp, ex);
-        }
+        return JsonConvert.DeserializeObject<ETAMPModel<T>>(decompressedString)
+               ?? throw new InvalidOperationException("Decompressed string resulted in a null ETAMPModel.");
     }
 }

@@ -10,6 +10,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="JetBrains.Annotations" Version="2023.3.0"/>
         <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0"/>
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.9.0"/>
         <PackageReference Include="Moq" Version="4.20.70"/>
@@ -25,7 +26,11 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\ETAMPManagement\ETAMPManagement.csproj" />
+        <ProjectReference Include="..\ETAMPManagement\ETAMPManagement.csproj"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <Folder Include="Validators\"/>
     </ItemGroup>
 
 </Project>

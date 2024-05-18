@@ -2,77 +2,53 @@
 
 using ETAMPManagement.Models;
 using ETAMPManagement.Validators.Interfaces;
-using Microsoft.IdentityModel.Tokens;
 
 #endregion
 
 namespace ETAMPManagement.Validators;
 
 /// <summary>
-///     Validates ETAMP tokens, combining JWT validation, structural checks, and signature verification.
+///     Class for validating ETAMP objects.
 /// </summary>
-/// <param name="jwtValidator">Validator for JWT token attributes.</param>
-/// <param name="structureValidator">Validator for ETAMP token structure.</param>
-/// <param name="signatureValidator">Validator for token and message signatures.</param>
-public sealed class ETAMPValidator(
-    IJwtValidator jwtValidator,
-    IStructureValidator structureValidator,
-    ISignatureValidator signatureValidator) : IETAMPValidator
+public sealed class ETAMPValidator : IETAMPValidator
 {
+    private readonly ISignatureValidator _signatureValidator;
+    private readonly IStructureValidator _structureValidator;
+    private readonly ITokenValidator _tokenValidator;
+
     /// <summary>
-    ///     Validates an ETAMP token against audience, issuer, and signature requirements.
+    ///     ETAMP Validator class.
     /// </summary>
-    /// <param name="etamp">ETAMP token model to validate.</param>
-    /// <param name="audience">Expected audience claim.</param>
-    /// <param name="issuer">Expected issuer claim.</param>
-    /// <param name="tokenSecurityKey">ECDsa security key for signature verification.</param>
-    /// <returns>True if the ETAMP token is valid; otherwise, false.</returns>
-    public async Task<bool> ValidateETAMP(ETAMPModel etamp, string audience, string issuer,
-        ECDsaSecurityKey tokenSecurityKey)
+    public ETAMPValidator(ITokenValidator tokenValidator, IStructureValidator structureValidator,
+        ISignatureValidator signatureValidator)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(etamp.Token);
-        ArgumentException.ThrowIfNullOrWhiteSpace(etamp.SignatureToken);
-        return new List<bool>
-        {
-            structureValidator.ValidateETAMPStructure(etamp).IsValid,
-            (await jwtValidator.ValidateToken(etamp.Token, audience, issuer, tokenSecurityKey)).IsValid,
-            signatureValidator.ValidateToken(etamp.Token, etamp.SignatureToken),
-            signatureValidator.ValidateETAMPMessage(etamp)
-        }.TrueForAll(x => x);
+        _tokenValidator = tokenValidator;
+        _structureValidator = structureValidator;
+        _signatureValidator = signatureValidator;
     }
 
     /// <summary>
-    ///     Validates the ETAMP token's structure, signature, and lifetime.
+    ///     Validates the ETAMP model.
     /// </summary>
-    /// <param name="etamp">ETAMP token model to validate.</param>
-    /// <param name="tokenSecurityKey">ECDsa security key for lifetime validation.</param>
-    /// <returns>True if the ETAMP token is valid; otherwise, false.</returns>
-    public async Task<bool> ValidateETAMP(ETAMPModel etamp, ECDsaSecurityKey tokenSecurityKey)
+    /// <typeparam name="T">The type of Token.</typeparam>
+    /// <param name="etamp">The ETAMP model to validate.</param>
+    /// <param name="validateLite">Indicates whether to perform lite validation.</param>
+    /// <returns>A ValidationResult indicating the validation result.</returns>
+    public ValidationResult ValidateETAMP<T>(ETAMPModel<T> etamp, bool validateLite) where T : Token
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(etamp.Token);
-        ArgumentException.ThrowIfNullOrWhiteSpace(etamp.SignatureToken);
-        return new List<bool>
-        {
-            structureValidator.ValidateETAMPStructure(etamp).IsValid,
-            (await jwtValidator.ValidateLifeTime(etamp.Token, tokenSecurityKey)).IsValid,
-            signatureValidator.ValidateToken(etamp.Token, etamp.SignatureToken),
-            signatureValidator.ValidateETAMPMessage(etamp)
-        }.TrueForAll(x => x);
-    }
+        var structureValidationResult = _structureValidator.ValidateETAMP(etamp, validateLite);
+        if (!structureValidationResult.IsValid)
+            return structureValidationResult;
 
-    /// <summary>
-    ///     Performs a basic validation of the ETAMP token's structure and lifetime.
-    /// </summary>
-    /// <param name="etamp">ETAMP token model to validate.</param>
-    /// <param name="tokenSecurityKey">ECDsa security key for lifetime validation.</param>
-    /// <returns>True if the basic structure and lifetime of the ETAMP token are valid; otherwise, false.</returns>
-    public async Task<bool> ValidateETAMPLite(ETAMPModel etamp, ECDsaSecurityKey tokenSecurityKey)
-    {
-        ArgumentException.ThrowIfNullOrWhiteSpace(etamp.Token);
-        return new List<bool>
-        {
-            structureValidator.ValidateETAMPStructureLite(etamp).IsValid,
-            (await jwtValidator.ValidateLifeTime(etamp.Token, tokenSecurityKey)).IsValid
-        }.TrueForAll(x => x);
+        var tokenValidationResult = _tokenValidator.ValidateToken(etamp);
+        if (!tokenValidationResult.IsValid)
+            return tokenValidationResult;
+
+
+        var signatureValidationResult = _signatureValidator.ValidateETAMPMessage(etamp);
+
+        return !signatureValidationResult.IsValid
+            ? signatureValidationResult
+            : new ValidationResult(true);
     }
 }

@@ -6,7 +6,7 @@ using ETAMPManagement.Models;
 
 namespace ETAMPManagementTests.Models;
 
-public class Data : BasePayload
+public class Data : Token
 {
     public string? Name { get; set; }
     public string? Surname { get; set; }

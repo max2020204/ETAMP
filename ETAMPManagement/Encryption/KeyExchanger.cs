@@ -16,13 +16,14 @@ public class KeyExchanger : InitializeBase, IKeyExchanger
 {
     private IKeyPairProvider? _keyProvider;
     private byte[]? _sharedSecret;
+
     /// <summary>
     ///     Initializes the key exchanger with a key pair provider for subsequent cryptographic operations.
     /// </summary>
     /// <param name="keyPairProvider">The provider of ECDH key pairs used for deriving shared secrets.</param>
     public void Initialize(IKeyPairProvider keyPairProvider)
     {
-        _init = true;
+        Init = true;
         _keyProvider = keyPairProvider ?? throw new ArgumentNullException(nameof(keyPairProvider));
         _sharedSecret = null;
     }
