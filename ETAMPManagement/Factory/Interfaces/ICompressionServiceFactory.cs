@@ -1,9 +1,5 @@
-﻿#region
-
-using System.Collections.Concurrent;
+﻿using System.Collections.Concurrent;
 using ETAMPManagement.Codec.Interfaces;
-
-#endregion
 
 namespace ETAMPManagement.Factory.Interfaces;
 

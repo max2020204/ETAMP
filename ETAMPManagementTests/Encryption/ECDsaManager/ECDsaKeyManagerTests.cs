@@ -1,12 +1,8 @@
-﻿#region
-
-using System.Security.Cryptography;
+﻿using System.Security.Cryptography;
 using ETAMPManagement.Encryption.ECDsaManager;
 using ETAMPManagement.Encryption.ECDsaManager.Interfaces;
 using Moq;
 using Xunit;
-
-#endregion
 
 namespace ETAMPManagementTests.Encryption.ECDsaManager;
 

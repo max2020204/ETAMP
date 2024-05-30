@@ -1,8 +1,4 @@
-﻿#region
-
-using System.Security.Cryptography;
-
-#endregion
+﻿using System.Security.Cryptography;
 
 namespace ETAMPManagement.Encryption.Interfaces;
 
@@ -11,19 +7,6 @@ namespace ETAMPManagement.Encryption.Interfaces;
 /// </summary>
 public interface IKeyExchanger
 {
-    /// <summary>
-    ///     Retrieves the shared secret generated from the key exchange process.
-    /// </summary>
-    /// <returns>A byte array representing the shared secret.</returns>
-    byte[]? GetSharedSecret();
-
-
-    /// <summary>
-    ///     Initializes the key exchanger with a key pair provider for subsequent cryptographic operations.
-    /// </summary>
-    /// <param name="keyPairProvider">The provider of ECDH key pairs used for deriving shared secrets.</param>
-    void Initialize(IKeyPairProvider keyPairProvider);
-
     /// <summary>
     ///     Derives a key using the hash-based method from the given public key and additional parameters.
     /// </summary>

@@ -1,11 +1,7 @@
-﻿#region
-
-using System.IO.Compression;
+﻿using System.IO.Compression;
 using System.Text;
 using ETAMPManagement.Codec.Interfaces;
 using ETAMPManagement.Helper;
-
-#endregion
 
 namespace ETAMPManagement.Codec;
 

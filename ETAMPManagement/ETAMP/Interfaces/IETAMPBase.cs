@@ -1,8 +1,4 @@
-﻿#region
-
-using ETAMPManagement.Models;
-
-#endregion
+﻿using ETAMPManagement.Models;
 
 namespace ETAMPManagement.ETAMP.Interfaces;
 

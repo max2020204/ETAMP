@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ETAMPManagement", "ETAMPMan
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ETAMPManagementTests", "ETAMPManagementTests\ETAMPManagementTests.csproj", "{1FCB7BA1-1A94-4A54-A330-5229AD883EBD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ETAMPExample", "ETAMPExample\ETAMPExample.csproj", "{070C3998-38BE-4C49-B954-FE1A27284F7C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{1FCB7BA1-1A94-4A54-A330-5229AD883EBD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1FCB7BA1-1A94-4A54-A330-5229AD883EBD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1FCB7BA1-1A94-4A54-A330-5229AD883EBD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{070C3998-38BE-4C49-B954-FE1A27284F7C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{070C3998-38BE-4C49-B954-FE1A27284F7C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{070C3998-38BE-4C49-B954-FE1A27284F7C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{070C3998-38BE-4C49-B954-FE1A27284F7C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,8 +1,4 @@
-﻿#region
-
-using System.Text;
-
-#endregion
+﻿using System.Text;
 
 namespace ETAMPManagement.Helper;
 
@@ -34,13 +30,13 @@ public static class Base64UrlEncoder
     /// </summary>
     /// <param name="inArray">The byte array to be encoded.</param>
     /// <returns>The encoded string.</returns>
-    public static string? Encode(byte[] inArray)
+    public static string Encode(byte[] inArray)
     {
         if (inArray == null || inArray.Length == 0) throw new ArgumentNullException(nameof(inArray));
         return Encode(inArray, 0, inArray.Length);
     }
 
-    private static string? Encode(byte[] inArray, int offset, int length)
+    private static string Encode(byte[] inArray, int offset, int length)
     {
         if (inArray == null) throw new ArgumentNullException(nameof(inArray));
         if (offset < 0 || length < 0 || offset + length > inArray.Length)

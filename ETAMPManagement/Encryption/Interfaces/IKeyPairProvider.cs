@@ -1,11 +1,4 @@
-﻿#region
-
-using System.Security.Cryptography;
-using ETAMPManagement.Models;
-
-#endregion
-
-namespace ETAMPManagement.Encryption.Interfaces;
+﻿namespace ETAMPManagement.Encryption.Interfaces;
 
 /// <summary>
 ///     Defines a contract for managing Elliptic Curve Diffie-Hellman (ECDH) key pairs and facilitates access to their
@@ -15,40 +8,6 @@ namespace ETAMPManagement.Encryption.Interfaces;
 /// </summary>
 public interface IKeyPairProvider : IDisposable
 {
-    /// <summary>
-    ///     Gets the key model provider that contains the private and public keys in PEM format.
-    /// </summary>
-    /// <value>
-    ///     The <see cref="ECDKeyModelProvider" /> that holds the private and public key information.
-    /// </value>
-    ECDKeyModelProvider KeyModelProvider { get; }
-
-    /// <summary>
-    ///     Gets the public key component of the ECDH key pair.
-    /// </summary>
-    /// <value>
-    ///     The public key as an <see cref="ECDiffieHellmanPublicKey" />, which can be used in cryptographic operations
-    ///     such as key agreement or signature verification.
-    /// </value>
-    ECDiffieHellmanPublicKey HellmanPublicKey { get; }
-
-    /// <summary>
-    ///     Retrieves the underlying <see cref="ECDiffieHellman" /> instance representing the ECDH key pair,
-    ///     allowing for direct cryptographic operations such as key exchange.
-    /// </summary>
-    /// <returns>
-    ///     An <see cref="ECDiffieHellman" /> instance representing the ECDH key pair, suitable for cryptographic
-    ///     operations.
-    /// </returns>
-    ECDiffieHellman GetECDiffieHellman();
-
-    /// <summary>
-    ///     Initializes the provider with a specific <see cref="ECDiffieHellman" /> instance, allowing for custom configuration
-    ///     and use of an existing ECDiffieHellman instance for cryptographic operations.
-    /// </summary>
-    /// <param name="eCDiffieHellman">An existing instance of ECDiffieHellman to be used by the provider.</param>
-    void Initialize(ECDiffieHellman eCDiffieHellman);
-
     /// <summary>
     ///     Imports a private key into the ECDH key pair provider.
     /// </summary>

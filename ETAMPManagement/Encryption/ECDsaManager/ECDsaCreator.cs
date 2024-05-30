@@ -1,9 +1,5 @@
-﻿#region
-
-using System.Security.Cryptography;
+﻿using System.Security.Cryptography;
 using ETAMPManagement.Encryption.ECDsaManager.Interfaces;
-
-#endregion
 
 namespace ETAMPManagement.Encryption.ECDsaManager;
 
@@ -53,9 +49,7 @@ public class ECDsaCreator : IECDsaCreator
     /// <returns>A provider for the created and registered ECDsa instance.</returns>
     public IECDsaProvider CreateECDsa(string publicKey, ECCurve curve)
     {
-        var ecdsa = ECDsa.Create(curve);
-        ecdsa.ImportSubjectPublicKeyInfo(Convert.FromBase64String(publicKey), out _);
-        return _ecdsaRegistrar.RegisterECDsa(ecdsa);
+        return CreateAndRegisterECDsa(Convert.FromBase64String(publicKey), curve);
     }
 
     /// <summary>
@@ -65,6 +59,11 @@ public class ECDsaCreator : IECDsaCreator
     /// <param name="curve">The elliptic curve to use for the ECDsa instance.</param>
     /// <returns>A provider for the created and registered ECDsa instance.</returns>
     public IECDsaProvider CreateECDsa(byte[] publicKey, ECCurve curve)
+    {
+        return CreateAndRegisterECDsa(publicKey, curve);
+    }
+
+    private IECDsaProvider CreateAndRegisterECDsa(byte[] publicKey, ECCurve curve)
     {
         var ecdsa = ECDsa.Create(curve);
         ecdsa.ImportSubjectPublicKeyInfo(publicKey, out _);

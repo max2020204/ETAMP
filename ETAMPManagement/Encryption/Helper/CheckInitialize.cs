@@ -1,9 +1,9 @@
-﻿namespace ETAMPManagement.Helper;
+﻿namespace ETAMPManagement.Encryption.Helper;
 
 /// <summary>
-///     The InitializeBase class provides a base implementation with initialization checks for derived classes.
+///     The InitializeWrapper class provides a base implementation with initialization checks for derived classes.
 /// </summary>
-public class InitializeBase
+public class CheckInitialize
 {
     /// <summary>
     ///     Indicates if the initialization for a derived class has been completed.
@@ -14,12 +14,12 @@ public class InitializeBase
     ///     Checks if the initialization for the derived class has been completed.
     /// </summary>
     /// <exception cref="InvalidOperationException">
-    ///     Thrown when the 'Initialize' method has not been called or a value has not been assigned.
+    ///     Thrown when the 'InitializeWrapper' method has not been called or a value has not been assigned.
     /// </exception>
     protected void CheckInitialization()
     {
         if (!Init)
             throw new InvalidOperationException(
-                "The 'Initialize' method has not been called or a value has not been assigned.");
+                "The 'InitializeWrapper' method has not been called or a value has not been assigned.");
     }
 }

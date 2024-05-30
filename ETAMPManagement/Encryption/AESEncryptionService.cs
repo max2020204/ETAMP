@@ -1,16 +1,12 @@
-﻿#region
-
-using System.Security.Cryptography;
+﻿using System.Security.Cryptography;
 using ETAMPManagement.Encryption.Interfaces;
-
-#endregion
 
 namespace ETAMPManagement.Encryption;
 
 /// <summary>
 ///     Provides AES encryption and decryption services.
 /// </summary>
-public class AesEncryptionService : IEncryptionService
+public class AESEncryptionService : IEncryptionService
 {
     public byte[]? IV { get; private set; }
 

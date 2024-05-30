@@ -47,7 +47,8 @@ public class Token
     /// </summary>
     public T? GetData<T>() where T : class
     {
-        if (string.IsNullOrEmpty(Data)) return null;
+        if (string.IsNullOrEmpty(Data))
+            return null;
         try
         {
             return JsonConvert.DeserializeObject<T>(Data);
@@ -57,5 +58,10 @@ public class Token
             Debug.WriteLine(ex.Message);
             return null;
         }
+    }
+
+    public string ToJson()
+    {
+        return JsonConvert.SerializeObject(this);
     }
 }

@@ -1,13 +1,12 @@
-﻿using System.Security.Cryptography;
-using ETAMPManagement.Encryption.ECDsaManager.Interfaces;
-using ETAMPManagement.Extensions;
+﻿using ETAMPManagement.Encryption.ECDsaManager.Interfaces;
+using ETAMPManagement.Extensions.Builder;
 using ETAMPManagement.Models;
 using ETAMPManagement.Wrapper.Interfaces;
 using JetBrains.Annotations;
 using Moq;
 using Xunit;
 
-namespace ETAMPManagementTests.Extensions;
+namespace ETAMPManagementTests.Extensions.Builder;
 
 [TestSubject(typeof(ETAMPSign))]
 public class ETAMPSignTest
@@ -19,7 +18,6 @@ public class ETAMPSignTest
     {
         _signWrapperMock = new Mock<ISignWrapper>();
         _eCDsaProviderMock = new Mock<IECDsaProvider>();
-        _signWrapperMock.Setup(s => s.Initialize(_eCDsaProviderMock.Object, HashAlgorithmName.SHA256));
     }
 
     [Fact]

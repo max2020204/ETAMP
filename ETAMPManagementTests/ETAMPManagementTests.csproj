@@ -29,8 +29,4 @@
         <ProjectReference Include="..\ETAMPManagement\ETAMPManagement.csproj"/>
     </ItemGroup>
 
-    <ItemGroup>
-        <Folder Include="Validators\"/>
-    </ItemGroup>
-
 </Project>

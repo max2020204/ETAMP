@@ -1,9 +1,5 @@
-﻿#region
-
-using System.Reflection;
+﻿using System.Reflection;
 using ETAMPManagement.Attributes;
-
-#endregion
 
 namespace ETAMPManagement.Helper;
 
@@ -26,7 +22,7 @@ public class VersionInfo
     /// </summary>
     /// <remarks>
     ///     This property is used to retrieve the full version number of the ETAMP framework.
-    ///     The full version number is calculated from the Major, Minor, and Build components of the version information.
+    ///     The full version number is calculated from the Major, Minor, and Compress components of the version information.
     /// </remarks>
     public string? FullVersion { get; private set; }
 

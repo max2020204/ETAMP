@@ -1,13 +1,9 @@
-﻿#region
-
-using System.Security.Cryptography;
+﻿using System.Security.Cryptography;
 using System.Text;
 using ETAMPManagement.Encryption.ECDsaManager.Interfaces;
 using ETAMPManagement.Wrapper;
 using Moq;
 using Xunit;
-
-#endregion
 
 namespace ETAMPManagementTests.Wrapper;
 

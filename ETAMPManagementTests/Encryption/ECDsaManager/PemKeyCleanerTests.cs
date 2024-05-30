@@ -1,9 +1,5 @@
-﻿#region
-
-using ETAMPManagement.Encryption.ECDsaManager;
+﻿using ETAMPManagement.Encryption.ECDsaManager;
 using Xunit;
-
-#endregion
 
 namespace ETAMPManagementTests.Encryption.ECDsaManager;
 

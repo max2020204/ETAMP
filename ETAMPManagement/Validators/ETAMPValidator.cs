@@ -1,18 +1,14 @@
-﻿#region
-
-using ETAMPManagement.Models;
+﻿using ETAMPManagement.Models;
+using ETAMPManagement.Validators.Base;
 using ETAMPManagement.Validators.Interfaces;
-
-#endregion
 
 namespace ETAMPManagement.Validators;
 
 /// <summary>
 ///     Class for validating ETAMP objects.
 /// </summary>
-public sealed class ETAMPValidator : IETAMPValidator
+public sealed class ETAMPValidator : ETAMPValidatorBase
 {
-    private readonly ISignatureValidator _signatureValidator;
     private readonly IStructureValidator _structureValidator;
     private readonly ITokenValidator _tokenValidator;
 
@@ -20,11 +16,10 @@ public sealed class ETAMPValidator : IETAMPValidator
     ///     ETAMP Validator class.
     /// </summary>
     public ETAMPValidator(ITokenValidator tokenValidator, IStructureValidator structureValidator,
-        ISignatureValidator signatureValidator)
+        SignatureValidatorBase signatureValidatorBase) : base(signatureValidatorBase)
     {
         _tokenValidator = tokenValidator;
         _structureValidator = structureValidator;
-        _signatureValidator = signatureValidator;
     }
 
     /// <summary>
@@ -34,7 +29,7 @@ public sealed class ETAMPValidator : IETAMPValidator
     /// <param name="etamp">The ETAMP model to validate.</param>
     /// <param name="validateLite">Indicates whether to perform lite validation.</param>
     /// <returns>A ValidationResult indicating the validation result.</returns>
-    public ValidationResult ValidateETAMP<T>(ETAMPModel<T> etamp, bool validateLite) where T : Token
+    public override ValidationResult ValidateETAMP<T>(ETAMPModel<T> etamp, bool validateLite)
     {
         var structureValidationResult = _structureValidator.ValidateETAMP(etamp, validateLite);
         if (!structureValidationResult.IsValid)
@@ -45,7 +40,7 @@ public sealed class ETAMPValidator : IETAMPValidator
             return tokenValidationResult;
 
 
-        var signatureValidationResult = _signatureValidator.ValidateETAMPMessage(etamp);
+        var signatureValidationResult = signutureValidatorAbstract.ValidateETAMPMessage(etamp);
 
         return !signatureValidationResult.IsValid
             ? signatureValidationResult

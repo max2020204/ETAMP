@@ -1,8 +1,4 @@
-﻿#region
-
-using Newtonsoft.Json;
-
-#endregion
+﻿using Newtonsoft.Json;
 
 namespace ETAMPManagement.Models;
 
@@ -42,26 +38,13 @@ public class ETAMPModel<T> where T : Token
     /// </summary>
     public string? CompressionType { get; set; }
 
-    /// <summary>
-    ///     Gets or sets the signature for the token, which serves to verify the authenticity and integrity of the token,
-    ///     ensuring that it has not been tampered with.
-    /// </summary>
-    public string? SignatureToken { get; set; }
 
     /// <summary>
-    ///     Gets or sets the signature for the message, adding an additional layer of security by safeguarding the integrity of
+    ///     Gets or sets the signature for the message, adding a layer of security by safeguarding the integrity of
     ///     the message within the ETAMP structure.
     /// </summary>
     public string? SignatureMessage { get; set; }
 
-    /// <summary>
-    ///     Converts the ETAMP model instance to its JSON string representation.
-    /// </summary>
-    /// <returns>A JSON string representing the current state of the ETAMPModel instance.</returns>
-    public string ToJson()
-    {
-        return JsonConvert.SerializeObject(this);
-    }
 
     /// <summary>
     ///     Determines whether the specified object is equal to the current object.
@@ -78,10 +61,30 @@ public class ETAMPModel<T> where T : Token
                    && UpdateType == other.UpdateType
                    && Token == other.Token
                    && CompressionType == other.CompressionType
-                   && SignatureToken == other.SignatureToken
                    && SignatureMessage == other.SignatureMessage;
 
         return false;
+    }
+
+
+    /// <summary>
+    ///     Converts the ETAMPModel object to a JSON string.
+    /// </summary>
+    /// <returns>
+    ///     The JSON string representation of the ETAMPModel object.
+    /// </returns>
+    public string ToJson()
+    {
+        var temp = new TempETAMPModel
+        {
+            Id = Id,
+            Version = Version,
+            Token = Token?.ToJson(),
+            UpdateType = UpdateType,
+            CompressionType = CompressionType,
+            SignatureMessage = SignatureMessage
+        };
+        return JsonConvert.SerializeObject(temp);
     }
 
     /// <summary>
@@ -90,6 +93,6 @@ public class ETAMPModel<T> where T : Token
     /// <returns>A hash code for the current object.</returns>
     public override int GetHashCode()
     {
-        return HashCode.Combine(Id, Version, Token, UpdateType, CompressionType, SignatureToken, SignatureMessage);
+        return HashCode.Combine(Id, Version, Token, UpdateType, CompressionType, SignatureMessage);
     }
 }

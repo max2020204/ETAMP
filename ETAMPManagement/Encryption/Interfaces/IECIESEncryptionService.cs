@@ -1,17 +1,11 @@
 ﻿namespace ETAMPManagement.Encryption.Interfaces;
 
 /// <summary>
-///     Defines a service for encrypting and decrypting messages using Elliptic Curve Integrated Encryption Scheme (ECIES).
+///     Defines a service for encrypting and decrypting messages using Elliptic Curve Integrated ETAMPEncryption Scheme
+///     (ECIES).
 /// </summary>
-public interface IEciesEncryptionService
+public interface IECIESEncryptionService
 {
-    /// <summary>
-    ///     Initializes the ECIES encryption service with the necessary key exchange and encryption components.
-    /// </summary>
-    /// <param name="keyExchanger">The key exchanger used for deriving the shared secret.</param>
-    /// <param name="encryptionService">The underlying encryption service used for encrypting and decrypting the message.</param>
-    void Initialize(IKeyExchanger keyExchanger, IEncryptionService encryptionService);
-
     /// <summary>
     ///     Encrypts a plain text message using ECIES.
     /// </summary>

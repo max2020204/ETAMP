@@ -1,22 +1,22 @@
 ﻿using ETAMPManagement.Encryption.Interfaces;
-using ETAMPManagement.Extensions;
+using ETAMPManagement.Extensions.Builder;
 using ETAMPManagement.Models;
 using JetBrains.Annotations;
 using Moq;
 using Xunit;
 
-namespace ETAMPManagementTests.Extensions;
+namespace ETAMPManagementTests.Extensions.Builder;
 
-[TestSubject(typeof(ETAMPManagement.Extensions.Encryption))]
-public class EncryptionTest
+[TestSubject(typeof(ETAMPEncryption))]
+public class ETAMPEncryptionTest
 {
-    private readonly Mock<IEciesEncryptionService> _mockEciesEncryptionService;
-    private readonly string _toBeEncrypted = "TestString";
+    private readonly Mock<IECIESEncryptionService> _mockEciesEncryptionService;
     private readonly ETAMPModel<Token> _model;
+    private readonly string _toBeEncrypted = "TestString";
 
-    public EncryptionTest()
+    public ETAMPEncryptionTest()
     {
-        _mockEciesEncryptionService = new Mock<IEciesEncryptionService>();
+        _mockEciesEncryptionService = new Mock<IECIESEncryptionService>();
 
         _model = new ETAMPModel<Token>
         {

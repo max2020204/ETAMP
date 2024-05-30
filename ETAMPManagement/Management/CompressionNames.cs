@@ -1,4 +1,4 @@
-﻿namespace ETAMPManagement.Managment;
+﻿namespace ETAMPManagement.Management;
 
 /// <summary>
 ///     Provides constants for identifying the compression algorithms used within the application.

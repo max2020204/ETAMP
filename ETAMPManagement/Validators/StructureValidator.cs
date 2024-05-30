@@ -1,10 +1,7 @@
-﻿#region
-
+﻿using ETAMPManagement.Extensions.Builder;
+using ETAMPManagement.Factory.Interfaces;
 using ETAMPManagement.Models;
 using ETAMPManagement.Validators.Interfaces;
-using Newtonsoft.Json;
-
-#endregion
 
 namespace ETAMPManagement.Validators;
 
@@ -13,6 +10,13 @@ namespace ETAMPManagement.Validators;
 /// </summary>
 public sealed class StructureValidator : IStructureValidator
 {
+    private readonly ICompressionServiceFactory _compressionServiceFactory;
+
+    public StructureValidator(ICompressionServiceFactory compressionServiceFactory)
+    {
+        _compressionServiceFactory = compressionServiceFactory;
+    }
+
     /// <summary>
     ///     Validates an ETAMP model.
     /// </summary>
@@ -29,8 +33,7 @@ public sealed class StructureValidator : IStructureValidator
             string.IsNullOrWhiteSpace(model.UpdateType) ||
             string.IsNullOrWhiteSpace(model.CompressionType) ||
             model.Token == null ||
-            (!validateLite && (string.IsNullOrWhiteSpace(model.SignatureToken) ||
-                               string.IsNullOrWhiteSpace(model.SignatureMessage))))
+            (!validateLite && string.IsNullOrWhiteSpace(model.SignatureMessage)))
             return new ValidationResult(false, "ETAMP model has empty/missing fields or contains invalid values.");
 
         return new ValidationResult(true);
@@ -47,9 +50,7 @@ public sealed class StructureValidator : IStructureValidator
     /// </returns>
     public ValidationResult ValidateETAMP<T>(string etampJson, bool validateLite = false) where T : Token
     {
-        var model = JsonConvert.DeserializeObject<ETAMPModel<T>>(etampJson);
-        return model == null
-            ? new ValidationResult(false, "Failed to deserialize ETAMP to model.")
-            : ValidateETAMP(model, validateLite);
+        var model = etampJson.DeconstructETAMP<T>(_compressionServiceFactory);
+        return ValidateETAMP(model, validateLite);
     }
 }

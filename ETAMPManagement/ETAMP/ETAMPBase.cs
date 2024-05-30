@@ -1,10 +1,6 @@
-﻿#region
-
-using ETAMPManagement.ETAMP.Interfaces;
+﻿using ETAMPManagement.ETAMP.Interfaces;
 using ETAMPManagement.Helper;
 using ETAMPManagement.Models;
-
-#endregion
 
 namespace ETAMPManagement.ETAMP;
 
@@ -43,7 +39,8 @@ public sealed class ETAMPBase : IETAMPBase
             Id = messageId,
             Version = _versionInfo.ProtocolVersion,
             Token = payload,
-            UpdateType = updateType
+            UpdateType = updateType,
+            CompressionType = compressionType
         };
     }
 }

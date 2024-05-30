@@ -1,10 +1,6 @@
-﻿#region
-
-using System.Security.Cryptography;
+﻿using System.Security.Cryptography;
 using ETAMPManagement.Encryption.ECDsaManager;
 using Xunit;
-
-#endregion
 
 namespace ETAMPManagementTests.Encryption.ECDsaManager;
 

@@ -1,11 +1,7 @@
-﻿#region
-
-using ETAMPManagement.Models;
+﻿using ETAMPManagement.Models;
 using ETAMPManagement.Wrapper.Interfaces;
 
-#endregion
-
-namespace ETAMPManagement.Extensions;
+namespace ETAMPManagement.Extensions.Builder;
 
 /// <summary>
 ///     Provides functionality to digitally sign an ETAMPModel using a specified signature wrapper.

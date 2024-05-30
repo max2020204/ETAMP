@@ -16,6 +16,9 @@ public class TokenValidator : ITokenValidator
     /// <returns>The validation result, indicating whether the token is valid or not.</returns>
     public ValidationResult ValidateToken<T>(ETAMPModel<T> model) where T : Token
     {
+        if (model.CompressionType == null)
+            return new ValidationResult(false, "ETAMPBuilder type is null");
+
         if (model.Token == null)
             return new ValidationResult(false, "Token is null.");
 

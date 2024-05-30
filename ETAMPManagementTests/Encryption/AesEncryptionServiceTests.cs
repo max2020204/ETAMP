@@ -1,11 +1,7 @@
-﻿#region
-
-using System.Security.Cryptography;
+﻿using System.Security.Cryptography;
 using System.Text;
 using ETAMPManagement.Encryption;
 using Xunit;
-
-#endregion
 
 namespace ETAMPManagementTests.Encryption;
 
@@ -13,11 +9,11 @@ public class AesEncryptionServiceTests
 {
     private readonly byte[] _iv;
     private readonly byte[] _key;
-    private readonly AesEncryptionService _service;
+    private readonly AESEncryptionService _service;
 
     public AesEncryptionServiceTests()
     {
-        _service = new AesEncryptionService();
+        _service = new AESEncryptionService();
         _key = new byte[32];
         new Random().NextBytes(_key);
         _iv = new byte[16];
@@ -54,7 +50,7 @@ public class AesEncryptionServiceTests
     {
         var originalData = Encoding.UTF8.GetBytes("TestData");
 
-        var service = new AesEncryptionService();
+        var service = new AESEncryptionService();
         var encryptedData = service.Encrypt(originalData, _key, null);
 
         var decryptedData = service.Decrypt(encryptedData, _key, service.IV);
@@ -83,7 +79,7 @@ public class AesEncryptionServiceTests
         var wrongKey = new byte[32];
         new Random().NextBytes(wrongKey);
 
-        var service = new AesEncryptionService();
+        var service = new AESEncryptionService();
         var encryptedData = service.Encrypt(originalData, _key, null);
 
         Assert.Throws<CryptographicException>(() => service.Decrypt(encryptedData, wrongKey, service.IV));
@@ -95,7 +91,7 @@ public class AesEncryptionServiceTests
         var largeData = new byte[10 * 1024 * 1024];
         new Random().NextBytes(largeData);
 
-        var service = new AesEncryptionService();
+        var service = new AESEncryptionService();
         var encryptedData = service.Encrypt(largeData, _key, null);
         var decryptedData = service.Decrypt(encryptedData, _key, service.IV);
 

@@ -1,11 +1,7 @@
-﻿#region
-
-using ETAMPManagement.Encryption;
+﻿using ETAMPManagement.Encryption;
 using ETAMPManagement.Encryption.Interfaces;
 using ETAMPManagement.Factory.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
-
-#endregion
 
 namespace ETAMPManagement.Factory;
 

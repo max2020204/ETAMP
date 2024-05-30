@@ -1,14 +1,10 @@
-﻿#region
-
-using ETAMPManagement.Codec;
+﻿using ETAMPManagement.Codec;
 using ETAMPManagement.Codec.Interfaces;
 using ETAMPManagement.Factory;
-using ETAMPManagement.Managment;
+using ETAMPManagement.Management;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using Xunit;
-
-#endregion
 
 namespace ETAMPManagementTests.Factory;
 

@@ -1,17 +1,31 @@
 # ETAMP (Encrypted Token And Message Protocol)
 
-## [NuGet Package](https://www.nuget.org/packages/ETAMP/)
+## Overview
 
-ETAMP (Encrypted Token And Message Protocol) is a comprehensive .NET library designed to enhance the security of message and transaction handling across applications. It utilizes advanced cryptographic techniques such as JWT (JSON Web Tokens), ECDSA (Elliptic Curve Digital Signature Algorithm), ECDH (Elliptic Curve Diffie-Hellman) encryption, and ECIES (Elliptic Curve Integrated Encryption Scheme), ensuring secure and reliable data exchanges.
+ETAMP (Encrypted Token And Message Protocol) is designed for secure and efficient message transmission in a
+semi-decentralized network. The protocol ensures message integrity and supports encryption and signing using ECC (
+Elliptic Curve Cryptography).
 
-## Features
+## Architecture
 
-- **Secure JWT creation and verification with ECDSA**: Ensures that tokens are not only created securely but are also verifiable.
-- **ECDH and ECIES encryption**: Offers advanced encryption for tokens, providing an additional layer of security.
-- **Robust ECDSA digital signature**: Guarantees the integrity and authenticity of messages.
-- **Flexible integration**: Supports dependency injection (DI) to suit various application architectures.
-- **High performance**: Optimized for high throughput and scalability, suitable for enterprise-level solutions.
-- **Comprehensive API**: Includes a builder pattern for creating customizable ETAMP models.
+The protocol includes the following fields:
+
+- `GUID Id`
+- `double Version`
+- `string Token` (compressed JSON)
+- `string UpdateType`
+- `string SignatureMessage`
+- `string CompressionType`
+
+### Token Structure
+
+The token structure includes the following fields:
+
+- `Guid Id`
+- `Guid MessageId`
+- `bool IsEncrypted`
+- `string Data`
+- `DateTimeOffset TimeStamp`
 
 ## Installation
 
@@ -23,158 +37,255 @@ Install-Package ETAMP
 
 ## Usage
 
-ETAMP supports Dependency Injection (DI) for seamless integration into .NET projects. Below is an example of how to use the ETAMP controller to create, sign, encrypt, and compress an ETAMP model within a .NET Core application.
+### Prerequisites
 
-### Dependency Injection (DI) Setup
+Ensure you have the necessary dependencies and services configured in your application. The examples below
+use `Microsoft.Extensions.DependencyInjection` for dependency injection.
 
-1. **Register ETAMP Services in Startup:**
+### Example Files
 
-   Configure your application's startup class to include ETAMP services:
+1. **Program.cs**
 
-   ```csharp
-   public void ConfigureServices(IServiceCollection services)
-   {
-       services.AddETAMPServices();
-       // Additional service registrations
-   }
-   ```
-
-2. **Use ETAMP in Your Application:**
-
-   Here's an example of how you can implement the ETAMP controller in your application to utilize the cryptographic functionalities:
+   This file serves as the entry point of the application, demonstrating the creation, signing, encryption, and
+   validation of ETAMP messages.
 
    ```csharp
-   using Microsoft.AspNetCore.Mvc;
-   using Microsoft.IdentityModel.Tokens;
-   using System.Security.Cryptography;
-   using ETAMPManagement.Encryption.ECDsaManager.Interfaces;
-   using ETAMPManagement.Encryption.Interfaces;
-   using ETAMPManagement.ETAMP.Base.Interfaces;
+   // Program.cs
    using ETAMPManagement.Extensions;
-   using ETAMPManagement.Factory.Interfaces;
-   using ETAMPManagement.Managment;
-   using ETAMPManagement.Models;
-   using ETAMPManagement.Services.Interfaces;
-   using ETAMPManagement.Validators.Interfaces;
-   using ETAMPManagement.Wrapper.Interfaces;
+   using Microsoft.Extensions.DependencyInjection;
 
-   namespace WebApplication2.Controllers
+   namespace ETAMPExample
    {
-       [Route("api/[controller]")]
-       [ApiController]
-       public class ETAMPController : ControllerBase
+       internal static class Program
        {
-           private readonly IETAMPBase _etampBase;
-           private readonly IECDsaCreator _ecdsaCreator;
-           private readonly ISigningCredentialsProvider _signingCredentialsProvider;
-           private readonly ICompressionServiceFactory _serviceFactory;
-           private readonly ISignWrapper _signWrapper;
-           private readonly IEciesEncryptionService _eciesEncryption;
-           private readonly IEncryptionService _encryptionService;
-           private readonly IKeyExchanger _key;
-           private readonly IKeyPairProvider _pairProvider;
-           public readonly IETAMPValidator _etampValidator;
-
-           public ETAMPController(IETAMPBase etamp, IECDsaCreator ecdsa, ISignWrapper wrapper,
-                                   ISigningCredentialsProvider signing, ICompressionServiceFactory serviceFactory,
-                                   IEciesEncryptionService eciesEncryption, IEncryptionService encryptionService,
-                                   IKeyExchanger key, IKeyPairProvider pairProvider, IETAMPValidator etampValidator)
+           private static void Main()
            {
-               _ecdsaCreator = ecdsa;
-               _signingCredentialsProvider = signing;
-               _serviceFactory = serviceFactory;
-               _eciesEncryption = eciesEncryption;
-               _encryptionService = encryptionService;
-               _key = key;
-               _pairProvider = pairProvider;
-               _etampValidator = etampValidator;
-               _etampBase = etamp;
-               _signWrapper = wrapper;
+               var provider = ConfigureServices();
+               var createETAMP = new CreateETAMP(provider);
+               var createSignETAMP = new CreateSignETAMP(provider);
+               var validateETAMP = new ValidateETAMP(provider);
+               var encrypted = new CreateEncryptedETAMP(provider);
+
+               Console.WriteLine("Create default ETAMP: \n" + createETAMP.CreateETAMPMessage() + "\n");
+               Console.WriteLine("Create ETAMP with sign: \n" + createSignETAMP.CreateAndSignETAMPMessage() + "\n");
+               Console.WriteLine("Create encrypted ETAMP: \n" + encrypted.CreateEncryptedETAMPMessage() + "\n");
+               Console.WriteLine("Validate ETAMP: \n" + validateETAMP.Validate());
            }
 
-           [HttpGet]
-           public async Task<string> GetETAMP()
+           private static ServiceProvider ConfigureServices()
            {
-               // Create an ECDSA provider for the specified curve (nistP521 in this case)
-               IECDsaProvider provider = _ecdsaCreator.CreateECDsa(ECCurve.NamedCurves.nistP521);
-
-               // Create an ECDsaSecurityKey based on the ECDSA provider
-               ECDsaSecurityKey ecDsaSecurityKey = new ECDsaSecurityKey(provider.GetECDsa());
-
-               // Initialize the sign wrapper with the ECDSA provider and SHA512 hash algorithm
-               _signWrapper.Initialize(provider, HashAlgorithmName.SHA512);
-
-               // Initialize the signing credentials provider with the ECDSA provider
-               _signingCredentialsProvider.Initialize(provider);
-
-               // Set the security algorithm for the signing credentials provider
-               _signingCredentialsProvider.SecurityAlgorithm = SecurityAlgorithms.EcdsaSha512Signature;
-
-               // Initialize the ECIES encryption service with the key exchanger and encryption service
-               _eciesEncryption.Initialize(_key, _encryptionService);
-
-               // Initialize the key exchanger with the key pair provider
-               _key.Initialize(_pairProvider);
-
-               // Create an ECDiffieHellman object for key derivation
-               ECDiffieHellman ecDiffieHellmanCng = ECDiffieHellmanCng.Create();
-
-               // Derive the key using the ECDiffieHellman public key
-               _key.DeriveKey(ecDiffieHellmanCng.PublicKey);
-
-               // Create an ETAMP model with the specified message, payload, and version
-               // Sign the model using the sign wrapper
-               // Encrypt the token within the model using the ECIES encryption service
-               ETAMPModel model = _etampBase
-                   .CreateETAMPModel("Message", new BasePayload(), 1, _signingCredentialsProvider)
-                   .Sign(_signWrapper)
-                   .EncryptToken(_eciesEncryption);
-
-               // Compress the model using the Deflate compression algorithm
-               string deflate = model.Compress(_serviceFactory, CompressionNames.Deflate);
-
-               // Decompress the compressed model using the Deflate compression algorithm
-               ETAMPModel decompressedModel = deflate.Decompress(_serviceFactory, CompressionNames.Deflate);
-
-               // Validate the decompressed ETAMP model using the ETAMP validator and the ECDsaSecurityKey
-               bool result = await _etampValidator.ValidateETAMPLite(decompressedModel, ecDsaSecurityKey);
-
-               // Return the validation result and the decompressed model as a string
-               return $"Result: {result}{Environment.NewLine}" + decompressedModel.ToString();
+               var serviceCollection = new ServiceCollection();
+               serviceCollection.AddETAMPServices();
+               return serviceCollection.BuildServiceProvider();
            }
        }
    }
    ```
-**Note:** Once the token within the ETAMP model is encrypted, it cannot be directly verified without first decrypting it. This means that if you choose to encrypt your tokens, you must ensure proper decryption mechanisms are in place for verification purposes.
-This example demonstrates the following steps:
 
-1. **Creating an ECDSA Provider**: An ECDSA provider is created using the `IECDsaCreator` service, which generates an Elliptic Curve Digital Signature Algorithm (ECDSA) provider for the specified curve (`nistP521` in this case).
+2. **CreateETAMP.cs**
 
-2. **Creating an ECDsaSecurityKey**: An `ECDsaSecurityKey` is created based on the ECDSA provider, which is used for signing and verifying the ETAMP model.
+   This class is responsible for creating a basic ETAMP message.
 
-3. **Initializing the Sign Wrapper**: The `ISignWrapper` service is initialized with the ECDSA provider and the SHA512 hash algorithm, which is used for signing the
- provides clear instructions on how to implement and utilize the ETAMP controller, making it accessible for developers to integrate ETAMP into their projects effectively.
+   ```csharp
+   // CreateETAMP.cs
+   using ETAMPManagement.ETAMP.Interfaces;
+   using ETAMPManagement.Extensions.Builder;
+   using ETAMPManagement.Factory.Interfaces;
+   using ETAMPManagement.Models;
+   using Microsoft.Extensions.DependencyInjection;
 
-4. **Initializing Signing Credentials**: The `ISigningCredentialsProvider` service is initialized with the ECDSA provider, and the security algorithm is set to `EcdsaSha512Signature`, which specifies the algorithm used for digital signatures.
+   namespace ETAMPExample
+   {
+       public class CreateETAMP
+       {
+           private readonly ServiceProvider _provider;
 
-5. **Encryption Setup**: The `IEciesEncryptionService` is initialized with key exchange and encryption services to provide secure token encryption within the ETAMP model.
+           public CreateETAMP(ServiceProvider provider)
+           {
+               _provider = provider;
+           }
 
-6. **Key Derivation**: A key is derived using ECDiffieHellman, facilitating secure communications by enabling shared secret derivation.
+           public string CreateETAMPMessage()
+           {
+               var etampBase = _provider.GetService<IETAMPBase>();
+               var compression = _provider.GetService<ICompressionServiceFactory>();
+               var token = CreateToken("SomeDataInJson");
+               var etamp = etampBase.CreateETAMPModel("Message", token, CompressionNames.Deflate);
 
-7. **Model Creation and Processing**: An ETAMP model is created, signed, and encrypted in a fluent manner using builder pattern methods. This sequence simplifies the complex steps involved in ensuring the security of the token.
+               return etamp.Build(compression);
+           }
 
-8. **Compression and Decompression**: The model is compressed using the Deflate algorithm to reduce its size for storage or transmission and then decompressed to retrieve the original data structure.
+           private Token CreateToken(string data)
+           {
+               return new Token { Data = data };
+           }
+       }
+   }
+   ```
 
-9. **Validation**: The decompressed ETAMP model is validated using an ETAMP validator service and the ECDSA security key to ensure that it has not been tampered with during the process.
+3. **CreateSignETAMP.cs**
 
-10. **Result Generation**: The result of the validation and the string representation of the decompressed model are returned, providing clear feedback about the operation's success.
+   This class handles the creation and signing of ETAMP messages.
 
-This comprehensive example serves as a practical demonstration of how to effectively use the ETAMP library in a real-world application, showcasing the integration of cryptographic techniques to secure and manage data transactions within .NET applications.
+   ```csharp
+   // CreateSignETAMP.cs
+   using System.Security.Cryptography;
+   using ETAMPManagement.Encryption.ECDsaManager.Interfaces;
+   using ETAMPManagement.ETAMP.Interfaces;
+   using ETAMPManagement.Extensions.Builder;
+   using ETAMPManagement.Factory.Interfaces;
+   using ETAMPManagement.Models;
+   using Microsoft.Extensions.DependencyInjection;
+
+   namespace ETAMPExample
+   {
+       public class CreateSignETAMP
+       {
+           private readonly ServiceProvider _provider;
+
+           public CreateSignETAMP(ServiceProvider provider)
+           {
+               _provider = provider;
+           }
+
+           public IECDsaProvider ECDsaProvider { get; private set; }
+           public HashAlgorithmName HashAlgorithm { get; private set; }
+
+           public string CreateAndSignETAMPMessage()
+           {
+               var etampBase = _provider.GetService<IETAMPBase>();
+               var sign = _provider.GetService<SignWrapperBase>();
+               var creator = _provider.GetService<IECDsaCreator>();
+               var compression = _provider.GetService<ICompressionServiceFactory>();
+
+               InitializeSignature(sign, creator);
+               var token = CreateToken("SomeDataInJson");
+               var etamp = etampBase.CreateETAMPModel("Message", token, CompressionNames.Deflate);
+
+               return etamp.Sign(sign).Build(compression);
+           }
+
+           private void InitializeSignature(SignWrapperBase sign, IECDsaCreator creator)
+           {
+               ECDsaProvider = creator.CreateECDsa();
+               HashAlgorithm = HashAlgorithmName.SHA512;
+               sign.Initialize(ECDsaProvider, HashAlgorithm);
+           }
+
+           private Token CreateToken(string data)
+           {
+               return new Token { Data = data };
+           }
+       }
+   }
+   ```
+
+4. **CreateEncryptedETAMP.cs**
+
+   This class demonstrates how to create an encrypted ETAMP message.
+
+   ```csharp
+   // CreateEncryptedETAMP.cs
+   using System.Security.Cryptography;
+   using ETAMPManagement.Encryption.Base;
+   using ETAMPManagement.Encryption.Interfaces;
+   using ETAMPManagement.ETAMP.Interfaces;
+   using ETAMPManagement.Extensions.Builder;
+   using ETAMPManagement.Factory.Interfaces;
+   using ETAMPManagement.Models;
+   using Microsoft.Extensions.DependencyInjection;
+
+   namespace ETAMPExample
+   {
+       public class CreateEncryptedETAMP
+       {
+           private readonly ServiceProvider _provider;
+
+           public CreateEncryptedETAMP(ServiceProvider provider)
+           {
+               _provider = provider;
+           }
+
+           public string CreateEncryptedETAMPMessage()
+           {
+               var etampBase = _provider.GetService<IETAMPBase>();
+               var ecies = _provider.GetService<ECIESEncryptionServiceBase>();
+               var compression = _provider.GetService<ICompressionServiceFactory>();
+               var keyExchanger = _provider.GetService<KeyExchangerBase>();
+               var keyPairProvider = _provider.GetService<KeyPairProviderBase>();
+               var aes = _provider.GetService<IEncryptionService>();
+
+               keyPairProvider.Initialize(ECDiffieHellman.Create());
+               keyExchanger.Initialize(keyPairProvider);
+               keyExchanger.DeriveKey(ECDiffieHellman.Create().PublicKey);
+               ecies.Initialize(keyExchanger, aes);
+
+               var token = CreateToken("SomeDataInJson");
+               var etamp = etampBase.CreateETAMPModel("Message", token, CompressionNames.Deflate);
+
+               return etamp.EncryptData(ecies).Build(compression);
+           }
+
+           private Token CreateToken(string data)
+           {
+               return new Token { Data = data };
+           }
+       }
+   }
+   ```
+
+5. **ValidateETAMP.cs**
+
+   This class is responsible for validating ETAMP messages.
+
+   ```csharp
+   // ValidateETAMP.cs
+   using ETAMPManagement.Extensions.Builder;
+   using ETAMPManagement.Factory.Interfaces;
+   using ETAMPManagement.Models;
+   using ETAMPManagement.Validators.Base;
+   using Microsoft.Extensions.DependencyInjection;
+
+   namespace ETAMPExample
+   {
+       public class ValidateETAMP
+       {
+           private readonly ServiceProvider _provider;
+
+           public ValidateETAMP(ServiceProvider provider)
+           {
+               _provider = provider;
+           }
+
+           public bool Validate()
+           {
+               var validator = _provider.GetService<ETAMPValidatorBase>();
+               var compression = _provider.GetService<ICompressionServiceFactory>();
+               var createSignETAMP = new CreateSignETAMP(_provider);
+
+               var etamp = createSignETAMP.CreateAndSignETAMPMessage();
+               var model = etamp.DeconstructETAMP<Token>(compression);
+
+               validator?.Initialize(createSignETAMP.ECDsaProvider, createSignETAMP.HashAlgorithm);
+               var result = validator?.ValidateETAMP(model, false);
+
+               return result.IsValid;
+           }
+       }
+   }
+   ```
+
+## Conclusion
+
+This documentation provides an overview of the ETAMP protocol and its usage with example implementations. Follow the
+structure and examples to integrate ETAMP into your projects, ensuring secure and efficient message handling.
 
 ## Contributing
 
-Contributions to ETAMP are welcome! Please fork the repository, make your changes, and submit a pull request. We appreciate your input in improving the project.
+Contributions to ETAMP are welcome! Please fork the repository, make your changes, and submit a pull request. We
+appreciate your input in improving the project.
 
 ## License
 
-ETAMP is licensed under the MIT License. For more information, see the [LICENSE](https://github.com/max2020204/ETAMP/blob/master/LICENSE.txt) file in the repository.
+ETAMP is licensed under the MIT License. For more information, see
+the [LICENSE](https://github.com/max2020204/ETAMP/blob/master/LICENSE.txt) file in the repository.

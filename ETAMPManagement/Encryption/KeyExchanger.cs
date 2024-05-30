@@ -1,33 +1,14 @@
-﻿#region
-
-using System.Security.Cryptography;
-using ETAMPManagement.Encryption.Interfaces;
-using ETAMPManagement.Helper;
-
-#endregion
+﻿using System.Security.Cryptography;
+using ETAMPManagement.Encryption.Base;
 
 namespace ETAMPManagement.Encryption;
 
 /// <summary>
-///     The KeyExchanger class is responsible for exchanging and deriving key materials using the ECDiffieHellman
+///     The KeyExchanger class is responsible for exchanging and deriving key materials using the ECDiffieHellmanBase
 ///     algorithm.
 /// </summary>
-public class KeyExchanger : InitializeBase, IKeyExchanger
+public class KeyExchanger : KeyExchangerBase
 {
-    private IKeyPairProvider? _keyProvider;
-    private byte[]? _sharedSecret;
-
-    /// <summary>
-    ///     Initializes the key exchanger with a key pair provider for subsequent cryptographic operations.
-    /// </summary>
-    /// <param name="keyPairProvider">The provider of ECDH key pairs used for deriving shared secrets.</param>
-    public void Initialize(IKeyPairProvider keyPairProvider)
-    {
-        Init = true;
-        _keyProvider = keyPairProvider ?? throw new ArgumentNullException(nameof(keyPairProvider));
-        _sharedSecret = null;
-    }
-
     /// <summary>
     ///     Derives a key using the hash-based method from the given public key and additional parameters.
     /// </summary>
@@ -36,13 +17,14 @@ public class KeyExchanger : InitializeBase, IKeyExchanger
     /// <param name="secretPrepend">Optional data to prepend before the derived secret.</param>
     /// <param name="secretAppend">Optional data to append after the derived secret.</param>
     /// <returns>A byte array representing the derived key.</returns>
-    public byte[] DeriveKeyHash(ECDiffieHellmanPublicKey publicKey, HashAlgorithmName hash, byte[]? secretPrepend,
+    public override byte[] DeriveKeyHash(ECDiffieHellmanPublicKey publicKey, HashAlgorithmName hash,
+        byte[]? secretPrepend,
         byte[]? secretAppend)
     {
         ArgumentNullException.ThrowIfNull(publicKey);
-        ArgumentNullException.ThrowIfNull(_keyProvider);
+        ArgumentNullException.ThrowIfNull(KeyProvider);
         CheckInitialization();
-        return _sharedSecret = _keyProvider!.GetECDiffieHellman()
+        return SharedSecret = KeyProvider!.GetECDiffieHellman()
             .DeriveKeyFromHash(publicKey, hash, secretPrepend, secretAppend);
     }
 
@@ -51,12 +33,12 @@ public class KeyExchanger : InitializeBase, IKeyExchanger
     /// </summary>
     /// <param name="publicKey">The public key used for key derivation.</param>
     /// <returns>The derived key.</returns>
-    public byte[] DeriveKey(ECDiffieHellmanPublicKey publicKey)
+    public override byte[] DeriveKey(ECDiffieHellmanPublicKey publicKey)
     {
         ArgumentNullException.ThrowIfNull(publicKey);
-        ArgumentNullException.ThrowIfNull(_keyProvider);
+        ArgumentNullException.ThrowIfNull(KeyProvider);
 
-        return _sharedSecret = _keyProvider!.GetECDiffieHellman().DeriveKeyMaterial(publicKey);
+        return SharedSecret = KeyProvider!.GetECDiffieHellman().DeriveKeyMaterial(publicKey);
     }
 
     /// <summary>
@@ -64,15 +46,15 @@ public class KeyExchanger : InitializeBase, IKeyExchanger
     /// </summary>
     /// <param name="otherPartyPublicKey">The raw byte array representing the other party's public key.</param>
     /// <returns>A byte array representing the derived key material.</returns>
-    public byte[] DeriveKey(byte[] otherPartyPublicKey)
+    public override byte[] DeriveKey(byte[] otherPartyPublicKey)
     {
         ArgumentNullException.ThrowIfNull(otherPartyPublicKey);
-        ArgumentNullException.ThrowIfNull(_keyProvider);
+        ArgumentNullException.ThrowIfNull(KeyProvider);
         CheckInitialization();
         using var eCDiffieHellman = ECDiffieHellman.Create();
         eCDiffieHellman.ImportSubjectPublicKeyInfo(otherPartyPublicKey, out _);
 
-        return _sharedSecret = _keyProvider!.GetECDiffieHellman().DeriveKeyMaterial(eCDiffieHellman.PublicKey);
+        return SharedSecret = KeyProvider!.GetECDiffieHellman().DeriveKeyMaterial(eCDiffieHellman.PublicKey);
     }
 
     /// <summary>
@@ -85,23 +67,13 @@ public class KeyExchanger : InitializeBase, IKeyExchanger
     /// <param name="secretPrepend">Data to prepend to the shared secret. Can be null.</param>
     /// <param name="secretAppend">Data to append to the shared secret. Can be null.</param>
     /// <returns>The derived shared secret key.</returns>
-    public byte[] DeriveKeyHmac(ECDiffieHellmanPublicKey publicKey, HashAlgorithmName hash, byte[]? hmacKey,
+    public override byte[] DeriveKeyHmac(ECDiffieHellmanPublicKey publicKey, HashAlgorithmName hash, byte[]? hmacKey,
         byte[]? secretPrepend, byte[]? secretAppend)
     {
         ArgumentNullException.ThrowIfNull(publicKey);
-        ArgumentNullException.ThrowIfNull(_keyProvider);
+        ArgumentNullException.ThrowIfNull(KeyProvider);
         CheckInitialization();
-        return _sharedSecret = _keyProvider!.GetECDiffieHellman()
+        return SharedSecret = KeyProvider!.GetECDiffieHellman()
             .DeriveKeyFromHmac(publicKey, hash, hmacKey, secretPrepend, secretAppend);
-    }
-
-    /// <summary>
-    ///     Retrieves the shared secret for key exchange.
-    /// </summary>
-    /// <returns>The shared secret as a byte array. Returns null if the shared secret is not available.</returns>
-    public byte[]? GetSharedSecret()
-    {
-        CheckInitialization();
-        return _sharedSecret;
     }
 }
