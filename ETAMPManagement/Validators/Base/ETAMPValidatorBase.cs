@@ -18,9 +18,9 @@ public abstract class ETAMPValidatorBase : IETAMPValidator
     /// <summary>
     ///     Base abstract class for ETAMP validators.
     /// </summary>
-    public ETAMPValidatorBase(SignatureValidatorBase SignatureValidatorBase)
+    public ETAMPValidatorBase(SignatureValidatorBase signatureValidatorBase)
     {
-        signutureValidatorAbstract = SignatureValidatorBase;
+        signutureValidatorAbstract = signatureValidatorBase;
     }
 
     /// <summary>

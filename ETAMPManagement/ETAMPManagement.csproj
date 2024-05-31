@@ -34,7 +34,7 @@
 
     <PropertyGroup>
         <PackageId>ETAMP</PackageId>
-        <Version>3.0.1</Version>
+        <Version>3.0.2</Version>
         <Authors>Maksym Nikitiuk</Authors>
         <Description>
             ETAMP (Encrypted Token And Message Protocol) is designed for secure and efficient message transmission in a semi-decentralized network. The protocol ensures message integrity and supports encryption and signing using ECC ( Elliptic Curve Cryptography).

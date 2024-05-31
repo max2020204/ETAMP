@@ -11,7 +11,7 @@ public class Token
     /// <summary>
     ///     Represents the unique identifier of a token.
     /// </summary>
-    public Guid Id { get; set; } = Guid.NewGuid();
+    public Guid Id { get; init; } = Guid.NewGuid();
 
     /// <summary>
     ///     Represents the unique identifier of a message.
@@ -22,7 +22,7 @@ public class Token
     ///     Gets or sets a value indicating whether the data for this token is encrypted.
     /// </summary>
     /// <value><c>true</c> if the data is encrypted; otherwise, <c>false</c>.</value>
-    public bool IsEncrypted { get; set; } = false;
+    public bool IsEncrypted { get; set; }
 
     /// <summary>
     ///     Represents the data property of a Token object as a JSON string.
@@ -32,7 +32,7 @@ public class Token
     /// <summary>
     ///     Represents a timestamp associated with a token.
     /// </summary>
-    public DateTimeOffset TimeStamp { get; set; } = DateTimeOffset.Now.ToUniversalTime();
+    public DateTimeOffset TimeStamp { get; } = DateTimeOffset.Now.ToUniversalTime();
 
     /// <summary>
     ///     Set data after converting an object to a JSON string.
