@@ -18,6 +18,7 @@ public static class ETAMPEncryption
         ArgumentException.ThrowIfNullOrWhiteSpace(model.Token.Data);
         ArgumentNullException.ThrowIfNull(eciesEncryptionService);
         model.Token.Data = eciesEncryptionService.Encrypt(model.Token.Data);
+        model.Token.IsEncrypted = true;
         return model;
     }
 }
