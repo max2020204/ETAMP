@@ -29,7 +29,7 @@ public static class ETAMPServiceCollectionExtensions
     /// </summary>
     /// <param name="services">The <see cref="IServiceCollection" /> to add services to.</param>
     /// <returns>The original <see cref="IServiceCollection" /> with ETAMP services added.</returns>
-    public static IServiceCollection AddETAMPServices(this IServiceCollection services)
+    public static void AddETAMPServices(this IServiceCollection services)
     {
         // Register key management services
         services.AddTransient<IKeyExchanger, KeyExchanger>();
@@ -81,7 +81,5 @@ public static class ETAMPServiceCollectionExtensions
             versionInfo.GetVersionInfo();
             return versionInfo;
         });
-
-        return services;
     }
 }
