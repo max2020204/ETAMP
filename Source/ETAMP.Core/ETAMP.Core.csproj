@@ -1,0 +1,47 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <LangVersion>latest</LangVersion>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <Title>ETAMP.Core</Title>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.3"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Include="../../README.md">
+            <Pack>True</Pack>
+            <PackagePath>\</PackagePath>
+        </None>
+        <None Include="../../Etamp.png">
+            <Pack>True</Pack>
+            <PackagePath>\</PackagePath>
+            <Link>Etamp.png</Link>
+        </None>
+    </ItemGroup>
+    <PropertyGroup>
+
+        <Version>1.0</Version>
+        <Authors>Maksym Nikitiuk</Authors>
+        <Description>
+            ETAMP (Encrypted Token And Message Protocol) is designed for secure and efficient message transmission in a semi-decentralized network. The protocol ensures message integrity and supports encryption and signing using ECC ( Elliptic Curve Cryptography).
+        </Description>
+
+        <PackageProjectUrl>https://www.nuget.org/packages/ETAMP/</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/max2020204/ETAMP</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <PackageTags>ETAMP, cybersecurity, encryption, message, transactions</PackageTags>
+        <PackageIcon>Etamp.png</PackageIcon>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
+        <IncludeSymbols>True</IncludeSymbols>
+        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+        <Copyright>Copyright (c) 2024 Maksym Nikitiuk</Copyright>
+        <NeutralLanguage>en-US</NeutralLanguage>
+    </PropertyGroup>
+</Project>
