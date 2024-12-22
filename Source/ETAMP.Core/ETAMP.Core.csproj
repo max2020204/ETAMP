@@ -10,10 +10,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Newtonsoft.Json" Version="13.0.3"/>
-    </ItemGroup>
-
-    <ItemGroup>
         <None Include="../../README.md">
             <Pack>True</Pack>
             <PackagePath>\</PackagePath>
@@ -23,6 +19,18 @@
             <PackagePath>\</PackagePath>
             <Link>Etamp.png</Link>
         </None>
+    </ItemGroup>
+
+    <PropertyGroup>
+        <ProtocolVersion>2.0</ProtocolVersion>
+    </PropertyGroup>
+    <ItemGroup>
+        <AssemblyAttribute Include="ETAMP.Core.Attributes.ProtocolVersionAttribute">
+            <_Parameter1>$(ProtocolVersion)</_Parameter1>
+        </AssemblyAttribute>
+    </ItemGroup>
+    <ItemGroup>
+      <PackageReference Include="System.Text.Json" Version="9.0.0" />
     </ItemGroup>
     <PropertyGroup>
 

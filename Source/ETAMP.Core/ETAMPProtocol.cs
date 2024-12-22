@@ -1,26 +1,14 @@
 ﻿using ETAMP.Core.Interfaces;
 using ETAMP.Core.Models;
+using ETAMP.Core.Utils;
 
 namespace ETAMP.Core;
 
 /// <summary>
 ///     This class represents the base implementation of the ETAMP (Encrypted Token And Message Protocol) functionality.
 /// </summary>
-public sealed class ETAMPBase : IETAMPBase
+public sealed class ETAMPProtocol : IETAMPBase
 {
-    /// <summary>
-    ///     Represents version information for the application.
-    /// </summary>
-    private readonly VersionInfo _versionInfo;
-
-    /// <summary>
-    ///     This class represents the base implementation of the ETAMP (Encrypted Token And Message Protocol) functionality.
-    /// </summary>
-    public ETAMPBase(VersionInfo versionInfo)
-    {
-        _versionInfo = versionInfo ?? throw new ArgumentNullException(nameof(versionInfo));
-    }
-
     /// <summary>
     ///     Creates an ETAMP model for the given payload.
     /// </summary>
@@ -36,7 +24,7 @@ public sealed class ETAMPBase : IETAMPBase
         return new ETAMPModel<T>
         {
             Id = messageId,
-            Version = _versionInfo.ProtocolVersion,
+            Version = VersionInfo.ProtocolVersion,
             Token = payload,
             UpdateType = updateType,
             CompressionType = compressionType

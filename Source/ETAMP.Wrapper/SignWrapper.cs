@@ -1,8 +1,9 @@
 ﻿using System.Text;
+using System.Text.Json;
 using ETAMP.Core;
 using ETAMP.Core.Models;
+using ETAMP.Core.Utils;
 using ETAMP.Wrapper.Base;
-using Newtonsoft.Json;
 
 namespace ETAMP.Wrapper;
 
@@ -22,7 +23,7 @@ public sealed class SignWrapper : SignWrapperBase
     {
         ArgumentNullException.ThrowIfNull(etamp.Token);
 
-        var token = JsonConvert.SerializeObject(etamp.Token);
+        var token = JsonSerializer.Serialize(etamp.Token);
         etamp.SignatureMessage = Base64UrlEncoder.Encode(Sign(
             Encoding.UTF8.GetBytes(
                 $"{etamp.Id}{etamp.Version}{token}{etamp.UpdateType}{etamp.CompressionType}")));

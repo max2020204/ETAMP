@@ -3,7 +3,7 @@
 namespace ETAMP.Core.Interfaces;
 
 /// <summary>
-///     Represents the interface for the ETAMPBase class.
+///     Represents the interface for the ETAMPProtocol class.
 /// </summary>
 public interface IETAMPBase
 {

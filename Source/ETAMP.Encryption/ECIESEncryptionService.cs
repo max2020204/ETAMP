@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using ETAMP.Core;
+using ETAMP.Core.Utils;
 using ETAMP.Encryption.Base;
 
 

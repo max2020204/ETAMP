@@ -1,6 +1,6 @@
-﻿using ETAMP.Compression.Interfaces.Factory;
+﻿using System.Text.Json;
+using ETAMP.Compression.Interfaces.Factory;
 using ETAMP.Core.Models;
-using Newtonsoft.Json;
 
 namespace ETAMP.Extension.Builder;
 
@@ -23,7 +23,7 @@ public static class ETAMPBuilder
             CompressionType = model.CompressionType,
             SignatureMessage = model.SignatureMessage
         };
-        return JsonConvert.SerializeObject(temp);
+        return JsonSerializer.Serialize(temp);
     }
 
     public static ETAMPModel<T> DeconstructETAMP<T>(this string? jsonEtamp,
@@ -35,7 +35,7 @@ public static class ETAMPBuilder
         if (!jsonEtamp.Contains('{') && !jsonEtamp.Contains('}'))
             throw new ArgumentException("This string is not JSON");
 
-        var tempModel = JsonConvert.DeserializeObject<ETAMPModelBuilder>(jsonEtamp);
+        var tempModel = JsonSerializer.Deserialize<ETAMPModelBuilder>(jsonEtamp);
         var compressionService = compressionServiceFactory.Create(tempModel.CompressionType);
         var token = compressionService.DecompressString(tempModel.Token);
 
@@ -43,7 +43,7 @@ public static class ETAMPBuilder
         {
             Id = tempModel.Id,
             Version = tempModel.Version,
-            Token = JsonConvert.DeserializeObject<T>(token),
+            Token = JsonSerializer.Deserialize<T>(token),
             UpdateType = tempModel.UpdateType,
             CompressionType = tempModel.CompressionType,
             SignatureMessage = tempModel.SignatureMessage

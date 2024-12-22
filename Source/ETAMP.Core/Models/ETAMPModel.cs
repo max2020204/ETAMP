@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+﻿using System.Text.Json;
 
 namespace ETAMP.Core.Models;
 
@@ -84,7 +84,7 @@ public class ETAMPModel<T> where T : Token
             CompressionType = CompressionType,
             SignatureMessage = SignatureMessage
         };
-        return JsonConvert.SerializeObject(temp);
+        return JsonSerializer.Serialize(temp);
     }
 
     /// <summary>
@@ -94,5 +94,10 @@ public class ETAMPModel<T> where T : Token
     public override int GetHashCode()
     {
         return HashCode.Combine(Id, Version, Token, UpdateType, CompressionType, SignatureMessage);
+    }
+
+    public override string ToString()
+    {
+        return ToJson();
     }
 }

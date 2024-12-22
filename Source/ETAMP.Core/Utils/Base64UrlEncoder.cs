@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace ETAMP.Core;
+namespace ETAMP.Core.Utils;
 
 /// <summary>
 ///     Provides methods to encode and decode strings using the Base64 URL encoding scheme.

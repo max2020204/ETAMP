@@ -2,6 +2,7 @@
 using System.Text;
 using ETAMP.Compression.Interfaces;
 using ETAMP.Core;
+using ETAMP.Core.Utils;
 
 namespace ETAMP.Compression.Codec;
 

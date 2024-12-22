@@ -1,13 +1,18 @@
 ﻿using System.Reflection;
 using ETAMP.Core.Attributes;
 
-namespace ETAMP.Core;
+namespace ETAMP.Core.Utils;
 
 /// <summary>
 ///     Represents version information for the application.
 /// </summary>
 public class VersionInfo
 {
+    public VersionInfo()
+    {
+        GetVersionInfo();
+    }
+
     /// <summary>
     ///     Gets the protocol version of the ETAMP.
     /// </summary>
@@ -15,7 +20,7 @@ public class VersionInfo
     ///     This property is used to retrieve the protocol version number of the ETAMP.
     ///     The protocol version number is specified using the ProtocolVersionAttribute in the executing assembly.
     /// </remarks>
-    public double ProtocolVersion { get; private set; }
+    public static double ProtocolVersion { get; private set; }
 
     /// <summary>
     ///     Gets the full version of the ETAMP framework.
@@ -24,7 +29,7 @@ public class VersionInfo
     ///     This property is used to retrieve the full version number of the ETAMP framework.
     ///     The full version number is calculated from the Major, Minor, and Compress components of the version information.
     /// </remarks>
-    public string? FullVersion { get; private set; }
+    public static string? FullVersion { get; private set; }
 
     public void GetVersionInfo()
     {

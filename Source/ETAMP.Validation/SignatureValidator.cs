@@ -1,8 +1,8 @@
-﻿using ETAMP.Core.Models;
+﻿using System.Text.Json;
+using ETAMP.Core.Models;
 using ETAMP.Validation.Base;
 using ETAMP.Validation.Interfaces;
 using ETAMP.Wrapper.Base;
-using Newtonsoft.Json;
 
 namespace ETAMP.Validation;
 
@@ -49,7 +49,7 @@ public sealed class SignatureValidator : SignatureValidatorBase
 
         if (string.IsNullOrWhiteSpace(etamp.SignatureMessage))
             return new ValidationResult(false, "SignatureMessage is missing in the ETAMP model.");
-        var token = JsonConvert.SerializeObject(etamp.Token);
+        var token = JsonSerializer.Serialize(etamp.Token);
         var dataToVerify = $"{etamp.Id}{etamp.Version}{token}{etamp.UpdateType}{etamp.CompressionType}";
         var isVerified = VerifyWrapper.VerifyData(dataToVerify, etamp.SignatureMessage);
 

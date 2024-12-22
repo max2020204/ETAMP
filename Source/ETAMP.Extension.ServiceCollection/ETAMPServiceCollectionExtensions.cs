@@ -3,6 +3,7 @@ using ETAMP.Compression.Factory;
 using ETAMP.Compression.Interfaces.Factory;
 using ETAMP.Core;
 using ETAMP.Core.Interfaces;
+using ETAMP.Core.Utils;
 using ETAMP.Encryption;
 using ETAMP.Encryption.Base;
 using ETAMP.Encryption.ECDsaManager;
@@ -51,7 +52,7 @@ public static class ETAMPServiceCollectionExtensions
         services.AddScoped<IPemKeyCleaner, PemKeyCleaner>();
 
         // Register ETAMP processing services
-        services.AddScoped<IETAMPBase, ETAMPBase>();
+        services.AddScoped<IETAMPBase, ETAMPProtocol>();
 
 
         // Register compression services

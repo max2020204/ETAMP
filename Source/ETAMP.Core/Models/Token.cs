@@ -1,5 +1,5 @@
 ﻿using System.Diagnostics;
-using Newtonsoft.Json;
+using System.Text.Json;
 
 namespace ETAMP.Core.Models;
 
@@ -11,12 +11,12 @@ public class Token
     /// <summary>
     ///     Represents the unique identifier of a token.
     /// </summary>
-    public Guid Id { get; init; } = Guid.NewGuid();
+    public Guid Id { get; } = Guid.NewGuid();
 
     /// <summary>
     ///     Represents the unique identifier of a message.
     /// </summary>
-    public Guid MessageId { get; set; }
+    public Guid MessageId { get; protected internal set; }
 
     /// <summary>
     ///     Gets or sets a value indicating whether the data for this token is encrypted.
@@ -39,7 +39,7 @@ public class Token
     /// </summary>
     public void SetData<T>(T dataObject) where T : class
     {
-        Data = JsonConvert.SerializeObject(dataObject);
+        Data = JsonSerializer.Serialize(dataObject);
     }
 
     /// <summary>
@@ -51,7 +51,7 @@ public class Token
             return null;
         try
         {
-            return JsonConvert.DeserializeObject<T>(Data);
+            return JsonSerializer.Deserialize<T>(Data);
         }
         catch (JsonException ex)
         {
@@ -59,9 +59,9 @@ public class Token
             return null;
         }
     }
-
+    
     public string ToJson()
     {
-        return JsonConvert.SerializeObject(this);
+        return JsonSerializer.Serialize(this);
     }
 }
