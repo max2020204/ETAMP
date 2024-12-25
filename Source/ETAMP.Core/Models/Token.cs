@@ -59,7 +59,7 @@ public class Token
             return null;
         }
     }
-    
+
     public string ToJson()
     {
         return JsonSerializer.Serialize(this);

@@ -29,9 +29,6 @@
             <_Parameter1>$(ProtocolVersion)</_Parameter1>
         </AssemblyAttribute>
     </ItemGroup>
-    <ItemGroup>
-      <PackageReference Include="System.Text.Json" Version="9.0.0" />
-    </ItemGroup>
     <PropertyGroup>
 
         <Version>1.0</Version>

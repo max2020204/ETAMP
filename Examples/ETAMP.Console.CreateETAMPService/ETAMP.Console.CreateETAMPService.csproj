@@ -8,8 +8,11 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Examples\Console\ETAMP.Console.CreateETAMP\ETAMP.Console.CreateETAMP.csproj" />
-      <ProjectReference Include="..\Source\ETAMP.Validation\ETAMP.Validation.csproj" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.0"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\Source\ETAMP.Extension.ServiceCollection\ETAMP.Extension.ServiceCollection.csproj"/>
     </ItemGroup>
 
 </Project>

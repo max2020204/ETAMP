@@ -19,7 +19,6 @@ public sealed class StructureValidator : IStructureValidator
 
     public StructureValidator()
     {
-        
     }
 
     /// <summary>
@@ -68,7 +67,8 @@ public sealed class StructureValidator : IStructureValidator
     /// <param name="compressionServiceFactory">The factory used to create compression services for model processing.</param>
     /// <param name="validateLite">Optional. Specifies whether to perform lite validation. Default is false.</param>
     /// <returns>A ValidationResult object indicating whether the model is valid or not.</returns>
-    public ValidationResult ValidateETAMP<T>(string etampJson,ICompressionServiceFactory compressionServiceFactory, bool validateLite = false) where T : Token
+    public ValidationResult ValidateETAMP<T>(string etampJson, ICompressionServiceFactory compressionServiceFactory,
+        bool validateLite = false) where T : Token
     {
         var model = etampJson.DeconstructETAMP<T>(compressionServiceFactory);
         return ValidateETAMP(model, validateLite);
