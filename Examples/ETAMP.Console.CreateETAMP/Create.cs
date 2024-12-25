@@ -1,11 +1,6 @@
-﻿using ETAMP.Console.CreateETAMP.Models;
-using ETAMP.Core;
+﻿using ETAMP.Core;
 using ETAMP.Core.Management;
 using ETAMP.Core.Models;
-
-
-namespace ETAMP.Console.CreateETAMP;
-
 public class Create
 {
     /// <summary>

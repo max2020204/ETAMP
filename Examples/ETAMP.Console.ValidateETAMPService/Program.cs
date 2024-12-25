@@ -3,7 +3,6 @@ using ETAMP.Console.CreateETAMPService;
 using ETAMP.Validation.Base;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace ETAMP.Console.ValidateETAMPService;
 
 internal class Program
 {

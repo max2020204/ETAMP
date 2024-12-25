@@ -1,7 +1,5 @@
 ﻿using ETAMP.Core.Models;
 
-namespace ETAMP.Console.CreateETAMP.Models;
-
 public class TokenModel : Token
 {
     public string? Name { get; set; }

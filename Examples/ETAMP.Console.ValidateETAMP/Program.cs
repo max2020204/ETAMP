@@ -1,7 +1,4 @@
-﻿using ETAMP.Console.CreateETAMP;
-using ETAMP.Console.CreateETAMP.Models;
-using ETAMP.Core.Models;
-using ETAMP.Validation;
+﻿using ETAMP.Validation;
 
 var create = new Create();
 var etamp = create.CreateETAMP();

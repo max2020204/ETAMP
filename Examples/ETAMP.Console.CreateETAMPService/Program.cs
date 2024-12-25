@@ -6,16 +6,14 @@ using ETAMP.Extension.Builder;
 using ETAMP.Extension.ServiceCollection;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace ETAMP.Console.CreateETAMPService;
-
-public class Service
+public static class Service
 {
     private static ServiceProvider _provider;
 
     private static void Main(string[] args)
     {
         _provider = ConfigureServices();
-        System.Console.WriteLine(CreateETAMP());
+        Console.WriteLine(CreateETAMP());
     }
 
     public static string CreateETAMP()
