@@ -2,6 +2,7 @@
 using ETAMP.Console.CreateETAMPService.Models;
 using ETAMP.Core.Interfaces;
 using ETAMP.Core.Management;
+using ETAMP.Core.Models;
 using ETAMP.Extension.Builder;
 using ETAMP.Extension.ServiceCollection;
 using Microsoft.Extensions.DependencyInjection;
@@ -13,13 +14,14 @@ public static class Service
     private static void Main(string[] args)
     {
         _provider = ConfigureServices();
-        Console.WriteLine(CreateETAMP());
+        var compression = _provider.GetService<ICompressionServiceFactory>();
+        Console.WriteLine(CreateETAMP(_provider).Build(compression));
     }
 
-    public static string CreateETAMP()
+    public static ETAMPModel<TokenModel> CreateETAMP(ServiceProvider provider)
     {
-        var etampBase = _provider.GetService<IETAMPBase>();
-        var compression = _provider.GetService<ICompressionServiceFactory>();
+        var etampBase = provider.GetService<IETAMPBase>();
+
         var tokenModel = new TokenModel
         {
             Message = "Hello World!",
@@ -31,8 +33,7 @@ public static class Service
             Phone = "+1234567890"
         };
 
-        var model = etampBase.CreateETAMPModel("Message", tokenModel, CompressionNames.GZip);
-        return model.Build(compression);
+        return etampBase.CreateETAMPModel("Message", tokenModel, CompressionNames.GZip); 
     }
 
     public static ServiceProvider ConfigureServices()

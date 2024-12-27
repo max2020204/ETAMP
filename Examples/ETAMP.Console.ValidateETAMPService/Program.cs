@@ -9,9 +9,13 @@ internal class Program
     private static void Main(string[] args)
     {
         var provider = Service.ConfigureServices();
-        var etamp = Service.CreateETAMP();
-
+        
         var validator = provider.GetService<ETAMPValidatorBase>();
         var compression = provider.GetService<ICompressionServiceFactory>();
+        
+        
+        var etamp = Service.CreateETAMP(provider);
+
+
     }
 }

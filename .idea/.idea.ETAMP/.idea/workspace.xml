@@ -4,6 +4,7 @@
     <projectFile>ETAMP.Console.CreateSignETAMP/ETAMP.Console.CreateSignETAMP.csproj</projectFile>
     <projectFile>Examples/ETAMP.Console.CreateETAMP/ETAMP.Console.CreateETAMP.csproj</projectFile>
     <projectFile>Examples/ETAMP.Console.CreateETAMPService/ETAMP.Console.CreateETAMPService.csproj</projectFile>
+    <projectFile>Examples/ETAMP.Console.CreateSignETAMPService/ETAMP.Console.CreateSignETAMPService.csproj</projectFile>
     <projectFile>Examples/ETAMP.Console.ValidateETAMP/ETAMP.Console.ValidateETAMP.csproj</projectFile>
     <projectFile>Examples/ETAMP.Console.ValidateETAMPService/ETAMP.Console.ValidateETAMPService.csproj</projectFile>
   </component>
@@ -11,7 +12,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8b44219d-6ab5-4022-b5c1-0f01c450f8f2" name="Changes" comment="Refactor and reorganize ETAMP example projects&#10;&#10;Moved and restructured ETAMP example project files for better modularity and project clarity. Updated project references and dependencies to align with the new structure. Removed redundant files and added missing configurations where necessary." />
+    <list default="true" id="8b44219d-6ab5-4022-b5c1-0f01c450f8f2" name="Changes" comment="Refactor and reorganize ETAMP example projects.&#10;&#10;Restructured and cleaned up ETAMP example project files for improved clarity and maintainability. Updated project references, adjusted configurations, and removed redundant code. Minor formatting fixes and consistency improvements were also applied.">
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.ETAMP/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.ETAMP/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ETAMP.sln" beforeDir="false" afterPath="$PROJECT_DIR$/ETAMP.sln" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Examples/ETAMP.Console.CreateETAMPService/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Examples/ETAMP.Console.CreateETAMPService/Program.cs" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -36,7 +41,14 @@
   }
 }]]></component>
   <component name="HighlightingSettingsPerFile">
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/a8ceca48b7b645dd875a40ee6d28725416d08/ba/17c0ae6e/ServiceProvider.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/621526284d3e4868b98948aff942206525763e57e194a27623b66c384466/ServiceProviderServiceExtensions.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/8bb5e9b7c0175f0e7484c843d9a2bbcfb1f176b842f476b2c6a8fcbceea5cf/ThrowHelper.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="mock://D:/ETAMP/Examples/ETAMP.Console.CreateETAMP/Create.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://D:/ETAMP/Examples/ETAMP.Console.CreateETAMP/Program.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://D:/ETAMP/Examples/ETAMP.Console.CreateSignETAMP/Program.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://D:/ETAMP/Source/ETAMP.Encryption/ECDsaManager/ECDsaProvider.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://D:/ETAMP/Source/ETAMP.Encryption/ECDsaManager/ECDsaProvider.cs" root0="SKIP_HIGHLIGHTING" />
   </component>
   <component name="MetaFilesCheckinStateConfiguration" checkMetaFiles="true" />
   <component name="ProblemsViewState">
@@ -52,7 +64,9 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    ".NET Project.ETAMP.Console.CreateETAMPService.executor": "Run",
     ".NET Project.ETAMP.Console.CreateSignETAMP.executor": "Run",
+    ".NET Project.ETAMP.Console.CreateSignETAMPService.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
     "git-widget-placeholder": "master",
@@ -82,7 +96,7 @@
       <ReportDescription localRun="true" path="C:\Users\black\AppData\Local\Temp\qodana_output\qodana.sarif.json" reportGuid="2b711a4e-6ad8-428d-b915-3517de735290" reportId="ETAMP/qodana/2024-12-27" />
     </option>
   </component>
-  <component name="RunManager" selected=".NET Project.ETAMP.Console.CreateSignETAMP">
+  <component name="RunManager" selected=".NET Project.ETAMP.Console.CreateSignETAMPService">
     <configuration name="ETAMP.Console.CreateETAMP" type="DotNetProject" factoryName=".NET Project">
       <option name="EXE_PATH" value="" />
       <option name="PROGRAM_PARAMETERS" value="" />
@@ -137,6 +151,24 @@
         <option name="Build" />
       </method>
     </configuration>
+    <configuration name="ETAMP.Console.CreateSignETAMPService" type="DotNetProject" factoryName=".NET Project">
+      <option name="EXE_PATH" value="" />
+      <option name="PROGRAM_PARAMETERS" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="PASS_PARENT_ENVS" value="1" />
+      <option name="USE_EXTERNAL_CONSOLE" value="0" />
+      <option name="USE_MONO" value="0" />
+      <option name="RUNTIME_ARGUMENTS" value="" />
+      <option name="PROJECT_PATH" value="$PROJECT_DIR$/Examples/ETAMP.Console.CreateSignETAMPService/ETAMP.Console.CreateSignETAMPService.csproj" />
+      <option name="PROJECT_EXE_PATH_TRACKING" value="1" />
+      <option name="PROJECT_ARGUMENTS_TRACKING" value="1" />
+      <option name="PROJECT_WORKING_DIRECTORY_TRACKING" value="1" />
+      <option name="PROJECT_KIND" value="DotNetCore" />
+      <option name="PROJECT_TFM" value="" />
+      <method v="2">
+        <option name="Build" />
+      </method>
+    </configuration>
     <configuration name="ETAMP.Console.ValidateETAMP" type="DotNetProject" factoryName=".NET Project">
       <option name="EXE_PATH" value="$PROJECT_DIR$/Examples/ETAMP.Console.ValidateETAMP/bin/Debug/net9.0/ETAMP.Console.ValidateETAMP.exe" />
       <option name="PROGRAM_PARAMETERS" value="" />
@@ -174,6 +206,7 @@
       </method>
     </configuration>
     <list>
+      <item itemvalue=".NET Project.ETAMP.Console.CreateSignETAMPService" />
       <item itemvalue=".NET Project.ETAMP.Console.CreateETAMP" />
       <item itemvalue=".NET Project.ETAMP.Console.CreateETAMPService" />
       <item itemvalue=".NET Project.ETAMP.Console.ValidateETAMP" />
@@ -192,7 +225,7 @@
       <workItem from="1734991201237" duration="495000" />
       <workItem from="1735159082164" duration="1249000" />
       <workItem from="1735160407746" duration="1246000" />
-      <workItem from="1735289303042" duration="3984000" />
+      <workItem from="1735289303042" duration="6562000" />
     </task>
     <task id="LOCAL-00001" summary="Refactor and reorganize ETAMP example projects&#10;&#10;Moved and restructured ETAMP example project files for better modularity and project clarity. Updated project references and dependencies to align with the new structure. Removed redundant files and added missing configurations where necessary.">
       <option name="closed" value="true" />
@@ -210,7 +243,15 @@
       <option name="project" value="LOCAL" />
       <updated>1735293252248</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="Refactor and reorganize ETAMP example projects.&#10;&#10;Restructured and cleaned up ETAMP example project files for improved clarity and maintainability. Updated project references, adjusted configurations, and removed redundant code. Minor formatting fixes and consistency improvements were also applied.">
+      <option name="closed" value="true" />
+      <created>1735293631170</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1735293631170</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -221,6 +262,26 @@
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
     <MESSAGE value="Refactor and reorganize ETAMP example projects&#10;&#10;Moved and restructured ETAMP example project files for better modularity and project clarity. Updated project references and dependencies to align with the new structure. Removed redundant files and added missing configurations where necessary." />
-    <option name="LAST_COMMIT_MESSAGE" value="Refactor and reorganize ETAMP example projects&#10;&#10;Moved and restructured ETAMP example project files for better modularity and project clarity. Updated project references and dependencies to align with the new structure. Removed redundant files and added missing configurations where necessary." />
+    <MESSAGE value="Refactor and reorganize ETAMP example projects.&#10;&#10;Restructured and cleaned up ETAMP example project files for improved clarity and maintainability. Updated project references, adjusted configurations, and removed redundant code. Minor formatting fixes and consistency improvements were also applied." />
+    <option name="LAST_COMMIT_MESSAGE" value="Refactor and reorganize ETAMP example projects.&#10;&#10;Restructured and cleaned up ETAMP example project files for improved clarity and maintainability. Updated project references, adjusted configurations, and removed redundant code. Minor formatting fixes and consistency improvements were also applied." />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/Examples/ETAMP.Console.CreateSignETAMPService/Program.cs</url>
+          <line>19</line>
+          <properties documentPath="D:\ETAMP\Examples\ETAMP.Console.CreateSignETAMPService\Program.cs" containingFunctionPresentation="Method 'SignETAMP'">
+            <startOffsets>
+              <option value="562" />
+            </startOffsets>
+            <endOffsets>
+              <option value="563" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="2" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>
