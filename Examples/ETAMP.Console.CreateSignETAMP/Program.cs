@@ -13,13 +13,12 @@ internal static class ETAMPSignProgram
     private static HashAlgorithmName _hashAlgorithm;
     private static SignWrapperBase _signWrapperBase;
 
-    static void Main(string[] args)
+    private static void Main(string[] args)
     {
         Initialize(ref _signWrapperBase);
-        
+
         //Sign
         var etamp = SignETAMP();
-        //comrpress
         Console.WriteLine(etamp.ToJson());
     }
 

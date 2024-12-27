@@ -8,10 +8,10 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\Source\ETAMP.Encryption\ETAMP.Encryption.csproj" />
-      <ProjectReference Include="..\..\Source\ETAMP.Extension\ETAMP.Extension.csproj" />
-      <ProjectReference Include="..\..\Source\ETAMP.Wrapper\ETAMP.Wrapper.csproj" />
-      <ProjectReference Include="..\ETAMP.Console.CreateETAMP\ETAMP.Console.CreateETAMP.csproj" />
+        <ProjectReference Include="..\..\Source\ETAMP.Encryption\ETAMP.Encryption.csproj"/>
+        <ProjectReference Include="..\..\Source\ETAMP.Extension\ETAMP.Extension.csproj"/>
+        <ProjectReference Include="..\..\Source\ETAMP.Wrapper\ETAMP.Wrapper.csproj"/>
+        <ProjectReference Include="..\ETAMP.Console.CreateETAMP\ETAMP.Console.CreateETAMP.csproj"/>
     </ItemGroup>
 
 </Project>
