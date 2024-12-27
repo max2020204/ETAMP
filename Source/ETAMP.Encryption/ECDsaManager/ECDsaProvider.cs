@@ -19,6 +19,14 @@ public class ECDsaProvider : IECDsaProvider, IECDsaRegistrar
     }
 
     /// <summary>
+    /// Provides an implementation for managing an ECDsa instance.
+    /// </summary>
+    public ECDsaProvider(ECDsa ecdsa) 
+    {
+        _ecdsa = ecdsa;
+    }
+
+    /// <summary>
     ///     Retrieves the registered ECDsa instance.
     /// </summary>
     /// <returns>The currently registered ECDsa instance.</returns>
