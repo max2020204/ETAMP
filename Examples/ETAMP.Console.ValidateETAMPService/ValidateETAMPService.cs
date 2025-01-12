@@ -6,16 +6,16 @@ using Microsoft.Extensions.DependencyInjection;
 
 #endregion
 
-internal class Program
+internal class ValidateETAMPService
 {
     private static void Main(string[] args)
     {
-        var provider = Service.ConfigureServices();
+        var provider = CreateETAMPService.ConfigureServices();
 
         var validator = provider.GetService<ETAMPValidatorBase>();
         var compression = provider.GetService<ICompressionServiceFactory>();
 
 
-        var etamp = Service.CreateETAMP(provider);
+        var etamp = CreateETAMPService.CreateETAMP(provider);
     }
 }

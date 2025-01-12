@@ -14,7 +14,7 @@ internal class CreateSignETAMPService
 
     private static void Main(string[] args)
     {
-        _provider = Service.ConfigureServices();
+        _provider = CreateETAMPService.ConfigureServices();
         Console.WriteLine(SignETAMP(_provider).ToJson());
     }
 
@@ -22,7 +22,7 @@ internal class CreateSignETAMPService
     {
         var sign = provider.GetService<SignWrapperBase>();
 
-        var etamp = Service.CreateETAMP(_provider);
+        var etamp = CreateETAMPService.CreateETAMP(_provider);
         etamp.Sign(sign);
         return etamp;
     }

@@ -11,7 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 #endregion
 
-public static class Service
+public static class CreateETAMPService
 {
     private static ServiceProvider _provider;
 

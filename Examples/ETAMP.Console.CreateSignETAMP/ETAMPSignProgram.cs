@@ -14,8 +14,7 @@ using ETAMP.Wrapper.Base;
 
 public static class ETAMPSignProgram
 {
-    private static ECDsaProviderBase? _ecdsaProvider;
-    private static HashAlgorithmName _hashAlgorithm;
+    private static ECDsaProviderBase? _providerBase;
     private static SignWrapperBase _signWrapperBase;
     private static IECDsaStore _ecdsaStore;
 
@@ -34,12 +33,11 @@ public static class ETAMPSignProgram
         sign = new SignWrapper();
         _ecdsaStore = new ECDsaStore();
         var ecDsaProvider = new ECDsaProvider(_ecdsaStore);
-        _ecdsaProvider = ecDsaProvider;
+        _providerBase = ecDsaProvider;
 
-        ECDsaRegistrationBase registrationBase = new ECDsaRegistration(_ecdsaStore, _ecdsaProvider);
+        ECDsaRegistrationBase registrationBase = new ECDsaRegistration(_ecdsaStore, _providerBase);
         registrationBase.Registrar(ECDsa.Create());
-        _hashAlgorithm = HashAlgorithmName.SHA512;
-        sign.Initialize(_ecdsaProvider, _hashAlgorithm);
+        sign.Initialize(_providerBase, HashAlgorithmName.SHA512);
     }
 
     public static ETAMPModel<TokenModel> SignETAMP(SignWrapperBase signWrapperBase)
