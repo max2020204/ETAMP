@@ -3,7 +3,6 @@
 using System.Security.Cryptography;
 using ETAMP.Core.Models;
 using ETAMP.Encryption.Base;
-using ETAMP.Encryption.Interfaces.ECDSAManager;
 using ETAMP.Validation.Interfaces;
 
 #endregion

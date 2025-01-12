@@ -1,19 +1,11 @@
 ﻿#region
 
-using System.Security.Cryptography;
-using ETAMP.Encryption.ECDsaManager;
-using ETAMP.Encryption.Interfaces.ECDSAManager;
-using ETAMP.Validation;
-using ETAMP.Wrapper;
-using ETAMP.Wrapper.Base;
-
 #endregion
 
-class ValidateETAMP
+internal class ValidateETAMP
 {
-    static void Main(string[] args)
+    private static void Main(string[] args)
     {
-        
     }
 }
 /*

@@ -100,6 +100,12 @@ public class ETAMPModel<T> where T : Token
         return HashCode.Combine(Id, Version, Token, UpdateType, CompressionType, SignatureMessage);
     }
 
+    /// <summary>
+    ///     Returns a string that represents the current ETAMPModel object.
+    /// </summary>
+    /// <returns>
+    ///     A string that represents the current object.
+    /// </returns>
     public override string ToString()
     {
         return ToJson();

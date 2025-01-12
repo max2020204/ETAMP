@@ -64,6 +64,12 @@ public class Token
         }
     }
 
+    /// <summary>
+    ///     Converts the current instance of the object into its JSON string representation.
+    /// </summary>
+    /// <returns>
+    ///     A JSON string representing the current instance.
+    /// </returns>
     public string ToJson()
     {
         return JsonSerializer.Serialize(this);

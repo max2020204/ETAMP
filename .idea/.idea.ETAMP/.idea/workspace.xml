@@ -12,23 +12,19 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8b44219d-6ab5-4022-b5c1-0f01c450f8f2" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/Source/ETAMP.Encryption/ECDsaManager/ECDsaStore.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Source/ETAMP.Encryption/Interfaces/ECDSAManager/IECDsaStore.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.ETAMP/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.ETAMP/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Examples/ETAMP.Console.CreateSignETAMP/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Examples/ETAMP.Console.CreateSignETAMP/Program.cs" afterDir="false" />
+    <list default="true" id="8b44219d-6ab5-4022-b5c1-0f01c450f8f2" name="Changes" comment="Refactor ECDsa management and remove deprecated classes.&#10;&#10;Removed ECDsaCreator and ECDsaKeyManager classes along with their interfaces. Introduced ECDsaStore and refactored ECDsaProviderBase with support for flexible ECDsa management. Updated dependencies and adjusted implementations where necessary.">
       <change beforePath="$PROJECT_DIR$/Examples/ETAMP.Console.CreateSignETAMPService/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Examples/ETAMP.Console.CreateSignETAMPService/Program.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Examples/ETAMP.Console.ValidateETAMP/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Examples/ETAMP.Console.ValidateETAMP/Program.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ETAMP.Core/Models/ETAMPModel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Core/Models/ETAMPModel.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ETAMP.Core/Models/ETAMPModelBuilder.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Core/Models/ETAMPModelBuilder.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ETAMP.Core/Models/Token.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Core/Models/Token.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/ETAMP.Encryption/Base/ECDsaProviderBase.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Encryption/Base/ECDsaProviderBase.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/ETAMP.Encryption/Base/ECDsaRegistrationBase.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Encryption/Base/ECDsaRegistrationBase.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/ETAMP.Encryption/ECDsaManager/ECDsaControl.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Encryption/ECDsaManager/ECDsaControl.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ETAMP.Encryption/ECDsaManager/ECDsaCreator.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ETAMP.Encryption/ECDsaManager/ECDsaKeyManager.cs" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/ETAMP.Encryption/ECDsaManager/ECDsaProvider.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Encryption/ECDsaManager/ECDsaProvider.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/ETAMP.Encryption/ECDsaManager/ECDsaRegistration.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Encryption/ECDsaManager/ECDsaRegistration.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ETAMP.Encryption/Interfaces/ECDSAManager/IECDsaCreator.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ETAMP.Encryption/Interfaces/ECDSAManager/IECDsaKeyManager.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ETAMP.Encryption/Interfaces/ECDSAManager/IECDsaProvider.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Encryption/Interfaces/ECDSAManager/IECDsaProvider.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ETAMP.Encryption/ECDsaManager/ECDsaStore.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Encryption/ECDsaManager/ECDsaStore.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ETAMP.Encryption/Interfaces/ECDSAManager/IECDsaStore.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Encryption/Interfaces/ECDSAManager/IECDsaStore.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/ETAMP.Extension.ServiceCollection/ETAMPServiceCollectionExtensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Extension.ServiceCollection/ETAMPServiceCollectionExtensions.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/ETAMP.Validation/Base/ETAMPValidatorBase.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Validation/Base/ETAMPValidatorBase.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/ETAMP.Validation/Base/SignatureValidatorBase.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Validation/Base/SignatureValidatorBase.cs" afterDir="false" />
@@ -346,6 +342,7 @@
       <workItem from="1735289303042" duration="8407000" />
       <workItem from="1735850406334" duration="1386000" />
       <workItem from="1736690587302" duration="4589000" />
+      <workItem from="1736723483389" duration="1323000" />
     </task>
     <task id="LOCAL-00001" summary="Refactor and reorganize ETAMP example projects&#10;&#10;Moved and restructured ETAMP example project files for better modularity and project clarity. Updated project references and dependencies to align with the new structure. Removed redundant files and added missing configurations where necessary.">
       <option name="closed" value="true" />
@@ -395,7 +392,15 @@
       <option name="project" value="LOCAL" />
       <updated>1736690642899</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="Refactor ECDsa management and remove deprecated classes.&#10;&#10;Removed ECDsaCreator and ECDsaKeyManager classes along with their interfaces. Introduced ECDsaStore and refactored ECDsaProviderBase with support for flexible ECDsa management. Updated dependencies and adjusted implementations where necessary.">
+      <option name="closed" value="true" />
+      <created>1736723531988</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1736723531988</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -403,14 +408,30 @@
   </component>
   <component name="UnityCheckinConfiguration" checkUnsavedScenes="true" />
   <component name="UnityProjectConfiguration" hasMinimizedUI="false" />
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
   <component name="VcsManagerConfiguration">
+    <option name="CHECK_CODE_CLEANUP_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
     <MESSAGE value="Refactor and reorganize ETAMP example projects&#10;&#10;Moved and restructured ETAMP example project files for better modularity and project clarity. Updated project references and dependencies to align with the new structure. Removed redundant files and added missing configurations where necessary." />
     <MESSAGE value="Refactor and reorganize ETAMP example projects.&#10;&#10;Restructured and cleaned up ETAMP example project files for improved clarity and maintainability. Updated project references, adjusted configurations, and removed redundant code. Minor formatting fixes and consistency improvements were also applied." />
     <MESSAGE value="Add CreateSignETAMPService project and update dependencies&#10;&#10;Introduced the CreateSignETAMPService project to the solution for improved modularity. Updated related configurations, project dependencies, and code to support the new functionality. Minor adjustments were made to existing services for consistency." />
     <MESSAGE value="Add CreateSignETAMPService project for modularity&#10;&#10;Introduced the CreateSignETAMPService project to enhance solution structure and maintainability. Updated dependencies, project configurations, and integrated related services. Minor changes were made to existing components for consistency." />
     <MESSAGE value="Add region directives and ECDsaRegistration implementation&#10;&#10;Region directives were introduced across multiple files to improve code organization and readability. An `ECDsaRegistration` class was implemented for better management of ECDsa providers. The changes also include minor adjustments to parameters and accessibility levels for consistency and maintainability." />
-    <option name="LAST_COMMIT_MESSAGE" value="Add region directives and ECDsaRegistration implementation&#10;&#10;Region directives were introduced across multiple files to improve code organization and readability. An `ECDsaRegistration` class was implemented for better management of ECDsa providers. The changes also include minor adjustments to parameters and accessibility levels for consistency and maintainability." />
+    <MESSAGE value="Refactor ECDsa management and remove deprecated classes.&#10;&#10;Removed ECDsaCreator and ECDsaKeyManager classes along with their interfaces. Introduced ECDsaStore and refactored ECDsaProviderBase with support for flexible ECDsa management. Updated dependencies and adjusted implementations where necessary." />
+    <option name="LAST_COMMIT_MESSAGE" value="Refactor ECDsa management and remove deprecated classes.&#10;&#10;Removed ECDsaCreator and ECDsaKeyManager classes along with their interfaces. Introduced ECDsaStore and refactored ECDsaProviderBase with support for flexible ECDsa management. Updated dependencies and adjusted implementations where necessary." />
+    <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
+    <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="true" />
+    <option name="REARRANGE_BEFORE_PROJECT_COMMIT" value="true" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
