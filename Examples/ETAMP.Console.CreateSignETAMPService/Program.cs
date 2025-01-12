@@ -1,4 +1,6 @@
-﻿using System.Security.Cryptography;
+﻿#region
+
+using System.Security.Cryptography;
 using ETAMP.Console.CreateETAMPService.Models;
 using ETAMP.Core.Models;
 using ETAMP.Encryption.Interfaces.ECDSAManager;
@@ -6,11 +8,13 @@ using ETAMP.Extension.Builder;
 using ETAMP.Wrapper.Base;
 using Microsoft.Extensions.DependencyInjection;
 
-class Program
+#endregion
+
+internal class Program
 {
     private static ServiceProvider _provider;
 
-    static void Main(string[] args)
+    private static void Main(string[] args)
     {
         _provider = Service.ConfigureServices();
         Console.WriteLine(SignETAMP(_provider).ToJson());

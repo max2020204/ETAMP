@@ -1,12 +1,16 @@
-﻿using ETAMP.Compression.Interfaces.Factory;
+﻿#region
+
+using ETAMP.Compression.Interfaces.Factory;
 using ETAMP.Core.Models;
 using ETAMP.Extension.Builder;
 using ETAMP.Validation.Interfaces;
 
+#endregion
+
 namespace ETAMP.Validation;
 
 /// <summary>
-/// Provides functionality to validate the structure of an ETAMP model.
+///     Provides functionality to validate the structure of an ETAMP model.
 /// </summary>
 public sealed class StructureValidator : IStructureValidator
 {
@@ -59,8 +63,8 @@ public sealed class StructureValidator : IStructureValidator
     }
 
     /// <summary>
-    /// Validates an ETAMP model constructed from a JSON string,
-    /// using the given compression service factory to decompress and parse the model.
+    ///     Validates an ETAMP model constructed from a JSON string,
+    ///     using the given compression service factory to decompress and parse the model.
     /// </summary>
     /// <typeparam name="T">The type of token.</typeparam>
     /// <param name="etampJson">The JSON string representing the ETAMP model.</param>

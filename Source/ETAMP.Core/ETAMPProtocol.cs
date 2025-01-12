@@ -1,6 +1,10 @@
-﻿using ETAMP.Core.Interfaces;
+﻿#region
+
+using ETAMP.Core.Interfaces;
 using ETAMP.Core.Models;
 using ETAMP.Core.Utils;
+
+#endregion
 
 namespace ETAMP.Core;
 

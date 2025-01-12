@@ -1,5 +1,9 @@
-﻿using ETAMP.Core.Models;
+﻿#region
+
+using ETAMP.Core.Models;
 using ETAMP.Encryption.Interfaces;
+
+#endregion
 
 namespace ETAMP.Extension.Builder;
 

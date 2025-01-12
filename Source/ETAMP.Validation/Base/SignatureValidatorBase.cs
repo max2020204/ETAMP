@@ -1,8 +1,12 @@
-﻿using System.Security.Cryptography;
+﻿#region
+
+using System.Security.Cryptography;
 using ETAMP.Core.Models;
 using ETAMP.Encryption.Interfaces.ECDSAManager;
 using ETAMP.Validation.Interfaces;
 using ETAMP.Wrapper.Base;
+
+#endregion
 
 namespace ETAMP.Validation.Base;
 

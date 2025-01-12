@@ -1,4 +1,6 @@
-﻿using ETAMP.Compression.Interfaces.Factory;
+﻿#region
+
+using ETAMP.Compression.Interfaces.Factory;
 using ETAMP.Console.CreateETAMPService.Models;
 using ETAMP.Core.Interfaces;
 using ETAMP.Core.Management;
@@ -6,6 +8,8 @@ using ETAMP.Core.Models;
 using ETAMP.Extension.Builder;
 using ETAMP.Extension.ServiceCollection;
 using Microsoft.Extensions.DependencyInjection;
+
+#endregion
 
 public static class Service
 {
@@ -33,7 +37,7 @@ public static class Service
             Phone = "+1234567890"
         };
 
-        return etampBase.CreateETAMPModel("Message", tokenModel, CompressionNames.GZip); 
+        return etampBase.CreateETAMPModel("Message", tokenModel, CompressionNames.GZip);
     }
 
     public static ServiceProvider ConfigureServices()

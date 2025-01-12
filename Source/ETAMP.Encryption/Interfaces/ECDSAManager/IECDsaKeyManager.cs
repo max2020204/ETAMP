@@ -1,4 +1,8 @@
-﻿using System.Security.Cryptography;
+﻿#region
+
+using System.Security.Cryptography;
+
+#endregion
 
 namespace ETAMP.Encryption.Interfaces.ECDSAManager;
 

@@ -1,6 +1,10 @@
-﻿using System.Text.Json;
+﻿#region
+
+using System.Text.Json;
 using ETAMP.Compression.Interfaces.Factory;
 using ETAMP.Core.Models;
+
+#endregion
 
 namespace ETAMP.Extension.Builder;
 

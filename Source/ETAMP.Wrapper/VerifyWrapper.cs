@@ -1,7 +1,10 @@
-﻿using System.Text;
-using ETAMP.Core;
+﻿#region
+
+using System.Text;
 using ETAMP.Core.Utils;
 using ETAMP.Wrapper.Base;
+
+#endregion
 
 namespace ETAMP.Wrapper;
 

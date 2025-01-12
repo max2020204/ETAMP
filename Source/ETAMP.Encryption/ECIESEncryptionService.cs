@@ -1,8 +1,10 @@
-﻿using System.Text;
-using ETAMP.Core;
+﻿#region
+
+using System.Text;
 using ETAMP.Core.Utils;
 using ETAMP.Encryption.Base;
 
+#endregion
 
 namespace ETAMP.Encryption;
 

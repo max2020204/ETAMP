@@ -1,4 +1,6 @@
-﻿using ETAMP.Compression.Codec;
+﻿#region
+
+using ETAMP.Compression.Codec;
 using ETAMP.Compression.Factory;
 using ETAMP.Compression.Interfaces.Factory;
 using ETAMP.Core;
@@ -18,6 +20,8 @@ using ETAMP.Wrapper;
 using ETAMP.Wrapper.Base;
 using ETAMP.Wrapper.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
+
+#endregion
 
 namespace ETAMP.Extension.ServiceCollection;
 
@@ -45,7 +49,7 @@ public static class ETAMPServiceCollectionExtensions
         services.AddScoped<ECIESEncryptionServiceBase, ECIESEncryptionService>();
 
         // Register wrapper services for cryptographic operations
-        services.AddScoped<IECDsaRegistrar, ECDsaProvider>();
+        services.AddScoped<IECDsaRegistrar, ECDsaRegistration>();
         services.AddScoped<IECDsaProvider, ECDsaProvider>();
         services.AddScoped<IECDsaCreator, ECDsaCreator>();
         services.AddScoped<IECDsaKeyManager, ECDsaKeyManager>();

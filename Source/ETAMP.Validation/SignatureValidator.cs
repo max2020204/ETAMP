@@ -1,8 +1,12 @@
-﻿using System.Text.Json;
+﻿#region
+
+using System.Text.Json;
 using ETAMP.Core.Models;
 using ETAMP.Validation.Base;
 using ETAMP.Validation.Interfaces;
 using ETAMP.Wrapper.Base;
+
+#endregion
 
 namespace ETAMP.Validation;
 

@@ -1,6 +1,10 @@
-﻿using ETAMP.Encryption.Interfaces;
+﻿#region
+
+using ETAMP.Encryption.Interfaces;
 using ETAMP.Encryption.Interfaces.Factory;
 using Microsoft.Extensions.DependencyInjection;
+
+#endregion
 
 namespace ETAMP.Encryption.Factory;
 

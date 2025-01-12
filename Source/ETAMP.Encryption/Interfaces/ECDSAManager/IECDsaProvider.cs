@@ -1,4 +1,8 @@
-﻿using System.Security.Cryptography;
+﻿#region
+
+using System.Security.Cryptography;
+
+#endregion
 
 namespace ETAMP.Encryption.Interfaces.ECDSAManager;
 
@@ -7,9 +11,6 @@ namespace ETAMP.Encryption.Interfaces.ECDSAManager;
 /// </summary>
 public interface IECDsaProvider
 {
-    /// <summary>
-    ///     Retrieves the ECDsa instance managed by the provider.
-    /// </summary>
-    /// <returns>The ECDsa instance for cryptographic operations.</returns>
-    ECDsa? GetECDsa();
+    ECDsa GetECDsa(Guid id);
+    ECDsa GetECDsa(string name);
 }

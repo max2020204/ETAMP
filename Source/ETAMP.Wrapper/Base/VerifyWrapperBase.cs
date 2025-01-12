@@ -1,5 +1,9 @@
-﻿using ETAMP.Wrapper.Helper;
+﻿#region
+
+using ETAMP.Wrapper.Helper;
 using ETAMP.Wrapper.Interfaces;
+
+#endregion
 
 namespace ETAMP.Wrapper.Base;
 

@@ -1,9 +1,13 @@
-﻿using System.Collections.Concurrent;
+﻿#region
+
+using System.Collections.Concurrent;
 using ETAMP.Compression.Codec;
 using ETAMP.Compression.Interfaces;
 using ETAMP.Compression.Interfaces.Factory;
 using ETAMP.Core.Management;
 using Microsoft.Extensions.DependencyInjection;
+
+#endregion
 
 namespace ETAMP.Compression.Factory;
 

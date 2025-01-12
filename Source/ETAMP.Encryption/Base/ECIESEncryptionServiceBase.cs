@@ -1,5 +1,9 @@
-﻿using ETAMP.Encryption.Helper;
+﻿#region
+
+using ETAMP.Encryption.Helper;
 using ETAMP.Encryption.Interfaces;
+
+#endregion
 
 namespace ETAMP.Encryption.Base;
 

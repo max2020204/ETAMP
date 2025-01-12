@@ -11,6 +11,7 @@
         <ProjectReference Include="..\..\Source\ETAMP.Core\ETAMP.Core.csproj"/>
         <ProjectReference Include="..\..\Source\ETAMP.Validation\ETAMP.Validation.csproj"/>
         <ProjectReference Include="..\ETAMP.Console.CreateETAMP\ETAMP.Console.CreateETAMP.csproj"/>
+        <ProjectReference Include="..\ETAMP.Console.CreateSignETAMP\ETAMP.Console.CreateSignETAMP.csproj"/>
     </ItemGroup>
 
 </Project>

@@ -1,4 +1,6 @@
-﻿using System.Security.Cryptography;
+﻿#region
+
+using System.Security.Cryptography;
 using ETAMP.Console.CreateETAMP;
 using ETAMP.Core.Models;
 using ETAMP.Encryption.ECDsaManager;
@@ -7,18 +9,21 @@ using ETAMP.Extension.Builder;
 using ETAMP.Wrapper;
 using ETAMP.Wrapper.Base;
 
-internal static class ETAMPSignProgram
+#endregion
+
+public static class ETAMPSignProgram
 {
     private static IECDsaProvider? _ecdsaProvider;
     private static HashAlgorithmName _hashAlgorithm;
     private static SignWrapperBase _signWrapperBase;
+
 
     private static void Main(string[] args)
     {
         Initialize(ref _signWrapperBase);
 
         //Sign
-        var etamp = SignETAMP();
+        var etamp = SignETAMP(_signWrapperBase);
         Console.WriteLine(etamp.ToJson());
     }
 
@@ -29,13 +34,14 @@ internal static class ETAMPSignProgram
         _ecdsaProvider = ecDsaProvider;
         var creator = new ECDsaCreator(ecDsaProvider);
         creator.CreateECDsa();
+
         _hashAlgorithm = HashAlgorithmName.SHA512;
         sign.Initialize(_ecdsaProvider, _hashAlgorithm);
     }
 
-    public static ETAMPModel<TokenModel> SignETAMP()
+    public static ETAMPModel<TokenModel> SignETAMP(SignWrapperBase signWrapperBase)
     {
         var create = new Create();
-        return create.CreateETAMP().Sign(_signWrapperBase);
+        return create.CreateETAMP().Sign(signWrapperBase);
     }
 }
