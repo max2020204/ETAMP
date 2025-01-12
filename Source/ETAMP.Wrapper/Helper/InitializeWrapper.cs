@@ -1,6 +1,7 @@
 ﻿#region
 
 using System.Security.Cryptography;
+using ETAMP.Encryption.Base;
 using ETAMP.Encryption.Interfaces.ECDSAManager;
 
 #endregion
@@ -28,14 +29,15 @@ public class InitializeWrapper
     /// </summary>
     /// <param name="ecdsaProvider">The provider for managing and accessing the ECDsa instance.</param>
     /// <param name="algorithm">The hash algorithm name.</param>
-    public void Initialize(IECDsaProvider ecdsaProvider, HashAlgorithmName algorithm)
+    
+    public void Initialize(ECDsaProviderBase ecdsaProvider, HashAlgorithmName algorithm)
     {
         if (ecdsaProvider == null)
             throw new ArgumentNullException(nameof(ecdsaProvider), "IECDsaProvider instance cannot be null.");
 
-        Ecdsa = ecdsaProvider.GetECDsa()
+        Ecdsa = ecdsaProvider.CurrentEcdsa
                 ?? throw new InvalidOperationException(
-                    "ECDsa instance cannot be null after extraction from IECDsaProvider.");
+                    "ECDsa cannot be null");
         AlgorithmName = algorithm;
     }
 }

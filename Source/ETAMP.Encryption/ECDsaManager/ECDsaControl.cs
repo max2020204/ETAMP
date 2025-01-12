@@ -9,20 +9,20 @@ namespace ETAMP.Encryption.ECDsaManager;
 
 public class ECDsaControl : IECDsaControl
 {
-    private readonly ECDsaRegistrationBase _ecdsaRegistration;
+    private readonly IECDsaStore _store;
 
-    public ECDsaControl(ECDsaRegistrationBase ecdsaRegistration)
+    public ECDsaControl(IECDsaStore store)
     {
-        _ecdsaRegistration = ecdsaRegistration;
+        _store = store;
     }
 
     public bool Remove(Guid id)
     {
-        return _ecdsaRegistration._registrationProviderGuid.Remove(id);
+        return _store.Remove(id);
     }
 
     public bool Remove(string name)
     {
-        return _ecdsaRegistration._registrationProviderString.Remove(name);
+        return _store.Remove(name);
     }
 }

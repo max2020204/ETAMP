@@ -51,8 +51,7 @@ public static class ETAMPServiceCollectionExtensions
         // Register wrapper services for cryptographic operations
         services.AddScoped<IECDsaRegistrar, ECDsaRegistration>();
         services.AddScoped<IECDsaProvider, ECDsaProvider>();
-        services.AddScoped<IECDsaCreator, ECDsaCreator>();
-        services.AddScoped<IECDsaKeyManager, ECDsaKeyManager>();
+        //TODO add new ecdsa implimintation
         services.AddScoped<IPemKeyCleaner, PemKeyCleaner>();
 
         // Register ETAMP processing services

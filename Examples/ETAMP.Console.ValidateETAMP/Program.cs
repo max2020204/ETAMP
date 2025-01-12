@@ -9,6 +9,14 @@ using ETAMP.Wrapper.Base;
 
 #endregion
 
+class ValidateETAMP
+{
+    static void Main(string[] args)
+    {
+        
+    }
+}
+/*
 var ecdsa = ECDsa.Create();
 IECDsaRegistrar registrar = new ECDsaProvider();
 IECDsaProvider provider = new ECDsaProvider();
@@ -20,4 +28,4 @@ var etamp = ETAMPSignProgram.SignETAMP();
 
 var structureValidator = new StructureValidator();
 var result = structureValidator.ValidateETAMP(etamp);
-Console.WriteLine(result.IsValid);
+Console.WriteLine(result.IsValid);*/

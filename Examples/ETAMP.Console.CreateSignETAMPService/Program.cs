@@ -10,7 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 #endregion
 
-internal class Program
+internal class CreateSignETAMPService
 {
     private static ServiceProvider _provider;
 
@@ -23,8 +23,7 @@ internal class Program
     public static ETAMPModel<TokenModel> SignETAMP(ServiceProvider provider)
     {
         var sign = provider.GetService<SignWrapperBase>();
-        var creator = provider.GetService<IECDsaCreator>();
-        sign.Initialize(creator.CreateECDsa(), HashAlgorithmName.SHA512);
+        
         var etamp = Service.CreateETAMP(_provider);
         etamp.Sign(sign);
         return etamp;
