@@ -5,11 +5,11 @@
         <TargetFramework>net9.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <RootNamespace>ETAMP.Console.CreateSignETAMPService</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\ETAMP.Console.CreateETAMPService\ETAMP.Console.CreateETAMPService.csproj"/>
-        <ProjectReference Include="..\ETAMP.Console.CreateSignETAMPService\ETAMP.Console.CreateSignETAMPService.csproj"/>
+        <ProjectReference Include="..\ETAMP.Console.CreateETAMP\ETAMP.Console.CreateETAMP.csproj"/>
     </ItemGroup>
 
 </Project>

@@ -1,7 +1,7 @@
 ﻿#region
 
 using ETAMP.Compression.Interfaces.Factory;
-using ETAMP.Console.CreateETAMPService.Models;
+using ETAMP.Console.CreateETAMP.Models;
 using ETAMP.Core.Interfaces;
 using ETAMP.Core.Management;
 using ETAMP.Core.Models;
@@ -11,7 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 #endregion
 
-public static class CreateETAMPService
+public static class CreateETAMP
 {
     private static ServiceProvider _provider;
 
@@ -19,10 +19,10 @@ public static class CreateETAMPService
     {
         _provider = ConfigureServices();
         var compression = _provider.GetService<ICompressionServiceFactory>();
-        Console.WriteLine(CreateETAMP(_provider).Build(compression));
+        Console.WriteLine(InitializeEtampModel(_provider).Build(compression));
     }
 
-    public static ETAMPModel<TokenModel> CreateETAMP(IServiceProvider provider)
+    public static ETAMPModel<TokenModel> InitializeEtampModel(IServiceProvider provider)
     {
         var etampBase = provider.GetService<IETAMPBase>();
 

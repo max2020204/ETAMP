@@ -4,7 +4,7 @@ using ETAMP.Core.Models;
 
 #endregion
 
-namespace ETAMP.Console.CreateETAMPService.Models;
+namespace ETAMP.Console.CreateETAMP.Models;
 
 public class TokenModel : Token
 {

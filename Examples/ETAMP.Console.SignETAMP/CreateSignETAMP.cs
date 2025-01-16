@@ -1,7 +1,7 @@
 ﻿#region
 
 using System.Security.Cryptography;
-using ETAMP.Console.CreateETAMPService.Models;
+using ETAMP.Console.CreateETAMP.Models;
 using ETAMP.Core.Models;
 using ETAMP.Encryption.Base;
 using ETAMP.Encryption.Interfaces.ECDSAManager;
@@ -11,7 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 #endregion
 
-public class CreateSignETAMPService
+public class CreateSignETAMP
 {
     private static ServiceProvider _provider;
 
@@ -34,7 +34,7 @@ public class CreateSignETAMPService
     private static void Main(string[] args)
     {
         _ecdsaInstance = ECDsa.Create();
-        _provider = CreateETAMPService.ConfigureServices();
+        _provider = CreateETAMP.ConfigureServices();
         SignETAMP(_provider);
         Console.WriteLine(ETAMPSigned);
     }
@@ -45,7 +45,7 @@ public class CreateSignETAMPService
 
         InitializeSigning(sign, ecdsaProviderBase, pemCleaner);
 
-        var etampModel = CreateETAMPService.CreateETAMP(provider);
+        var etampModel = CreateETAMP.InitializeEtampModel(provider);
         etampModel.Sign(sign);
         ETAMPSigned = etampModel.ToJson();
         return etampModel;

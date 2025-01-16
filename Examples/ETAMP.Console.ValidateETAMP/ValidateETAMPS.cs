@@ -13,13 +13,13 @@ internal class ETAMPValidationRunner
 
     private static void Main(string[] args)
     {
-        var provider = CreateETAMPService.ConfigureServices();
+        var provider = CreateETAMP.ConfigureServices();
         var etampValidator = provider.GetService<ETAMPValidatorBase>();
         var ecdsaProvider = provider.GetService<ECDsaProviderBase>();
-        var etamp = CreateSignETAMPService.SignETAMP(provider);
+        var etamp = CreateSignETAMP.SignETAMP(provider);
 
         // Initialize and set up ECDsa
-        var publicKeyBytes = Convert.FromBase64String(CreateSignETAMPService.PublicKey);
+        var publicKeyBytes = Convert.FromBase64String(CreateSignETAMP.PublicKey);
         var initializedEcdsa = CreateInitializedEcdsa(publicKeyBytes);
         ecdsaProvider.SetECDsa(initializedEcdsa);
 

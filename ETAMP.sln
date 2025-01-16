@@ -24,11 +24,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Console", "Console", "{209B
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Web", "Web", "{FF342BB2-7434-442A-8B33-C6C7C3616CA0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ETAMP.Console.CreateETAMPService", "Examples\ETAMP.Console.CreateETAMPService\ETAMP.Console.CreateETAMPService.csproj", "{33A58AE1-5303-42BA-BEAF-8F01C3DAADDC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ETAMP.Console.CreateETAMP", "Examples\ETAMP.Console.CreateETAMP\ETAMP.Console.CreateETAMP.csproj", "{33A58AE1-5303-42BA-BEAF-8F01C3DAADDC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ETAMP.Console.ValidateETAMPService", "Examples\ETAMP.Console.ValidateETAMPService\ETAMP.Console.ValidateETAMPService.csproj", "{EA88DE45-4AEA-47A8-A1B8-0B3D8CA14980}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ETAMP.Console.ValidateETAMP", "Examples\ETAMP.Console.ValidateETAMP\ETAMP.Console.ValidateETAMP.csproj", "{EA88DE45-4AEA-47A8-A1B8-0B3D8CA14980}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ETAMP.Console.CreateSignETAMPService", "Examples\ETAMP.Console.CreateSignETAMPService\ETAMP.Console.CreateSignETAMPService.csproj", "{5CFB2981-38DC-458E-A68A-0AF99994C641}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ETAMP.Console.SignETAMP", "Examples\ETAMP.Console.SignETAMP\ETAMP.Console.SignETAMP.csproj", "{5CFB2981-38DC-458E-A68A-0AF99994C641}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
