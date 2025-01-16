@@ -12,7 +12,16 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8b44219d-6ab5-4022-b5c1-0f01c450f8f2" name="Changes" comment="Refactor project structure and rename key components.&#10;&#10;Reorganized namespaces, classes, and files for better alignment and clarity. Renamed &quot;CreateETAMPService&quot; to &quot;CreateETAMP&quot;, &quot;CreateSignETAMPService&quot; to &quot;SignETAMP&quot;, and adjusted all references accordingly. Updated solution and project files to reflect the new structure." />
+    <list default="true" id="8b44219d-6ab5-4022-b5c1-0f01c450f8f2" name="Changes" comment="Refactor ETAMP project structure and update README.&#10;&#10;Reorganized namespaces, classes, and project files for better alignment and clarity. Renamed key components like `CreateETAMPService` to `CreateETAMP` and updated solution references. Overhauled README to reflect the changes and provide updated usage examples.">
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.ETAMP/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.ETAMP/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ETAMP.Compression/ETAMP.Compression.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Compression/ETAMP.Compression.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ETAMP.Core/ETAMP.Core.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Core/ETAMP.Core.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ETAMP.Encryption/ETAMP.Encryption.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Encryption/ETAMP.Encryption.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ETAMP.Extension.ServiceCollection/ETAMP.Extension.ServiceCollection.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Extension.ServiceCollection/ETAMP.Extension.ServiceCollection.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ETAMP.Extension/ETAMP.Extension.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Extension/ETAMP.Extension.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ETAMP.Validation/ETAMP.Validation.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Validation/ETAMP.Validation.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ETAMP.Wrapper/ETAMP.Wrapper.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Wrapper/ETAMP.Wrapper.csproj" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -49,6 +58,7 @@
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/f112203b5ddc8c323d1f4cbe3040b48f79e818f281fee61f60a5c84787bf31/ECDsaCng.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/fc2027f7e776fc105cddb56b1a25eeb3895b3ae6f3aac854d786e63bd01f75e2/CallSiteFactory.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/fd57398b7dc3a8ce7da2786f2c67289c3d974658a9e90d0c1e84db3d965fbf1/Console.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Examples/ETAMP.Console.CreateETAMP/obj/Debug/net9.0/ETAMP.Console.CreateETAMP.AssemblyInfo.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Examples/ETAMP.Console.SignETAMP/CreateSignETAMP.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Examples/ETAMP.Console.ValidateETAMP/ValidateETAMPS.cs" root0="FORCE_HIGHLIGHTING" />
   </component>
@@ -271,7 +281,7 @@
       <workItem from="1736690587302" duration="4589000" />
       <workItem from="1736723483389" duration="3677000" />
       <workItem from="1736975115012" duration="3616000" />
-      <workItem from="1737065830326" duration="4378000" />
+      <workItem from="1737065830326" duration="4977000" />
     </task>
     <task id="LOCAL-00001" summary="Refactor and reorganize ETAMP example projects&#10;&#10;Moved and restructured ETAMP example project files for better modularity and project clarity. Updated project references and dependencies to align with the new structure. Removed redundant files and added missing configurations where necessary.">
       <option name="closed" value="true" />
@@ -361,7 +371,15 @@
       <option name="project" value="LOCAL" />
       <updated>1737070921695</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="Refactor ETAMP project structure and update README.&#10;&#10;Reorganized namespaces, classes, and project files for better alignment and clarity. Renamed key components like `CreateETAMPService` to `CreateETAMP` and updated solution references. Overhauled README to reflect the changes and provide updated usage examples.">
+      <option name="closed" value="true" />
+      <created>1737071233354</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1737071233354</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -393,7 +411,8 @@
     <MESSAGE value="Refactor ETAMP services and enhance ECDsa management.&#10;&#10;Renamed service implementations for better readability and modularity, aligning class names with their respective functionalities. Refactored ECDsa handling by introducing modular components like `ECDsaStore` and improving `ECDsaProviderBase`. Improved flexibility, added comprehensive XML documentation for maintainability, and updated dependencies accordingly." />
     <MESSAGE value="Remove obsolete ETAMP example projects and refactor structure.&#10;&#10;Deleted outdated ETAMP example projects, including CreateETAMP, CreateSignETAMP, and ValidateETAMP. This change streamlines the codebase by removing redundant files and unused dependencies. Updated structure and configurations to improve clarity and maintainability." />
     <MESSAGE value="Refactor project structure and rename key components.&#10;&#10;Reorganized namespaces, classes, and files for better alignment and clarity. Renamed &quot;CreateETAMPService&quot; to &quot;CreateETAMP&quot;, &quot;CreateSignETAMPService&quot; to &quot;SignETAMP&quot;, and adjusted all references accordingly. Updated solution and project files to reflect the new structure." />
-    <option name="LAST_COMMIT_MESSAGE" value="Refactor project structure and rename key components.&#10;&#10;Reorganized namespaces, classes, and files for better alignment and clarity. Renamed &quot;CreateETAMPService&quot; to &quot;CreateETAMP&quot;, &quot;CreateSignETAMPService&quot; to &quot;SignETAMP&quot;, and adjusted all references accordingly. Updated solution and project files to reflect the new structure." />
+    <MESSAGE value="Refactor ETAMP project structure and update README.&#10;&#10;Reorganized namespaces, classes, and project files for better alignment and clarity. Renamed key components like `CreateETAMPService` to `CreateETAMP` and updated solution references. Overhauled README to reflect the changes and provide updated usage examples." />
+    <option name="LAST_COMMIT_MESSAGE" value="Refactor ETAMP project structure and update README.&#10;&#10;Reorganized namespaces, classes, and project files for better alignment and clarity. Renamed key components like `CreateETAMPService` to `CreateETAMP` and updated solution references. Overhauled README to reflect the changes and provide updated usage examples." />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REARRANGE_BEFORE_PROJECT_COMMIT" value="true" />
