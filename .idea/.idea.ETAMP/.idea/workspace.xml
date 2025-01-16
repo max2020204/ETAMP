@@ -12,7 +12,28 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8b44219d-6ab5-4022-b5c1-0f01c450f8f2" name="Changes" comment="Refactor ECDsa management and add comprehensive documentation.&#10;&#10;Replaced deprecated ECDsa key management classes with modular implementations like `ECDsaStore` and enhanced `ECDsaProviderBase`. Improved flexibility in ECDsa handling by integrating named and GUID-based storage mechanisms. Updated codebase with extensive XML documentation for better code clarity and maintainability." />
+    <list default="true" id="8b44219d-6ab5-4022-b5c1-0f01c450f8f2" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.ETAMP/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.ETAMP/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ETAMP.sln" beforeDir="false" afterPath="$PROJECT_DIR$/ETAMP.sln" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ETAMP.sln.DotSettings.user" beforeDir="false" afterPath="$PROJECT_DIR$/ETAMP.sln.DotSettings.user" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Examples/ETAMP.Console.CreateETAMP/Create.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Examples/ETAMP.Console.CreateETAMP/ETAMP.Console.CreateETAMP.csproj" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Examples/ETAMP.Console.CreateETAMP/Models/TokenModel.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Examples/ETAMP.Console.CreateETAMP/Program.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Examples/ETAMP.Console.CreateETAMPService/CreateETAMPService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Examples/ETAMP.Console.CreateETAMPService/CreateETAMPService.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Examples/ETAMP.Console.CreateSignETAMP/ETAMP.Console.CreateSignETAMP.csproj" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Examples/ETAMP.Console.CreateSignETAMP/ETAMPSignProgram.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Examples/ETAMP.Console.CreateSignETAMPService/CreateSignETAMPService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Examples/ETAMP.Console.CreateSignETAMPService/CreateSignETAMPService.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Examples/ETAMP.Console.ValidateETAMP/ETAMP.Console.ValidateETAMP.csproj" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Examples/ETAMP.Console.ValidateETAMP/ValidateETAMP.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Examples/ETAMP.Console.ValidateETAMPService/ETAMP.Console.ValidateETAMPService.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/Examples/ETAMP.Console.ValidateETAMPService/ETAMP.Console.ValidateETAMPService.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Examples/ETAMP.Console.ValidateETAMPService/ValidateETAMPService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Examples/ETAMP.Console.ValidateETAMPService/ValidateETAMPService.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ETAMP.Core/ETAMP.Core.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Core/ETAMP.Core.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ETAMP.Core/Models/ValidationResult.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Core/Models/ValidationResult.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ETAMP.Encryption/ETAMP.Encryption.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Encryption/ETAMP.Encryption.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ETAMP.Extension.ServiceCollection/ETAMPServiceCollectionExtensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Extension.ServiceCollection/ETAMPServiceCollectionExtensions.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ETAMP.Validation/StructureValidator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Validation/StructureValidator.cs" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -37,14 +58,18 @@
   }
 }</component>
   <component name="HighlightingSettingsPerFile">
+    <setting file="mock:///AIAssistantSnippet." root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///AIAssistantSnippet." root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/a8ceca48b7b645dd875a40ee6d28725416d08/ba/17c0ae6e/ServiceProvider.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/10362de7f7fcaffbcda6f204f10ffcf2eb7d77dd5c8e647c72142fe946a3313/KeyNotFoundException.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/595e4f2361fd31cb66c7e9303f46cf8f2fe77d96eea9d0e42c17cae783aa74/ServiceCollection.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/621526284d3e4868b98948aff942206525763e57e194a27623b66c384466/ServiceProviderServiceExtensions.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/7e3d58dfc7978169d9159d0a921ccc35a1ec6f1b9c80adc04938f801fb42/ECDsa.Create.Windows.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/8bb5e9b7c0175f0e7484c843d9a2bbcfb1f176b842f476b2c6a8fcbceea5cf/ThrowHelper.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="mock://D:/ETAMP/Examples/ETAMP.Console.CreateETAMP/Create.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://D:/ETAMP/Examples/ETAMP.Console.CreateETAMP/Program.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://D:/ETAMP/Examples/ETAMP.Console.CreateSignETAMP/Program.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://D:/ETAMP/Source/ETAMP.Encryption/ECDsaManager/ECDsaProvider.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://D:/ETAMP/Source/ETAMP.Encryption/ECDsaManager/ECDsaProvider.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/be724d1cdca338282bed48dddb79faf53d72bbde3321431a9985e5db7231d/PemKeyHelpers.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/f112203b5ddc8c323d1f4cbe3040b48f79e818f281fee61f60a5c84787bf31/ECDsaCng.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/fc2027f7e776fc105cddb56b1a25eeb3895b3ae6f3aac854d786e63bd01f75e2/CallSiteFactory.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/fd57398b7dc3a8ce7da2786f2c67289c3d974658a9e90d0c1e84db3d965fbf1/Console.cs" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="KubernetesApiPersistence">{}</component>
   <component name="KubernetesApiProvider">{
@@ -65,50 +90,27 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;.NET Project.ETAMP.Console.CreateETAMP.executor&quot;: &quot;Run&quot;,
-    &quot;.NET Project.ETAMP.Console.CreateETAMPService.executor&quot;: &quot;Debug&quot;,
-    &quot;.NET Project.ETAMP.Console.CreateSignETAMP.executor&quot;: &quot;Debug&quot;,
-    &quot;.NET Project.ETAMP.Console.CreateSignETAMPService.executor&quot;: &quot;Run&quot;,
-    &quot;.NET Project.ETAMP.Console.ValidateETAMP.executor&quot;: &quot;Run&quot;,
-    &quot;.NET Project.ETAMP.Console.ValidateETAMPService.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.keymap&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    ".NET Project.ETAMP.Console.CreateETAMP.executor": "Run",
+    ".NET Project.ETAMP.Console.CreateETAMPService.executor": "Debug",
+    ".NET Project.ETAMP.Console.CreateSignETAMP.executor": "Debug",
+    ".NET Project.ETAMP.Console.CreateSignETAMPService.executor": "Debug",
+    ".NET Project.ETAMP.Console.ValidateETAMP.executor": "Run",
+    ".NET Project.ETAMP.Console.ValidateETAMPService.executor": "Debug",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "master",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "preferences.keymap",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
-  <component name="QodanaReportsService">
-    <option name="descriptions">
-      <ReportDescription localRun="true" path="C:\Users\black\AppData\Local\Temp\qodana_output\qodana.sarif.json" reportGuid="2b711a4e-6ad8-428d-b915-3517de735290" reportId="ETAMP/qodana/2024-12-27" />
-    </option>
-  </component>
-  <component name="RunManager" selected=".NET Project.ETAMP.Console.CreateSignETAMP">
-    <configuration name="ETAMP.Console.CreateETAMP" type="DotNetProject" factoryName=".NET Project">
-      <option name="EXE_PATH" value="" />
-      <option name="PROGRAM_PARAMETERS" value="" />
-      <option name="WORKING_DIRECTORY" value="" />
-      <option name="PASS_PARENT_ENVS" value="1" />
-      <option name="USE_EXTERNAL_CONSOLE" value="0" />
-      <option name="USE_MONO" value="0" />
-      <option name="RUNTIME_ARGUMENTS" value="" />
-      <option name="PROJECT_PATH" value="$PROJECT_DIR$/Examples/ETAMP.Console.CreateETAMP/ETAMP.Console.CreateETAMP.csproj" />
-      <option name="PROJECT_EXE_PATH_TRACKING" value="1" />
-      <option name="PROJECT_ARGUMENTS_TRACKING" value="1" />
-      <option name="PROJECT_WORKING_DIRECTORY_TRACKING" value="1" />
-      <option name="PROJECT_KIND" value="DotNetCore" />
-      <option name="PROJECT_TFM" value="" />
-      <method v="2">
-        <option name="Build" />
-      </method>
-    </configuration>
+}]]></component>
+  <component name="RunManager" selected=".NET Project.ETAMP.Console.ValidateETAMPService">
     <configuration name="ETAMP.Console.CreateETAMPService" type="DotNetProject" factoryName=".NET Project">
       <option name="EXE_PATH" value="" />
       <option name="PROGRAM_PARAMETERS" value="" />
@@ -127,24 +129,6 @@
         <option name="Build" />
       </method>
     </configuration>
-    <configuration name="ETAMP.Console.CreateSignETAMP" type="DotNetProject" factoryName=".NET Project">
-      <option name="EXE_PATH" value="$PROJECT_DIR$/Examples/ETAMP.Console.CreateSignETAMP/bin/Debug/net9.0/ETAMP.Console.CreateSignETAMP.exe" />
-      <option name="PROGRAM_PARAMETERS" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Examples/ETAMP.Console.CreateSignETAMP/bin/Debug/net9.0" />
-      <option name="PASS_PARENT_ENVS" value="1" />
-      <option name="USE_EXTERNAL_CONSOLE" value="0" />
-      <option name="USE_MONO" value="0" />
-      <option name="RUNTIME_ARGUMENTS" value="" />
-      <option name="PROJECT_PATH" value="$PROJECT_DIR$/Examples/ETAMP.Console.CreateSignETAMP/ETAMP.Console.CreateSignETAMP.csproj" />
-      <option name="PROJECT_EXE_PATH_TRACKING" value="1" />
-      <option name="PROJECT_ARGUMENTS_TRACKING" value="1" />
-      <option name="PROJECT_WORKING_DIRECTORY_TRACKING" value="1" />
-      <option name="PROJECT_KIND" value="DotNetCore" />
-      <option name="PROJECT_TFM" value="net9.0" />
-      <method v="2">
-        <option name="Build" />
-      </method>
-    </configuration>
     <configuration name="ETAMP.Console.CreateSignETAMPService" type="DotNetProject" factoryName=".NET Project">
       <option name="EXE_PATH" value="" />
       <option name="PROGRAM_PARAMETERS" value="" />
@@ -159,24 +143,6 @@
       <option name="PROJECT_WORKING_DIRECTORY_TRACKING" value="1" />
       <option name="PROJECT_KIND" value="DotNetCore" />
       <option name="PROJECT_TFM" value="" />
-      <method v="2">
-        <option name="Build" />
-      </method>
-    </configuration>
-    <configuration name="ETAMP.Console.ValidateETAMP" type="DotNetProject" factoryName=".NET Project">
-      <option name="EXE_PATH" value="$PROJECT_DIR$/Examples/ETAMP.Console.ValidateETAMP/bin/Debug/net9.0/ETAMP.Console.ValidateETAMP.exe" />
-      <option name="PROGRAM_PARAMETERS" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Examples/ETAMP.Console.ValidateETAMP/bin/Debug/net9.0" />
-      <option name="PASS_PARENT_ENVS" value="1" />
-      <option name="USE_EXTERNAL_CONSOLE" value="0" />
-      <option name="USE_MONO" value="0" />
-      <option name="RUNTIME_ARGUMENTS" value="" />
-      <option name="PROJECT_PATH" value="$PROJECT_DIR$/Examples/ETAMP.Console.ValidateETAMP/ETAMP.Console.ValidateETAMP.csproj" />
-      <option name="PROJECT_EXE_PATH_TRACKING" value="1" />
-      <option name="PROJECT_ARGUMENTS_TRACKING" value="1" />
-      <option name="PROJECT_WORKING_DIRECTORY_TRACKING" value="1" />
-      <option name="PROJECT_KIND" value="DotNetCore" />
-      <option name="PROJECT_TFM" value="net9.0" />
       <method v="2">
         <option name="Build" />
       </method>
@@ -303,10 +269,7 @@
     </configuration>
     <list>
       <item itemvalue=".NET Project.ETAMP.Console.CreateSignETAMPService" />
-      <item itemvalue=".NET Project.ETAMP.Console.CreateETAMP" />
       <item itemvalue=".NET Project.ETAMP.Console.CreateETAMPService" />
-      <item itemvalue=".NET Project.ETAMP.Console.ValidateETAMP" />
-      <item itemvalue=".NET Project.ETAMP.Console.CreateSignETAMP" />
       <item itemvalue=".NET Project.ETAMP.Console.ValidateETAMPService" />
       <item itemvalue="Multi-Launch.Multi-Launch: ETAMP" />
     </list>
@@ -325,7 +288,9 @@
       <workItem from="1735289303042" duration="8407000" />
       <workItem from="1735850406334" duration="1386000" />
       <workItem from="1736690587302" duration="4589000" />
-      <workItem from="1736723483389" duration="1736000" />
+      <workItem from="1736723483389" duration="3677000" />
+      <workItem from="1736975115012" duration="3616000" />
+      <workItem from="1737065830326" duration="4069000" />
     </task>
     <task id="LOCAL-00001" summary="Refactor and reorganize ETAMP example projects&#10;&#10;Moved and restructured ETAMP example project files for better modularity and project clarity. Updated project references and dependencies to align with the new structure. Removed redundant files and added missing configurations where necessary.">
       <option name="closed" value="true" />
@@ -391,7 +356,15 @@
       <option name="project" value="LOCAL" />
       <updated>1736725213638</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="Refactor ETAMP services and enhance ECDsa management.&#10;&#10;Renamed service implementations for better readability and modularity, aligning class names with their respective functionalities. Refactored ECDsa handling by introducing modular components like `ECDsaStore` and improving `ECDsaProviderBase`. Improved flexibility, added comprehensive XML documentation for maintainability, and updated dependencies accordingly.">
+      <option name="closed" value="true" />
+      <created>1736725630396</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1736725630396</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -420,28 +393,10 @@
     <MESSAGE value="Add region directives and ECDsaRegistration implementation&#10;&#10;Region directives were introduced across multiple files to improve code organization and readability. An `ECDsaRegistration` class was implemented for better management of ECDsa providers. The changes also include minor adjustments to parameters and accessibility levels for consistency and maintainability." />
     <MESSAGE value="Refactor ECDsa management and remove deprecated classes.&#10;&#10;Removed ECDsaCreator and ECDsaKeyManager classes along with their interfaces. Introduced ECDsaStore and refactored ECDsaProviderBase with support for flexible ECDsa management. Updated dependencies and adjusted implementations where necessary." />
     <MESSAGE value="Refactor ECDsa management and add comprehensive documentation.&#10;&#10;Replaced deprecated ECDsa key management classes with modular implementations like `ECDsaStore` and enhanced `ECDsaProviderBase`. Improved flexibility in ECDsa handling by integrating named and GUID-based storage mechanisms. Updated codebase with extensive XML documentation for better code clarity and maintainability." />
-    <option name="LAST_COMMIT_MESSAGE" value="Refactor ECDsa management and add comprehensive documentation.&#10;&#10;Replaced deprecated ECDsa key management classes with modular implementations like `ECDsaStore` and enhanced `ECDsaProviderBase`. Improved flexibility in ECDsa handling by integrating named and GUID-based storage mechanisms. Updated codebase with extensive XML documentation for better code clarity and maintainability." />
+    <MESSAGE value="Refactor ETAMP services and enhance ECDsa management.&#10;&#10;Renamed service implementations for better readability and modularity, aligning class names with their respective functionalities. Refactored ECDsa handling by introducing modular components like `ECDsaStore` and improving `ECDsaProviderBase`. Improved flexibility, added comprehensive XML documentation for maintainability, and updated dependencies accordingly." />
+    <option name="LAST_COMMIT_MESSAGE" value="Refactor ETAMP services and enhance ECDsa management.&#10;&#10;Renamed service implementations for better readability and modularity, aligning class names with their respective functionalities. Refactored ECDsa handling by introducing modular components like `ECDsaStore` and improving `ECDsaProviderBase`. Improved flexibility, added comprehensive XML documentation for maintainability, and updated dependencies accordingly." />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REARRANGE_BEFORE_PROJECT_COMMIT" value="true" />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="DotNet Breakpoints">
-          <url>file://$PROJECT_DIR$/Examples/ETAMP.Console.CreateSignETAMP/Program.cs</url>
-          <line>33</line>
-          <properties documentPath="D:\ETAMP\Examples\ETAMP.Console.CreateSignETAMP\Program.cs" containingFunctionPresentation="Method 'Initialize'">
-            <startOffsets>
-              <option value="835" />
-            </startOffsets>
-            <endOffsets>
-              <option value="860" />
-            </endOffsets>
-          </properties>
-          <option name="timeStamp" value="5" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
   </component>
 </project>

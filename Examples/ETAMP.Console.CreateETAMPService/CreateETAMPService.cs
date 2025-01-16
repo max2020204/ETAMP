@@ -22,7 +22,7 @@ public static class CreateETAMPService
         Console.WriteLine(CreateETAMP(_provider).Build(compression));
     }
 
-    public static ETAMPModel<TokenModel> CreateETAMP(ServiceProvider provider)
+    public static ETAMPModel<TokenModel> CreateETAMP(IServiceProvider provider)
     {
         var etampBase = provider.GetService<IETAMPBase>();
 

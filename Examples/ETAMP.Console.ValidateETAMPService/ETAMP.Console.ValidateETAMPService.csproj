@@ -9,6 +9,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\ETAMP.Console.CreateETAMPService\ETAMP.Console.CreateETAMPService.csproj"/>
+        <ProjectReference Include="..\ETAMP.Console.CreateSignETAMPService\ETAMP.Console.CreateSignETAMPService.csproj"/>
     </ItemGroup>
 
 </Project>
