@@ -12,22 +12,16 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8b44219d-6ab5-4022-b5c1-0f01c450f8f2" name="Changes" comment="Add NuGet packaging support and update ETAMP project details&#10;&#10;Enabled automatic NuGet package generation for all ETAMP projects with output to a unified `nupkgs` directory. Updated copyright year to 2025 and adjusted project metadata for clarity and consistency. Prepared the solution for streamlined deployment and distribution.">
+    <list default="true" id="8b44219d-6ab5-4022-b5c1-0f01c450f8f2" name="Changes" comment="Add NuGet packaging support and update project metadata.&#10;&#10;Enabled automatic NuGet package generation for all ETAMP projects, outputting to a unified `nupkgs` directory. Updated project files to include README linking and adjusted metadata for consistency. Prepared the solution for streamlined deployment and better package clarity.">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.ETAMP/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.ETAMP/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/ETAMP.Compression/ETAMP.Compression.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Compression/ETAMP.Compression.csproj" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/ETAMP.Core/ETAMP.Core.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Core/ETAMP.Core.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ETAMP.Encryption/ETAMP.Encryption.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Encryption/ETAMP.Encryption.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ETAMP.Extension.ServiceCollection/ETAMP.Extension.ServiceCollection.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Extension.ServiceCollection/ETAMP.Extension.ServiceCollection.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ETAMP.Extension/ETAMP.Extension.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Extension/ETAMP.Extension.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ETAMP.Validation/ETAMP.Validation.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Validation/ETAMP.Validation.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ETAMP.Wrapper/ETAMP.Wrapper.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Wrapper/ETAMP.Wrapper.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/nupkgs/ETAMP.Compression.1.0.0.nupkg" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/nupkgs/ETAMP.Core.1.0.0.nupkg" beforeDir="false" afterPath="$PROJECT_DIR$/nupkgs/ETAMP.Core.1.0.0.nupkg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/nupkgs/ETAMP.Encryption.1.0.0.nupkg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/nupkgs/ETAMP.Extension.1.0.0.nupkg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/nupkgs/ETAMP.Extension.ServiceCollection.1.0.0.nupkg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/nupkgs/ETAMP.Validation.1.0.0.nupkg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/nupkgs/ETAMP.Wrapper.1.0.0.nupkg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/nupkgs/ETAMP.Encryption.1.0.0.nupkg" beforeDir="false" afterPath="$PROJECT_DIR$/nupkgs/ETAMP.Encryption.1.0.0.nupkg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/nupkgs/ETAMP.Extension.1.0.0.nupkg" beforeDir="false" afterPath="$PROJECT_DIR$/nupkgs/ETAMP.Extension.1.0.0.nupkg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/nupkgs/ETAMP.Extension.ServiceCollection.1.0.0.nupkg" beforeDir="false" afterPath="$PROJECT_DIR$/nupkgs/ETAMP.Extension.ServiceCollection.1.0.0.nupkg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/nupkgs/ETAMP.Validation.1.0.0.nupkg" beforeDir="false" afterPath="$PROJECT_DIR$/nupkgs/ETAMP.Validation.1.0.0.nupkg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/nupkgs/ETAMP.Wrapper.1.0.0.nupkg" beforeDir="false" afterPath="$PROJECT_DIR$/nupkgs/ETAMP.Wrapper.1.0.0.nupkg" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -99,6 +93,7 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
     "git-widget-placeholder": "master",
+    "ignore.virus.scanning.warn.message": "true",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -288,7 +283,7 @@
       <workItem from="1736690587302" duration="4589000" />
       <workItem from="1736723483389" duration="3677000" />
       <workItem from="1736975115012" duration="3616000" />
-      <workItem from="1737065830326" duration="5611000" />
+      <workItem from="1737065830326" duration="6577000" />
     </task>
     <task id="LOCAL-00001" summary="Refactor and reorganize ETAMP example projects&#10;&#10;Moved and restructured ETAMP example project files for better modularity and project clarity. Updated project references and dependencies to align with the new structure. Removed redundant files and added missing configurations where necessary.">
       <option name="closed" value="true" />
@@ -394,7 +389,15 @@
       <option name="project" value="LOCAL" />
       <updated>1737071688851</updated>
     </task>
-    <option name="localTasksCounter" value="14" />
+    <task id="LOCAL-00014" summary="Add NuGet packaging support and update project metadata.&#10;&#10;Enabled automatic NuGet package generation for all ETAMP projects, outputting to a unified `nupkgs` directory. Updated project files to include README linking and adjusted metadata for consistency. Prepared the solution for streamlined deployment and better package clarity.">
+      <option name="closed" value="true" />
+      <created>1737072482974</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1737072482974</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -428,7 +431,8 @@
     <MESSAGE value="Refactor project structure and rename key components.&#10;&#10;Reorganized namespaces, classes, and files for better alignment and clarity. Renamed &quot;CreateETAMPService&quot; to &quot;CreateETAMP&quot;, &quot;CreateSignETAMPService&quot; to &quot;SignETAMP&quot;, and adjusted all references accordingly. Updated solution and project files to reflect the new structure." />
     <MESSAGE value="Refactor ETAMP project structure and update README.&#10;&#10;Reorganized namespaces, classes, and project files for better alignment and clarity. Renamed key components like `CreateETAMPService` to `CreateETAMP` and updated solution references. Overhauled README to reflect the changes and provide updated usage examples." />
     <MESSAGE value="Add NuGet packaging support and update ETAMP project details&#10;&#10;Enabled automatic NuGet package generation for all ETAMP projects with output to a unified `nupkgs` directory. Updated copyright year to 2025 and adjusted project metadata for clarity and consistency. Prepared the solution for streamlined deployment and distribution." />
-    <option name="LAST_COMMIT_MESSAGE" value="Add NuGet packaging support and update ETAMP project details&#10;&#10;Enabled automatic NuGet package generation for all ETAMP projects with output to a unified `nupkgs` directory. Updated copyright year to 2025 and adjusted project metadata for clarity and consistency. Prepared the solution for streamlined deployment and distribution." />
+    <MESSAGE value="Add NuGet packaging support and update project metadata.&#10;&#10;Enabled automatic NuGet package generation for all ETAMP projects, outputting to a unified `nupkgs` directory. Updated project files to include README linking and adjusted metadata for consistency. Prepared the solution for streamlined deployment and better package clarity." />
+    <option name="LAST_COMMIT_MESSAGE" value="Add NuGet packaging support and update project metadata.&#10;&#10;Enabled automatic NuGet package generation for all ETAMP projects, outputting to a unified `nupkgs` directory. Updated project files to include README linking and adjusted metadata for consistency. Prepared the solution for streamlined deployment and better package clarity." />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REARRANGE_BEFORE_PROJECT_COMMIT" value="true" />
