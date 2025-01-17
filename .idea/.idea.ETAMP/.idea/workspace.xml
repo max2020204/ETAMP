@@ -12,7 +12,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8b44219d-6ab5-4022-b5c1-0f01c450f8f2" name="Changes" comment="Refactor ETAMP project structure and update README.&#10;&#10;Reorganized namespaces, classes, and project files for better alignment and clarity. Renamed key components like `CreateETAMPService` to `CreateETAMP` and updated solution references. Overhauled README to reflect the changes and provide updated usage examples.">
+    <list default="true" id="8b44219d-6ab5-4022-b5c1-0f01c450f8f2" name="Changes" comment="Add NuGet packaging support and update ETAMP project details&#10;&#10;Enabled automatic NuGet package generation for all ETAMP projects with output to a unified `nupkgs` directory. Updated copyright year to 2025 and adjusted project metadata for clarity and consistency. Prepared the solution for streamlined deployment and distribution.">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.ETAMP/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.ETAMP/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/ETAMP.Compression/ETAMP.Compression.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Compression/ETAMP.Compression.csproj" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/ETAMP.Core/ETAMP.Core.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Core/ETAMP.Core.csproj" afterDir="false" />
@@ -21,6 +21,13 @@
       <change beforePath="$PROJECT_DIR$/Source/ETAMP.Extension/ETAMP.Extension.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Extension/ETAMP.Extension.csproj" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/ETAMP.Validation/ETAMP.Validation.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Validation/ETAMP.Validation.csproj" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/ETAMP.Wrapper/ETAMP.Wrapper.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Wrapper/ETAMP.Wrapper.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/nupkgs/ETAMP.Compression.1.0.0.nupkg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/nupkgs/ETAMP.Core.1.0.0.nupkg" beforeDir="false" afterPath="$PROJECT_DIR$/nupkgs/ETAMP.Core.1.0.0.nupkg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/nupkgs/ETAMP.Encryption.1.0.0.nupkg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/nupkgs/ETAMP.Extension.1.0.0.nupkg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/nupkgs/ETAMP.Extension.ServiceCollection.1.0.0.nupkg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/nupkgs/ETAMP.Validation.1.0.0.nupkg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/nupkgs/ETAMP.Wrapper.1.0.0.nupkg" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -88,7 +95,7 @@
     ".NET Project.ETAMP.Console.CreateSignETAMP.executor": "Debug",
     ".NET Project.ETAMP.Console.CreateSignETAMPService.executor": "Debug",
     ".NET Project.ETAMP.Console.ValidateETAMP.executor": "Run",
-    ".NET Project.ETAMP.Console.ValidateETAMPService.executor": "Debug",
+    ".NET Project.ETAMP.Console.ValidateETAMPService.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
     "git-widget-placeholder": "master",
@@ -281,7 +288,7 @@
       <workItem from="1736690587302" duration="4589000" />
       <workItem from="1736723483389" duration="3677000" />
       <workItem from="1736975115012" duration="3616000" />
-      <workItem from="1737065830326" duration="4977000" />
+      <workItem from="1737065830326" duration="5611000" />
     </task>
     <task id="LOCAL-00001" summary="Refactor and reorganize ETAMP example projects&#10;&#10;Moved and restructured ETAMP example project files for better modularity and project clarity. Updated project references and dependencies to align with the new structure. Removed redundant files and added missing configurations where necessary.">
       <option name="closed" value="true" />
@@ -379,7 +386,15 @@
       <option name="project" value="LOCAL" />
       <updated>1737071233354</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="Add NuGet packaging support and update ETAMP project details&#10;&#10;Enabled automatic NuGet package generation for all ETAMP projects with output to a unified `nupkgs` directory. Updated copyright year to 2025 and adjusted project metadata for clarity and consistency. Prepared the solution for streamlined deployment and distribution.">
+      <option name="closed" value="true" />
+      <created>1737071688851</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1737071688851</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -412,7 +427,8 @@
     <MESSAGE value="Remove obsolete ETAMP example projects and refactor structure.&#10;&#10;Deleted outdated ETAMP example projects, including CreateETAMP, CreateSignETAMP, and ValidateETAMP. This change streamlines the codebase by removing redundant files and unused dependencies. Updated structure and configurations to improve clarity and maintainability." />
     <MESSAGE value="Refactor project structure and rename key components.&#10;&#10;Reorganized namespaces, classes, and files for better alignment and clarity. Renamed &quot;CreateETAMPService&quot; to &quot;CreateETAMP&quot;, &quot;CreateSignETAMPService&quot; to &quot;SignETAMP&quot;, and adjusted all references accordingly. Updated solution and project files to reflect the new structure." />
     <MESSAGE value="Refactor ETAMP project structure and update README.&#10;&#10;Reorganized namespaces, classes, and project files for better alignment and clarity. Renamed key components like `CreateETAMPService` to `CreateETAMP` and updated solution references. Overhauled README to reflect the changes and provide updated usage examples." />
-    <option name="LAST_COMMIT_MESSAGE" value="Refactor ETAMP project structure and update README.&#10;&#10;Reorganized namespaces, classes, and project files for better alignment and clarity. Renamed key components like `CreateETAMPService` to `CreateETAMP` and updated solution references. Overhauled README to reflect the changes and provide updated usage examples." />
+    <MESSAGE value="Add NuGet packaging support and update ETAMP project details&#10;&#10;Enabled automatic NuGet package generation for all ETAMP projects with output to a unified `nupkgs` directory. Updated copyright year to 2025 and adjusted project metadata for clarity and consistency. Prepared the solution for streamlined deployment and distribution." />
+    <option name="LAST_COMMIT_MESSAGE" value="Add NuGet packaging support and update ETAMP project details&#10;&#10;Enabled automatic NuGet package generation for all ETAMP projects with output to a unified `nupkgs` directory. Updated copyright year to 2025 and adjusted project metadata for clarity and consistency. Prepared the solution for streamlined deployment and distribution." />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REARRANGE_BEFORE_PROJECT_COMMIT" value="true" />

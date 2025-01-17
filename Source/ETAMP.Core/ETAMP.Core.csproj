@@ -7,16 +7,18 @@
         <Nullable>enable</Nullable>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <Title>ETAMP.Core</Title>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
     </PropertyGroup>
 
     <ItemGroup>
         <None Include="../../README.md">
             <Pack>True</Pack>
-            <PackagePath>\</PackagePath>
+            <PackagePath>/</PackagePath>
+            <Link>README.md</Link>
         </None>
         <None Include="../../Etamp.png">
             <Pack>True</Pack>
-            <PackagePath>\</PackagePath>
+            <PackagePath>/</PackagePath>
             <Link>Etamp.png</Link>
         </None>
     </ItemGroup>
