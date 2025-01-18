@@ -8,9 +8,10 @@ public class ValidationResult
     /// <summary>
     ///     Represents the result of a validation process.
     /// </summary>
-    public ValidationResult(bool isValid, string errorMessage = "")
+    public ValidationResult(bool isValid, string errorMessage = "", Exception? exception = null)
     {
         IsValid = isValid;
+        Exception = exception;
         ErrorMessage = errorMessage;
     }
 

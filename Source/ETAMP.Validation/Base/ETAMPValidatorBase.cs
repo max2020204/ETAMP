@@ -27,14 +27,16 @@ public abstract class ETAMPValidatorBase : IETAMPValidator
         signutureValidatorAbstract = signatureValidatorBase;
     }
 
+
     /// <summary>
-    ///     Validates the ETAMP (Encrypted Token And Message Protocol) structure.
+    /// Validates an ETAMP model using the provided token type and a specified validation mode.
     /// </summary>
-    /// <typeparam name="T">The type of the token.</typeparam>
+    /// <typeparam name="T">The type of the token that the ETAMP model contains.</typeparam>
     /// <param name="etamp">The ETAMP model to validate.</param>
-    /// <param name="validateLite">Specify whether to perform a lite validation.</param>
-    /// <returns>The validation result.</returns>
-    public abstract ValidationResult ValidateETAMP<T>(ETAMPModel<T> etamp, bool validateLite) where T : Token;
+    /// <param name="validateLite">If true, performs a lightweight validation; otherwise, performs a full validation.</param>
+    /// <returns>A task that represents the asynchronous validation operation. The task result contains the validation result.</returns>
+    public abstract Task<ValidationResult> ValidateETAMPAsync<T>(ETAMPModel<T> etamp, bool validateLite)
+        where T : Token;
 
     /// <summary>
     ///     Initializes the ETAMPValidatorBase by providing the ECDsa provider and the hash algorithm name.

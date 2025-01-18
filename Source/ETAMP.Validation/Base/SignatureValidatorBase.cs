@@ -34,7 +34,7 @@ public abstract class SignatureValidatorBase : ISignatureValidator
     /// <typeparam name="T">The type of token.</typeparam>
     /// <param name="etamp">The ETAMPModel instance.</param>
     /// <returns>The ValidationResult instance.</returns>
-    public abstract ValidationResult ValidateETAMPMessage<T>(ETAMPModel<T> etamp) where T : Token;
+    public abstract Task<ValidationResult> ValidateETAMPMessageAsync<T>(ETAMPModel<T> etamp) where T : Token;
 
     /// <summary>
     ///     Initializes the VerifyWrapper by setting the ECDsa instance and hash algorithm name.

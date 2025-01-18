@@ -1,5 +1,6 @@
 ﻿#region
 
+using System.Text;
 using System.Text.Json;
 using ETAMP.Core.Models;
 using ETAMP.Validation.Base;
@@ -33,28 +34,28 @@ public sealed class SignatureValidator : SignatureValidatorBase
     }
 
 
-    /// <summary>
-    ///     Validates an ETAMP message.
-    /// </summary>
-    /// <typeparam name="T">The type of the token, which must derive from <see cref="Token" />.</typeparam>
-    /// <param name="etamp">The ETAMP model to validate.</param>
-    /// <returns>
-    ///     A <see cref="ValidationResult" /> indicating whether the ETAMP message is valid.
-    ///     If invalid, it includes an error message.
-    /// </returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="etamp" /> is null.</exception>
-    public override ValidationResult ValidateETAMPMessage<T>(ETAMPModel<T> etamp)
+    public override async Task<ValidationResult> ValidateETAMPMessageAsync<T>(ETAMPModel<T> etamp)
     {
         ArgumentNullException.ThrowIfNull(etamp);
         ArgumentNullException.ThrowIfNull(etamp.Token);
+
         var structureValidationResult = _structureValidator.ValidateETAMP(etamp);
         if (!structureValidationResult.IsValid)
             return new ValidationResult(false, "Invalid ETAMP Model.");
 
         if (string.IsNullOrWhiteSpace(etamp.SignatureMessage))
             return new ValidationResult(false, "SignatureMessage is missing in the ETAMP model.");
-        var token = JsonSerializer.Serialize(etamp.Token);
+
+        string token;
+        await using (var memoryStream = new MemoryStream())
+        {
+            await JsonSerializer.SerializeAsync(memoryStream, etamp.Token);
+            token = Encoding.UTF8.GetString(memoryStream.ToArray());
+        }
+
         var dataToVerify = $"{etamp.Id}{etamp.Version}{token}{etamp.UpdateType}{etamp.CompressionType}";
+
+        // Асинхронная проверка подписи, если VerifyWrapper поддерживает её
         var isVerified = VerifyWrapper.VerifyData(dataToVerify, etamp.SignatureMessage);
 
         return isVerified ? new ValidationResult(true) : new ValidationResult(false, "Failed to verify data.");

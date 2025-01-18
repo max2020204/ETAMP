@@ -36,7 +36,8 @@ public static class Base64UrlEncoder
     /// <returns>The encoded string.</returns>
     public static string Encode(byte[] inArray)
     {
-        if (inArray == null || inArray.Length == 0) throw new ArgumentNullException(nameof(inArray));
+        if (inArray == null || inArray.Length == 0)
+            throw new ArgumentNullException(nameof(inArray));
         return Encode(inArray, 0, inArray.Length);
     }
 
@@ -96,7 +97,8 @@ public static class Base64UrlEncoder
     /// <returns>The decoded bytes.</returns>
     public static byte[] DecodeBytes(string? str)
     {
-        if (string.IsNullOrEmpty(str)) throw new ArgumentNullException(nameof(str));
+        if (string.IsNullOrWhiteSpace(str) || str.Length == 0)
+            throw new ArgumentNullException(nameof(str));
         return Decode(str.AsSpan());
     }
 
@@ -121,10 +123,12 @@ public static class Base64UrlEncoder
     /// <summary>
     ///     Decodes a Base64Url-encoded string into its original form.
     /// </summary>
-    /// <param name="arg">The Base64Url-encoded string to decode.</param>
+    /// <param name="str">The Base64Url-encoded string to decode.</param>
     /// <returns>The decoded string.</returns>
-    public static string Decode(string? arg)
+    public static string Decode(string? str)
     {
-        return Encoding.UTF8.GetString(DecodeBytes(arg));
+        if (string.IsNullOrWhiteSpace(str) || str.Length == 0)
+            throw new ArgumentNullException(nameof(str));
+        return Encoding.UTF8.GetString(DecodeBytes(str));
     }
 }

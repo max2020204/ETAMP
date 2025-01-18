@@ -12,45 +12,67 @@ namespace ETAMP.Encryption;
 /// </summary>
 public class AESEncryptionService : IEncryptionService
 {
-    public byte[]? IV { get; private set; }
-
     /// <summary>
-    ///     Encrypts the provided data using AES encryption algorithm.
+    /// Encrypts the provided data asynchronously using AES encryption algorithm and streams.
     /// </summary>
-    /// <param name="data">The data to be encrypted.</param>
+    /// <param name="inputStream">The input stream with data to be encrypted.</param>
     /// <param name="key">The encryption key.</param>
-    /// <param name="iv">The initialization vector.</param>
-    /// <returns>The encrypted data.</returns>
-    public byte[] Encrypt(byte[] data, byte[] key, byte[]? iv)
+    /// <param name="iv">The initialization vector. If null, a new one will be generated.</param>
+    /// <returns>A stream containing the encrypted data.</returns>
+    public async Task<Stream> EncryptAsync(Stream inputStream, byte[] key)
     {
-        ArgumentNullException.ThrowIfNull(data, nameof(data));
+        ArgumentNullException.ThrowIfNull(inputStream, nameof(inputStream));
         ArgumentNullException.ThrowIfNull(key, nameof(key));
+
+        var outputStream = new MemoryStream(); // Output will be written here
+
         using var aes = Aes.Create();
         aes.Key = key;
-        aes.IV = iv ?? aes.IV;
-        IV = aes.IV;
-        using var encryptor = aes.CreateEncryptor();
-        return encryptor.TransformFinalBlock(data, 0, data.Length);
+        aes.GenerateIV();
+
+        await outputStream.WriteAsync(aes.IV.AsMemory(0, aes.IV.Length));
+
+        await using var cryptoStream = new CryptoStream(outputStream, aes.CreateEncryptor(), CryptoStreamMode.Write);
+
+        await inputStream.CopyToAsync(cryptoStream);
+        await cryptoStream.FlushAsync();
+
+        outputStream.Position = 0;
+        return outputStream;
     }
 
     /// <summary>
-    ///     Decrypts the provided data using the given key and IV.
+    /// Decrypts the provided encrypted data asynchronously using AES encryption algorithm and streams.
     /// </summary>
-    /// <param name="data">The data to be decrypted.</param>
-    /// <param name="key">The key used for decryption.</param>
-    /// <param name="iv">The initialization vector used for decryption.</param>
-    /// <returns>The decrypted data.</returns>
-    public byte[] Decrypt(byte[] data, byte[] key, byte[] iv)
+    /// <param name="inputStream">The input stream with encrypted data.</param>
+    /// <param name="key">The decryption key.</param>
+    /// <returns>A stream containing the decrypted data.</returns>
+    public async Task<Stream> DecryptAsync(Stream inputStream, byte[] key)
     {
-        ArgumentNullException.ThrowIfNull(data, nameof(data));
+        ArgumentNullException.ThrowIfNull(inputStream, nameof(inputStream));
         ArgumentNullException.ThrowIfNull(key, nameof(key));
-        ArgumentNullException.ThrowIfNull(iv, nameof(iv));
+
+        var outputStream = new MemoryStream(); // Decrypted data will be written here
 
         using var aes = Aes.Create();
+        var iv = new byte[aes.BlockSize / 8];
+
+        // Read the IV from the input stream
+        var bytesRead = await inputStream.ReadAsync(iv);
+        if (bytesRead != iv.Length)
+            throw new CryptographicException("Failed to read the initialization vector (IV) from the input stream.");
+
         aes.Key = key;
         aes.IV = iv;
 
-        using var decrypt = aes.CreateDecryptor();
-        return decrypt.TransformFinalBlock(data, 0, data.Length);
+        // Create the CryptoStream for decryption
+        await using var cryptoStream = new CryptoStream(inputStream, aes.CreateDecryptor(), CryptoStreamMode.Read);
+
+        // Copy decrypted data from CryptoStream to the output stream
+        await cryptoStream.CopyToAsync(outputStream);
+
+        // Reset the output stream position for further reading
+        outputStream.Position = 0;
+        return outputStream;
     }
 }

@@ -43,18 +43,18 @@ public sealed class StructureValidator : IStructureValidator
         return new ValidationResult(true);
     }
 
+
     /// <summary>
-    ///     Validates the structure and consistency of an ETAMP model.
+    /// Validates an ETAMP model using its JSON representation.
     /// </summary>
-    /// <typeparam name="T">The type of token used in the ETAMPModel.</typeparam>
-    /// <param name="etampJson">The ETAMP JSON string to be validated.</param>
-    /// <param name="validateLite">Indicates whether to perform a lite validation (optional, default is false).</param>
-    /// <returns>
-    ///     The validation result indicating whether the ETAMP model is valid or not, and any error message if applicable.
-    /// </returns>
-    public ValidationResult ValidateETAMP<T>(string etampJson, bool validateLite = false) where T : Token
+    /// <typeparam name="T">The type of token.</typeparam>
+    /// <param name="etampJson">The JSON representation of the ETAMP model to validate.</param>
+    /// <param name="validateLite">Optional. Specifies whether to perform lite validation. Default is false.</param>
+    /// <returns>A ValidationResult object indicating whether the ETAMP model is valid or not.</returns>
+    public async Task<ValidationResult> ValidateETAMPAsync<T>(string etampJson, bool validateLite = false)
+        where T : Token
     {
-        var model = etampJson.DeconstructETAMP<T>(_compressionServiceFactory);
+        var model = await etampJson.DeconstructETAMPAsync<T>(_compressionServiceFactory);
         return ValidateETAMP(model, validateLite);
     }
 }

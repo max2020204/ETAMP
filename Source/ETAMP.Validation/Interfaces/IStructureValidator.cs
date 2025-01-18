@@ -27,5 +27,5 @@ public interface IStructureValidator
     /// <param name="etampJson">The ETAMP JSON string to be validated.</param>
     /// <param name="validateLite">Indicates whether to perform a lite validation (optional, default is false).</param>
     /// <returns>The validation result indicating whether the ETAMP model is valid or not, and any error message if applicable.</returns>
-    ValidationResult ValidateETAMP<T>(string etampJson, bool validateLite = false) where T : Token;
+    Task<ValidationResult> ValidateETAMPAsync<T>(string etampJson, bool validateLite = false) where T : Token;
 }

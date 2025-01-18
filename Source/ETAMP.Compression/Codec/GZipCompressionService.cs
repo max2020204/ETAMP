@@ -10,24 +10,31 @@ using ETAMP.Core.Utils;
 namespace ETAMP.Compression.Codec;
 
 /// <summary>
-///     Provides compression and decompression functionality using the GZip algorithm.
+/// Provides functionality for compressing and decompressing string data using GZip compression.
+/// This class implements the <c>ICompressionService</c> interface and provides methods
+/// to compress a string into a compressed Base64-encoded format and to decompress
+/// a Base64-encoded compressed string back to its original format.
 /// </summary>
 public sealed class GZipCompressionService : ICompressionService
 {
     /// <summary>
-    ///     Compresses and encodes a string for efficient storage or transmission.
+    /// Compresses the provided string using GZip compression and encodes the result in Base64 URL format.
     /// </summary>
-    /// <param name="data">The string data to compress.</param>
-    /// <returns>The compressed and encoded string.</returns>
-    public string? CompressString(string? data)
+    /// <param name="data">The string to be compressed. Must not be null, empty, or whitespace.</param>
+    /// <returns>A Base64 URL encoded string representing the compressed data.</returns>
+    /// <exception cref="ArgumentException">Thrown when the input data is null, empty, or whitespace.</exception>
+    public async Task<string> CompressString(string? data)
     {
-        ArgumentException.ThrowIfNullOrEmpty(data);
+        if (string.IsNullOrWhiteSpace(data))
+            throw new ArgumentException("The input data must not be null, empty, or consist only of whitespace.",
+                nameof(data));
+
         var bytes = Encoding.UTF8.GetBytes(data);
 
         using var outputStream = new MemoryStream();
-        using (var gzipStream = new GZipStream(outputStream, CompressionMode.Compress, true))
+        await using (var gzipStream = new GZipStream(outputStream, CompressionMode.Compress, true))
         {
-            gzipStream.Write(bytes, 0, bytes.Length);
+            await gzipStream.WriteAsync(bytes);
         }
 
         outputStream.Position = 0;
@@ -35,25 +42,53 @@ public sealed class GZipCompressionService : ICompressionService
         return Base64UrlEncoder.Encode(outputStream.ToArray());
     }
 
-    /// <summary>
-    ///     Decompresses and decodes a string back to its original form.
-    /// </summary>
-    /// <param name="base64CompressedData">The compressed and encoded string to decompress.</param>
-    /// <returns>The original uncompressed string.</returns>
-    public string DecompressString(string? base64CompressedData)
+    /// Decompresses a Base64 encoded, GZIP-compressed string into its original uncompressed format.
+    /// <param name="base64CompressedData">
+    ///     The Base64 encoded string that represents GZIP-compressed data.
+    ///     Must not be null, empty, or whitespace.
+    /// </param>
+    /// <returns>
+    ///     The decompressed string in its original format.
+    /// </returns>
+    /// <exception cref="ArgumentException">
+    ///     Thrown if the input string is null, empty, or contains only whitespace.
+    /// </exception>
+    /// <exception cref="InvalidDataException">
+    ///     Thrown if the input data is not in a valid GZIP-compressed format or is corrupted.
+    /// </exception>
+    /// <exception cref="InvalidOperationException">
+    ///     Thrown if the decompressed data is empty or an error occurs during the decompression process.
+    /// </exception>
+    public async Task<string> DecompressString(string? base64CompressedData)
     {
-        ArgumentException.ThrowIfNullOrEmpty(base64CompressedData);
+        if (string.IsNullOrWhiteSpace(base64CompressedData))
+            throw new ArgumentException("The input data must not be null, empty, or consist only of whitespace.",
+                nameof(base64CompressedData));
+
         var compressedBytes = Base64UrlEncoder.DecodeBytes(base64CompressedData);
 
         using var inputStream = new MemoryStream(compressedBytes);
         using var outputStream = new MemoryStream();
-        using (var gzipStream = new GZipStream(inputStream, CompressionMode.Decompress))
+        try
         {
-            gzipStream.CopyTo(outputStream);
+            await using var gzipStream = new GZipStream(inputStream, CompressionMode.Decompress);
+            await gzipStream.CopyToAsync(outputStream);
+        }
+        catch (InvalidDataException ex)
+        {
+            throw new InvalidDataException(
+                "Failed to decompress the data. The input data may be in an unsupported or corrupted format.", ex);
+        }
+        catch (Exception e)
+        {
+            throw new InvalidOperationException("The input data is invalid or corrupted.", e);
         }
 
         outputStream.Position = 0;
         var decompressedBytes = outputStream.ToArray();
+        if (decompressedBytes.Length == 0)
+            throw new InvalidOperationException(
+                "The decompressed data is empty. The input might be invalid or corrupted.");
 
         return Encoding.UTF8.GetString(decompressedBytes);
     }

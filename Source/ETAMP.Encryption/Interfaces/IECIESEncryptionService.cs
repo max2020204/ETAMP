@@ -7,16 +7,18 @@
 public interface IECIESEncryptionService
 {
     /// <summary>
-    ///     Encrypts a plain text message using ECIES.
+    /// Encrypts the specified message using ECIES encryption algorithm.
     /// </summary>
     /// <param name="message">The plain text message to be encrypted.</param>
-    /// <returns>The encrypted message as a Base64-encoded string.</returns>
-    string? Encrypt(string message);
+    /// <returns>A task that represents the asynchronous operation. The task result contains the encrypted message as a Base64-encoded string.</returns>
+    Task<string> EncryptAsync(MemoryStream message);
 
     /// <summary>
-    ///     Decrypts an encrypted message back to its plain text form using ECIES.
+    /// Asynchronously decrypts a message that was encrypted using ECIES encryption.
     /// </summary>
-    /// <param name="encryptedMessageBase64">The encrypted message as a Base64-encoded string.</param>
-    /// <returns>The decrypted plain text message.</returns>
-    string Decrypt(string? encryptedMessageBase64);
+    /// <param name="encryptedMessageBase64">The encrypted message in Base64-encoded format. Can be null.</param>
+    /// <returns>
+    /// A task that represents the asynchronous decryption operation. The task result contains the decrypted plain text.
+    /// </returns>
+    Task<string> DecryptAsync(MemoryStream? encryptedMessageBase64);
 }

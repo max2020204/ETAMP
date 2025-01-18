@@ -33,7 +33,7 @@ public sealed class ETAMPValidator : ETAMPValidatorBase
     /// <param name="etamp">The ETAMP model to validate.</param>
     /// <param name="validateLite">Indicates whether to perform lite validation.</param>
     /// <returns>A ValidationResult indicating the validation result.</returns>
-    public override ValidationResult ValidateETAMP<T>(ETAMPModel<T> etamp, bool validateLite)
+    public override async Task<ValidationResult> ValidateETAMPAsync<T>(ETAMPModel<T> etamp, bool validateLite)
     {
         var structureValidationResult = _structureValidator.ValidateETAMP(etamp, validateLite);
         if (!structureValidationResult.IsValid)
@@ -44,7 +44,7 @@ public sealed class ETAMPValidator : ETAMPValidatorBase
             return tokenValidationResult;
 
 
-        var signatureValidationResult = signutureValidatorAbstract.ValidateETAMPMessage(etamp);
+        var signatureValidationResult = await signutureValidatorAbstract.ValidateETAMPMessageAsync(etamp);
 
         return !signatureValidationResult.IsValid
             ? signatureValidationResult

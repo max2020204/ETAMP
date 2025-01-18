@@ -12,7 +12,37 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8b44219d-6ab5-4022-b5c1-0f01c450f8f2" name="Changes" comment="Update .nupkg files for multiple ETAMP components&#10;&#10;Refreshed .nupkg files for Compression, Encryption, Extension, Extension.ServiceCollection, Validation, and Wrapper. These updates likely include changes to binaries or metadata to reflect the latest adjustments in the respective components." />
+    <list default="true" id="8b44219d-6ab5-4022-b5c1-0f01c450f8f2" name="Changes" comment="Update .nupkg files for multiple ETAMP components&#10;&#10;Refreshed .nupkg files for Compression, Encryption, Extension, Extension.ServiceCollection, Validation, and Wrapper. These updates likely include changes to binaries or metadata to reflect the latest adjustments in the respective components.">
+      <change afterPath="$PROJECT_DIR$/Tests/ETAMP.Compression.Tests/Codec/DeflateCompressionServiceTest.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Tests/ETAMP.Compression.Tests/Codec/GZipCompressionServiceTest.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Tests/ETAMP.Compression.Tests/Factory/CompressionServiceFactoryTests.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Tests/ETAMP.Core.Tests/Utils/Base64UrlEncoderTest.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.ETAMP/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.ETAMP/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ETAMP.sln" beforeDir="false" afterPath="$PROJECT_DIR$/ETAMP.sln" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ETAMP.sln.DotSettings.user" beforeDir="false" afterPath="$PROJECT_DIR$/ETAMP.sln.DotSettings.user" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Examples/ETAMP.Console.CreateETAMP/CreateETAMP.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Examples/ETAMP.Console.CreateETAMP/CreateETAMP.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Examples/ETAMP.Console.ValidateETAMP/ValidateETAMPS.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Examples/ETAMP.Console.ValidateETAMP/ValidateETAMP.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ETAMP.Compression/Codec/DeflateCompressionService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Compression/Codec/DeflateCompressionService.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ETAMP.Compression/Codec/GZipCompressionService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Compression/Codec/GZipCompressionService.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ETAMP.Compression/Interfaces/ICompressionService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Compression/Interfaces/ICompressionService.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ETAMP.Core/Models/ValidationResult.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Core/Models/ValidationResult.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ETAMP.Core/Utils/Base64UrlEncoder.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Core/Utils/Base64UrlEncoder.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ETAMP.Encryption/AESEncryptionService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Encryption/AESEncryptionService.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ETAMP.Encryption/Base/ECIESEncryptionServiceBase.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Encryption/Base/ECIESEncryptionServiceBase.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ETAMP.Encryption/ECIESEncryptionService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Encryption/ECIESEncryptionService.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ETAMP.Encryption/Interfaces/IECIESEncryptionService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Encryption/Interfaces/IECIESEncryptionService.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ETAMP.Encryption/Interfaces/IEncryptionService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Encryption/Interfaces/IEncryptionService.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ETAMP.Extension/Builder/ETAMPBuilder.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Extension/Builder/ETAMPBuilder.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ETAMP.Extension/Builder/ETAMPEncryption.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Extension/Builder/ETAMPEncryption.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ETAMP.Validation/Base/ETAMPValidatorBase.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Validation/Base/ETAMPValidatorBase.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ETAMP.Validation/Base/SignatureValidatorBase.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Validation/Base/SignatureValidatorBase.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ETAMP.Validation/ETAMPValidator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Validation/ETAMPValidator.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ETAMP.Validation/Interfaces/IETAMPValidator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Validation/Interfaces/IETAMPValidator.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ETAMP.Validation/Interfaces/ISignatureValidator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Validation/Interfaces/ISignatureValidator.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ETAMP.Validation/Interfaces/IStructureValidator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Validation/Interfaces/IStructureValidator.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ETAMP.Validation/SignatureValidator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Validation/SignatureValidator.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ETAMP.Validation/StructureValidator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Validation/StructureValidator.cs" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -32,23 +62,36 @@
 }</component>
   <component name="GithubPullRequestsUISettings">{
   &quot;selectedUrlAndAccountId&quot;: {
-    &quot;url&quot;: &quot;https://github.com/max2020204/ETAMP&quot;,
-    &quot;accountId&quot;: &quot;82b8494e-c6a6-4a09-9baf-fb32d1148b62&quot;
+    &quot;url&quot;: &quot;https://github.com/max2020204/ETAMP.git&quot;,
+    &quot;accountId&quot;: &quot;92422c20-f676-4556-a256-7ffee92151ad&quot;
   }
 }</component>
   <component name="HighlightingSettingsPerFile">
     <setting file="mock:///AIAssistantSnippet." root0="SKIP_HIGHLIGHTING" />
     <setting file="mock:///AIAssistantSnippet." root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/a8ceca48b7b645dd875a40ee6d28725416d08/ba/17c0ae6e/ServiceProvider.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/10362de7f7fcaffbcda6f204f10ffcf2eb7d77dd5c8e647c72142fe946a3313/KeyNotFoundException.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/595e4f2361fd31cb66c7e9303f46cf8f2fe77d96eea9d0e42c17cae783aa74/ServiceCollection.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/621526284d3e4868b98948aff942206525763e57e194a27623b66c384466/ServiceProviderServiceExtensions.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/7e3d58dfc7978169d9159d0a921ccc35a1ec6f1b9c80adc04938f801fb42/ECDsa.Create.Windows.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/8bb5e9b7c0175f0e7484c843d9a2bbcfb1f176b842f476b2c6a8fcbceea5cf/ThrowHelper.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/be724d1cdca338282bed48dddb79faf53d72bbde3321431a9985e5db7231d/PemKeyHelpers.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/f112203b5ddc8c323d1f4cbe3040b48f79e818f281fee61f60a5c84787bf31/ECDsaCng.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/fc2027f7e776fc105cddb56b1a25eeb3895b3ae6f3aac854d786e63bd01f75e2/CallSiteFactory.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/fd57398b7dc3a8ce7da2786f2c67289c3d974658a9e90d0c1e84db3d965fbf1/Console.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="mock:///AIAssistantSnippet." root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///AIAssistantSnippet." root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///AIAssistantSnippet." root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///AIAssistantSnippet." root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///AIAssistantSnippet." root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///AIAssistantSnippet." root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///AIAssistantSnippet." root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///AIAssistantSnippet." root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///AIAssistantSnippet." root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///AIAssistantSnippet." root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///AIAssistantSnippet." root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///AIAssistantSnippet." root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///AIAssistantSnippet." root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///AIAssistantSnippet." root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/c73b3c6c598640c592fd3c6fa226c286e90908/f0/6324d8c9/String.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/3163d85a46619569f2cabf13c4ab1f6b1c576c72d14b7329ad58d9499777a/FormatException.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/47921adef6414a816a08bfc17edfc0ef70baa3a6d7a6c94f9e56682a1d1c/ExceptionAsserts.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/5e14a4e27990972fa4ae94975603bd298aaf328ee083c03b10569ee4724d57/TestInvoker.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/5ed31abcb28174b321885e46ba3a003a882030a6f66e30121f9f4e582f4cfd/Convert.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/65fa89658abb6af822f197bec3e5896de11f474cef5b57673a3b2c7d4e60fde4/Inflater.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/b3575a2f41d7c2dbfaa36e866b8a361e11dd7223ff82bc574c1d5d4b7522f735/Future.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/bd1d5c50194fea68ff3559c160230b0ab50f5acf4ce3061bffd6d62958e2182/ExceptionDispatchInfo.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/bea8c41514fe19b15a2e9a98f2116d6d3effa32491c5349cfda989bc9f393/Record.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Examples/ETAMP.Console.CreateETAMP/obj/Debug/net9.0/ETAMP.Console.CreateETAMP.AssemblyInfo.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Examples/ETAMP.Console.SignETAMP/CreateSignETAMP.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Examples/ETAMP.Console.ValidateETAMP/ValidateETAMPS.cs" root0="FORCE_HIGHLIGHTING" />
@@ -79,9 +122,11 @@
     ".NET Project.ETAMP.Console.CreateSignETAMP.executor": "Debug",
     ".NET Project.ETAMP.Console.CreateSignETAMPService.executor": "Debug",
     ".NET Project.ETAMP.Console.ValidateETAMP.executor": "Run",
-    ".NET Project.ETAMP.Console.ValidateETAMPService.executor": "Run",
+    ".NET Project.ETAMP.Console.ValidateETAMPService.executor": "Debug",
+    "5c53a9ec-5001-4a38-9545-ad7f91d669ad.executor": "Debug",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
+    "c762ceee-8ff5-402e-b6d9-fbb316d19fb8.executor": "Debug",
     "git-widget-placeholder": "master",
     "ignore.virus.scanning.warn.message": "true",
     "node.js.detected.package.eslint": "true",
@@ -89,7 +134,7 @@
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "preferences.keymap",
+    "settings.editor.selected.configurable": "ml.llm.AIAssistantPromptsLibrary",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
@@ -274,6 +319,8 @@
       <workItem from="1736723483389" duration="3677000" />
       <workItem from="1736975115012" duration="3616000" />
       <workItem from="1737065830326" duration="6886000" />
+      <workItem from="1737210029159" duration="2317000" />
+      <workItem from="1737212923703" duration="11802000" />
     </task>
     <task id="LOCAL-00001" summary="Refactor and reorganize ETAMP example projects&#10;&#10;Moved and restructured ETAMP example project files for better modularity and project clarity. Updated project references and dependencies to align with the new structure. Removed redundant files and added missing configurations where necessary.">
       <option name="closed" value="true" />
@@ -417,6 +464,21 @@
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
+  <component name="UnitTestsCoverage.Settings">
+    <option name="coveragePercentColumnWidth" value="150" />
+    <option name="sortOrder" value="DESCENDING" />
+    <option name="sortedColumn" value="1" />
+    <option name="symbolColumnWidth" value="234" />
+    <coverage-tree-state>
+      <expand>
+        <path>
+          <item name="rootNode" type="c53c71d1:RiderDotCoverCoverageTreeModel$RootNode" />
+          <item name="Total 0% 947/947" type="8b8fad3a:RiderDotCoverCoverageTreeNode" />
+        </path>
+      </expand>
+      <select />
+    </coverage-tree-state>
+  </component>
   <component name="UnityCheckinConfiguration" checkUnsavedScenes="true" />
   <component name="UnityProjectConfiguration" hasMinimizedUI="false" />
   <component name="Vcs.Log.Tabs.Properties">
@@ -453,5 +515,66 @@
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REARRANGE_BEFORE_PROJECT_COMMIT" value="true" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <breakpoint type="DotNet Exception Breakpoints">
+          <properties exception="System.FormatException" isInternal="false" displayValue="FormatException" namespaceName="System">
+            <option name="internal" value="false" />
+          </properties>
+          <option name="timeStamp" value="8" />
+        </breakpoint>
+        <breakpoint enabled="true" type="DotNet Exception Breakpoints">
+          <properties exception="System.IO.InvalidDataException" isInternal="false" displayValue="InvalidDataException" namespaceName="System.IO">
+            <option name="internal" value="false" />
+          </properties>
+          <option name="timeStamp" value="13" />
+        </breakpoint>
+        <line-breakpoint type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/Source/ETAMP.Compression/Codec/GZipCompressionService.cs</url>
+          <line>27</line>
+          <properties documentPath="C:\Users\black\RiderProjects\ETAMP\Source\ETAMP.Compression\Codec\GZipCompressionService.cs" containingFunctionPresentation="Method 'CompressString'">
+            <startOffsets>
+              <option value="1122" />
+            </startOffsets>
+            <endOffsets>
+              <option value="1158" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="11" />
+        </line-breakpoint>
+        <line-breakpoint type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/Source/ETAMP.Compression/Codec/GZipCompressionService.cs</url>
+          <line>63</line>
+          <properties documentPath="C:\Users\black\RiderProjects\ETAMP\Source\ETAMP.Compression\Codec\GZipCompressionService.cs" containingFunctionPresentation="Method 'DecompressString'">
+            <startOffsets>
+              <option value="2636" />
+            </startOffsets>
+            <endOffsets>
+              <option value="2688" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="12" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/Source/ETAMP.Compression/Codec/DeflateCompressionService.cs</url>
+          <line>61</line>
+          <properties documentPath="C:\Users\black\RiderProjects\ETAMP\Source\ETAMP.Compression\Codec\DeflateCompressionService.cs" containingFunctionPresentation="Method 'DecompressString'">
+            <startOffsets>
+              <option value="2515" />
+            </startOffsets>
+            <endOffsets>
+              <option value="2567" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="15" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
   </component>
 </project>

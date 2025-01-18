@@ -11,7 +11,7 @@ internal class ETAMPValidationRunner
 {
     private static readonly HashAlgorithmName DefaultHashAlgorithm = HashAlgorithmName.SHA512;
 
-    private static void Main(string[] args)
+    private static async Task Main(string[] args)
     {
         var provider = CreateETAMP.ConfigureServices();
         var etampValidator = provider.GetService<ETAMPValidatorBase>();
@@ -25,7 +25,7 @@ internal class ETAMPValidationRunner
 
         // Configure validator and validate ETAMP
         etampValidator.Initialize(ecdsaProvider, DefaultHashAlgorithm);
-        var validationResult = etampValidator.ValidateETAMP(etamp, false);
+        var validationResult = await etampValidator.ValidateETAMPAsync(etamp, false);
 
         Console.WriteLine(validationResult.IsValid);
     }

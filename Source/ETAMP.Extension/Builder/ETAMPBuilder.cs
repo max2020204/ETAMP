@@ -25,7 +25,8 @@ public static class ETAMPBuilder
     ///     CompressionType property of the model.
     /// </param>
     /// <returns>A serialized string representation of the ETAMPModelBuilder instance, or null if the input is invalid.</returns>
-    public static string? Build<T>(this ETAMPModel<T> model, ICompressionServiceFactory compressionServiceFactory)
+    public static async Task<string> BuildAsync<T>(this ETAMPModel<T> model,
+        ICompressionServiceFactory compressionServiceFactory)
         where T : Token
     {
         ArgumentNullException.ThrowIfNull(model);
@@ -37,7 +38,7 @@ public static class ETAMPBuilder
         {
             Id = model.Id,
             Version = model.Version,
-            Token = compressionService.CompressString(model.Token.ToJson()),
+            Token = await compressionService.CompressString(model.Token.ToJson())!,
             UpdateType = model.UpdateType,
             CompressionType = model.CompressionType,
             SignatureMessage = model.SignatureMessage
@@ -58,7 +59,7 @@ public static class ETAMPBuilder
     /// <returns>An instance of ETAMPModel containing the deserialized and decompressed data.</returns>
     /// <exception cref="ArgumentNullException">Thrown if the compressionServiceFactory is null.</exception>
     /// <exception cref="ArgumentException">Thrown if the jsonEtamp is null, empty, or invalid JSON.</exception>
-    public static ETAMPModel<T> DeconstructETAMP<T>(this string? jsonEtamp,
+    public static async Task<ETAMPModel<T>> DeconstructETAMPAsync<T>(this string? jsonEtamp,
         ICompressionServiceFactory compressionServiceFactory) where T : Token
     {
         ArgumentNullException.ThrowIfNull(compressionServiceFactory);
@@ -69,7 +70,7 @@ public static class ETAMPBuilder
 
         var tempModel = JsonSerializer.Deserialize<ETAMPModelBuilder>(jsonEtamp);
         var compressionService = compressionServiceFactory.Create(tempModel.CompressionType);
-        var token = compressionService.DecompressString(tempModel.Token);
+        var token = await compressionService.DecompressString(tempModel.Token);
 
         return new ETAMPModel<T>
         {

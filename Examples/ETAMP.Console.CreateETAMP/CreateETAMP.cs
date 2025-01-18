@@ -15,11 +15,12 @@ public static class CreateETAMP
 {
     private static ServiceProvider _provider;
 
-    private static void Main(string[] args)
+    private static async Task Main(string[] args)
     {
         _provider = ConfigureServices();
         var compression = _provider.GetService<ICompressionServiceFactory>();
-        Console.WriteLine(InitializeEtampModel(_provider).Build(compression));
+        var etampModel = InitializeEtampModel(_provider);
+        Console.WriteLine(await etampModel.BuildAsync(compression));
     }
 
     public static ETAMPModel<TokenModel> InitializeEtampModel(IServiceProvider provider)

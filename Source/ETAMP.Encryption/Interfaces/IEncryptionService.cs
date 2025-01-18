@@ -1,31 +1,24 @@
 ﻿namespace ETAMP.Encryption.Interfaces;
 
 /// <summary>
-///     Provides mechanisms for encrypting and decrypting data.
+/// Defines an interface for encryption and decryption services.
+/// Provides methods for transforming data streams securely using a given cryptographic key.
 /// </summary>
 public interface IEncryptionService
 {
     /// <summary>
-    ///     Gets the initialization vector (IV) used for the last encryption operation.
+    /// Encrypts the provided data stream asynchronously using AES encryption.
     /// </summary>
-    byte[]? IV { get; }
+    /// <param name="inputStream">The input stream containing the data to be encrypted.</param>
+    /// <param name="key">The encryption key used for encrypting the data.</param>
+    /// <returns>A stream containing the encrypted data.</returns>
+    Task<Stream> EncryptAsync(Stream inputStream, byte[] key);
 
     /// <summary>
-    ///     Encrypts the specified data using the provided key and an optional initialization vector (IV).
-    ///     If the IV is not provided, a new one will be generated and used.
+    /// Decrypts the provided encrypted data stream asynchronously using AES encryption.
     /// </summary>
-    /// <param name="data">The data to encrypt, represented as a byte array.</param>
-    /// <param name="key">The encryption key, represented as a byte array.</param>
-    /// <param name="iv">The initialization vector (IV) for encryption, or null to generate a new IV.</param>
-    /// <returns>The encrypted data as a byte array.</returns>
-    byte[] Encrypt(byte[] data, byte[] key, byte[]? iv);
-
-    /// <summary>
-    ///     Decrypts the specified data using the provided key and the initialization vector (IV).
-    /// </summary>
-    /// <param name="data">The data to decrypt, represented as a byte array.</param>
-    /// <param name="key">The decryption key, represented as a byte array.</param>
-    /// <param name="iv">The initialization vector (IV) used for decryption.</param>
-    /// <returns>The decrypted data as a byte array.</returns>
-    byte[] Decrypt(byte[] data, byte[] key, byte[] iv);
+    /// <param name="inputStream">The input stream containing the encrypted data to be decrypted.</param>
+    /// <param name="key">The decryption key used to decrypt the data.</param>
+    /// <returns>A stream containing the decrypted data.</returns>
+    Task<Stream> DecryptAsync(Stream inputStream, byte[] key);
 }
