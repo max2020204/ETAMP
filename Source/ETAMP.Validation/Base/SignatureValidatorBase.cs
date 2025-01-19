@@ -41,7 +41,7 @@ public abstract class SignatureValidatorBase : ISignatureValidator
     /// </summary>
     /// <param name="provider">The provider for managing and accessing the ECDsa instance.</param>
     /// <param name="algorithmName">The hash algorithm name.</param>
-    public void Initialize(ECDsaProviderBase provider, HashAlgorithmName algorithmName)
+    public void Initialize(ECDSAProviderBase provider, HashAlgorithmName algorithmName)
     {
         VerifyWrapper.Initialize(provider, algorithmName);
     }

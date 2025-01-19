@@ -15,13 +15,13 @@ namespace ETAMP.Encryption.Base;
 ///     registration of ECDsa objects and parameterized configurations.
 ///     It includes methods to register ECDsa instances with optional naming support.
 /// </remarks>
-public abstract class ECDsaRegistrationBase : IECDsaRegistrar
+public abstract class ECDSARegistrationBase : IECDSARegistrar
 {
     /// <summary>
     ///     Represents the base implementation for an ECDSA (Elliptic Curve Digital Signature Algorithm) registrar.
     ///     This abstract class defines a common structure for registering ECDSA instances in a backing store.
     /// </summary>
-    protected ECDsaRegistrationBase(IECDsaStore store)
+    protected ECDSARegistrationBase(IECDSAStore store)
     {
         Store = store;
     }
@@ -30,7 +30,7 @@ public abstract class ECDsaRegistrationBase : IECDsaRegistrar
     ///     Gets the instance of the store that provides functionality to manage and
     ///     interact with cryptographic providers associated with ECDSA registrations.
     /// </summary>
-    protected IECDsaStore Store { get; }
+    protected IECDSAStore Store { get; }
 
     /// <summary>
     ///     Registers an ECDsa instance with an associated store by assigning it a unique identifier

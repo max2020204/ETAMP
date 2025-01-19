@@ -14,7 +14,7 @@ namespace ETAMP.Encryption.Interfaces.ECDSAManager;
 ///     unique identifiers or names. It serves as an abstraction for underlying
 ///     components managing ECDSA operations.
 /// </remarks>
-public interface IECDsaProvider
+public interface IECDSAProvider
 {
     /// <summary>
     ///     Retrieves the ECDsa instance associated with the specified unique identifier.

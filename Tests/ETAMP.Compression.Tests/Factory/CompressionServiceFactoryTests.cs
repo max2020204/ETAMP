@@ -1,10 +1,14 @@
-﻿using ETAMP.Compression.Codec;
+﻿#region
+
+using ETAMP.Compression.Codec;
 using ETAMP.Compression.Factory;
 using ETAMP.Compression.Interfaces;
 using ETAMP.Core.Management;
 using JetBrains.Annotations;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
+
+#endregion
 
 namespace ETAMP.Compression.Tests.Factory;
 

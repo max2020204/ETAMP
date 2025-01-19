@@ -4,7 +4,7 @@
 ///     Defines methods for managing ECDSA providers.
 ///     Provides functionality to remove ECDSA providers using unique identifiers or names.
 /// </summary>
-public interface IECDsaControl
+public interface IECDSAControl
 {
     /// <summary>
     ///     Removes an entry associated with the specified identifier from the underlying store.

@@ -11,18 +11,18 @@ namespace ETAMP.Encryption.Base;
 ///     Represents a base class for managing ECDsa instances. This class provides foundational
 ///     functionalities for storing and accessing ECDsa cryptographic providers using a designated storage mechanism.
 /// </summary>
-public abstract class ECDsaProviderBase : IECDsaProvider
+public abstract class ECDSAProviderBase : IECDSAProvider
 {
     /// <summary>
     ///     Represents the storage mechanism for managing and retrieving
     ///     elliptic curve digital signature algorithm (ECDSA) provider instances.
     ///     Used as a dependency for ECDsaProviderBase.
     /// </summary>
-    protected readonly IECDsaStore Store;
+    protected readonly IECDSAStore Store;
 
     /// Represents the base class for managing ECDsa instances.
     /// Provides common functionality for storing, retrieving, and setting ECDsa objects.
-    protected ECDsaProviderBase(IECDsaStore store)
+    protected ECDSAProviderBase(IECDSAStore store)
     {
         Store = store;
     }
@@ -40,21 +40,21 @@ public abstract class ECDsaProviderBase : IECDsaProvider
     ///     The current <see cref="ECDsa" /> instance being used by the provider,
     ///     or null if one has not been set.
     /// </value>
-    public ECDsa? CurrentEcdsa { get; protected set; }
+    public ECDsa? CurrentEcdsa { get; private set; }
 
     /// <summary>
     ///     Retrieves the ECDsa instance associated with the specified identifier.
     /// </summary>
     /// <param name="id">The unique identifier for the ECDsa instance to retrieve.</param>
     /// <returns>The ECDsa instance if found, otherwise null.</returns>
-    public abstract ECDsa? GetECDsa(Guid id);
+    public abstract ECDsa GetECDsa(Guid id);
 
     /// <summary>
     ///     Retrieves an ECDsa instance based on the provided name.
     /// </summary>
     /// <param name="name">The name identifier used to locate the ECDsa instance.</param>
     /// <returns>The ECDsa instance associated with the specified name, or null if not found.</returns>
-    public abstract ECDsa? GetECDsa(string name);
+    public abstract ECDsa GetECDsa(string name);
 
     /// <summary>
     ///     Sets the current ECDsa object.

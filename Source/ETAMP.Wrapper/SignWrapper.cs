@@ -24,7 +24,7 @@ public sealed class SignWrapper : SignWrapperBase
     /// <exception cref="ArgumentException">Thrown if etamp.Token is null.</exception>
     public override ETAMPModel<T> SignEtampModel<T>(ETAMPModel<T> etamp)
     {
-        ArgumentNullException.ThrowIfNull(etamp.Token);
+        ArgumentNullException.ThrowIfNull(etamp.Token, nameof(etamp.Token));
 
         var token = JsonSerializer.Serialize(etamp.Token);
         etamp.SignatureMessage = Base64UrlEncoder.Encode(Sign(

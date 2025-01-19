@@ -1,8 +1,12 @@
-﻿using System.Text;
+﻿#region
+
+using System.Text;
 using AutoFixture;
 using ETAMP.Compression.Codec;
 using ETAMP.Core.Utils;
 using JetBrains.Annotations;
+
+#endregion
 
 namespace ETAMP.Compression.Tests.Codec;
 

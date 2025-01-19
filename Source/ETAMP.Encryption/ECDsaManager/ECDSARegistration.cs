@@ -15,7 +15,7 @@ namespace ETAMP.Encryption.ECDsaManager;
 ///     ECDsaRegistration extends the functionality defined in ECDsaRegistrationBase to register
 ///     EC-DSA keys with a storage system and associate them with a provider.
 /// </remarks>
-public class ECDsaRegistration : ECDsaRegistrationBase
+public class ECDSARegistration : ECDSARegistrationBase
 {
     /// <summary>
     ///     Represents the cryptographic provider used for managing Elliptic Curve Digital Signature Algorithm (ECDSA)
@@ -23,14 +23,14 @@ public class ECDsaRegistration : ECDsaRegistrationBase
     ///     This variable holds the implementation of the provider, which facilitates ECDSA operations like associating
     ///     instances to identifiers or names.
     /// </summary>
-    private readonly ECDsaProviderBase _provider;
+    private readonly ECDSAProviderBase _provider;
 
     /// <summary>
     ///     Represents the ECDSA registration process, which acts as an extension
     ///     of the ECDsaRegistrationBase class for handling cryptographic components.
     ///     It provides methods for performing registration operations on ECDsa instances.
     /// </summary>
-    public ECDsaRegistration(IECDsaStore store, ECDsaProviderBase provider) : base(store)
+    public ECDSARegistration(IECDSAStore store, ECDSAProviderBase provider) : base(store)
     {
         _provider = provider;
     }

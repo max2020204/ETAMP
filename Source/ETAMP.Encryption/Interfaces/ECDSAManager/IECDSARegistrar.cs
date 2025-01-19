@@ -9,7 +9,7 @@ namespace ETAMP.Encryption.Interfaces.ECDSAManager;
 /// <summary>
 ///     Interface defining methods for handling ECDSA registration.
 /// </summary>
-public interface IECDsaRegistrar
+public interface IECDSARegistrar
 {
     /// <summary>
     ///     Registers an ECDsa instance with a backing store and retrieves its unique identifier

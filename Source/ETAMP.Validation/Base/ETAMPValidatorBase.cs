@@ -29,7 +29,7 @@ public abstract class ETAMPValidatorBase : IETAMPValidator
 
 
     /// <summary>
-    /// Validates an ETAMP model using the provided token type and a specified validation mode.
+    ///     Validates an ETAMP model using the provided token type and a specified validation mode.
     /// </summary>
     /// <typeparam name="T">The type of the token that the ETAMP model contains.</typeparam>
     /// <param name="etamp">The ETAMP model to validate.</param>
@@ -41,9 +41,9 @@ public abstract class ETAMPValidatorBase : IETAMPValidator
     /// <summary>
     ///     Initializes the ETAMPValidatorBase by providing the ECDsa provider and the hash algorithm name.
     /// </summary>
-    /// <param name="provider">The IECDsaProvider instance to be used for cryptographic operations.</param>
+    /// <param name="provider">The IECDSAProvider instance to be used for cryptographic operations.</param>
     /// <param name="algorithmName">The hash algorithm name to be used for cryptographic operations.</param>
-    public void Initialize(ECDsaProviderBase provider, HashAlgorithmName algorithmName)
+    public void Initialize(ECDSAProviderBase provider, HashAlgorithmName algorithmName)
     {
         signutureValidatorAbstract.Initialize(provider, algorithmName);
     }

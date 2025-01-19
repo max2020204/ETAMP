@@ -10,15 +10,15 @@ using ETAMP.Core.Utils;
 namespace ETAMP.Compression.Codec;
 
 /// <summary>
-/// Provides functionality for compressing and decompressing string data using GZip compression.
-/// This class implements the <c>ICompressionService</c> interface and provides methods
-/// to compress a string into a compressed Base64-encoded format and to decompress
-/// a Base64-encoded compressed string back to its original format.
+///     Provides functionality for compressing and decompressing string data using GZip compression.
+///     This class implements the <c>ICompressionService</c> interface and provides methods
+///     to compress a string into a compressed Base64-encoded format and to decompress
+///     a Base64-encoded compressed string back to its original format.
 /// </summary>
 public sealed class GZipCompressionService : ICompressionService
 {
     /// <summary>
-    /// Compresses the provided string using GZip compression and encodes the result in Base64 URL format.
+    ///     Compresses the provided string using GZip compression and encodes the result in Base64 URL format.
     /// </summary>
     /// <param name="data">The string to be compressed. Must not be null, empty, or whitespace.</param>
     /// <returns>A Base64 URL encoded string representing the compressed data.</returns>

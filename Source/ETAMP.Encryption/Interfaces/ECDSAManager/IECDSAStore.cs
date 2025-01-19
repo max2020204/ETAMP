@@ -10,7 +10,7 @@ namespace ETAMP.Encryption.Interfaces.ECDSAManager;
 ///     Represents an interface for storing and managing instances of ECDsaProviderBase.
 ///     Provides methods to add, remove, and retrieve ECDsa providers based on both GUID and string identifiers.
 /// </summary>
-public interface IECDsaStore
+public interface IECDSAStore
 {
     /// <summary>
     ///     Adds a new entry to the ECDSA store with the specified identifier and cryptographic provider.
@@ -20,7 +20,7 @@ public interface IECDsaStore
     /// <returns>
     ///     Returns true if the entry was successfully added to the store; otherwise, false.
     /// </returns>
-    bool Add(Guid id, ECDsaProviderBase provider);
+    bool Add(Guid id, ECDSAProviderBase provider);
 
     /// <summary>
     ///     Adds a new ECDSA provider to the store using a specified name as the key.
@@ -28,7 +28,7 @@ public interface IECDsaStore
     /// <param name="name">The name key used to identify and store the ECDSA provider.</param>
     /// <param name="provider">The ECDSA provider instance to be added to the store.</param>
     /// <returns>Returns true if the provider was successfully added to the store; otherwise, false.</returns>
-    bool Add(string name, ECDsaProviderBase provider);
+    bool Add(string name, ECDSAProviderBase provider);
 
     /// <summary>
     ///     Removes an ECDsa provider from the store identified by the specified ID.
@@ -53,13 +53,13 @@ public interface IECDsaStore
     ///     Retrieves the ECDsaProviderBase instance associated with the specified unique identifier.
     /// </summary>
     /// <param name="id">The unique identifier for the ECDsa provider to retrieve.</param>
-    /// <returns>An instance of <see cref="ECDsaProviderBase" /> if found; otherwise, null.</returns>
-    ECDsaProviderBase? Get(Guid id);
+    /// <returns>An instance of <see cref="ECDSAProviderBase" /> if found; otherwise, null.</returns>
+    ECDSAProviderBase? Get(Guid id);
 
     /// <summary>
     ///     Retrieves the ECDsaProviderBase instance associated with the specified name.
     /// </summary>
     /// <param name="name">The unique name identifier for the ECDsaProviderBase instance to retrieve.</param>
     /// <returns>The ECDsaProviderBase instance if found; otherwise, null.</returns>
-    ECDsaProviderBase? Get(string name);
+    ECDSAProviderBase? Get(string name);
 }

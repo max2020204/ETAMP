@@ -63,8 +63,8 @@ public sealed class CompressionServiceFactory : ICompressionServiceFactory
     /// </exception>
     public void RegisterCompressionService(string compressionType, ICompressionService serviceFactory)
     {
-        ArgumentNullException.ThrowIfNull(compressionType);
-        ArgumentNullException.ThrowIfNull(serviceFactory);
+        ArgumentException.ThrowIfNullOrWhiteSpace(compressionType, nameof(compressionType));
+        ArgumentNullException.ThrowIfNull(serviceFactory, nameof(serviceFactory));
 
         Factory.TryAdd(compressionType, serviceFactory);
     }
@@ -77,7 +77,7 @@ public sealed class CompressionServiceFactory : ICompressionServiceFactory
     /// <exception cref="ArgumentNullException">Thrown if <paramref name="compressionType" /> is null.</exception>
     public bool UnregisterCompressionService(string compressionType)
     {
-        ArgumentNullException.ThrowIfNull(compressionType);
+        ArgumentNullException.ThrowIfNullOrWhiteSpace(compressionType, nameof(compressionType));
 
         return Factory.TryRemove(compressionType, out _);
     }

@@ -45,7 +45,7 @@ public sealed class StructureValidator : IStructureValidator
 
 
     /// <summary>
-    /// Validates an ETAMP model using its JSON representation.
+    ///     Validates an ETAMP model using its JSON representation.
     /// </summary>
     /// <typeparam name="T">The type of token.</typeparam>
     /// <param name="etampJson">The JSON representation of the ETAMP model to validate.</param>

@@ -9,10 +9,8 @@ using ETAMP.Core.Utils;
 using ETAMP.Encryption;
 using ETAMP.Encryption.Base;
 using ETAMP.Encryption.ECDsaManager;
-using ETAMP.Encryption.Factory;
 using ETAMP.Encryption.Interfaces;
 using ETAMP.Encryption.Interfaces.ECDSAManager;
-using ETAMP.Encryption.Interfaces.Factory;
 using ETAMP.Validation;
 using ETAMP.Validation.Base;
 using ETAMP.Validation.Interfaces;
@@ -37,24 +35,18 @@ public static class ETAMPServiceCollectionExtensions
     /// <returns>The original <see cref="IServiceCollection" /> with ETAMP services added.</returns>
     public static void AddETAMPServices(this IServiceCollection services)
     {
-        // Register key management services
-        services.AddTransient<IKeyExchanger, KeyExchanger>();
-        services.AddTransient<KeyExchangerBase, KeyExchanger>();
-        services.AddTransient<IKeyPairProvider, KeyPairProvider>();
-        services.AddTransient<KeyPairProviderBase, KeyPairProvider>();
-
         // Register cryptographic services
         services.AddScoped<IEncryptionService, AESEncryptionService>();
         services.AddScoped<IECIESEncryptionService, ECIESEncryptionService>();
         services.AddScoped<ECIESEncryptionServiceBase, ECIESEncryptionService>();
 
         // Register wrapper services for cryptographic operations
-        services.AddScoped<IECDsaRegistrar, ECDsaRegistration>();
-        services.AddScoped<ECDsaRegistrationBase, ECDsaRegistration>();
-        services.AddScoped<IECDsaProvider, ECDsaProvider>();
-        services.AddScoped<ECDsaProviderBase, ECDsaProvider>();
-        services.AddScoped<IECDsaControl, ECDsaControl>();
-        services.AddSingleton<IECDsaStore, ECDsaStore>();
+        services.AddScoped<IECDSARegistrar, ECDSARegistration>();
+        services.AddScoped<ECDSARegistrationBase, ECDSARegistration>();
+        services.AddScoped<IECDSAProvider, ECDSAProvider>();
+        services.AddScoped<ECDSAProviderBase, ECDSAProvider>();
+        services.AddScoped<IECDSAControl, ECDSAControl>();
+        services.AddSingleton<IECDSAStore, ECDSAStore>();
         services.AddScoped<IPemKeyCleaner, PemKeyCleaner>();
 
         // Register ETAMP processing services
@@ -67,7 +59,6 @@ public static class ETAMPServiceCollectionExtensions
 
         //Factory
         services.AddScoped<ICompressionServiceFactory, CompressionServiceFactory>();
-        services.AddScoped<IKeyPairProviderFactory, KeyPairProviderFactory>();
 
         // Register signing and validation services
         services.AddScoped<IETAMPValidator, ETAMPValidator>();

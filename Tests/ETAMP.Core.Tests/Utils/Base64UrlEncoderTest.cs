@@ -1,6 +1,10 @@
-﻿using System.Text;
+﻿#region
+
+using System.Text;
 using ETAMP.Core.Utils;
 using JetBrains.Annotations;
+
+#endregion
 
 namespace ETAMP.Core.Tests.Utils;
 

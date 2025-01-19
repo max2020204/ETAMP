@@ -10,21 +10,21 @@ namespace ETAMP.Encryption.ECDsaManager;
 ///     Provides functionality to manage ECDSA key stores, including operations for removing ECDSA entries by their
 ///     identifier or name.
 /// </summary>
-public class ECDsaControl : IECDsaControl
+public class ECDSAControl : IECDSAControl
 {
     /// <summary>
     ///     Represents the private storage instance utilized for managing ECDSA providers.
-    ///     This field works with an implementation of the <see cref="IECDsaStore" /> interface.
+    ///     This field works with an implementation of the <see cref="IECDSAStore" /> interface.
     ///     Facilitates operations such as adding, removing, and retrieving cryptographic providers.
     /// </summary>
-    private readonly IECDsaStore _store;
+    private readonly IECDSAStore _store;
 
     /// <summary>
-    ///     Provides an implementation of the interface <see cref="IECDsaControl" /> for managing ECDSA providers via an
+    ///     Provides an implementation of the interface <see cref="IECDSAControl" /> for managing ECDSA providers via an
     ///     underlying store.
     ///     Enables the removal of ECDSA providers from the store by both unique GUID identifiers and string names.
     /// </summary>
-    public ECDsaControl(IECDsaStore store)
+    public ECDSAControl(IECDSAStore store)
     {
         _store = store;
     }

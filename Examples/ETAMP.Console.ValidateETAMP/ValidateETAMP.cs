@@ -15,7 +15,7 @@ internal class ETAMPValidationRunner
     {
         var provider = CreateETAMP.ConfigureServices();
         var etampValidator = provider.GetService<ETAMPValidatorBase>();
-        var ecdsaProvider = provider.GetService<ECDsaProviderBase>();
+        var ecdsaProvider = provider.GetService<ECDSAProviderBase>();
         var etamp = CreateSignETAMP.SignETAMP(provider);
 
         // Initialize and set up ECDsa

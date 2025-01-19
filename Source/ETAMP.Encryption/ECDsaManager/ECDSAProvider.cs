@@ -16,14 +16,14 @@ namespace ETAMP.Encryption.ECDsaManager;
 ///     It utilizes an underlying store to retrieve ECDsa instances by unique identifier or name.
 ///     It ensures seamless integration into the system's cryptographic infrastructure.
 /// </remarks>
-public class ECDsaProvider : ECDsaProviderBase
+public class ECDSAProvider : ECDSAProviderBase
 {
     /// <summary>
     ///     Provides functionality for managing ECDsa (Elliptic Curve Digital Signature Algorithm) instances.
-    ///     Extends the <see cref="ECDsaProviderBase" /> class to implement methods for retrieving ECDsa objects
+    ///     Extends the <see cref="ECDSAProviderBase" /> class to implement methods for retrieving ECDsa objects
     ///     by unique identifiers such as GUID or name.
     /// </summary>
-    public ECDsaProvider(IECDsaStore store) : base(store)
+    public ECDSAProvider(IECDSAStore store) : base(store)
     {
     }
 

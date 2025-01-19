@@ -28,10 +28,10 @@ public class InitializeWrapper
     /// </summary>
     /// <param name="ecdsaProvider">The provider for managing and accessing the ECDsa instance.</param>
     /// <param name="algorithm">The hash algorithm name.</param>
-    public void Initialize(ECDsaProviderBase ecdsaProvider, HashAlgorithmName algorithm)
+    public void Initialize(ECDSAProviderBase ecdsaProvider, HashAlgorithmName algorithm)
     {
         if (ecdsaProvider == null)
-            throw new ArgumentNullException(nameof(ecdsaProvider), "IECDsaProvider instance cannot be null.");
+            throw new ArgumentNullException(nameof(ecdsaProvider), "IECDSAProvider instance cannot be null.");
 
         Ecdsa = ecdsaProvider.CurrentEcdsa
                 ?? throw new InvalidOperationException(

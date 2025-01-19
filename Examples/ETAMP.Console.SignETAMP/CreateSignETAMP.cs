@@ -51,16 +51,16 @@ public class CreateSignETAMP
         return etampModel;
     }
 
-    private static (SignWrapperBase?, ECDsaProviderBase?, IPemKeyCleaner?) GetServices(IServiceProvider provider)
+    private static (SignWrapperBase?, ECDSAProviderBase?, IPemKeyCleaner?) GetServices(IServiceProvider provider)
     {
         return (
             provider.GetService<SignWrapperBase>(),
-            provider.GetService<ECDsaProviderBase>(),
+            provider.GetService<ECDSAProviderBase>(),
             provider.GetService<IPemKeyCleaner>()
         );
     }
 
-    private static void InitializeSigning(SignWrapperBase sign, ECDsaProviderBase ecdsaProviderBase,
+    private static void InitializeSigning(SignWrapperBase sign, ECDSAProviderBase ecdsaProviderBase,
         IPemKeyCleaner pemCleaner)
     {
         _ecdsaInstance ??= ECDsa.Create();
