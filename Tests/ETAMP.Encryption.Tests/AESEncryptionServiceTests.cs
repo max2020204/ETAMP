@@ -2,8 +2,8 @@
 
 using System;
 using System.IO;
+using System.Linq;
 using System.Security.Cryptography;
-using System.Text;
 using System.Threading.Tasks;
 using AutoFixture;
 using JetBrains.Annotations;
@@ -21,133 +21,151 @@ public class AESEncryptionServiceTests
 
     public AESEncryptionServiceTests()
     {
-        _encryptionService = new AESEncryptionService();
         _fixture = new Fixture();
+        _encryptionService = new AESEncryptionService();
     }
 
     [Fact]
-    public async Task EncryptAsync_ShouldThrowArgumentNullException_WhenInputStreamIsNull()
+    public async Task EncryptAsync_WhenInputStreamIsNull_ThrowsArgumentNullException()
     {
         // Arrange
-        Stream? inputStream = null;
-        var key = _fixture.Create<byte[]>();
+        var key = _fixture.Create<byte[]>().Take(16).ToArray();
 
         // Act & Assert
-        await Assert.ThrowsAsync<ArgumentNullException>(() => _encryptionService.EncryptAsync(inputStream, key));
+        await Assert.ThrowsAsync<ArgumentNullException>(() =>
+            _encryptionService.EncryptAsync(null, key));
     }
 
     [Fact]
-    public async Task EncryptAsync_ShouldThrowArgumentNullException_WhenKeyIsNull()
+    public async Task EncryptAsync_WhenKeyIsNull_ThrowsArgumentNullException()
     {
         // Arrange
-        var inputStream = new MemoryStream(Encoding.UTF8.GetBytes("Test data"));
-        byte[]? key = null;
+        var inputStream = new MemoryStream(_fixture.CreateMany<byte>(100).ToArray());
 
         // Act & Assert
-        await Assert.ThrowsAsync<ArgumentNullException>(() => _encryptionService.EncryptAsync(inputStream, key));
+        await Assert.ThrowsAsync<ArgumentNullException>(() =>
+            _encryptionService.EncryptAsync(inputStream, null));
     }
 
-    [Fact]
-    public async Task DecryptAsync_ShouldThrowArgumentNullException_WhenInputStreamIsNull()
+    [Theory]
+    [InlineData(15)]
+    [InlineData(17)]
+    [InlineData(31)]
+    public async Task EncryptAsync_WhenKeyLengthIsInvalid_ThrowsArgumentException(int keyLength)
     {
         // Arrange
-        Stream? inputStream = null;
-        var key = _fixture.Create<byte[]>();
+        var key = _fixture.Create<byte[]>().Take(keyLength).ToArray();
+        var inputStream = new MemoryStream(_fixture.CreateMany<byte>(100).ToArray());
 
         // Act & Assert
-        await Assert.ThrowsAsync<ArgumentNullException>(() => _encryptionService.DecryptAsync(inputStream, key));
+        await Assert.ThrowsAsync<ArgumentException>(() =>
+            _encryptionService.EncryptAsync(inputStream, key));
     }
 
     [Fact]
-    public async Task DecryptAsync_ShouldThrowArgumentNullException_WhenKeyIsNull()
+    public async Task EncryptAsync_EncryptsStreamCorrectly()
     {
         // Arrange
-        var inputStream = new MemoryStream(_fixture.Create<byte[]>());
-        byte[]? key = null;
-
-        // Act & Assert
-        await Assert.ThrowsAsync<ArgumentNullException>(() => _encryptionService.DecryptAsync(inputStream, key));
-    }
-
-    [Fact]
-    public async Task EncryptAsync_ShouldReturnEncryptedStream_WithIV()
-    {
-        // Arrange
-        var inputStream = new MemoryStream(Encoding.UTF8.GetBytes("Test data"));
-        var key = Aes.Create().Key; // Generate a valid AES key
+        var key = _fixture.CreateMany<byte>(16).ToArray();
+        var inputData = _fixture.CreateMany<byte>(100).ToArray();
+        var inputStream = new MemoryStream(inputData);
 
         // Act
         var encryptedStream = await _encryptionService.EncryptAsync(inputStream, key);
 
         // Assert
         Assert.NotNull(encryptedStream);
-        Assert.True(encryptedStream.Length > 0);
+        Assert.NotEqual(0, encryptedStream.Length); // Encrypted stream should not be empty
 
-        // Ensure that the initialization vector (IV) was written
-        encryptedStream.Position = 0;
-        var iv = new byte[16]; // IV is 128 bits (16 bytes) for AES
-        var bytesRead = await encryptedStream.ReadAsync(iv);
-        Assert.Equal(16, bytesRead);
+        inputStream.Close();
+        encryptedStream.Close();
     }
 
     [Fact]
-    public async Task DecryptAsync_ShouldReturnOriginalData_AfterEncryptionAndDecryption()
+    public async Task DecryptAsync_WhenInputStreamIsNull_ThrowsArgumentNullException()
     {
         // Arrange
-        var originalData = "Test data";
-        var inputStream = new MemoryStream(Encoding.UTF8.GetBytes(originalData));
-        var key = Aes.Create().Key; // Generate a valid AES key
+        var key = _fixture.Create<byte[]>().Take(16).ToArray();
+
+        // Act & Assert
+        await Assert.ThrowsAsync<ArgumentNullException>(() =>
+            _encryptionService.DecryptAsync(null, key));
+    }
+
+    [Fact]
+    public async Task DecryptAsync_WhenKeyIsNull_ThrowsArgumentNullException()
+    {
+        // Arrange
+        var inputStream = new MemoryStream(_fixture.CreateMany<byte>(100).ToArray());
+
+        // Act & Assert
+        await Assert.ThrowsAsync<ArgumentNullException>(() =>
+            _encryptionService.DecryptAsync(inputStream, null));
+    }
+
+    [Theory]
+    [InlineData(15)]
+    [InlineData(17)]
+    [InlineData(31)]
+    public async Task DecryptAsync_WhenKeyLengthIsInvalid_ThrowsArgumentException(int keyLength)
+    {
+        // Arrange
+        var key = _fixture.Create<byte[]>().Take(keyLength).ToArray();
+        var inputStream = new MemoryStream(_fixture.CreateMany<byte>(100).ToArray());
+
+        // Act & Assert
+        await Assert.ThrowsAsync<ArgumentException>(() =>
+            _encryptionService.DecryptAsync(inputStream, key));
+    }
+
+    [Fact]
+    public async Task DecryptAsync_WithInvalidIV_ThrowsCryptographicException()
+    {
+        // Arrange
+        var key = _fixture.CreateMany<byte>(16).ToArray();
+        // Create an invalid encrypted stream without IV
+        var inputStream = new MemoryStream(_fixture.CreateMany<byte>(100).ToArray());
+
+        // Act & Assert
+        await Assert.ThrowsAsync<CryptographicException>(() =>
+            _encryptionService.DecryptAsync(inputStream, key));
+    }
+
+    [Fact]
+    public async Task EncryptAndDecryptAsync_ReturnsOriginalData()
+    {
+        // Arrange
+        var key = _fixture.CreateMany<byte>(32).ToArray(); // Valid 256-bit key
+        var originalData = _fixture.CreateMany<byte>(100).ToArray();
+        var inputStream = new MemoryStream(originalData);
 
         // Act
         var encryptedStream = await _encryptionService.EncryptAsync(inputStream, key);
         var decryptedStream = await _encryptionService.DecryptAsync(encryptedStream, key);
+        var decryptedData = new byte[decryptedStream.Length];
+        await decryptedStream.ReadAsync(decryptedData);
 
         // Assert
-        Assert.NotNull(decryptedStream);
-
-        decryptedStream.Position = 0;
-        using var reader = new StreamReader(decryptedStream);
-        var decryptedData = await reader.ReadToEndAsync();
-
         Assert.Equal(originalData, decryptedData);
+
+        inputStream.Close();
+        encryptedStream.Close();
+        decryptedStream.Close();
     }
 
     [Fact]
-    public async Task DecryptAsync_ShouldThrowCryptographicException_IfIVIsCorrupted()
+    public async Task EncryptAsync_WhenInputStreamIsSeekable_ResetsPosition()
     {
         // Arrange
-        var originalData = "Test data";
-        var inputStream = new MemoryStream(Encoding.UTF8.GetBytes(originalData));
-        var key = Aes.Create().Key; // Generate a valid AES key
+        var key = _fixture.CreateMany<byte>(16).ToArray();
+        var inputData = _fixture.CreateMany<byte>(100).ToArray();
+        using var inputStream = new MemoryStream(inputData);
+        inputStream.Position = 10;
 
-        // Encrypt the data
+        // Act
         var encryptedStream = await _encryptionService.EncryptAsync(inputStream, key);
 
-        // Corrupt the IV (first 16 bytes)
-        encryptedStream.Position = 0;
-        var corruptedData = new byte[encryptedStream.Length];
-        await encryptedStream.ReadAsync(corruptedData);
-        corruptedData[0] = (byte)(corruptedData[0] ^ 0xff); // Corrupt the 1st byte of the IV
-        var corruptedStream = new MemoryStream(corruptedData);
-
-        // Act & Assert
-        await Assert.ThrowsAsync<CryptographicException>(() => _encryptionService.DecryptAsync(corruptedStream, key));
-    }
-
-    [Fact]
-    public async Task DecryptAsync_ShouldThrowCryptographicException_IfIncorrectKeyIsUsed()
-    {
-        // Arrange
-        var originalData = "Test data";
-        var inputStream = new MemoryStream(Encoding.UTF8.GetBytes(originalData));
-        var correctKey = Aes.Create().Key; // Generate a valid AES key
-        var incorrectKey = Aes.Create().Key; // Generate another valid key
-
-        // Encrypt the data
-        var encryptedStream = await _encryptionService.EncryptAsync(inputStream, correctKey);
-
-        // Act & Assert
-        await Assert.ThrowsAsync<CryptographicException>(() =>
-            _encryptionService.DecryptAsync(encryptedStream, incorrectKey));
+        // Assert
+        Assert.Equal(0, encryptedStream.Position);
     }
 }

@@ -31,8 +31,13 @@ public class AESEncryptionService : IEncryptionService
 
         await outputStream.WriteAsync(aes.IV.AsMemory(0, aes.IV.Length));
 
-        await using var cryptoStream = new CryptoStream(outputStream, aes.CreateEncryptor(), CryptoStreamMode.Write);
+        await using var cryptoStream =
+            new CryptoStream(outputStream, aes.CreateEncryptor(), CryptoStreamMode.Write, true);
+
         await inputStream.CopyToAsync(cryptoStream);
+        if (cryptoStream.HasFlushedFinalBlock == false)
+            await cryptoStream.FlushFinalBlockAsync();
+
 
         outputStream.Position = 0;
         return outputStream;
@@ -66,9 +71,13 @@ public class AESEncryptionService : IEncryptionService
 
         aes.Key = key;
         aes.IV = iv;
+        await using var cryptoStream =
+            new CryptoStream(inputStream, aes.CreateDecryptor(), CryptoStreamMode.Read, true);
 
-        await using var cryptoStream = new CryptoStream(inputStream, aes.CreateDecryptor(), CryptoStreamMode.Read);
         await cryptoStream.CopyToAsync(outputStream);
+        if (cryptoStream.HasFlushedFinalBlock == false)
+            await cryptoStream.FlushFinalBlockAsync();
+
 
         outputStream.Position = 0;
         return outputStream;
