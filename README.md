@@ -114,25 +114,52 @@ Ensure you have the necessary dependencies and services configured in your appli
 
    ```csharp
    using System.Security.Cryptography;
-   using ETAMP.Encryption.Interfaces.ECDSAManager;
+   using ETAMP.Console.CreateETAMP.Models;
    using ETAMP.Core.Models;
-   using ETAMP.Wrapper.Base;
-
+   using ETAMP.Encryption.Interfaces.ECDSAManager;
+   using ETAMP.Extension.Builder;
+   using ETAMP.Wrapper.Interfaces;
+   using Microsoft.Extensions.DependencyInjection;
+   
    public class CreateSignETAMP
    {
+       private static ServiceProvider _provider;
        private static ECDsa _ecdsaInstance;
-
+       public static string PublicKey { get; private set; }
+   
+       private static void Main(string[] args)
+       {
+           _ecdsaInstance = ECDsa.Create();
+           _provider = CreateETAMP.ConfigureServices();
+           var etamp = SignETAMP(_provider).ToJson();
+           Console.WriteLine(etamp);
+       }
+   
        public static ETAMPModel<TokenModel> SignETAMP(IServiceProvider provider)
        {
-           var sign = provider.GetService<SignWrapperBase>();
-           var ecdsaProvider = provider.GetService<ECDsaProviderBase>();
-           _ecdsaInstance ??= ECDsa.Create();
-           ecdsaProvider.SetECDsa(_ecdsaInstance);
-           sign.Initialize(ecdsaProvider, HashAlgorithmName.SHA512);
-
+           var (sign, pemCleaner) = GetServices(provider);
+   
+           InitializeSigning(sign, pemCleaner);
+   
            var etampModel = CreateETAMP.InitializeEtampModel(provider);
            etampModel.Sign(sign);
            return etampModel;
+       }
+   
+       private static (ISignWrapper?, IPemKeyCleaner?) GetServices(IServiceProvider provider)
+       {
+           return (
+               provider.GetService<ISignWrapper>(),
+               provider.GetService<IPemKeyCleaner>()
+           );
+       }
+   
+       private static void InitializeSigning(ISignWrapper sign, IPemKeyCleaner pemCleaner)
+       {
+           var publicKeyPem = pemCleaner.ClearPemPublicKey(_ecdsaInstance.ExportSubjectPublicKeyInfoPem());
+           PublicKey = publicKeyPem.KeyModelProvider.PublicKey;
+   
+           sign.Initialize(_ecdsaInstance, HashAlgorithmName.SHA512);
        }
    }
    ```
@@ -143,24 +170,33 @@ Ensure you have the necessary dependencies and services configured in your appli
 
    ```csharp
    using System.Security.Cryptography;
-   using ETAMP.Validation.Base;
-
+   using ETAMP.Validation.Interfaces;
+   using Microsoft.Extensions.DependencyInjection;
+   
    internal class ETAMPValidationRunner
    {
-       public static void ValidateETAMP(IServiceProvider provider)
+       private static readonly HashAlgorithmName DefaultHashAlgorithm = HashAlgorithmName.SHA512;
+       private static async Task Main(string[] args)
        {
-           var etampValidator = provider.GetService<ETAMPValidatorBase>();
-           var ecdsaProvider = provider.GetService<ECDsaProviderBase>();
-           var etamp = CreateSignETAMP.SignETAMP(provider);
-
+           var provider = CreateETAMP.ConfigureServices();
+           var etampValidator = provider.GetService<IETAMPValidator>();
+           
+           CreateSignETAMP.Main();
+           
            var publicKeyBytes = Convert.FromBase64String(CreateSignETAMP.PublicKey);
-           var ecdsa = ECDsa.Create();
-           ecdsa.ImportSubjectPublicKeyInfo(publicKeyBytes, out _);
-           ecdsaProvider.SetECDsa(ecdsa);
-
-           etampValidator.Initialize(ecdsaProvider, HashAlgorithmName.SHA512);
-           var validationResult = etampValidator.ValidateETAMP(etamp, false);
+           var initializedEcdsa = CreateInitializedEcdsa(publicKeyBytes);
+           
+           etampValidator.Initialize(initializedEcdsa, DefaultHashAlgorithm);
+           var validationResult = await etampValidator.ValidateETAMPAsync(CreateSignETAMP.ETAMP, false);
+   
            Console.WriteLine(validationResult.IsValid);
+       }
+   
+       private static ECDsa CreateInitializedEcdsa(byte[] publicKey)
+       {
+           var ecdsa = ECDsa.Create();
+           ecdsa.ImportSubjectPublicKeyInfo(publicKey, out _);
+           return ecdsa;
        }
    }
    ```

@@ -14,15 +14,15 @@ internal class ETAMPValidationRunner
     {
         var provider = CreateETAMP.ConfigureServices();
         var etampValidator = provider.GetService<IETAMPValidator>();
-        var etamp = CreateSignETAMP.SignETAMP(provider);
 
-        // Initialize and set up ECDsa
+        CreateSignETAMP.Main();
+
         var publicKeyBytes = Convert.FromBase64String(CreateSignETAMP.PublicKey);
         var initializedEcdsa = CreateInitializedEcdsa(publicKeyBytes);
 
-        // Configure validator and validate ETAMP
+
         etampValidator.Initialize(initializedEcdsa, DefaultHashAlgorithm);
-        var validationResult = await etampValidator.ValidateETAMPAsync(etamp, false);
+        var validationResult = await etampValidator.ValidateETAMPAsync(CreateSignETAMP.ETAMP, false);
 
         Console.WriteLine(validationResult.IsValid);
     }

@@ -8,9 +8,9 @@ using ETAMP.Encryption.Interfaces;
 namespace ETAMP.Encryption;
 
 /// <summary>
-/// Represents a service implementing the Elliptic Curve Integrated Encryption Scheme (ECIES)
-/// for secure data encryption and decryption. This class integrates elliptic curve cryptography
-/// with symmetric encryption to provide a reliable encryption mechanism.
+///     Represents a service implementing the Elliptic Curve Integrated Encryption Scheme (ECIES)
+///     for secure data encryption and decryption. This class integrates elliptic curve cryptography
+///     with symmetric encryption to provide a reliable encryption mechanism.
 /// </summary>
 public sealed class ECIESEncryptionService : IECIESEncryptionService
 {

@@ -36,30 +36,26 @@ public static class ETAMPServiceCollectionExtensions
         services.AddScoped<IEncryptionService, AESEncryptionService>();
         services.AddScoped<IECIESEncryptionService, ECIESEncryptionService>();
 
-        // Register wrapper services for cryptographic operations
         services.AddScoped<IECDSAControl, ECDSAControl>();
         services.AddSingleton<IECDSAStore, ECDSAStore>();
         services.AddScoped<IPemKeyCleaner, PemKeyCleaner>();
 
-        // Register ETAMP processing services
         services.AddScoped<IETAMPBase, ETAMPProtocol>();
 
-
-        // Register compression services
         services.AddScoped<DeflateCompressionService>();
         services.AddScoped<GZipCompressionService>();
 
-        //Factory
         services.AddScoped<ICompressionServiceFactory, CompressionServiceFactory>();
-
-        // Register signing and validation services
-        services.AddScoped<IETAMPValidator, ETAMPValidator>();
-        services.AddScoped<IStructureValidator, StructureValidator>();
-        services.AddScoped<ITokenValidator, TokenValidator>();
-
 
         services.AddScoped<ISignWrapper, SignWrapper>();
         services.AddScoped<IVerifyWrapper, VerifyWrapper>();
+
+
+        services.AddScoped<IStructureValidator, StructureValidator>();
+        services.AddScoped<ITokenValidator, TokenValidator>();
+        services.AddScoped<ISignatureValidator, SignatureValidator>();
+        services.AddScoped<IETAMPValidator, ETAMPValidator>();
+
 
         services.AddSingleton<VersionInfo>(_ =>
         {

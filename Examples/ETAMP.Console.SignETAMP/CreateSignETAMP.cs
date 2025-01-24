@@ -16,22 +16,16 @@ public class CreateSignETAMP
 
     private static ECDsa _ecdsaInstance;
 
-    public static ECDsa Ecdsa
-    {
-        get => _ecdsaInstance;
-        set => _ecdsaInstance =
-            value ?? throw new ArgumentNullException(nameof(value), "ECDsa instance cannot be null.");
-    }
-
     public static string PublicKey { get; private set; }
-    public static string ETAMPSigned { get; private set; }
 
-    private static void Main(string[] args)
+    public static ETAMPModel<TokenModel> ETAMP { get; private set; }
+
+    public static void Main()
     {
         _ecdsaInstance = ECDsa.Create();
         _provider = CreateETAMP.ConfigureServices();
-        SignETAMP(_provider);
-        Console.WriteLine(ETAMPSigned);
+        ETAMP = SignETAMP(_provider);
+        Console.WriteLine(ETAMP.ToJson());
     }
 
     public static ETAMPModel<TokenModel> SignETAMP(IServiceProvider provider)
@@ -42,7 +36,6 @@ public class CreateSignETAMP
 
         var etampModel = CreateETAMP.InitializeEtampModel(provider);
         etampModel.Sign(sign);
-        ETAMPSigned = etampModel.ToJson();
         return etampModel;
     }
 
@@ -54,12 +47,10 @@ public class CreateSignETAMP
         );
     }
 
-    private static void InitializeSigning(ISignWrapper sign,
-        IPemKeyCleaner pemCleaner)
+    private static void InitializeSigning(ISignWrapper sign, IPemKeyCleaner pemCleaner)
     {
         var publicKeyPem = pemCleaner.ClearPemPublicKey(_ecdsaInstance.ExportSubjectPublicKeyInfoPem());
         PublicKey = publicKeyPem.KeyModelProvider.PublicKey;
-
         sign.Initialize(_ecdsaInstance, HashAlgorithmName.SHA512);
     }
 }
