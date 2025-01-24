@@ -1,7 +1,6 @@
 ﻿#region
 
 using System.Security.Cryptography;
-using ETAMP.Encryption.Base;
 using ETAMP.Validation.Base;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -15,16 +14,14 @@ internal class ETAMPValidationRunner
     {
         var provider = CreateETAMP.ConfigureServices();
         var etampValidator = provider.GetService<ETAMPValidatorBase>();
-        var ecdsaProvider = provider.GetService<ECDSAProviderBase>();
         var etamp = CreateSignETAMP.SignETAMP(provider);
 
         // Initialize and set up ECDsa
         var publicKeyBytes = Convert.FromBase64String(CreateSignETAMP.PublicKey);
         var initializedEcdsa = CreateInitializedEcdsa(publicKeyBytes);
-        ecdsaProvider.SetECDsa(initializedEcdsa);
 
         // Configure validator and validate ETAMP
-        etampValidator.Initialize(ecdsaProvider, DefaultHashAlgorithm);
+        etampValidator.Initialize(initializedEcdsa, DefaultHashAlgorithm);
         var validationResult = await etampValidator.ValidateETAMPAsync(etamp, false);
 
         Console.WriteLine(validationResult.IsValid);

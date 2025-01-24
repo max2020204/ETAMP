@@ -2,7 +2,6 @@
 
 using System.Security.Cryptography;
 using ETAMP.Core.Models;
-using ETAMP.Encryption.Base;
 using ETAMP.Validation.Interfaces;
 
 #endregion
@@ -43,7 +42,7 @@ public abstract class ETAMPValidatorBase : IETAMPValidator
     /// </summary>
     /// <param name="provider">The IECDSAProvider instance to be used for cryptographic operations.</param>
     /// <param name="algorithmName">The hash algorithm name to be used for cryptographic operations.</param>
-    public void Initialize(ECDSAProviderBase provider, HashAlgorithmName algorithmName)
+    public void Initialize(ECDsa provider, HashAlgorithmName algorithmName)
     {
         signutureValidatorAbstract.Initialize(provider, algorithmName);
     }

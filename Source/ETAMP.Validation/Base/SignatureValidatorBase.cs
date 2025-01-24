@@ -2,7 +2,6 @@
 
 using System.Security.Cryptography;
 using ETAMP.Core.Models;
-using ETAMP.Encryption.Base;
 using ETAMP.Validation.Interfaces;
 using ETAMP.Wrapper.Base;
 
@@ -41,7 +40,7 @@ public abstract class SignatureValidatorBase : ISignatureValidator
     /// </summary>
     /// <param name="provider">The provider for managing and accessing the ECDsa instance.</param>
     /// <param name="algorithmName">The hash algorithm name.</param>
-    public void Initialize(ECDSAProviderBase provider, HashAlgorithmName algorithmName)
+    public void Initialize(ECDsa provider, HashAlgorithmName algorithmName)
     {
         VerifyWrapper.Initialize(provider, algorithmName);
     }

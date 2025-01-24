@@ -1,5 +1,6 @@
 ﻿#region
 
+using System.Text;
 using System.Text.Json;
 using ETAMP.Compression.Interfaces.Factory;
 using ETAMP.Core.Models;
@@ -43,7 +44,9 @@ public static class ETAMPBuilder
             CompressionType = model.CompressionType,
             SignatureMessage = model.SignatureMessage
         };
-        return JsonSerializer.Serialize(temp);
+        await using var memoryStream = new MemoryStream();
+        await JsonSerializer.SerializeAsync(memoryStream, temp);
+        return Encoding.UTF8.GetString(memoryStream.ToArray());
     }
 
     /// <summary>

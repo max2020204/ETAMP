@@ -23,7 +23,6 @@
     </ItemGroup>
     <ItemGroup>
         <ProjectReference Include="..\ETAMP.Core\ETAMP.Core.csproj"/>
-        <ProjectReference Include="..\ETAMP.Encryption\ETAMP.Encryption.csproj"/>
     </ItemGroup>
     <PropertyGroup>
 

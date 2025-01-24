@@ -12,13 +12,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8b44219d-6ab5-4022-b5c1-0f01c450f8f2" name="Changes" comment="Remove legacy encryption-related classes and interfaces&#10;&#10;Legacy encryption components, including key exchangers, key pair providers, and associated factories, were deleted to streamline the codebase. Additionally, minor updates were made to the compression services, and a new test project was introduced for better modularity and maintainability.">
-      <change afterPath="$PROJECT_DIR$/Tests/ETAMP.Encryption.Tests/ECIESEncryptionServiceTests.cs" afterDir="false" />
+    <list default="true" id="8b44219d-6ab5-4022-b5c1-0f01c450f8f2" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.ETAMP/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.ETAMP/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ETAMP.sln" beforeDir="false" afterPath="$PROJECT_DIR$/ETAMP.sln" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ETAMP.sln.DotSettings.user" beforeDir="false" afterPath="$PROJECT_DIR$/ETAMP.sln.DotSettings.user" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ETAMP.Encryption/AESEncryptionService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Encryption/AESEncryptionService.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Tests/ETAMP.Encryption.Tests/AESEncryptionServiceTests.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Tests/ETAMP.Encryption.Tests/AESEncryptionServiceTests.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Tests/ETAMP.Encryption.Tests/ETAMP.Encryption.Tests.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/Tests/ETAMP.Encryption.Tests/ETAMP.Encryption.Tests.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ETAMP.Core/Models/ETAMPModel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Core/Models/ETAMPModel.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ETAMP.Extension/Builder/ETAMPBuilder.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Extension/Builder/ETAMPBuilder.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -46,19 +45,6 @@
   <component name="HighlightingSettingsPerFile">
     <setting file="mock:///AIAssistantSnippet." root0="SKIP_HIGHLIGHTING" />
     <setting file="mock:///AIAssistantSnippet." root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///AIAssistantSnippet." root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///AIAssistantSnippet." root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///AIAssistantSnippet." root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///AIAssistantSnippet." root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///AIAssistantSnippet." root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///AIAssistantSnippet." root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///AIAssistantSnippet." root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///AIAssistantSnippet." root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///AIAssistantSnippet." root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///AIAssistantSnippet." root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///AIAssistantSnippet." root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///AIAssistantSnippet." root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///AIAssistantSnippet." root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/c73b3c6c598640c592fd3c6fa226c286e90908/f0/6324d8c9/String.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/3163d85a46619569f2cabf13c4ab1f6b1c576c72d14b7329ad58d9499777a/FormatException.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/47921adef6414a816a08bfc17edfc0ef70baa3a6d7a6c94f9e56682a1d1c/ExceptionAsserts.cs" root0="FORCE_HIGHLIGHTING" />
@@ -71,7 +57,27 @@
     <setting file="file://$PROJECT_DIR$/Examples/ETAMP.Console.CreateETAMP/obj/Debug/net9.0/ETAMP.Console.CreateETAMP.AssemblyInfo.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Examples/ETAMP.Console.SignETAMP/CreateSignETAMP.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Examples/ETAMP.Console.ValidateETAMP/ValidateETAMP.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/black/RiderProjects/ETAMP/Source/ETAMP.Encryption/AESEncryptionService.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/black/RiderProjects/ETAMP/Source/ETAMP.Compression/Factory/CompressionServiceFactory.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/black/RiderProjects/ETAMP/Source/ETAMP.Compression/Factory/CompressionServiceFactory.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/black/RiderProjects/ETAMP/Source/ETAMP.Core/ETAMPProtocol.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/black/RiderProjects/ETAMP/Source/ETAMP.Core/Interfaces/IETAMPBase.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/black/RiderProjects/ETAMP/Source/ETAMP.Core/Models/ETAMPModel.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/black/RiderProjects/ETAMP/Source/ETAMP.Core/Models/Token.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/black/RiderProjects/ETAMP/Source/ETAMP.Extension/Builder/ETAMPBuilder.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/black/RiderProjects/ETAMP/Source/ETAMP.Extension/Builder/ETAMPBuilder.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/black/RiderProjects/ETAMP/Source/ETAMP.Extension/Builder/ETAMPEncryption.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/black/RiderProjects/ETAMP/Source/ETAMP.Extension/Builder/ETAMPEncryption.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/black/RiderProjects/ETAMP/Source/ETAMP.Extension/Builder/ETAMPSign.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/black/RiderProjects/ETAMP/Source/ETAMP.Validation/Base/ETAMPValidatorBase.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/black/RiderProjects/ETAMP/Source/ETAMP.Validation/Base/SignatureValidatorBase.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/black/RiderProjects/ETAMP/Source/ETAMP.Validation/Interfaces/IETAMPValidator.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/black/RiderProjects/ETAMP/Source/ETAMP.Validation/Interfaces/ISignatureValidator.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/black/RiderProjects/ETAMP/Source/ETAMP.Validation/Interfaces/IStructureValidator.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/black/RiderProjects/ETAMP/Source/ETAMP.Validation/Interfaces/ITokenValidator.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/black/RiderProjects/ETAMP/Source/ETAMP.Validation/StructureValidator.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/black/RiderProjects/ETAMP/Source/ETAMP.Validation/TokenValidator.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/black/RiderProjects/ETAMP/Source/ETAMP.Wrapper/Base/SignWrapperBase.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/black/RiderProjects/ETAMP/Source/ETAMP.Wrapper/Interfaces/ISignWrapper.cs" root0="SKIP_HIGHLIGHTING" />
   </component>
   <component name="KubernetesApiPersistence">{}</component>
   <component name="KubernetesApiProvider">{
@@ -112,7 +118,8 @@
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "ml.llm.AIAssistantPromptsLibrary",
+    "settings.editor.selected.configurable": "Errors",
+    "settings.editor.splitter.proportion": "0.3058104",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
@@ -251,7 +258,9 @@
       <workItem from="1737210029159" duration="2317000" />
       <workItem from="1737212923703" duration="15451000" />
       <workItem from="1737287917796" duration="667000" />
-      <workItem from="1737289122541" duration="14000000" />
+      <workItem from="1737289122541" duration="14912000" />
+      <workItem from="1737493803409" duration="80000" />
+      <workItem from="1737504426947" duration="3847000" />
     </task>
     <task id="LOCAL-00001" summary="Refactor and reorganize ETAMP example projects&#10;&#10;Moved and restructured ETAMP example project files for better modularity and project clarity. Updated project references and dependencies to align with the new structure. Removed redundant files and added missing configurations where necessary.">
       <option name="closed" value="true" />
@@ -405,7 +414,15 @@
       <option name="project" value="LOCAL" />
       <updated>1737297710597</updated>
     </task>
-    <option name="localTasksCounter" value="20" />
+    <task id="LOCAL-00020" summary="Improve encryption service with better stream handling.&#10;&#10;Updated AESEncryptionService to ensure CryptoStream properly handles flushing and maintains stream states. Enhanced unit tests and package references for comprehensive testing and coverage. Adjusted documentation and project configuration to align with recent encryption updates.">
+      <option name="closed" value="true" />
+      <created>1737325304360</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1737325304360</updated>
+    </task>
+    <option name="localTasksCounter" value="21" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -415,12 +432,44 @@
     <option name="coveragePercentColumnWidth" value="150" />
     <option name="sortOrder" value="DESCENDING" />
     <option name="sortedColumn" value="1" />
-    <option name="symbolColumnWidth" value="234" />
+    <option name="symbolColumnWidth" value="256" />
     <coverage-tree-state>
       <expand>
         <path>
           <item name="rootNode" type="c53c71d1:RiderDotCoverCoverageTreeModel$RootNode" />
-          <item name="Total 0% 968/968" type="8b8fad3a:RiderDotCoverCoverageTreeNode" />
+          <item name="Total 52% 494/1030" type="8b8fad3a:RiderDotCoverCoverageTreeNode" />
+        </path>
+        <path>
+          <item name="rootNode" type="c53c71d1:RiderDotCoverCoverageTreeModel$RootNode" />
+          <item name="Total 52% 494/1030" type="8b8fad3a:RiderDotCoverCoverageTreeNode" />
+          <item name="Source 33% 414/621" type="8b8fad3a:RiderDotCoverCoverageTreeNode" />
+        </path>
+        <path>
+          <item name="rootNode" type="c53c71d1:RiderDotCoverCoverageTreeModel$RootNode" />
+          <item name="Total 52% 494/1030" type="8b8fad3a:RiderDotCoverCoverageTreeNode" />
+          <item name="Source 33% 414/621" type="8b8fad3a:RiderDotCoverCoverageTreeNode" />
+          <item name="ETAMP.Compression 88% 11/89" type="8b8fad3a:RiderDotCoverCoverageTreeNode" />
+        </path>
+        <path>
+          <item name="rootNode" type="c53c71d1:RiderDotCoverCoverageTreeModel$RootNode" />
+          <item name="Total 52% 494/1030" type="8b8fad3a:RiderDotCoverCoverageTreeNode" />
+          <item name="Source 33% 414/621" type="8b8fad3a:RiderDotCoverCoverageTreeNode" />
+          <item name="ETAMP.Encryption 37% 106/168" type="8b8fad3a:RiderDotCoverCoverageTreeNode" />
+        </path>
+        <path>
+          <item name="rootNode" type="c53c71d1:RiderDotCoverCoverageTreeModel$RootNode" />
+          <item name="Total 52% 494/1030" type="8b8fad3a:RiderDotCoverCoverageTreeNode" />
+          <item name="Source 33% 414/621" type="8b8fad3a:RiderDotCoverCoverageTreeNode" />
+          <item name="ETAMP.Encryption 37% 106/168" type="8b8fad3a:RiderDotCoverCoverageTreeNode" />
+          <item name="ETAMP.Encryption 37% 106/168" type="8b8fad3a:RiderDotCoverCoverageTreeNode" />
+        </path>
+        <path>
+          <item name="rootNode" type="c53c71d1:RiderDotCoverCoverageTreeModel$RootNode" />
+          <item name="Total 52% 494/1030" type="8b8fad3a:RiderDotCoverCoverageTreeNode" />
+          <item name="Source 33% 414/621" type="8b8fad3a:RiderDotCoverCoverageTreeNode" />
+          <item name="ETAMP.Encryption 37% 106/168" type="8b8fad3a:RiderDotCoverCoverageTreeNode" />
+          <item name="ETAMP.Encryption 37% 106/168" type="8b8fad3a:RiderDotCoverCoverageTreeNode" />
+          <item name="ECIESEncryptionService 52% 16/33" type="8b8fad3a:RiderDotCoverCoverageTreeNode" />
         </path>
       </expand>
       <select />
@@ -472,7 +521,8 @@
     <MESSAGE value="Update .nupkg files for multiple ETAMP components&#10;&#10;Refreshed .nupkg files for Compression, Encryption, Extension, Extension.ServiceCollection, Validation, and Wrapper. These updates likely include changes to binaries or metadata to reflect the latest adjustments in the respective components." />
     <MESSAGE value="Convert compression and validation methods to async.&#10;&#10;Updated compression and validation services to use asynchronous methods for improved performance and scalability. Added new test projects for Compression and Core modules, along with extensive unit tests to ensure correctness of the new async implementations. Updated project references and dependencies accordingly." />
     <MESSAGE value="Remove legacy encryption-related classes and interfaces&#10;&#10;Legacy encryption components, including key exchangers, key pair providers, and associated factories, were deleted to streamline the codebase. Additionally, minor updates were made to the compression services, and a new test project was introduced for better modularity and maintainability." />
-    <option name="LAST_COMMIT_MESSAGE" value="Remove legacy encryption-related classes and interfaces&#10;&#10;Legacy encryption components, including key exchangers, key pair providers, and associated factories, were deleted to streamline the codebase. Additionally, minor updates were made to the compression services, and a new test project was introduced for better modularity and maintainability." />
+    <MESSAGE value="Improve encryption service with better stream handling.&#10;&#10;Updated AESEncryptionService to ensure CryptoStream properly handles flushing and maintains stream states. Enhanced unit tests and package references for comprehensive testing and coverage. Adjusted documentation and project configuration to align with recent encryption updates." />
+    <option name="LAST_COMMIT_MESSAGE" value="Improve encryption service with better stream handling.&#10;&#10;Updated AESEncryptionService to ensure CryptoStream properly handles flushing and maintains stream states. Enhanced unit tests and package references for comprehensive testing and coverage. Adjusted documentation and project configuration to align with recent encryption updates." />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REARRANGE_BEFORE_PROJECT_COMMIT" value="true" />
@@ -517,58 +567,6 @@
             </endOffsets>
           </properties>
           <option name="timeStamp" value="12" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DotNet Breakpoints">
-          <url>file://$PROJECT_DIR$/Source/ETAMP.Compression/Codec/DeflateCompressionService.cs</url>
-          <line>60</line>
-          <properties documentPath="C:\Users\black\RiderProjects\ETAMP\Source\ETAMP.Compression\Codec\DeflateCompressionService.cs" containingFunctionPresentation="Method 'DecompressString'">
-            <startOffsets>
-              <option value="2539" />
-            </startOffsets>
-            <endOffsets>
-              <option value="2591" />
-            </endOffsets>
-          </properties>
-          <option name="timeStamp" value="15" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DotNet Breakpoints">
-          <url>file://$PROJECT_DIR$/Source/ETAMP.Encryption/AESEncryptionService.cs</url>
-          <line>16</line>
-          <properties documentPath="C:\Users\black\RiderProjects\ETAMP\Source\ETAMP.Encryption\AESEncryptionService.cs" containingFunctionPresentation="Method 'EncryptAsync'">
-            <startOffsets>
-              <option value="354" />
-            </startOffsets>
-            <endOffsets>
-              <option value="422" />
-            </endOffsets>
-          </properties>
-          <option name="timeStamp" value="20" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DotNet Breakpoints">
-          <url>file://$PROJECT_DIR$/Tests/ETAMP.Encryption.Tests/AESEncryptionServiceTests.cs</url>
-          <line>139</line>
-          <properties documentPath="C:\Users\black\RiderProjects\ETAMP\Tests\ETAMP.Encryption.Tests\AESEncryptionServiceTests.cs" containingFunctionPresentation="Method 'EncryptAndDecryptAsync_ReturnsOriginalData'">
-            <startOffsets>
-              <option value="4279" />
-            </startOffsets>
-            <endOffsets>
-              <option value="4339" />
-            </endOffsets>
-          </properties>
-          <option name="timeStamp" value="22" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DotNet Breakpoints">
-          <url>file://$PROJECT_DIR$/Source/ETAMP.Encryption/AESEncryptionService.cs</url>
-          <line>52</line>
-          <properties documentPath="C:\Users\black\RiderProjects\ETAMP\Source\ETAMP.Encryption\AESEncryptionService.cs" containingFunctionPresentation="Method 'DecryptAsync'">
-            <startOffsets>
-              <option value="1736" />
-            </startOffsets>
-            <endOffsets>
-              <option value="1804" />
-            </endOffsets>
-          </properties>
-          <option name="timeStamp" value="23" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

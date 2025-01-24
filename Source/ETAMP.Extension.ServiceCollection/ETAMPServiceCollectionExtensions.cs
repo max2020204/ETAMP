@@ -41,10 +41,6 @@ public static class ETAMPServiceCollectionExtensions
         services.AddScoped<ECIESEncryptionServiceBase, ECIESEncryptionService>();
 
         // Register wrapper services for cryptographic operations
-        services.AddScoped<IECDSARegistrar, ECDSARegistration>();
-        services.AddScoped<ECDSARegistrationBase, ECDSARegistration>();
-        services.AddScoped<IECDSAProvider, ECDSAProvider>();
-        services.AddScoped<ECDSAProviderBase, ECDSAProvider>();
         services.AddScoped<IECDSAControl, ECDSAControl>();
         services.AddSingleton<IECDSAStore, ECDSAStore>();
         services.AddScoped<IPemKeyCleaner, PemKeyCleaner>();
