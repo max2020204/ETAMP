@@ -1,8 +1,9 @@
 ﻿#region
 
+using System.Security.Cryptography;
 using System.Text;
 using ETAMP.Core.Utils;
-using ETAMP.Wrapper.Base;
+using ETAMP.Wrapper.Interfaces;
 
 #endregion
 
@@ -12,17 +13,21 @@ namespace ETAMP.Wrapper;
 ///     Provides cryptographic verification using ECDsa, supporting both string and byte array data formats.
 /// </summary>
 /// >
-public sealed class VerifyWrapper : VerifyWrapperBase
+public sealed class VerifyWrapper : IVerifyWrapper
 {
+    private HashAlgorithmName _algorithmName;
+    private ECDsa? _ecdsa;
+
     /// <summary>
     ///     Verifies the signature of string data.
     /// </summary>
     /// <param name="data">Data to verify, in string format.</param>
     /// <param name="signature">Base64-encoded signature to verify against.</param>
     /// <returns>True if the signature is valid; otherwise, false.</returns>
-    public override bool VerifyData(string data, string signature)
+    public bool VerifyData(string data, string signature)
     {
-        return Ecdsa!.VerifyData(Encoding.UTF8.GetBytes(data), Base64UrlEncoder.DecodeBytes(signature), AlgorithmName);
+        return _ecdsa!.VerifyData(Encoding.UTF8.GetBytes(data), Base64UrlEncoder.DecodeBytes(signature),
+            _algorithmName);
     }
 
     /// <summary>
@@ -31,16 +36,22 @@ public sealed class VerifyWrapper : VerifyWrapperBase
     /// <param name="data">Data to verify, as a byte array.</param>
     /// <param name="signature">Signature to verify against, as a byte array.</param>
     /// <returns>True if the signature is valid; otherwise, false.</returns>
-    public override bool VerifyData(byte[] data, byte[] signature)
+    public bool VerifyData(byte[] data, byte[] signature)
     {
-        return Ecdsa!.VerifyData(data, signature, AlgorithmName);
+        return _ecdsa!.VerifyData(data, signature, _algorithmName);
     }
 
     /// <summary>
     ///     Disposes the underlying ECDsa instance, releasing all associated resources.
     /// </summary>
-    public override void Dispose()
+    public void Dispose()
     {
-        Ecdsa?.Dispose();
+        _ecdsa?.Dispose();
+    }
+
+    public void Initialize(ECDsa provider, HashAlgorithmName algorithmName)
+    {
+        _ecdsa = provider;
+        _algorithmName = algorithmName;
     }
 }

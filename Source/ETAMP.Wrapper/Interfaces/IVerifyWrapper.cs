@@ -1,9 +1,15 @@
-﻿namespace ETAMP.Wrapper.Interfaces;
+﻿#region
+
+using ETAMP.Core.Interfaces;
+
+#endregion
+
+namespace ETAMP.Wrapper.Interfaces;
 
 /// <summary>
 ///     Verifies signatures using ECDsa.
 /// </summary>
-public interface IVerifyWrapper : IDisposable
+public interface IVerifyWrapper : IInitialize
 {
     /// <summary>
     ///     Verifies the signature of string data.

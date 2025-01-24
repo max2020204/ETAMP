@@ -1,7 +1,7 @@
 ﻿#region
 
 using System.Security.Cryptography;
-using ETAMP.Validation.Base;
+using ETAMP.Validation.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 
 #endregion
@@ -13,7 +13,7 @@ internal class ETAMPValidationRunner
     private static async Task Main(string[] args)
     {
         var provider = CreateETAMP.ConfigureServices();
-        var etampValidator = provider.GetService<ETAMPValidatorBase>();
+        var etampValidator = provider.GetService<IETAMPValidator>();
         var etamp = CreateSignETAMP.SignETAMP(provider);
 
         // Initialize and set up ECDsa

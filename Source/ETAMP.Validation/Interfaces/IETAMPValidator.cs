@@ -1,5 +1,6 @@
 ﻿#region
 
+using ETAMP.Core.Interfaces;
 using ETAMP.Core.Models;
 
 #endregion
@@ -12,7 +13,7 @@ namespace ETAMP.Validation.Interfaces;
 /// <remarks>
 ///     The ETAMPValidator can be used to validate the structure of an ETAMP model.
 /// </remarks>
-public interface IETAMPValidator
+public interface IETAMPValidator : IInitialize
 {
     /// <summary>
     ///     Validates the ETAMP (Encrypted Token And Message Protocol) structure.

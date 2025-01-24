@@ -1,5 +1,6 @@
 ﻿#region
 
+using ETAMP.Core.Interfaces;
 using ETAMP.Core.Models;
 
 #endregion
@@ -9,7 +10,7 @@ namespace ETAMP.Wrapper.Interfaces;
 /// <summary>
 ///     Provides functionality for signing ETAMP messages.
 /// </summary>
-public interface ISignWrapper
+public interface ISignWrapper : IInitialize
 {
     /// <summary>
     ///     Signs the provided ETAMP model by generating a signature for the model's token and message.

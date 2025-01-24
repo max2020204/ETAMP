@@ -7,15 +7,12 @@ using ETAMP.Core;
 using ETAMP.Core.Interfaces;
 using ETAMP.Core.Utils;
 using ETAMP.Encryption;
-using ETAMP.Encryption.Base;
 using ETAMP.Encryption.ECDsaManager;
 using ETAMP.Encryption.Interfaces;
 using ETAMP.Encryption.Interfaces.ECDSAManager;
 using ETAMP.Validation;
-using ETAMP.Validation.Base;
 using ETAMP.Validation.Interfaces;
 using ETAMP.Wrapper;
-using ETAMP.Wrapper.Base;
 using ETAMP.Wrapper.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -38,7 +35,6 @@ public static class ETAMPServiceCollectionExtensions
         // Register cryptographic services
         services.AddScoped<IEncryptionService, AESEncryptionService>();
         services.AddScoped<IECIESEncryptionService, ECIESEncryptionService>();
-        services.AddScoped<ECIESEncryptionServiceBase, ECIESEncryptionService>();
 
         // Register wrapper services for cryptographic operations
         services.AddScoped<IECDSAControl, ECDSAControl>();
@@ -58,17 +54,12 @@ public static class ETAMPServiceCollectionExtensions
 
         // Register signing and validation services
         services.AddScoped<IETAMPValidator, ETAMPValidator>();
-        services.AddScoped<ETAMPValidatorBase, ETAMPValidator>();
-        services.AddScoped<ISignatureValidator, SignatureValidator>();
-        services.AddScoped<SignatureValidatorBase, SignatureValidator>();
         services.AddScoped<IStructureValidator, StructureValidator>();
         services.AddScoped<ITokenValidator, TokenValidator>();
 
 
         services.AddScoped<ISignWrapper, SignWrapper>();
-        services.AddScoped<SignWrapperBase, SignWrapper>();
         services.AddScoped<IVerifyWrapper, VerifyWrapper>();
-        services.AddScoped<VerifyWrapperBase, VerifyWrapper>();
 
         services.AddSingleton<VersionInfo>(_ =>
         {

@@ -12,12 +12,27 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8b44219d-6ab5-4022-b5c1-0f01c450f8f2" name="Changes" comment="">
+    <list default="true" id="8b44219d-6ab5-4022-b5c1-0f01c450f8f2" name="Changes" comment="Remove outdated base classes and refactor cryptographic services.&#10;&#10;Eliminated legacy base classes for ECIES encryption, ETAMP validation, and cryptographic wrappers, replacing them with streamlined interfaces. Refactored implementations to directly use `ECDsa` objects via a unified `IInitialize` interface. Updated DI registrations and improved modularity for better maintainability.">
+      <change afterPath="$PROJECT_DIR$/Source/ETAMP.Core/Interfaces/IInitialize.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.ETAMP/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.ETAMP/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ETAMP.sln" beforeDir="false" afterPath="$PROJECT_DIR$/ETAMP.sln" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ETAMP.sln.DotSettings.user" beforeDir="false" afterPath="$PROJECT_DIR$/ETAMP.sln.DotSettings.user" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ETAMP.Core/Models/ETAMPModel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Core/Models/ETAMPModel.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ETAMP.Extension/Builder/ETAMPBuilder.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Extension/Builder/ETAMPBuilder.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Examples/ETAMP.Console.SignETAMP/CreateSignETAMP.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Examples/ETAMP.Console.SignETAMP/CreateSignETAMP.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Examples/ETAMP.Console.ValidateETAMP/ValidateETAMP.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Examples/ETAMP.Console.ValidateETAMP/ValidateETAMP.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ETAMP.Encryption/Base/ECIESEncryptionServiceBase.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ETAMP.Encryption/ECIESEncryptionService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Encryption/ECIESEncryptionService.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ETAMP.Extension.ServiceCollection/ETAMPServiceCollectionExtensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Extension.ServiceCollection/ETAMPServiceCollectionExtensions.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ETAMP.Validation/Base/ETAMPValidatorBase.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ETAMP.Validation/Base/SignatureValidatorBase.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ETAMP.Validation/ETAMPValidator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Validation/ETAMPValidator.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ETAMP.Validation/Interfaces/IETAMPValidator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Validation/Interfaces/IETAMPValidator.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ETAMP.Validation/Interfaces/ISignatureValidator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Validation/Interfaces/ISignatureValidator.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ETAMP.Validation/SignatureValidator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Validation/SignatureValidator.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ETAMP.Wrapper/Base/SignWrapperBase.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ETAMP.Wrapper/Base/VerifyWrapperBase.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ETAMP.Wrapper/Helper/InitializeWrapper.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ETAMP.Wrapper/Interfaces/ISignWrapper.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Wrapper/Interfaces/ISignWrapper.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ETAMP.Wrapper/Interfaces/IVerifyWrapper.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Wrapper/Interfaces/IVerifyWrapper.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ETAMP.Wrapper/SignWrapper.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Wrapper/SignWrapper.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ETAMP.Wrapper/VerifyWrapper.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Wrapper/VerifyWrapper.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -43,8 +58,6 @@
   }
 }</component>
   <component name="HighlightingSettingsPerFile">
-    <setting file="mock:///AIAssistantSnippet." root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///AIAssistantSnippet." root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/c73b3c6c598640c592fd3c6fa226c286e90908/f0/6324d8c9/String.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/3163d85a46619569f2cabf13c4ab1f6b1c576c72d14b7329ad58d9499777a/FormatException.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/47921adef6414a816a08bfc17edfc0ef70baa3a6d7a6c94f9e56682a1d1c/ExceptionAsserts.cs" root0="FORCE_HIGHLIGHTING" />
@@ -55,29 +68,11 @@
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/bd1d5c50194fea68ff3559c160230b0ab50f5acf4ce3061bffd6d62958e2182/ExceptionDispatchInfo.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/bea8c41514fe19b15a2e9a98f2116d6d3effa32491c5349cfda989bc9f393/Record.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Examples/ETAMP.Console.CreateETAMP/obj/Debug/net9.0/ETAMP.Console.CreateETAMP.AssemblyInfo.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/black/RiderProjects/ETAMP/Examples/ETAMP.Console.SignETAMP/CreateSignETAMP.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Examples/ETAMP.Console.SignETAMP/CreateSignETAMP.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/black/RiderProjects/ETAMP/Examples/ETAMP.Console.SignETAMP/CreateSignETAMP.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Examples/ETAMP.Console.ValidateETAMP/ValidateETAMP.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/black/RiderProjects/ETAMP/Source/ETAMP.Compression/Factory/CompressionServiceFactory.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/black/RiderProjects/ETAMP/Source/ETAMP.Compression/Factory/CompressionServiceFactory.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/black/RiderProjects/ETAMP/Source/ETAMP.Core/ETAMPProtocol.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/black/RiderProjects/ETAMP/Source/ETAMP.Core/Interfaces/IETAMPBase.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/black/RiderProjects/ETAMP/Source/ETAMP.Core/Models/ETAMPModel.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/black/RiderProjects/ETAMP/Source/ETAMP.Core/Models/Token.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="mock://C:/Users/black/RiderProjects/ETAMP/Source/ETAMP.Extension/Builder/ETAMPBuilder.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/black/RiderProjects/ETAMP/Source/ETAMP.Extension/Builder/ETAMPBuilder.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/black/RiderProjects/ETAMP/Source/ETAMP.Extension/Builder/ETAMPEncryption.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/black/RiderProjects/ETAMP/Source/ETAMP.Extension/Builder/ETAMPEncryption.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/black/RiderProjects/ETAMP/Source/ETAMP.Extension/Builder/ETAMPSign.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/black/RiderProjects/ETAMP/Source/ETAMP.Validation/Base/ETAMPValidatorBase.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/black/RiderProjects/ETAMP/Source/ETAMP.Validation/Base/SignatureValidatorBase.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/black/RiderProjects/ETAMP/Source/ETAMP.Validation/Interfaces/IETAMPValidator.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/black/RiderProjects/ETAMP/Source/ETAMP.Validation/Interfaces/ISignatureValidator.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/black/RiderProjects/ETAMP/Source/ETAMP.Validation/Interfaces/IStructureValidator.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/black/RiderProjects/ETAMP/Source/ETAMP.Validation/Interfaces/ITokenValidator.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/black/RiderProjects/ETAMP/Source/ETAMP.Validation/StructureValidator.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/black/RiderProjects/ETAMP/Source/ETAMP.Validation/TokenValidator.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/black/RiderProjects/ETAMP/Source/ETAMP.Wrapper/Base/SignWrapperBase.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/black/RiderProjects/ETAMP/Source/ETAMP.Wrapper/Interfaces/ISignWrapper.cs" root0="SKIP_HIGHLIGHTING" />
   </component>
   <component name="KubernetesApiPersistence">{}</component>
   <component name="KubernetesApiProvider">{
@@ -98,31 +93,31 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    ".NET Project.ETAMP.Console.CreateETAMP.executor": "Run",
-    ".NET Project.ETAMP.Console.CreateETAMPService.executor": "Debug",
-    ".NET Project.ETAMP.Console.CreateSignETAMP.executor": "Run",
-    ".NET Project.ETAMP.Console.CreateSignETAMPService.executor": "Debug",
-    ".NET Project.ETAMP.Console.ValidateETAMP.executor": "Debug",
-    ".NET Project.ETAMP.Console.ValidateETAMPService.executor": "Debug",
-    "5c53a9ec-5001-4a38-9545-ad7f91d669ad.executor": "Debug",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "c762ceee-8ff5-402e-b6d9-fbb316d19fb8.executor": "Debug",
-    "d8965117-eb1a-42c8-b314-86c3ae8583f1.executor": "Debug",
-    "git-widget-placeholder": "master",
-    "ignore.virus.scanning.warn.message": "true",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "Errors",
-    "settings.editor.splitter.proportion": "0.3058104",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;.NET Project.ETAMP.Console.CreateETAMP.executor&quot;: &quot;Run&quot;,
+    &quot;.NET Project.ETAMP.Console.CreateETAMPService.executor&quot;: &quot;Debug&quot;,
+    &quot;.NET Project.ETAMP.Console.CreateSignETAMP.executor&quot;: &quot;Run&quot;,
+    &quot;.NET Project.ETAMP.Console.CreateSignETAMPService.executor&quot;: &quot;Debug&quot;,
+    &quot;.NET Project.ETAMP.Console.ValidateETAMP.executor&quot;: &quot;Debug&quot;,
+    &quot;.NET Project.ETAMP.Console.ValidateETAMPService.executor&quot;: &quot;Debug&quot;,
+    &quot;5c53a9ec-5001-4a38-9545-ad7f91d669ad.executor&quot;: &quot;Debug&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;c762ceee-8ff5-402e-b6d9-fbb316d19fb8.executor&quot;: &quot;Debug&quot;,
+    &quot;d8965117-eb1a-42c8-b314-86c3ae8583f1.executor&quot;: &quot;Debug&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;Errors&quot;,
+    &quot;settings.editor.splitter.proportion&quot;: &quot;0.3058104&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RunManager" selected=".NET Project.ETAMP.Console.ValidateETAMP">
     <configuration name="ETAMP.Console.CreateETAMP" type="DotNetProject" factoryName=".NET Project">
       <option name="EXE_PATH" value="$PROJECT_DIR$/Examples/ETAMP.Console.CreateETAMP/bin/Debug/net9.0/ETAMP.Console.CreateETAMP.exe" />
@@ -261,6 +256,7 @@
       <workItem from="1737289122541" duration="14912000" />
       <workItem from="1737493803409" duration="80000" />
       <workItem from="1737504426947" duration="3847000" />
+      <workItem from="1737677145461" duration="4258000" />
     </task>
     <task id="LOCAL-00001" summary="Refactor and reorganize ETAMP example projects&#10;&#10;Moved and restructured ETAMP example project files for better modularity and project clarity. Updated project references and dependencies to align with the new structure. Removed redundant files and added missing configurations where necessary.">
       <option name="closed" value="true" />
@@ -422,7 +418,15 @@
       <option name="project" value="LOCAL" />
       <updated>1737325304360</updated>
     </task>
-    <option name="localTasksCounter" value="21" />
+    <task id="LOCAL-00021" summary="Remove legacy ECDSA classes and refactor related functionality&#10;&#10;Deleted outdated ECDSA-related classes and methods to streamline the encryption layer. Updated interfaces and method contracts to work directly with `ECDsa` objects, eliminating redundant abstractions. Introduced new tests and enhanced modularity with targeted compression and protocol handling.">
+      <option name="closed" value="true" />
+      <created>1737679364627</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1737679364628</updated>
+    </task>
+    <option name="localTasksCounter" value="22" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -522,7 +526,9 @@
     <MESSAGE value="Convert compression and validation methods to async.&#10;&#10;Updated compression and validation services to use asynchronous methods for improved performance and scalability. Added new test projects for Compression and Core modules, along with extensive unit tests to ensure correctness of the new async implementations. Updated project references and dependencies accordingly." />
     <MESSAGE value="Remove legacy encryption-related classes and interfaces&#10;&#10;Legacy encryption components, including key exchangers, key pair providers, and associated factories, were deleted to streamline the codebase. Additionally, minor updates were made to the compression services, and a new test project was introduced for better modularity and maintainability." />
     <MESSAGE value="Improve encryption service with better stream handling.&#10;&#10;Updated AESEncryptionService to ensure CryptoStream properly handles flushing and maintains stream states. Enhanced unit tests and package references for comprehensive testing and coverage. Adjusted documentation and project configuration to align with recent encryption updates." />
-    <option name="LAST_COMMIT_MESSAGE" value="Improve encryption service with better stream handling.&#10;&#10;Updated AESEncryptionService to ensure CryptoStream properly handles flushing and maintains stream states. Enhanced unit tests and package references for comprehensive testing and coverage. Adjusted documentation and project configuration to align with recent encryption updates." />
+    <MESSAGE value="Remove legacy ECDSA classes and refactor related functionality&#10;&#10;Deleted outdated ECDSA-related classes and methods to streamline the encryption layer. Updated interfaces and method contracts to work directly with `ECDsa` objects, eliminating redundant abstractions. Introduced new tests and enhanced modularity with targeted compression and protocol handling." />
+    <MESSAGE value="Remove outdated base classes and refactor cryptographic services.&#10;&#10;Eliminated legacy base classes for ECIES encryption, ETAMP validation, and cryptographic wrappers, replacing them with streamlined interfaces. Refactored implementations to directly use `ECDsa` objects via a unified `IInitialize` interface. Updated DI registrations and improved modularity for better maintainability." />
+    <option name="LAST_COMMIT_MESSAGE" value="Remove outdated base classes and refactor cryptographic services.&#10;&#10;Eliminated legacy base classes for ECIES encryption, ETAMP validation, and cryptographic wrappers, replacing them with streamlined interfaces. Refactored implementations to directly use `ECDsa` objects via a unified `IInitialize` interface. Updated DI registrations and improved modularity for better maintainability." />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REARRANGE_BEFORE_PROJECT_COMMIT" value="true" />

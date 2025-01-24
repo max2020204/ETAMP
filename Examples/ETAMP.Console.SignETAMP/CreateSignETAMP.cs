@@ -5,7 +5,7 @@ using ETAMP.Console.CreateETAMP.Models;
 using ETAMP.Core.Models;
 using ETAMP.Encryption.Interfaces.ECDSAManager;
 using ETAMP.Extension.Builder;
-using ETAMP.Wrapper.Base;
+using ETAMP.Wrapper.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 
 #endregion
@@ -18,11 +18,7 @@ public class CreateSignETAMP
 
     public static ECDsa Ecdsa
     {
-        get
-        {
-            if (_ecdsaInstance == null) _ecdsaInstance = ECDsa.Create();
-            return _ecdsaInstance;
-        }
+        get => _ecdsaInstance;
         set => _ecdsaInstance =
             value ?? throw new ArgumentNullException(nameof(value), "ECDsa instance cannot be null.");
     }
@@ -50,18 +46,17 @@ public class CreateSignETAMP
         return etampModel;
     }
 
-    private static (SignWrapperBase?, IPemKeyCleaner?) GetServices(IServiceProvider provider)
+    private static (ISignWrapper?, IPemKeyCleaner?) GetServices(IServiceProvider provider)
     {
         return (
-            provider.GetService<SignWrapperBase>(),
+            provider.GetService<ISignWrapper>(),
             provider.GetService<IPemKeyCleaner>()
         );
     }
 
-    private static void InitializeSigning(SignWrapperBase sign,
+    private static void InitializeSigning(ISignWrapper sign,
         IPemKeyCleaner pemCleaner)
     {
-        _ecdsaInstance ??= ECDsa.Create();
         var publicKeyPem = pemCleaner.ClearPemPublicKey(_ecdsaInstance.ExportSubjectPublicKeyInfoPem());
         PublicKey = publicKeyPem.KeyModelProvider.PublicKey;
 

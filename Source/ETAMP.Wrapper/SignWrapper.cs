@@ -1,10 +1,11 @@
 ﻿#region
 
+using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
 using ETAMP.Core.Models;
 using ETAMP.Core.Utils;
-using ETAMP.Wrapper.Base;
+using ETAMP.Wrapper.Interfaces;
 
 #endregion
 
@@ -13,8 +14,11 @@ namespace ETAMP.Wrapper;
 /// <summary>
 ///     Signs data using Elliptic Curve Digital Signature Algorithm (ECDsa).
 /// </summary>
-public sealed class SignWrapper : SignWrapperBase
+public sealed class SignWrapper : ISignWrapper
 {
+    private HashAlgorithmName _algorithmName;
+    private ECDsa? _ecdsa;
+
     /// <summary>
     ///     SignEtampModel method signs an ETAMPModel instance and updates the signature fields.
     /// </summary>
@@ -22,7 +26,7 @@ public sealed class SignWrapper : SignWrapperBase
     /// <param name="etamp">The ETAMPModel instance to sign.</param>
     /// <returns>The signed ETAMPModel instance.</returns>
     /// <exception cref="ArgumentException">Thrown if etamp.Token is null.</exception>
-    public override ETAMPModel<T> SignEtampModel<T>(ETAMPModel<T> etamp)
+    public ETAMPModel<T> SignEtampModel<T>(ETAMPModel<T> etamp) where T : Token
     {
         ArgumentNullException.ThrowIfNull(etamp.Token, nameof(etamp.Token));
 
@@ -33,8 +37,19 @@ public sealed class SignWrapper : SignWrapperBase
         return etamp;
     }
 
+    public void Initialize(ECDsa provider, HashAlgorithmName algorithmName)
+    {
+        _ecdsa = provider;
+        _algorithmName = algorithmName;
+    }
+
+    public void Dispose()
+    {
+        _ecdsa?.Dispose();
+    }
+
     private byte[] Sign(byte[] data)
     {
-        return Ecdsa!.SignData(data, AlgorithmName);
+        return _ecdsa!.SignData(data, _algorithmName);
     }
 }

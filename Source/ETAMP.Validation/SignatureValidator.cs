@@ -1,11 +1,11 @@
 ﻿#region
 
+using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
 using ETAMP.Core.Models;
-using ETAMP.Validation.Base;
 using ETAMP.Validation.Interfaces;
-using ETAMP.Wrapper.Base;
+using ETAMP.Wrapper.Interfaces;
 
 #endregion
 
@@ -14,27 +14,31 @@ namespace ETAMP.Validation;
 /// <summary>
 ///     Validates the signature of ETAMP messages.
 /// </summary>
-public sealed class SignatureValidator : SignatureValidatorBase
+public sealed class SignatureValidator : ISignatureValidator
 {
     /// <summary>
     ///     Validates the structure and consistency of ETAMP tokens and models.
     /// </summary>
     private readonly IStructureValidator _structureValidator;
 
+    private readonly IVerifyWrapper _verifyWrapper;
+
+    private ECDsa _ecdsa;
+
 
     /// <summary>
-    ///     SignatureValidator is a class that implements the ISignatureValidator interface.
+    ///     SignatureValidatorValidator is a class that implements the ISignatureValidator interface.
     ///     It is responsible for validating signatures in ETAMP messages.
     /// </summary>
-    public SignatureValidator(VerifyWrapperBase wrapperBase, IStructureValidator structureValidator)
-        : base(wrapperBase)
+    public SignatureValidator(IVerifyWrapper verifyWrapper, IStructureValidator structureValidator)
     {
+        _verifyWrapper = verifyWrapper;
         _structureValidator = structureValidator
                               ?? throw new ArgumentNullException(nameof(structureValidator));
     }
 
 
-    public override async Task<ValidationResult> ValidateETAMPMessageAsync<T>(ETAMPModel<T> etamp)
+    public async Task<ValidationResult> ValidateETAMPMessageAsync<T>(ETAMPModel<T> etamp) where T : Token
     {
         ArgumentNullException.ThrowIfNull(etamp);
         ArgumentNullException.ThrowIfNull(etamp.Token);
@@ -56,8 +60,20 @@ public sealed class SignatureValidator : SignatureValidatorBase
         var dataToVerify = $"{etamp.Id}{etamp.Version}{token}{etamp.UpdateType}{etamp.CompressionType}";
 
         // Асинхронная проверка подписи, если VerifyWrapper поддерживает её
-        var isVerified = VerifyWrapper.VerifyData(dataToVerify, etamp.SignatureMessage);
+        var isVerified = _verifyWrapper.VerifyData(dataToVerify, etamp.SignatureMessage);
 
         return isVerified ? new ValidationResult(true) : new ValidationResult(false, "Failed to verify data.");
+    }
+
+    public void Initialize(ECDsa provider, HashAlgorithmName algorithmName)
+    {
+        _ecdsa = provider;
+        _verifyWrapper.Initialize(provider, algorithmName);
+    }
+
+    public void Dispose()
+    {
+        _verifyWrapper.Dispose();
+        _ecdsa.Dispose();
     }
 }
