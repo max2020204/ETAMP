@@ -4,6 +4,8 @@ using System.IO.Compression;
 using System.Text;
 using ETAMP.Compression.Interfaces;
 using ETAMP.Core.Utils;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 
 #endregion
 
@@ -17,6 +19,13 @@ namespace ETAMP.Compression.Codec;
 /// </summary>
 public sealed class GZipCompressionService : ICompressionService
 {
+    private readonly ILogger<GZipCompressionService> _logger;
+
+    public GZipCompressionService(ILogger<GZipCompressionService>? logger = null)
+    {
+        _logger = logger ?? NullLogger<GZipCompressionService>.Instance;
+    }
+
     /// <summary>
     ///     Compresses the provided string using GZip compression and encodes the result in Base64 URL format.
     /// </summary>
@@ -26,19 +35,26 @@ public sealed class GZipCompressionService : ICompressionService
     public async Task<string> CompressString(string? data)
     {
         if (string.IsNullOrWhiteSpace(data))
+        {
+            _logger.LogError("The input data must not be null, empty, or consist only of whitespace.");
             throw new ArgumentException("The input data must not be null, empty, or consist only of whitespace.",
                 nameof(data));
+        }
 
+        _logger.LogDebug("Input data length: {0}", data.Length);
         var bytes = Encoding.UTF8.GetBytes(data);
 
         using var outputStream = new MemoryStream();
         await using (var gzipStream = new GZipStream(outputStream, CompressionMode.Compress, true))
         {
+            _logger.LogDebug("Compressing data");
             await gzipStream.WriteAsync(bytes);
+            _logger.LogDebug("Data compressed");
+            _logger.LogDebug("Output data length: {0}", outputStream.Length);
         }
 
         outputStream.Position = 0;
-
+        _logger.LogDebug("Encoding data");
         return Base64UrlEncoder.Encode(outputStream.ToArray());
     }
 
@@ -62,10 +78,14 @@ public sealed class GZipCompressionService : ICompressionService
     public async Task<string> DecompressString(string? base64CompressedData)
     {
         if (string.IsNullOrWhiteSpace(base64CompressedData))
+        {
+            _logger.LogError("The input data must not be null, empty, or consist only of whitespace.");
             throw new ArgumentException("The input data must not be null, empty, or consist only of whitespace.",
                 nameof(base64CompressedData));
+        }
 
         var compressedBytes = Base64UrlEncoder.DecodeBytes(base64CompressedData);
+        _logger.LogDebug("Decompressing data");
 
         using var inputStream = new MemoryStream(compressedBytes);
         using var outputStream = new MemoryStream();
@@ -73,23 +93,31 @@ public sealed class GZipCompressionService : ICompressionService
         {
             await using var gzipStream = new GZipStream(inputStream, CompressionMode.Decompress);
             await gzipStream.CopyToAsync(outputStream);
+            _logger.LogDebug("Data decompressed");
         }
         catch (InvalidDataException ex)
         {
+            _logger.LogError(ex, "Failed to decompress the data");
             throw new InvalidDataException(
                 "Failed to decompress the data. The input data may be in an unsupported or corrupted format.", ex);
         }
         catch (Exception e)
         {
+            _logger.LogError(e, "An unexpected error occurred during the decompression process.");
             throw new InvalidOperationException("The input data is invalid or corrupted.", e);
         }
 
+        _logger.LogDebug("Output data length: {0}", outputStream.Length);
+
         outputStream.Position = 0;
         var decompressedBytes = outputStream.ToArray();
-        if (decompressedBytes.Length == 0)
-            throw new InvalidOperationException(
-                "The decompressed data is empty. The input might be invalid or corrupted.");
+        _logger.LogDebug("Decompressed data length: {0}", decompressedBytes.Length);
 
-        return Encoding.UTF8.GetString(decompressedBytes);
+        if (decompressedBytes.Length != 0)
+            return Encoding.UTF8.GetString(decompressedBytes);
+
+        _logger.LogError("The decompressed data is empty.");
+        throw new InvalidOperationException(
+            "The decompressed data is empty. The input might be invalid or corrupted.");
     }
 }

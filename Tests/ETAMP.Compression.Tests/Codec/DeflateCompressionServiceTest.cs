@@ -5,6 +5,8 @@ using AutoFixture;
 using ETAMP.Compression.Codec;
 using ETAMP.Core.Utils;
 using JetBrains.Annotations;
+using Microsoft.Extensions.Logging;
+using Moq;
 
 #endregion
 
@@ -15,10 +17,12 @@ public class DeflateCompressionServiceTests
 {
     private readonly DeflateCompressionService _compressionService;
     private readonly Fixture _fixture;
+    private readonly Mock<ILogger<DeflateCompressionService>> _logger;
 
     public DeflateCompressionServiceTests()
     {
-        _compressionService = new DeflateCompressionService();
+        _logger = new Mock<ILogger<DeflateCompressionService>>();
+        _compressionService = new DeflateCompressionService(_logger.Object);
         _fixture = new Fixture();
     }
 

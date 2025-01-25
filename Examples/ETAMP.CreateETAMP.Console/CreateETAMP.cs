@@ -1,5 +1,9 @@
 ﻿#region
 
+#endregion
+
+#region
+
 using ETAMP.Compression.Interfaces.Factory;
 using ETAMP.Console.CreateETAMP.Models;
 using ETAMP.Core.Interfaces;
@@ -27,6 +31,7 @@ public static class CreateETAMP
     {
         var etampBase = provider.GetService<IETAMPBase>();
 
+        var token = new Token();
         var tokenModel = new TokenModel
         {
             Message = "Hello World!",

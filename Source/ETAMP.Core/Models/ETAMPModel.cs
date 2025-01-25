@@ -1,5 +1,6 @@
 ﻿#region
 
+using System.Text;
 using System.Text.Json;
 
 #endregion
@@ -71,24 +72,57 @@ public class ETAMPModel<T> where T : Token
     }
 
 
-    /// <summary>
-    ///     Converts the ETAMPModel object to a JSON string.
-    /// </summary>
-    /// <returns>
-    ///     The JSON string representation of the ETAMPModel object.
-    /// </returns>
     public string ToJson()
     {
-        var temp = new ETAMPModelBuilder
+        using var stream = new MemoryStream();
+        using var writer = new Utf8JsonWriter(stream, new JsonWriterOptions
         {
-            Id = Id,
-            Version = Version,
-            Token = Token?.ToJson(),
-            UpdateType = UpdateType,
-            CompressionType = CompressionType,
-            SignatureMessage = SignatureMessage
-        };
-        return JsonSerializer.Serialize(temp);
+            Indented = false
+        });
+
+        WriteJson(writer);
+        writer.Flush();
+
+        return Encoding.UTF8.GetString(stream.ToArray());
+    }
+
+    public async Task<string> ToJsonAsync()
+    {
+        await using var stream = new MemoryStream();
+        await using var writer = new Utf8JsonWriter(stream, new JsonWriterOptions
+        {
+            Indented = false
+        });
+
+        WriteJson(writer);
+        await writer.FlushAsync();
+
+        return Encoding.UTF8.GetString(stream.ToArray());
+    }
+
+    private void WriteJson(Utf8JsonWriter writer)
+    {
+        writer.WriteStartObject();
+
+        writer.WriteString(nameof(Id), Id.ToString());
+        writer.WriteNumber(nameof(Version), Version);
+
+        if (Token != null)
+        {
+            writer.WritePropertyName(nameof(Token));
+            writer.WriteRawValue(Token.ToJson(), true);
+        }
+
+        if (!string.IsNullOrEmpty(UpdateType))
+            writer.WriteString(nameof(UpdateType), UpdateType);
+
+        if (!string.IsNullOrEmpty(CompressionType))
+            writer.WriteString(nameof(CompressionType), CompressionType);
+
+        if (!string.IsNullOrEmpty(SignatureMessage))
+            writer.WriteString(nameof(SignatureMessage), SignatureMessage);
+
+        writer.WriteEndObject();
     }
 
     /// <summary>
@@ -109,5 +143,10 @@ public class ETAMPModel<T> where T : Token
     public override string ToString()
     {
         return ToJson();
+    }
+
+    public Task<string> ToStringAsync()
+    {
+        return ToJsonAsync();
     }
 }

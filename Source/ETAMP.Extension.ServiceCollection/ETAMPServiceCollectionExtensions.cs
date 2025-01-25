@@ -15,53 +15,79 @@ using ETAMP.Validation.Interfaces;
 using ETAMP.Wrapper;
 using ETAMP.Wrapper.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 #endregion
 
 namespace ETAMP.Extension.ServiceCollection;
 
-/// <summary>
-///     Extension methods for setting up ETAMP services in an <see cref="IServiceCollection" />.
-/// </summary>
 public static class ETAMPServiceCollectionExtensions
 {
-    /// <summary>
-    ///     Adds ETAMP services to the specified <see cref="IServiceCollection" />.
-    /// </summary>
-    /// <param name="services">The <see cref="IServiceCollection" /> to add services to.</param>
-    /// <returns>The original <see cref="IServiceCollection" /> with ETAMP services added.</returns>
-    public static void AddETAMPServices(this IServiceCollection services)
+    public static void AddETAMPServices(this IServiceCollection services, bool addlogger = true,
+        Action<ILoggingBuilder>? configureLogging = null)
     {
-        // Register cryptographic services
-        services.AddScoped<IEncryptionService, AESEncryptionService>();
-        services.AddScoped<IECIESEncryptionService, ECIESEncryptionService>();
+        AddLogging(services, addlogger, configureLogging);
+        AddBaseServices(services, false);
+        AddCompositionServices(services, false);
+        AddEncryptionServices(services, false);
+        AddValidationServices(services, false);
+        AddWrapperServices(services, false);
+    }
 
-        services.AddScoped<IECDSAControl, ECDSAControl>();
-        services.AddSingleton<IECDSAStore, ECDSAStore>();
-        services.AddScoped<IPemKeyCleaner, PemKeyCleaner>();
-
-        services.AddScoped<IETAMPBase, ETAMPProtocol>();
-
-        services.AddScoped<DeflateCompressionService>();
-        services.AddScoped<GZipCompressionService>();
-
-        services.AddScoped<ICompressionServiceFactory, CompressionServiceFactory>();
-
-        services.AddScoped<ISignWrapper, SignWrapper>();
-        services.AddScoped<IVerifyWrapper, VerifyWrapper>();
-
-
+    public static void AddValidationServices(this IServiceCollection services, bool addlogger = true,
+        Action<ILoggingBuilder>? configureLogging = null)
+    {
+        AddLogging(services, addlogger, configureLogging);
         services.AddScoped<IStructureValidator, StructureValidator>();
         services.AddScoped<ITokenValidator, TokenValidator>();
         services.AddScoped<ISignatureValidator, SignatureValidator>();
         services.AddScoped<IETAMPValidator, ETAMPValidator>();
+    }
 
+    public static void AddCompositionServices(this IServiceCollection services, bool addlogger = true,
+        Action<ILoggingBuilder>? configureLogging = null)
+    {
+        AddLogging(services, addlogger, configureLogging);
+        services.AddScoped<DeflateCompressionService>();
+        services.AddScoped<GZipCompressionService>();
+        services.AddScoped<ICompressionServiceFactory, CompressionServiceFactory>();
+    }
 
+    public static void AddWrapperServices(this IServiceCollection services, bool addlogger = true,
+        Action<ILoggingBuilder>? configureLogging = null)
+    {
+        AddLogging(services, addlogger, configureLogging);
+        services.AddScoped<ISignWrapper, SignWrapper>();
+        services.AddScoped<IVerifyWrapper, VerifyWrapper>();
+    }
+
+    public static void AddEncryptionServices(this IServiceCollection services, bool addlogger = true,
+        Action<ILoggingBuilder>? configureLogging = null)
+    {
+        AddLogging(services, addlogger, configureLogging);
+        services.AddScoped<IEncryptionService, AESEncryptionService>();
+        services.AddScoped<IECIESEncryptionService, ECIESEncryptionService>();
+        services.AddScoped<IECDSAControl, ECDSAControl>();
+        services.AddSingleton<IECDSAStore, ECDSAStore>();
+        services.AddScoped<IPemKeyCleaner, PemKeyCleaner>();
+    }
+
+    public static void AddBaseServices(this IServiceCollection services, bool addlogger = true,
+        Action<ILoggingBuilder>? configureLogging = null)
+    {
+        AddLogging(services, addlogger, configureLogging);
+        services.AddScoped<IETAMPBase, ETAMPProtocol>();
         services.AddSingleton<VersionInfo>(_ =>
         {
             var versionInfo = new VersionInfo();
             versionInfo.GetVersionInfo();
             return versionInfo;
         });
+    }
+
+    private static void AddLogging(IServiceCollection services, bool addlogger = true,
+        Action<ILoggingBuilder>? configureLogging = null)
+    {
+        if (addlogger) services.AddLogging(configureLogging);
     }
 }

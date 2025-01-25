@@ -1,7 +1,9 @@
 ﻿#region
 
-using System.Diagnostics;
+using System.Text;
 using System.Text.Json;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 
 #endregion
 
@@ -12,6 +14,13 @@ namespace ETAMP.Core.Models;
 /// </summary>
 public class Token
 {
+    private readonly ILogger<Token> _logger;
+
+    public Token(ILogger<Token>? logger = null)
+    {
+        _logger = logger ?? NullLogger<Token>.Instance;
+    }
+
     /// <summary>
     ///     Represents the unique identifier of a token.
     /// </summary>
@@ -41,37 +50,48 @@ public class Token
     /// <summary>
     ///     Set data after converting an object to a JSON string.
     /// </summary>
-    public void SetData<T>(T dataObject) where T : class
+    public async Task SetData<T>(T dataObject) where T : class
     {
-        Data = JsonSerializer.Serialize(dataObject);
+        _logger.LogDebug("Serializing token data");
+        await using var memoryStream = new MemoryStream();
+        await JsonSerializer.SerializeAsync(memoryStream, dataObject);
+        _logger.LogDebug("Serializing token data done");
+        Data = Encoding.UTF8.GetString(memoryStream.ToArray());
     }
 
     /// <summary>
     ///     Get data by converting the JSON string back to an object of type T.
     /// </summary>
-    public T? GetData<T>() where T : class
+    public async Task<T?> GetData<T>() where T : class
     {
         if (string.IsNullOrEmpty(Data))
             return null;
         try
         {
-            return JsonSerializer.Deserialize<T>(Data);
+            _logger.LogDebug("Deserializing token data");
+            var byteArray = Encoding.UTF8.GetBytes(Data);
+            await using var memoryStream = new MemoryStream(byteArray);
+            _logger.LogDebug("Deserializing token data done");
+            return await JsonSerializer.DeserializeAsync<T>(memoryStream);
         }
         catch (JsonException ex)
         {
-            Debug.WriteLine(ex.Message);
+            _logger.LogError(ex, "Error deserializing token data");
             return null;
         }
     }
 
-    /// <summary>
-    ///     Converts the current instance of the object into its JSON string representation.
-    /// </summary>
-    /// <returns>
-    ///     A JSON string representing the current instance.
-    /// </returns>
     public string ToJson()
     {
         return JsonSerializer.Serialize(this);
+    }
+
+    public async Task<string> ToJsonAsync()
+    {
+        _logger.LogDebug("Serializing token");
+        await using var memoryStream = new MemoryStream();
+        await JsonSerializer.SerializeAsync(memoryStream, this);
+        _logger.LogDebug("Serializing token done");
+        return Encoding.UTF8.GetString(memoryStream.ToArray());
     }
 }
