@@ -2,8 +2,6 @@
 
 using System.Text;
 using System.Text.Json;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
 
 #endregion
 
@@ -16,13 +14,6 @@ namespace ETAMP.Core.Models;
 /// </summary>
 public struct ETAMPModel<T> where T : Token
 {
-    private readonly ILogger<ETAMPModel<T>> _logger;
-
-    public ETAMPModel(ILogger<ETAMPModel<T>>? logger = null)
-    {
-        _logger = logger ?? NullLogger<ETAMPModel<T>>.Instance;
-    }
-
     /// <summary>
     ///     Gets or sets the unique identifier for the ETAMP model instance.
     /// </summary>
@@ -69,7 +60,6 @@ public struct ETAMPModel<T> where T : Token
     /// </returns>
     public override bool Equals(object? obj)
     {
-        _logger.LogDebug("Comparing ETAMP model");
         if (obj is ETAMPModel<T> other)
             return Id == other.Id
                    && Version.Equals(other.Version)
@@ -85,14 +75,13 @@ public struct ETAMPModel<T> where T : Token
     public string ToJson()
     {
         using var stream = new MemoryStream();
-        _logger.LogDebug("Serializing ETAMP model");
+
         using var writer = new Utf8JsonWriter(stream, new JsonWriterOptions
         {
             Indented = false
         });
 
         WriteJson(writer);
-        _logger.LogDebug("Serializing ETAMP model done");
         writer.Flush();
 
 
@@ -102,14 +91,12 @@ public struct ETAMPModel<T> where T : Token
     public async Task<string> ToJsonAsync()
     {
         await using var stream = new MemoryStream();
-        _logger.LogDebug("Serializing ETAMP model");
         await using var writer = new Utf8JsonWriter(stream, new JsonWriterOptions
         {
             Indented = false
         });
 
         WriteJson(writer);
-        _logger.LogDebug("Serializing ETAMP model done");
         await writer.FlushAsync();
 
         return Encoding.UTF8.GetString(stream.ToArray());
@@ -118,37 +105,31 @@ public struct ETAMPModel<T> where T : Token
     private void WriteJson(Utf8JsonWriter writer)
     {
         writer.WriteStartObject();
-        _logger.LogDebug("Serializing ETAMP model properties");
         writer.WriteString(nameof(Id), Id.ToString());
         writer.WriteNumber(nameof(Version), Version);
 
 
         if (Token != null)
         {
-            _logger.LogDebug("Serializing ETAMP model token");
             writer.WritePropertyName(nameof(Token));
             writer.WriteRawValue(Token.ToJson(), true);
         }
 
         if (!string.IsNullOrEmpty(UpdateType))
         {
-            _logger.LogDebug("Serializing ETAMP model update type");
             writer.WriteString(nameof(UpdateType), UpdateType);
         }
 
         if (!string.IsNullOrEmpty(CompressionType))
         {
-            _logger.LogDebug("Serializing ETAMP model compression type");
             writer.WriteString(nameof(CompressionType), CompressionType);
         }
 
         if (!string.IsNullOrEmpty(SignatureMessage))
         {
-            _logger.LogDebug("Serializing ETAMP model signature message");
             writer.WriteString(nameof(SignatureMessage), SignatureMessage);
         }
 
-        _logger.LogDebug("Serializing ETAMP model properties done");
         writer.WriteEndObject();
     }
 
@@ -158,7 +139,6 @@ public struct ETAMPModel<T> where T : Token
     /// <returns>A hash code for the current object.</returns>
     public override int GetHashCode()
     {
-        _logger.LogDebug("Calculating hash code");
         return HashCode.Combine(Id, Version, Token, UpdateType, CompressionType, SignatureMessage);
     }
 
@@ -170,13 +150,11 @@ public struct ETAMPModel<T> where T : Token
     /// </returns>
     public override string ToString()
     {
-        _logger.LogDebug("Converting ETAMP model to string");
         return ToJson();
     }
 
     public Task<string> ToStringAsync()
     {
-        _logger.LogDebug("Converting ETAMP model to string");
         return ToJsonAsync();
     }
 }

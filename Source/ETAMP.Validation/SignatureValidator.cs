@@ -2,7 +2,6 @@
 
 using System.Security.Cryptography;
 using System.Text;
-using System.Text.Json;
 using ETAMP.Core.Models;
 using ETAMP.Validation.Interfaces;
 using ETAMP.Wrapper.Interfaces;
@@ -17,31 +16,14 @@ namespace ETAMP.Validation;
 /// </summary>
 public sealed class SignatureValidator : ISignatureValidator
 {
-    /// <summary>
-    /// Logs information, warnings, and errors for the signature validation process of ETAMP messages.
-    /// </summary>
     private readonly ILogger<SignatureValidator> _logger;
-
-    /// <summary>
-    /// Responsible for validating the structure and consistency of ETAMP tokens and models.
-    /// </summary>
     private readonly IStructureValidator _structureValidator;
-
-    /// <summary>
-    ///     Serves as a wrapper for verifying data and signatures using ECDsa.
-    /// </summary>
     private readonly IVerifyWrapper _verifyWrapper;
-
-    /// <summary>
-    ///     Represents an ECDsa cryptographic provider used for signature verification of data in ETAMP messages.
-    /// </summary>
     private ECDsa _ecdsa;
 
 
     /// <summary>
-    /// SignatureValidator is a class that implements the ISignatureValidator interface.
-    /// It validates the signatures of ETAMP messages by utilizing a structure validator,
-    /// a verification wrapper, and a logging mechanism.
+    /// Provides functionality to validate signatures in ETAMP messages.
     /// </summary>
     public SignatureValidator(IVerifyWrapper verifyWrapper, IStructureValidator structureValidator,
         ILogger<SignatureValidator> logger)
@@ -54,29 +36,21 @@ public sealed class SignatureValidator : ISignatureValidator
 
 
     /// <summary>
-    ///     Validates the provided ETAMP message by ensuring its structure
-    ///     and signature are correct.
+    /// Asynchronously validates the ETAMP message by checking the structure of the ETAMP model,
+    /// verifying the presence of required fields, and validating the signature of the message.
     /// </summary>
-    /// <typeparam name="T">
-    ///     The type of the token within the ETAMP model. It must derive from the <see cref="Token" /> class.
-    /// </typeparam>
-    /// <param name="etamp">
-    ///     The ETAMP model to be validated. This includes information such as
-    ///     the token, signature message, and other related fields.
-    /// </param>
-    /// <returns>
-    ///     An instance of <see cref="ValidationResult" /> indicating whether the
-    ///     validation was successful or not, along with an appropriate message.
-    /// </returns>
+    /// <typeparam name="T">The type of the token associated with the ETAMP model, which must derive from the <see cref="Token"/> class.</typeparam>
+    /// <param name="etamp">The ETAMP model containing the token, signature message, and related data to be validated.</param>
+    /// <param name="cancellationToken">An optional token to observe while waiting for the task to complete. Defaults to <see cref="default"/>.</param>
+    /// <returns>A task that represents the asynchronous validation operation. The task result is a <see cref="ValidationResult"/> indicating whether the validation succeeded or failed, along with error details if applicable.</returns>
     public async Task<ValidationResult> ValidateETAMPMessageAsync<T>(ETAMPModel<T> etamp,
         CancellationToken cancellationToken = default) where T : Token
     {
-        ArgumentNullException.ThrowIfNull(etamp);
         ArgumentNullException.ThrowIfNull(etamp.Token);
         var structureValidationResult = _structureValidator.ValidateETAMP(etamp);
         if (!structureValidationResult.IsValid)
         {
-            _logger.LogError(structureValidationResult.ErrorMessage);
+            _logger.LogError("Invalid ETAMP Model.");
             return new ValidationResult(false, "Invalid ETAMP Model.");
         }
 
@@ -86,19 +60,22 @@ public sealed class SignatureValidator : ISignatureValidator
             return new ValidationResult(false, "SignatureMessage is missing in the ETAMP model.");
         }
 
-        string token;
-        await using (var memoryStream = new MemoryStream())
+        await using (var stream = new MemoryStream())
         {
-            await JsonSerializer.SerializeAsync(memoryStream, etamp.Token, cancellationToken: cancellationToken);
+            await using (var writer = new StreamWriter(stream, Encoding.UTF8, bufferSize: 1024, leaveOpen: true))
+            {
+                await writer.WriteAsync(etamp.Id.ToString());
+                await writer.WriteAsync(etamp.Version.ToString());
+                await writer.WriteAsync(await etamp.Token.ToJsonAsync());
+                await writer.WriteAsync(etamp.UpdateType);
+                await writer.WriteAsync(etamp.CompressionType);
+            }
 
-            token = Encoding.UTF8.GetString(memoryStream.ToArray());
+            var isVerified = _verifyWrapper.VerifyData(stream, etamp.SignatureMessage);
+
+            if (isVerified)
+                return new ValidationResult(true);
         }
-
-
-        var dataToVerify = $"{etamp.Id}{etamp.Version}{token}{etamp.UpdateType}{etamp.CompressionType}";
-        var isVerified = _verifyWrapper.VerifyData(dataToVerify, etamp.SignatureMessage);
-
-        if (isVerified) return new ValidationResult(true);
 
         _logger.LogError("Failed to verify data.");
         return new ValidationResult(false, "Failed to verify data.");

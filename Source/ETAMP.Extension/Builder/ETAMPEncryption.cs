@@ -23,10 +23,10 @@ public static class ETAMPEncryption
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(model.Token.Data);
         ArgumentNullException.ThrowIfNull(eciesEncryptionService);
-        var stream =
-            await eciesEncryptionService.EncryptAsync(await GenerateStreamFromString(model.Token.Data), privateKey,
-                publicKey);
-        StreamReader reader = new(stream);
+        var stream = await eciesEncryptionService.EncryptAsync(await GenerateStreamFromString(model.Token.Data),
+            privateKey,
+            publicKey);
+        using StreamReader reader = new(stream);
         model.Token.Data = await reader.ReadToEndAsync();
         model.Token.IsEncrypted = true;
         return model;
@@ -46,10 +46,10 @@ public static class ETAMPEncryption
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(model.Token.Data);
         ArgumentNullException.ThrowIfNull(eciesEncryptionService);
-        var stream =
-            await eciesEncryptionService.EncryptAsync(await GenerateStreamFromString(model.Token.Data), privateKey,
-                publicKey);
-        StreamReader reader = new(stream);
+        var stream = await eciesEncryptionService.EncryptAsync(await GenerateStreamFromString(model.Token.Data),
+            privateKey,
+            publicKey);
+        using StreamReader reader = new(stream);
         model.Token.Data = await reader.ReadToEndAsync();
         model.Token.IsEncrypted = true;
         return model;

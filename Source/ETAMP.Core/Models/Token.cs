@@ -86,12 +86,22 @@ public class Token
         return JsonSerializer.Serialize(this);
     }
 
-    public async Task<string> ToJsonAsync()
+    public async Task<Stream> ToJsonStreamAsync(CancellationToken cancellationToken = default)
     {
         _logger.LogDebug("Serializing token");
-        await using var memoryStream = new MemoryStream();
-        await JsonSerializer.SerializeAsync(memoryStream, this);
+        var memoryStream = new MemoryStream();
+        await JsonSerializer.SerializeAsync(memoryStream, this, cancellationToken: cancellationToken);
         _logger.LogDebug("Serializing token done");
-        return Encoding.UTF8.GetString(memoryStream.ToArray());
+        return memoryStream;
+    }
+
+    public async Task<string> ToJsonAsync(CancellationToken cancellationToken = default)
+    {
+        _logger.LogDebug("Converting token to JSON string");
+        await using var stream = await ToJsonStreamAsync(cancellationToken);
+        using var reader = new StreamReader(stream);
+        var json = await reader.ReadToEndAsync(cancellationToken);
+        _logger.LogDebug("Token successfully serialized to JSON string");
+        return json;
     }
 }

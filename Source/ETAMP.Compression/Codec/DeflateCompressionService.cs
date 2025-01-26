@@ -1,9 +1,7 @@
 ﻿#region
 
 using System.IO.Compression;
-using System.Text;
 using ETAMP.Compression.Interfaces;
-using ETAMP.Core.Utils;
 using Microsoft.Extensions.Logging;
 
 #endregion
@@ -22,76 +20,56 @@ public sealed class DeflateCompressionService : ICompressionService
         _logger = logger;
     }
 
-    /// <summary>
-    ///     Compresses the provided string using Deflate compression and encodes the result in Base64 URL format.
-    /// </summary>
-    /// <param name="data">The string to be compressed. Must not be null, empty, or consist only of whitespace.</param>
-    /// <returns>A Base64 URL encoded string representing the compressed data.</returns>
-    /// <exception cref="ArgumentException">Thrown when the input data is null, empty, or consists only of whitespace.</exception>
-    public async Task<string> CompressString(string? data, CancellationToken cancellationToken = default)
+
+    public async Task<Stream> CompressStream(Stream data, CancellationToken cancellationToken = default)
     {
-        CheckArguments(data);
-
-        var inputBytes = Encoding.UTF8.GetBytes(data);
-
-        await using var outputStream = new MemoryStream();
-        await using (var compressor = new DeflateStream(outputStream, CompressionMode.Compress, true))
+        if (data is not { CanRead: true })
         {
-            _logger.LogDebug("Compressing data");
-            await compressor.WriteAsync(inputBytes, cancellationToken);
+            _logger.LogError("The input stream must not be null and must be readable.");
+            throw new ArgumentException("The input stream must not be null and must be readable.", nameof(data));
         }
 
-        _logger.LogDebug("Data compressed");
+        var outputStream = new MemoryStream();
+        await using (var compressor = new DeflateStream(outputStream, CompressionMode.Compress, true))
+        {
+            _logger.LogDebug("Compressing data stream...");
+            await data.CopyToAsync(compressor, cancellationToken);
+        }
 
+        _logger.LogDebug("Data stream compressed.");
         outputStream.Position = 0;
-        return Base64UrlEncoder.Encode(outputStream.ToArray());
+
+        return outputStream;
     }
 
-    /// <summary>
-    ///     Decompresses a Base64-encoded, Deflate-compressed string into its original uncompressed format.
-    /// </summary>
-    /// <param name="base64CompressedData">
-    ///     The Base64-encoded string that represents Deflate-compressed data. Must not be null, empty, or consist only of
-    ///     whitespace.
-    /// </param>
-    /// <returns>The decompressed string in its original format.</returns>
-    /// <exception cref="ArgumentException">
-    ///     Thrown if the input string is null, empty, or consists only of whitespace.
-    /// </exception>
-    /// <exception cref="InvalidDataException">
-    ///     Thrown if the input data is not in a valid Deflate-compressed format or is corrupted.
-    /// </exception>
-    /// <exception cref="InvalidOperationException">
-    ///     Thrown if the decompressed data is empty or an unexpected error occurs during the decompression process.
-    /// </exception>
-    public async Task<string> DecompressString(string? base64CompressedData,
-        CancellationToken cancellationToken = default)
+
+    public async Task<Stream> DecompressStream(Stream compressedStream, CancellationToken cancellationToken = default)
     {
-        CheckArguments(base64CompressedData);
+        if (compressedStream is not { CanRead: true })
+        {
+            _logger.LogError("The input stream must not be null and must be readable.");
+            throw new ArgumentException("The input stream must not be null and must be readable.",
+                nameof(compressedStream));
+        }
 
-        var compressedBytes = Base64UrlEncoder.DecodeBytes(base64CompressedData);
-
-        await using var inputStream = new MemoryStream(compressedBytes);
-        await using var outputStream = new MemoryStream();
+        var outputStream = new MemoryStream();
 
         try
         {
-            await using var decompressor = new DeflateStream(inputStream, CompressionMode.Decompress);
+            await using var decompressor = new DeflateStream(compressedStream, CompressionMode.Decompress);
+            _logger.LogDebug("Decompressing data stream...");
             await decompressor.CopyToAsync(outputStream, cancellationToken);
         }
         catch (InvalidDataException ex)
         {
-            _logger.LogError(ex, "Failed to decompress the data");
+            _logger.LogError(ex, "Failed to decompress the stream.");
             throw new InvalidDataException(
-                "Failed to decompress the data. The input data may be in an unsupported or corrupted format.",
-                ex);
+                "Failed to decompress the stream. The input data may be invalid or corrupted.", ex);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "An unexpected error occurred during the decompression process.");
-            throw new InvalidOperationException(
-                "An unexpected error occurred during the decompression process.",
-                ex);
+            _logger.LogError(ex, "An unexpected error occurred during decompression.");
+            throw new InvalidOperationException("An unexpected error occurred during decompression.", ex);
         }
 
         if (outputStream.Length == 0)
@@ -102,18 +80,8 @@ public sealed class DeflateCompressionService : ICompressionService
         }
 
         outputStream.Position = 0;
-        var result = await new StreamReader(outputStream, Encoding.UTF8).ReadToEndAsync();
 
-        return result;
-    }
-
-
-    private void CheckArguments(string? data)
-    {
-        if (!string.IsNullOrWhiteSpace(data))
-            return;
-        _logger.LogError("The input data must not be null, empty, or consist only of whitespace.");
-        throw new ArgumentException("The input data must not be null, empty, or consist only of whitespace.",
-            nameof(data));
+        _logger.LogDebug("Data stream decompressed successfully.");
+        return outputStream;
     }
 }

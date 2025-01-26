@@ -43,7 +43,7 @@ public static class Base64UrlEncoder
 
     private static string Encode(byte[] inArray, int offset, int length)
     {
-        if (inArray == null) throw new ArgumentNullException(nameof(inArray));
+        ArgumentNullException.ThrowIfNull(inArray);
         if (offset < 0 || length < 0 || offset + length > inArray.Length)
             throw new ArgumentOutOfRangeException("Invalid offset or length.");
 

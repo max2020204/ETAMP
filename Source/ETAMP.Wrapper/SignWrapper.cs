@@ -5,7 +5,6 @@ using System.Text;
 using ETAMP.Core.Models;
 using ETAMP.Core.Utils;
 using ETAMP.Wrapper.Interfaces;
-using Microsoft.Extensions.Logging;
 
 #endregion
 
@@ -19,34 +18,34 @@ public sealed class SignWrapper : ISignWrapper
     private HashAlgorithmName _algorithmName;
     private ECDsa? _ecdsa;
 
-    private readonly ILogger<SignWrapper> _logger;
-
-    public SignWrapper(ILogger<SignWrapper> logger)
-    {
-        _logger = logger;
-    }
 
     /// <summary>
-    ///     SignEtampModel method signs an ETAMPModel instance and updates the signature fields.
+    /// Signs the specified ETAMP model of type T, generating a signature message.
     /// </summary>
-    /// <typeparam name="T">The type of the token.</typeparam>
-    /// <param name="etamp">The ETAMPModel instance to sign.</param>
-    /// <returns>The signed ETAMPModel instance.</returns>
-    /// <exception cref="ArgumentException">Thrown if etamp.Token is null.</exception>
-    public async Task<ETAMPModel<T>> SignEtampModel<T>(ETAMPModel<T> etamp) where T : Token
+    /// <param name="etamp">The ETAMP model to be signed, containing the token and metadata.</param>
+    /// <param name="cancellationToken">The token to monitor for cancellation requests.</param>
+    /// <typeparam name="T">The type of the token contained within the ETAMP model.</typeparam>
+    /// <returns>The signed ETAMP model including the generated signature message.</returns>
+    public async Task<ETAMPModel<T>> SignEtampModel<T>(ETAMPModel<T> etamp,
+        CancellationToken cancellationToken = default) where T : Token
     {
         ArgumentNullException.ThrowIfNull(etamp.Token, nameof(etamp.Token));
 
+        var token = await etamp.Token.ToJsonAsync(cancellationToken: cancellationToken);
+        await using var stream = new MemoryStream();
+        await using (var writer = new StreamWriter(stream, Encoding.UTF8, bufferSize: 1024, leaveOpen: true))
+        {
+            await writer.WriteAsync(etamp.Id.ToString());
+            await writer.WriteAsync(etamp.Version.ToString());
+            await writer.WriteAsync(token);
+            await writer.WriteAsync(etamp.UpdateType);
+            await writer.WriteAsync(etamp.CompressionType);
+        }
 
-        _logger.LogInformation("Serialize Token");
-        var token = await etamp.Token.ToJsonAsync();
-        _logger.LogInformation("Token was serialized");
-        var dataToSign = $"{etamp.Id}{etamp.Version}{token}{etamp.UpdateType}{etamp.CompressionType}";
-        _logger.LogInformation("Data to sign was generated");
-        var signature = Sign(Encoding.UTF8.GetBytes(dataToSign));
-        _logger.LogInformation("Signature was generated");
+        stream.Position = 0;
+
+        var signature = Sign(stream);
         etamp.SignatureMessage = Base64UrlEncoder.Encode(signature);
-        _logger.LogInformation("Signature was encoded");
         return etamp;
     }
 
@@ -57,7 +56,6 @@ public sealed class SignWrapper : ISignWrapper
     /// <param name="algorithmName">The name of the hash algorithm to use for signing.</param>
     public void Initialize(ECDsa provider, HashAlgorithmName algorithmName)
     {
-        _logger.LogInformation("Initialize");
         _ecdsa = provider;
         _algorithmName = algorithmName;
     }
@@ -67,7 +65,6 @@ public sealed class SignWrapper : ISignWrapper
     /// </summary>
     public void Dispose()
     {
-        _logger.LogInformation("Dispose");
         _ecdsa?.Dispose();
     }
 
@@ -77,9 +74,8 @@ public sealed class SignWrapper : ISignWrapper
     /// <param name="data">The byte array representing the data to be signed.</param>
     /// <returns>A byte array containing the generated digital signature.</returns>
     /// <exception cref="InvalidOperationException">Thrown if the ECDsa provider is not initialized.</exception>
-    private byte[] Sign(byte[] data)
+    private byte[] Sign(Stream data)
     {
-        _logger.LogInformation("Sign");
         return _ecdsa!.SignData(data, _algorithmName);
     }
 }

@@ -1,7 +1,6 @@
 ﻿#region
 
 using System.Security.Cryptography;
-using System.Text;
 using ETAMP.Core.Utils;
 using ETAMP.Wrapper.Interfaces;
 using Microsoft.Extensions.Logging;
@@ -16,9 +15,9 @@ namespace ETAMP.Wrapper;
 /// >
 public sealed class VerifyWrapper : IVerifyWrapper
 {
+    private readonly ILogger<VerifyWrapper> _logger;
     private HashAlgorithmName _algorithmName;
     private ECDsa? _ecdsa;
-    private readonly ILogger<VerifyWrapper> _logger;
 
     public VerifyWrapper(ILogger<VerifyWrapper> logger)
     {
@@ -31,11 +30,21 @@ public sealed class VerifyWrapper : IVerifyWrapper
     /// <param name="data">Data to verify, in string format.</param>
     /// <param name="signature">Base64-encoded signature to verify against.</param>
     /// <returns>True if the signature is valid; otherwise, false.</returns>
-    public bool VerifyData(string data, string signature)
+    public bool VerifyData(Stream data, string signature)
     {
-        _logger.LogInformation("Verify Data");
-        return _ecdsa!.VerifyData(Encoding.UTF8.GetBytes(data), Base64UrlEncoder.DecodeBytes(signature),
-            _algorithmName);
+        ValidateState();
+        EnsureStreamIsReadable(data);
+
+        _logger.LogDebug("Verifying data stream of length {Length}", data.Length);
+
+        var isValid = _ecdsa!.VerifyData(data, Base64UrlEncoder.DecodeBytes(signature), _algorithmName);
+
+        if (!isValid)
+        {
+            _logger.LogWarning("Signature verification failed for data stream.");
+        }
+
+        return isValid;
     }
 
     /// <summary>
@@ -44,10 +53,21 @@ public sealed class VerifyWrapper : IVerifyWrapper
     /// <param name="data">Data to verify, as a byte array.</param>
     /// <param name="signature">Signature to verify against, as a byte array.</param>
     /// <returns>True if the signature is valid; otherwise, false.</returns>
-    public bool VerifyData(byte[] data, byte[] signature)
+    public bool VerifyData(Stream data, byte[] signature)
     {
-        _logger.LogInformation("Verify Data");
-        return _ecdsa!.VerifyData(data, signature, _algorithmName);
+        ValidateState();
+        EnsureStreamIsReadable(data);
+
+        _logger.LogDebug("Verifying data stream of length {Length}", data.Length);
+
+        var isValid = _ecdsa!.VerifyData(data, signature, _algorithmName);
+
+        if (!isValid)
+        {
+            _logger.LogWarning("Signature verification failed for data stream.");
+        }
+
+        return isValid;
     }
 
     /// <summary>
@@ -55,7 +75,7 @@ public sealed class VerifyWrapper : IVerifyWrapper
     /// </summary>
     public void Dispose()
     {
-        _logger.LogInformation("Dispose");
+        _logger.LogDebug("Disposing ECDsa instance.");
         _ecdsa?.Dispose();
     }
 
@@ -66,8 +86,29 @@ public sealed class VerifyWrapper : IVerifyWrapper
     /// <param name="algorithmName">The hash algorithm to associate with the ECDsa provider.</param>
     public void Initialize(ECDsa provider, HashAlgorithmName algorithmName)
     {
-        _logger.LogInformation("Initialize");
+        _logger.LogInformation("Initializing ECDsa with algorithm {Algorithm}", algorithmName);
         _ecdsa = provider;
         _algorithmName = algorithmName;
+    }
+
+    private void ValidateState()
+    {
+        if (_ecdsa != null)
+            return;
+        _logger.LogError("ECDsa is not initialized. Call Initialize before verifying data.");
+        throw new InvalidOperationException("ECDsa is not initialized.");
+    }
+
+    private static void EnsureStreamIsReadable(Stream stream)
+    {
+        if (!stream.CanRead)
+        {
+            throw new ArgumentException("Stream is not readable.", nameof(stream));
+        }
+
+        if (stream.CanSeek)
+        {
+            stream.Position = 0;
+        }
     }
 }

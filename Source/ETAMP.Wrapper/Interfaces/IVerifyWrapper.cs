@@ -17,7 +17,7 @@ public interface IVerifyWrapper : IInitialize
     /// <param name="data">The data to verify.</param>
     /// <param name="signature">The signature to check against.</param>
     /// <returns>True if valid; otherwise, false.</returns>
-    bool VerifyData(string data, string signature);
+    bool VerifyData(Stream data, string signature);
 
     /// <summary>
     ///     Verifies the signature of byte array data.
@@ -25,5 +25,5 @@ public interface IVerifyWrapper : IInitialize
     /// <param name="data">The data to verify.</param>
     /// <param name="signature">The signature to check against.</param>
     /// <returns>True if valid; otherwise, false.</returns>
-    bool VerifyData(byte[] data, byte[] signature);
+    bool VerifyData(Stream data, byte[] signature);
 }
