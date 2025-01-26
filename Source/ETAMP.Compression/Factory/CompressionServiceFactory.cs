@@ -7,7 +7,6 @@ using ETAMP.Compression.Interfaces.Factory;
 using ETAMP.Core.Management;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
 
 #endregion
 
@@ -26,10 +25,9 @@ public sealed class CompressionServiceFactory : ICompressionServiceFactory
     /// Provides a factory for managing and creating instances of compression services. This factory supports
     /// registering and retrieving compression services by a specified type.
     /// </summary>
-    public CompressionServiceFactory(IServiceProvider serviceProvider,
-        ILogger<CompressionServiceFactory>? logger = null)
+    public CompressionServiceFactory(IServiceProvider serviceProvider, ILogger<CompressionServiceFactory> logger)
     {
-        _logger = logger ?? NullLogger<CompressionServiceFactory>.Instance;
+        _logger = logger;
         Factory = new ConcurrentDictionary<string, ICompressionService>();
         Factory.TryAdd(CompressionNames.Deflate, serviceProvider.GetRequiredService<DeflateCompressionService>());
         Factory.TryAdd(CompressionNames.GZip, serviceProvider.GetRequiredService<GZipCompressionService>());
@@ -51,14 +49,12 @@ public sealed class CompressionServiceFactory : ICompressionServiceFactory
     /// <exception cref="KeyNotFoundException">Thrown if the specified compression type is not recognized or supported.</exception>
     public ICompressionService Create(string compressionType)
     {
-        _logger.LogDebug("Creating compression service for type '{0}'", compressionType);
         if (!Factory.TryGetValue(compressionType, out var serviceFactory))
         {
             _logger.LogError("ETAMPBuilder service '{0}' not recognized.", compressionType);
             throw new KeyNotFoundException($"ETAMPBuilder service '{compressionType}' not recognized.");
         }
 
-        _logger.LogDebug("Compression service for type '{0}' created successfully", compressionType);
         return serviceFactory;
     }
 
@@ -76,7 +72,7 @@ public sealed class CompressionServiceFactory : ICompressionServiceFactory
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(compressionType, nameof(compressionType));
         ArgumentNullException.ThrowIfNull(serviceFactory, nameof(serviceFactory));
-        _logger.LogDebug("Registering compression service for type '{0}'", compressionType);
+
         Factory.TryAdd(compressionType, serviceFactory);
     }
 
@@ -89,7 +85,6 @@ public sealed class CompressionServiceFactory : ICompressionServiceFactory
     public bool UnregisterCompressionService(string compressionType)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(compressionType, nameof(compressionType));
-        _logger.LogDebug("Unregistering compression service for type '{0}'", compressionType);
         return Factory.TryRemove(compressionType, out _);
     }
 }

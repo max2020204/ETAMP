@@ -7,6 +7,8 @@ using System.Security.Cryptography;
 using System.Threading.Tasks;
 using AutoFixture;
 using JetBrains.Annotations;
+using Microsoft.Extensions.Logging;
+using Moq;
 using Xunit;
 
 #endregion
@@ -21,8 +23,9 @@ public class AESEncryptionServiceTests
 
     public AESEncryptionServiceTests()
     {
+        var logger = new Mock<ILogger<AESEncryptionService>>();
         _fixture = new Fixture();
-        _encryptionService = new AESEncryptionService();
+        _encryptionService = new AESEncryptionService(logger.Object);
     }
 
     [Fact]

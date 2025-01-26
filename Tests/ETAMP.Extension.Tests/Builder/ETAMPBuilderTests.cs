@@ -2,8 +2,10 @@
 
 using System;
 using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture;
+using AutoFixture.AutoMoq;
 using ETAMP.Compression.Interfaces;
 using ETAMP.Compression.Interfaces.Factory;
 using ETAMP.Core.Models;
@@ -19,11 +21,12 @@ namespace ETAMP.Extension.Tests.Builder;
 [TestSubject(typeof(ETAMPBuilder))]
 public class ETAMPBuilderTests
 {
-    private readonly Fixture _fixture;
+    private readonly IFixture _fixture;
 
     public ETAMPBuilderTests()
     {
-        _fixture = new Fixture();
+        _fixture = new Fixture()
+            .Customize(new AutoMoqCustomization());
     }
 
     [Fact]
@@ -35,7 +38,7 @@ public class ETAMPBuilderTests
 
         var compressionServiceMock = new Mock<ICompressionService>();
         compressionServiceMock
-            .Setup(s => s.CompressString(It.IsAny<string>()))
+            .Setup(s => s.CompressString(It.IsAny<string>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(compressedToken);
 
         var compressionServiceFactoryMock = new Mock<ICompressionServiceFactory>();
@@ -48,7 +51,7 @@ public class ETAMPBuilderTests
 
         // Assert
         Assert.NotNull(result); // Ensure the result is not null
-        compressionServiceMock.Verify(s => s.CompressString(model.Token.ToJson()),
+        compressionServiceMock.Verify(s => s.CompressString(model.Token.ToJson(), It.IsAny<CancellationToken>()),
             Times.Once); // Ensure compression is called
         compressionServiceFactoryMock.Verify(f => f.Create(model.CompressionType),
             Times.Once); // Ensure factory is called
@@ -64,7 +67,7 @@ public class ETAMPBuilderTests
     public async Task BuildAsync_NullModel_ThrowsArgumentNullException()
     {
         // Arrange
-        ETAMPModel<TestToken> model = null;
+        var model = new ETAMPModel<TestToken>();
         var compressionServiceFactoryMock = new Mock<ICompressionServiceFactory>();
 
         // Act & Assert
@@ -109,7 +112,7 @@ public class ETAMPBuilderTests
 
         var compressionServiceMock = new Mock<ICompressionService>();
         compressionServiceMock
-            .Setup(s => s.DecompressString(builder.Token))
+            .Setup(s => s.DecompressString(builder.Token, It.IsAny<CancellationToken>()))
             .ReturnsAsync(JsonSerializer.Serialize(tokenObject));
 
         var compressionServiceFactoryMock = new Mock<ICompressionServiceFactory>();
@@ -129,7 +132,8 @@ public class ETAMPBuilderTests
             result.Token.SomeProperty); // Assuming TestToken has a property to validate
 
         compressionServiceFactoryMock.Verify(f => f.Create(builder.CompressionType), Times.Once);
-        compressionServiceMock.Verify(s => s.DecompressString(builder.Token), Times.Once);
+        compressionServiceMock.Verify(s => s.DecompressString(builder.Token, It.IsAny<CancellationToken>()),
+            Times.Once);
     }
 
     [Fact]

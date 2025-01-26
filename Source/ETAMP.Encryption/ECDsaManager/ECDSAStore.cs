@@ -3,6 +3,7 @@
 using System.Collections.Concurrent;
 using System.Security.Cryptography;
 using ETAMP.Encryption.Interfaces.ECDSAManager;
+using Microsoft.Extensions.Logging;
 
 #endregion
 
@@ -18,14 +19,27 @@ public class ECDSAStore : IECDSAStore
     ///     A concurrent dictionary for storing ECDSAProviderBase instances indexed by their unique Guid identifiers.
     ///     Used internally for managing providers by their associated Guid keys.
     /// </summary>
-    private readonly ConcurrentDictionary<Guid, ECDsa> _guidStore = new();
+    private readonly ConcurrentDictionary<Guid, ECDsa> _guidStore;
 
     /// <summary>
     ///     A private dictionary that maps string-based names to instances of <see cref="ECDSAProviderBase" />.
     ///     This collection is used to store and manage ECDSA cryptographic providers by their associated names.
     /// </summary>
-    private readonly ConcurrentDictionary<string, ECDsa> _nameStore = new();
+    private readonly ConcurrentDictionary<string, ECDsa> _nameStore;
 
+    private readonly ILogger<ECDSAStore> _logger;
+
+    /// <summary>
+    ///     An implementation of the <see cref="IECDSAStore" /> interface.
+    ///     Provides functionality to manage and store instances of ECDSA cryptographic providers
+    ///     using unique identifiers or string-based names.
+    /// </summary>
+    public ECDSAStore(ILogger<ECDSAStore> logger)
+    {
+        _logger = logger;
+        _guidStore = new ConcurrentDictionary<Guid, ECDsa>();
+        _nameStore = new ConcurrentDictionary<string, ECDsa>();
+    }
 
     /// <summary>
     ///     Adds an ECDSA provider to the store using a unique identifier.
@@ -38,6 +52,7 @@ public class ECDSAStore : IECDSAStore
     /// </returns>
     public bool Add(Guid id, ECDsa provider)
     {
+        _logger.LogDebug($"Adding ECDSA provider with id {id}");
         return _guidStore.TryAdd(id, provider);
     }
 
@@ -51,6 +66,7 @@ public class ECDSAStore : IECDSAStore
     /// </returns>
     public bool Add(string name, ECDsa provider)
     {
+        _logger.LogDebug($"Adding ECDSA provider with name {name}");
         return _nameStore.TryAdd(name, provider);
     }
 
@@ -64,6 +80,7 @@ public class ECDSAStore : IECDSAStore
     /// </returns>
     public bool Remove(Guid id)
     {
+        _logger.LogDebug($"Removing ECDSA provider with id {id}");
         return _guidStore.TryRemove(id, out _);
     }
 
@@ -74,6 +91,7 @@ public class ECDSAStore : IECDSAStore
     /// <returns>True if the provider was successfully removed; otherwise, false.</returns>
     public bool Remove(string name)
     {
+        _logger.LogDebug($"Removing ECDSA provider with name {name}");
         return _nameStore.TryRemove(name, out _);
     }
 
@@ -87,6 +105,7 @@ public class ECDSAStore : IECDSAStore
     /// </returns>
     public ECDsa? Get(Guid id)
     {
+        _logger.LogDebug($"Retrieving ECDSA provider with id {id}");
         return _guidStore.GetValueOrDefault(id);
     }
 
@@ -100,6 +119,7 @@ public class ECDSAStore : IECDSAStore
     /// </returns>
     public ECDsa? Get(string name)
     {
+        _logger.LogDebug($"Retrieving ECDSA provider with name {name}");
         return _nameStore.GetValueOrDefault(name);
     }
 }

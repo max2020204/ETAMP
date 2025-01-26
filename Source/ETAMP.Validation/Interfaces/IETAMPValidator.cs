@@ -22,5 +22,6 @@ public interface IETAMPValidator : IInitialize
     /// <param name="etamp">The ETAMP model to validate.</param>
     /// <param name="validateLite">Specify whether to perform a lite validation.</param>
     /// <returns>The validation result.</returns>
-    Task<ValidationResult> ValidateETAMPAsync<T>(ETAMPModel<T> etamp, bool validateLite) where T : Token;
+    Task<ValidationResult> ValidateETAMPAsync<T>(ETAMPModel<T> etamp, bool validateLite,
+        CancellationToken cancellationToken = default) where T : Token;
 }

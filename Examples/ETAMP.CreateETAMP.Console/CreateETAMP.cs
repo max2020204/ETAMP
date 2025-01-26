@@ -1,9 +1,5 @@
 ﻿#region
 
-#endregion
-
-#region
-
 using ETAMP.Compression.Interfaces.Factory;
 using ETAMP.Console.CreateETAMP.Models;
 using ETAMP.Core.Interfaces;

@@ -17,7 +17,7 @@ internal class ETAMPValidationRunner
 
         CreateSignETAMP.Main();
 
-        var publicKeyBytes = Convert.FromBase64String(CreateSignETAMP.PublicKey);
+        var publicKeyBytes = Convert.FromBase64String(CreateSignETAMP.KeyModelProvider.PublicKey);
         var initializedEcdsa = CreateInitializedEcdsa(publicKeyBytes);
 
 

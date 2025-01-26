@@ -4,6 +4,7 @@ using System.Security.Cryptography;
 using System.Text;
 using ETAMP.Core.Utils;
 using ETAMP.Wrapper.Interfaces;
+using Microsoft.Extensions.Logging;
 
 #endregion
 
@@ -17,6 +18,12 @@ public sealed class VerifyWrapper : IVerifyWrapper
 {
     private HashAlgorithmName _algorithmName;
     private ECDsa? _ecdsa;
+    private readonly ILogger<VerifyWrapper> _logger;
+
+    public VerifyWrapper(ILogger<VerifyWrapper> logger)
+    {
+        _logger = logger;
+    }
 
     /// <summary>
     ///     Verifies the signature of string data.
@@ -26,6 +33,7 @@ public sealed class VerifyWrapper : IVerifyWrapper
     /// <returns>True if the signature is valid; otherwise, false.</returns>
     public bool VerifyData(string data, string signature)
     {
+        _logger.LogInformation("Verify Data");
         return _ecdsa!.VerifyData(Encoding.UTF8.GetBytes(data), Base64UrlEncoder.DecodeBytes(signature),
             _algorithmName);
     }
@@ -38,6 +46,7 @@ public sealed class VerifyWrapper : IVerifyWrapper
     /// <returns>True if the signature is valid; otherwise, false.</returns>
     public bool VerifyData(byte[] data, byte[] signature)
     {
+        _logger.LogInformation("Verify Data");
         return _ecdsa!.VerifyData(data, signature, _algorithmName);
     }
 
@@ -46,11 +55,18 @@ public sealed class VerifyWrapper : IVerifyWrapper
     /// </summary>
     public void Dispose()
     {
+        _logger.LogInformation("Dispose");
         _ecdsa?.Dispose();
     }
 
+    /// <summary>
+    ///     Initializes the ECDsa provider and hash algorithm for cryptographic operations.
+    /// </summary>
+    /// <param name="provider">The ECDsa provider to use for cryptographic operations.</param>
+    /// <param name="algorithmName">The hash algorithm to associate with the ECDsa provider.</param>
     public void Initialize(ECDsa provider, HashAlgorithmName algorithmName)
     {
+        _logger.LogInformation("Initialize");
         _ecdsa = provider;
         _algorithmName = algorithmName;
     }

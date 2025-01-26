@@ -6,6 +6,7 @@ using ETAMP.Compression.Interfaces;
 using ETAMP.Core.Management;
 using JetBrains.Annotations;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Moq;
 
 #endregion
@@ -21,10 +22,11 @@ public class CompressionServiceFactoryTests
     public CompressionServiceFactoryTests()
     {
         var serviceCollection = new ServiceCollection();
-
+        serviceCollection.AddLogging();
         // Mock the services to be added to the service provider
         var deflateMock = new Mock<ICompressionService>();
         var gzipMock = new Mock<ICompressionService>();
+        var loggerMock = new Mock<ILogger<CompressionServiceFactory>>();
 
         // Add these services to the service collection
         serviceCollection.AddTransient(_ => deflateMock.Object)
@@ -34,7 +36,7 @@ public class CompressionServiceFactoryTests
 
         _serviceProvider = serviceCollection.BuildServiceProvider();
 
-        _factory = new CompressionServiceFactory(_serviceProvider);
+        _factory = new CompressionServiceFactory(_serviceProvider, loggerMock.Object);
     }
 
     [Fact]

@@ -16,18 +16,22 @@ namespace ETAMP.Extension.Builder;
 public static class ETAMPBuilder
 {
     /// <summary>
-    ///     Builds a serialized representation of the provided ETAMPModel instance, compressing its Token property and
-    ///     constructing a new ETAMPModelBuilder instance for serialization.
+    /// Asynchronously builds a serialized JSON representation of the ETAMP model
+    /// with the token compressed using the specified compression service factory.
     /// </summary>
-    /// <typeparam name="T">The type of the Token property, which must derive from the Token class.</typeparam>
-    /// <param name="model">The ETAMPModel instance to be processed and serialized.</param>
-    /// <param name="compressionServiceFactory">
-    ///     The factory used to retrieve the appropriate compression service based on the
-    ///     CompressionType property of the model.
-    /// </param>
-    /// <returns>A serialized string representation of the ETAMPModelBuilder instance, or null if the input is invalid.</returns>
+    /// <typeparam name="T">The type of the token, which must derive from the <see cref="Token"/> class.</typeparam>
+    /// <param name="model">The ETAMP model containing data to be processed and serialized.</param>
+    /// <param name="compressionServiceFactory">The factory used to create the compression service for the specified compression type.</param>
+    /// <param name="cancellationToken">Optional cancellation token for asynchronous task cancellation.</param>
+    /// <returns>A task that represents the asynchronous operation. The task result contains the serialized and compressed representation of the ETAMP model.</returns>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown if <paramref name="model"/>, <paramref name="model.Token"/>, or <paramref name="compressionServiceFactory"/> is null.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown if <see cref="ETAMPModel{T}.CompressionType"/> is null or whitespace.
+    /// </exception>
     public static async Task<string> BuildAsync<T>(this ETAMPModel<T> model,
-        ICompressionServiceFactory compressionServiceFactory)
+        ICompressionServiceFactory compressionServiceFactory, CancellationToken cancellationToken = default)
         where T : Token
     {
         ArgumentNullException.ThrowIfNull(model);
@@ -45,25 +49,38 @@ public static class ETAMPBuilder
             SignatureMessage = model.SignatureMessage
         };
         await using var memoryStream = new MemoryStream();
-        await JsonSerializer.SerializeAsync(memoryStream, temp);
+        await JsonSerializer.SerializeAsync(memoryStream, temp, cancellationToken: cancellationToken);
         return Encoding.UTF8.GetString(memoryStream.ToArray());
     }
 
+
     /// <summary>
-    ///     Deserializes a JSON representation of an ETAMP object into a structured ETAMPModel object,
-    ///     decompressing the token data using the specified compression service.
+    /// Deconstructs an ETAMP JSON string into an <see cref="ETAMPModel{T}"/> object.
     /// </summary>
-    /// <typeparam name="T">The type of token contained in the ETAMPModel. Must derive from Token.</typeparam>
-    /// <param name="jsonEtamp">The JSON string representation of the ETAMP object to be deconstructed.</param>
-    /// <param name="compressionServiceFactory">
-    ///     The factory responsible for creating the appropriate compression service for
-    ///     decompression.
+    /// <typeparam name="T">
+    /// The type of the token contained within the ETAMP model. Must inherit from <see cref="Token"/>.
+    /// </typeparam>
+    /// <param name="jsonEtamp">
+    /// The JSON string representation of the ETAMP model to be deconstructed. It cannot be null, empty, or whitespace.
     /// </param>
-    /// <returns>An instance of ETAMPModel containing the deserialized and decompressed data.</returns>
-    /// <exception cref="ArgumentNullException">Thrown if the compressionServiceFactory is null.</exception>
-    /// <exception cref="ArgumentException">Thrown if the jsonEtamp is null, empty, or invalid JSON.</exception>
+    /// <param name="compressionServiceFactory">
+    /// The compression service factory used to create the necessary decompression service.
+    /// </param>
+    /// <param name="cancellationToken">
+    /// A token to monitor for cancellation requests.
+    /// </param>
+    /// <returns>
+    /// A task that represents the asynchronous operation. The task result contains the deconstructed <see cref="ETAMPModel{T}"/> object.
+    /// </returns>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown if the <paramref name="compressionServiceFactory"/> parameter is null.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown if the <paramref name="jsonEtamp"/> parameter is null, empty, consists solely of whitespace, or is not valid JSON.
+    /// </exception>
     public static async Task<ETAMPModel<T>> DeconstructETAMPAsync<T>(this string? jsonEtamp,
-        ICompressionServiceFactory compressionServiceFactory) where T : Token
+        ICompressionServiceFactory compressionServiceFactory, CancellationToken cancellationToken = default)
+        where T : Token
     {
         ArgumentNullException.ThrowIfNull(compressionServiceFactory);
         ArgumentException.ThrowIfNullOrWhiteSpace(jsonEtamp);
@@ -73,7 +90,7 @@ public static class ETAMPBuilder
 
         var tempModel = JsonSerializer.Deserialize<ETAMPModelBuilder>(jsonEtamp);
         var compressionService = compressionServiceFactory.Create(tempModel.CompressionType);
-        var token = await compressionService.DecompressString(tempModel.Token);
+        var token = await compressionService.DecompressString(tempModel.Token, cancellationToken);
 
         return new ETAMPModel<T>
         {

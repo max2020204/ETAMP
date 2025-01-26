@@ -3,7 +3,6 @@
 using System.Security.Cryptography;
 using ETAMP.Console.CreateETAMP.Models;
 using ETAMP.Core.Models;
-using ETAMP.Encryption.Interfaces.ECDSAManager;
 using ETAMP.Extension.Builder;
 using ETAMP.Wrapper.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,7 +15,7 @@ public class CreateSignETAMP
 
     private static ECDsa _ecdsaInstance;
 
-    public static string PublicKey { get; private set; }
+    public static ECDKeyModelProvider KeyModelProvider { get; private set; }
 
     public static ETAMPModel<TokenModel> ETAMP { get; private set; }
 
@@ -30,27 +29,21 @@ public class CreateSignETAMP
 
     public static ETAMPModel<TokenModel> SignETAMP(IServiceProvider provider)
     {
-        var (sign, pemCleaner) = GetServices(provider);
+        var sign = provider.GetService<ISignWrapper>();
 
-        InitializeSigning(sign, pemCleaner);
+        InitializeSigning(sign);
 
         var etampModel = CreateETAMP.InitializeEtampModel(provider);
         etampModel.Sign(sign);
         return etampModel;
     }
 
-    private static (ISignWrapper?, IPemKeyCleaner?) GetServices(IServiceProvider provider)
+    private static void InitializeSigning(ISignWrapper sign)
     {
-        return (
-            provider.GetService<ISignWrapper>(),
-            provider.GetService<IPemKeyCleaner>()
-        );
-    }
-
-    private static void InitializeSigning(ISignWrapper sign, IPemKeyCleaner pemCleaner)
-    {
-        var publicKeyPem = pemCleaner.ClearPemPublicKey(_ecdsaInstance.ExportSubjectPublicKeyInfoPem());
-        PublicKey = publicKeyPem.KeyModelProvider.PublicKey;
+        KeyModelProvider = new ECDKeyModelProvider
+        {
+            PublicKey = ECDKeyModelProvider.ClearPemFormatting(_ecdsaInstance.ExportSubjectPublicKeyInfoPem())
+        };
         sign.Initialize(_ecdsaInstance, HashAlgorithmName.SHA512);
     }
 }

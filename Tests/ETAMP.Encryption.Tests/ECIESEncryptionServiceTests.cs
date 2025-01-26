@@ -3,11 +3,13 @@
 using System;
 using System.IO;
 using System.Security.Cryptography;
+using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture;
 using AutoFixture.AutoMoq;
 using ETAMP.Encryption.Interfaces;
 using JetBrains.Annotations;
+using Microsoft.Extensions.Logging;
 using Moq;
 using Xunit;
 
@@ -26,7 +28,8 @@ public class ECIESEncryptionServiceTests
     {
         _fixture = new Fixture().Customize(new AutoMoqCustomization());
         _mockEncryptionService = _fixture.Freeze<Mock<IEncryptionService>>();
-        _eciesEncryptionService = new ECIESEncryptionService(_mockEncryptionService.Object);
+        var logger = new Mock<ILogger<ECIESEncryptionService>>();
+        _eciesEncryptionService = new ECIESEncryptionService(_mockEncryptionService.Object, logger.Object);
     }
 
     [Fact]
@@ -40,7 +43,7 @@ public class ECIESEncryptionServiceTests
         var encryptedStream = new MemoryStream();
 
         _mockEncryptionService
-            .Setup(e => e.EncryptAsync(It.IsAny<Stream>(), It.IsAny<byte[]>()))
+            .Setup(e => e.EncryptAsync(It.IsAny<Stream>(), It.IsAny<byte[]>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(encryptedStream);
 
         // Act
@@ -48,7 +51,8 @@ public class ECIESEncryptionServiceTests
 
         // Assert
         Assert.Equal(encryptedStream, result);
-        _mockEncryptionService.Verify(e => e.EncryptAsync(It.IsAny<Stream>(), It.IsAny<byte[]>()), Times.Once);
+        _mockEncryptionService.Verify(
+            e => e.EncryptAsync(It.IsAny<Stream>(), It.IsAny<byte[]>(), It.IsAny<CancellationToken>()), Times.Once);
     }
 
     [Fact]
@@ -62,7 +66,7 @@ public class ECIESEncryptionServiceTests
         var decryptedStream = new MemoryStream();
 
         _mockEncryptionService
-            .Setup(e => e.DecryptAsync(It.IsAny<Stream>(), It.IsAny<byte[]>()))
+            .Setup(e => e.DecryptAsync(It.IsAny<Stream>(), It.IsAny<byte[]>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(decryptedStream);
 
         // Act
@@ -70,7 +74,8 @@ public class ECIESEncryptionServiceTests
 
         // Assert
         Assert.Equal(decryptedStream, result);
-        _mockEncryptionService.Verify(e => e.DecryptAsync(It.IsAny<Stream>(), It.IsAny<byte[]>()), Times.Once);
+        _mockEncryptionService.Verify(
+            e => e.DecryptAsync(It.IsAny<Stream>(), It.IsAny<byte[]>(), It.IsAny<CancellationToken>()), Times.Once);
     }
 
 

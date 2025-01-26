@@ -18,5 +18,5 @@ public interface ISignWrapper : IInitialize
     /// <typeparam name="T">The type of the token contained in the ETAMP model.</typeparam>
     /// <param name="etamp">The ETAMP model to sign.</param>
     /// <returns>The signed ETAMP model with the generated signature for the token and message.</returns>
-    ETAMPModel<T> SignEtampModel<T>(ETAMPModel<T> etamp) where T : Token;
+    Task<ETAMPModel<T>> SignEtampModel<T>(ETAMPModel<T> etamp) where T : Token;
 }

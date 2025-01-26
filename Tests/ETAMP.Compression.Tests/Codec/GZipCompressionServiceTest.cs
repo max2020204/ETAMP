@@ -3,6 +3,8 @@
 using AutoFixture;
 using ETAMP.Compression.Codec;
 using JetBrains.Annotations;
+using Microsoft.Extensions.Logging;
+using Moq;
 
 #endregion
 
@@ -16,7 +18,8 @@ public class GZipCompressionServiceTest
 
     public GZipCompressionServiceTest()
     {
-        _compressionService = new GZipCompressionService();
+        var logger = new Mock<ILogger<GZipCompressionService>>();
+        _compressionService = new GZipCompressionService(logger.Object);
         _fixture = new Fixture();
     }
 
