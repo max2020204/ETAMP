@@ -11,39 +11,32 @@ using Microsoft.Extensions.DependencyInjection;
 
 public class CreateSignETAMP
 {
-    private static ServiceProvider _provider;
+    private static ECDsa? _ecdsaInstance;
+    public static ECDKeyModelProvider? KeyModelProvider { get; private set; }
+    public static ETAMPModel<TokenModel> Etamp { get; private set; }
 
-    private static ECDsa _ecdsaInstance;
-
-    public static ECDKeyModelProvider KeyModelProvider { get; private set; }
-
-    public static ETAMPModel<TokenModel> ETAMP { get; private set; }
-
-    public static void Main()
+    public static async Task Main()
     {
         _ecdsaInstance = ECDsa.Create();
-        _provider = CreateETAMP.ConfigureServices();
-        ETAMP = SignETAMP(_provider);
-        Console.WriteLine(ETAMP.ToJson());
+        await using var provider = CreateETAMP.ConfigureServices();
+        Etamp = await SignETAMP(provider);
+        Console.WriteLine(await Etamp.ToJsonAsync());
     }
 
-    public static ETAMPModel<TokenModel> SignETAMP(IServiceProvider provider)
+    private static async Task<ETAMPModel<TokenModel>> SignETAMP(IServiceProvider provider)
     {
         var sign = provider.GetService<ISignWrapper>();
-
         InitializeSigning(sign);
-
         var etampModel = CreateETAMP.InitializeEtampModel(provider);
-        etampModel.Sign(sign);
-        return etampModel;
+        return await etampModel.Sign(sign);
     }
 
-    private static void InitializeSigning(ISignWrapper sign)
+    private static void InitializeSigning(ISignWrapper? sign)
     {
         KeyModelProvider = new ECDKeyModelProvider
         {
             PublicKey = ECDKeyModelProvider.ClearPemFormatting(_ecdsaInstance.ExportSubjectPublicKeyInfoPem())
         };
-        sign.Initialize(_ecdsaInstance, HashAlgorithmName.SHA512);
+        sign?.Initialize(_ecdsaInstance, HashAlgorithmName.SHA512);
     }
 }

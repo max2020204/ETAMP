@@ -26,6 +26,7 @@
     <PropertyGroup>
         <ProtocolVersion>2.0</ProtocolVersion>
     </PropertyGroup>
+
     <ItemGroup>
         <AssemblyAttribute Include="ETAMP.Core.Attributes.ProtocolVersionAttribute">
             <_Parameter1>$(ProtocolVersion)</_Parameter1>
@@ -35,7 +36,6 @@
         <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.1"/>
     </ItemGroup>
     <PropertyGroup>
-
         <Version>1.1.0</Version>
         <Authors>Maksym Nikitiuk</Authors>
         <Description>

@@ -1,5 +1,6 @@
 ﻿#region
 
+using System.Security.Cryptography;
 using BenchmarkDotNet.Attributes;
 using ETAMP.Compression.Interfaces.Factory;
 using ETAMP.Core.Interfaces;
@@ -7,23 +8,25 @@ using ETAMP.Core.Management;
 using ETAMP.Core.Models;
 using ETAMP.Extension.Builder;
 using ETAMP.Extension.ServiceCollection;
+using ETAMP.Wrapper.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Serilog;
 
 #endregion
 
-namespace ETAMP.Create.Benchmark;
+namespace ETAMP.Sign.Benchmark;
 
 [MemoryDiagnoser]
 [ThreadingDiagnoser]
 [GcServer]
 //[HardwareCounters(HardwareCounter.CacheMisses, HardwareCounter.BranchMispredictions)]
-public class ETAMPBenchmark
+public class ETAMPSignBenchmark
 {
     private ICompressionServiceFactory? _compressionServiceFactory;
     private IETAMPBase _etampBase;
     private IServiceProvider _provider;
+    private ISignWrapper _signWrapper;
 
     [GlobalSetup]
     public void Setup()
@@ -42,10 +45,14 @@ public class ETAMPBenchmark
         });
 
         serviceCollection.AddBaseServices(false);
+        serviceCollection.AddWrapperServices(false);
         serviceCollection.AddCompositionServices(false);
         _provider = serviceCollection.BuildServiceProvider();
         _etampBase = _provider.GetService<IETAMPBase>();
         _compressionServiceFactory = _provider.GetService<ICompressionServiceFactory>();
+        _signWrapper = _provider.GetService<ISignWrapper>();
+        var ecDsa = ECDsa.Create();
+        _signWrapper.Initialize(ecDsa, HashAlgorithmName.SHA3_256);
     }
 
     [Benchmark]
@@ -62,9 +69,12 @@ public class ETAMPBenchmark
             Phone = "+1234567890"
         };
 
-        await _etampBase.CreateETAMPModel("Message", tokenModel, CompressionNames.GZip)
-            .BuildAsync(_compressionServiceFactory);
+        var signModel = await _etampBase.CreateETAMPModel("Message", tokenModel, CompressionNames.Deflate)
+            .Sign(_signWrapper);
+
+        await signModel.BuildAsync(_compressionServiceFactory);
     }
+
 
     [Benchmark]
     public async Task CreateETAMP_LargeData()
@@ -80,8 +90,9 @@ public class ETAMPBenchmark
             Phone = "+1234567890"
         };
 
-        await _etampBase.CreateETAMPModel("Message", tokenModel, CompressionNames.GZip)
-            .BuildAsync(_compressionServiceFactory);
+        var singModel = await _etampBase.CreateETAMPModel("Message", tokenModel, CompressionNames.Deflate)
+            .Sign(_signWrapper);
+        await singModel.BuildAsync(_compressionServiceFactory);
     }
 }
 

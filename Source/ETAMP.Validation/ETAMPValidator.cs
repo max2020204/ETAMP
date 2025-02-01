@@ -136,7 +136,7 @@ public sealed class ETAMPValidator : IETAMPValidator
     /// </summary>
     /// <param name="provider">The ECDsa provider to use for cryptographic operations.</param>
     /// <param name="algorithmName">The hash algorithm name to be used for signing or verification.</param>
-    public void Initialize(ECDsa provider, HashAlgorithmName algorithmName)
+    public void Initialize(ECDsa? provider, HashAlgorithmName algorithmName)
     {
         _signature.Initialize(provider, algorithmName);
     }

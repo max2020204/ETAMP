@@ -7,4 +7,15 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <ItemGroup>
+        <PackageReference Include="BenchmarkDotNet" Version="0.14.0"/>
+        <PackageReference Include="BenchmarkDotNet.Annotations" Version="0.14.0"/>
+        <PackageReference Include="BenchmarkDotNet.Diagnostics.Windows" Version="0.14.0"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\Source\ETAMP.Extension.ServiceCollection\ETAMP.Extension.ServiceCollection.csproj"/>
+        <ProjectReference Include="..\..\Source\ETAMP.Wrapper\ETAMP.Wrapper.csproj"/>
+    </ItemGroup>
+
 </Project>

@@ -24,9 +24,8 @@ public static class ETAMPBuilder
     /// Asynchronously builds a serialized JSON representation of the ETAMP model
     /// with the token compressed using the specified compression service factory.
     /// </summary>
-    public static async Task<string> BuildAsync<T>(
-        this ETAMPModel<T> model,
-        ICompressionServiceFactory compressionServiceFactory,
+    public static async Task<string> BuildAsync<T>(this ETAMPModel<T> model,
+        ICompressionServiceFactory? compressionServiceFactory,
         CancellationToken cancellationToken = default
     ) where T : Token
     {
@@ -34,10 +33,9 @@ public static class ETAMPBuilder
 
         var compressionService = compressionServiceFactory.Create(model.CompressionType);
 
-        await using var compressedStream = await compressionService.CompressStream(
-            await model.Token.ToJsonStreamAsync(cancellationToken),
-            cancellationToken
-        );
+        await using var compressedStream =
+            await compressionService.CompressStream(await model.Token.ToJsonStreamAsync(cancellationToken),
+                cancellationToken);
 
         // Prepare the ETAMP model for serialization
         var tempModel = await CreateModelBuilder(model, compressedStream, cancellationToken);
@@ -47,11 +45,9 @@ public static class ETAMPBuilder
     /// <summary>
     /// Deconstructs an ETAMP JSON string into an <see cref="ETAMPModel{T}"/> object.
     /// </summary>
-    public static async Task<ETAMPModel<T>> DeconstructETAMPAsync<T>(
-        this string? jsonEtamp,
-        ICompressionServiceFactory compressionServiceFactory,
-        CancellationToken cancellationToken = default
-    ) where T : Token
+    public static async Task<ETAMPModel<T>> DeconstructETAMPAsync<T>(this string? jsonEtamp,
+        ICompressionServiceFactory compressionServiceFactory, CancellationToken cancellationToken = default)
+        where T : Token
     {
         ValidateDeconstructInputs(jsonEtamp, compressionServiceFactory);
 
@@ -73,20 +69,25 @@ public static class ETAMPBuilder
     /// </summary>
     private static async Task<string> EncodeStreamToBase64Async(Stream stream, CancellationToken cancellationToken)
     {
+        ArgumentNullException.ThrowIfNull(stream);
+
+        if (stream.Length == 0) throw new InvalidOperationException("The stream is empty, cannot encode to Base64.");
+
         stream.Position = 0;
+
         using var memoryStream = new MemoryStream();
         await stream.CopyToAsync(memoryStream, cancellationToken);
-        return Base64UrlEncoder.Encode(memoryStream.ToArray());
+
+        var span = memoryStream.GetBuffer().AsSpan(0, (int)memoryStream.Length);
+
+        return Base64UrlEncoder.Encode(span.ToArray());
     }
 
     /// <summary>
     /// Creates an ETAMP model builder based on the provided inputs.
     /// </summary>
-    private static async Task<ETAMPModelBuilder> CreateModelBuilder<T>(
-        ETAMPModel<T> model,
-        Stream compressedStream,
-        CancellationToken cancellationToken
-    ) where T : Token
+    private static async Task<ETAMPModelBuilder> CreateModelBuilder<T>(ETAMPModel<T> model, Stream compressedStream,
+        CancellationToken cancellationToken) where T : Token
     {
         return new ETAMPModelBuilder
         {
@@ -102,10 +103,7 @@ public static class ETAMPBuilder
     /// <summary>
     /// Reconstructs an ETAMP model from its builder and token.
     /// </summary>
-    private static ETAMPModel<T> ReconstructETAMPModel<T>(
-        ETAMPModelBuilder builder,
-        T token
-    ) where T : Token
+    private static ETAMPModel<T> ReconstructETAMPModel<T>(ETAMPModelBuilder builder, T token) where T : Token
     {
         return new ETAMPModel<T>
         {
@@ -121,10 +119,8 @@ public static class ETAMPBuilder
     /// <summary>
     /// Validates the inputs for the BuildAsync method.
     /// </summary>
-    private static void ValidateBuildInputs<T>(
-        ETAMPModel<T> model,
-        ICompressionServiceFactory compressionServiceFactory
-    ) where T : Token
+    private static void ValidateBuildInputs<T>(ETAMPModel<T> model,
+        ICompressionServiceFactory? compressionServiceFactory) where T : Token
     {
         ArgumentNullException.ThrowIfNull(model.Token, nameof(model.Token));
         ArgumentNullException.ThrowIfNull(compressionServiceFactory, nameof(compressionServiceFactory));
@@ -134,10 +130,8 @@ public static class ETAMPBuilder
     /// <summary>
     /// Validates the inputs for the DeconstructETAMPAsync method.
     /// </summary>
-    private static void ValidateDeconstructInputs(
-        string? jsonEtamp,
-        ICompressionServiceFactory compressionServiceFactory
-    )
+    private static void ValidateDeconstructInputs(string? jsonEtamp,
+        ICompressionServiceFactory compressionServiceFactory)
     {
         ArgumentNullException.ThrowIfNull(compressionServiceFactory, nameof(compressionServiceFactory));
         ArgumentException.ThrowIfNullOrWhiteSpace(jsonEtamp, nameof(jsonEtamp));

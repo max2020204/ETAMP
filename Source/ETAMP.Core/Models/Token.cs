@@ -91,6 +91,7 @@ public class Token
         _logger.LogDebug("Serializing token");
         var memoryStream = new MemoryStream();
         await JsonSerializer.SerializeAsync(memoryStream, this, cancellationToken: cancellationToken);
+        memoryStream.Position = 0;
         _logger.LogDebug("Serializing token done");
         return memoryStream;
     }
@@ -98,10 +99,11 @@ public class Token
     public async Task<string> ToJsonAsync(CancellationToken cancellationToken = default)
     {
         _logger.LogDebug("Converting token to JSON string");
-        await using var stream = await ToJsonStreamAsync(cancellationToken);
-        using var reader = new StreamReader(stream);
-        var json = await reader.ReadToEndAsync(cancellationToken);
+        using var memoryStream = new MemoryStream();
+        await JsonSerializer.SerializeAsync(memoryStream, this, cancellationToken: cancellationToken);
+        memoryStream.Position = 0;
+        using var reader = new StreamReader(memoryStream, Encoding.UTF8);
         _logger.LogDebug("Token successfully serialized to JSON string");
-        return json;
+        return await reader.ReadToEndAsync(cancellationToken);
     }
 }

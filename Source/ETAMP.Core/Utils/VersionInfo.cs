@@ -24,7 +24,7 @@ public class VersionInfo
     ///     This property is used to retrieve the protocol version number of the ETAMP.
     ///     The protocol version number is specified using the ProtocolVersionAttribute in the executing assembly.
     /// </remarks>
-    public static double ProtocolVersion { get; private set; }
+    public double ProtocolVersion { get; private set; }
 
     /// <summary>
     ///     Gets the full version of the ETAMP framework.
@@ -33,7 +33,7 @@ public class VersionInfo
     ///     This property is used to retrieve the full version number of the ETAMP framework.
     ///     The full version number is calculated from the Major, Minor, and Compress components of the version information.
     /// </remarks>
-    public static string? FullVersion { get; private set; }
+    public string? FullVersion { get; private set; }
 
     public void GetVersionInfo()
     {

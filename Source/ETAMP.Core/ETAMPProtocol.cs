@@ -13,6 +13,13 @@ namespace ETAMP.Core;
 /// </summary>
 public sealed class ETAMPProtocol : IETAMPBase
 {
+    private readonly VersionInfo _versionInfo;
+
+    public ETAMPProtocol(VersionInfo versionInfo)
+    {
+        _versionInfo = versionInfo;
+    }
+
     /// <summary>
     ///     Creates an ETAMP model for the given payload.
     /// </summary>
@@ -28,7 +35,7 @@ public sealed class ETAMPProtocol : IETAMPBase
         return new ETAMPModel<T>
         {
             Id = messageId,
-            Version = VersionInfo.ProtocolVersion,
+            Version = _versionInfo.ProtocolVersion,
             Token = payload,
             UpdateType = updateType,
             CompressionType = compressionType

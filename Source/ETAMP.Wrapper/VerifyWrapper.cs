@@ -84,7 +84,7 @@ public sealed class VerifyWrapper : IVerifyWrapper
     /// </summary>
     /// <param name="provider">The ECDsa provider to use for cryptographic operations.</param>
     /// <param name="algorithmName">The hash algorithm to associate with the ECDsa provider.</param>
-    public void Initialize(ECDsa provider, HashAlgorithmName algorithmName)
+    public void Initialize(ECDsa? provider, HashAlgorithmName algorithmName)
     {
         _logger.LogInformation("Initializing ECDsa with algorithm {Algorithm}", algorithmName);
         _ecdsa = provider;

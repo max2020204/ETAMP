@@ -30,16 +30,16 @@ public sealed class SignWrapper : ISignWrapper
         CancellationToken cancellationToken = default) where T : Token
     {
         ArgumentNullException.ThrowIfNull(etamp.Token, nameof(etamp.Token));
-
-        var token = await etamp.Token.ToJsonAsync(cancellationToken: cancellationToken);
         await using var stream = new MemoryStream();
         await using (var writer = new StreamWriter(stream, Encoding.UTF8, bufferSize: 1024, leaveOpen: true))
         {
             await writer.WriteAsync(etamp.Id.ToString());
             await writer.WriteAsync(etamp.Version.ToString());
-            await writer.WriteAsync(token);
+            await writer.WriteAsync(await etamp.Token.ToJsonAsync(cancellationToken));
             await writer.WriteAsync(etamp.UpdateType);
             await writer.WriteAsync(etamp.CompressionType);
+
+            await writer.FlushAsync(cancellationToken);
         }
 
         stream.Position = 0;
@@ -54,7 +54,7 @@ public sealed class SignWrapper : ISignWrapper
     /// </summary>
     /// <param name="provider">The ECDsa provider to perform signing operations.</param>
     /// <param name="algorithmName">The name of the hash algorithm to use for signing.</param>
-    public void Initialize(ECDsa provider, HashAlgorithmName algorithmName)
+    public void Initialize(ECDsa? provider, HashAlgorithmName algorithmName)
     {
         _ecdsa = provider;
         _algorithmName = algorithmName;

@@ -1,9 +1,15 @@
-﻿namespace ETAMP.Sign.Benchmark;
+﻿#region
+
+using BenchmarkDotNet.Running;
+
+#endregion
+
+namespace ETAMP.Sign.Benchmark;
 
 class Program
 {
-    static void Main(string[] args)
+    private static void Main(string[] args)
     {
-        Console.WriteLine("Hello, World!");
+        BenchmarkRunner.Run<ETAMPSignBenchmark>();
     }
 }

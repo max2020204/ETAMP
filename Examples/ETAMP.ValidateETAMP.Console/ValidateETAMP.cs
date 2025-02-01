@@ -22,12 +22,12 @@ internal class ETAMPValidationRunner
 
 
         etampValidator.Initialize(initializedEcdsa, DefaultHashAlgorithm);
-        var validationResult = await etampValidator.ValidateETAMPAsync(CreateSignETAMP.ETAMP, false);
+        var validationResult = await etampValidator.ValidateETAMPAsync(CreateSignETAMP.Etamp, false);
 
         Console.WriteLine(validationResult.IsValid);
     }
 
-    private static ECDsa CreateInitializedEcdsa(byte[] publicKey)
+    private static ECDsa? CreateInitializedEcdsa(byte[] publicKey)
     {
         var ecdsa = ECDsa.Create();
         ecdsa.ImportSubjectPublicKeyInfo(publicKey, out _);

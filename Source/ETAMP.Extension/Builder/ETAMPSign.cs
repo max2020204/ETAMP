@@ -19,11 +19,9 @@ public static class ETAMPSign
     /// <param name="model">The ETAMPModel to be signed.</param>
     /// <param name="sign">The instance of ISignWrapper used for signing.</param>
     /// <returns>The signed ETAMPModel.</returns>
-    public static async Task<ETAMPModel<T>> Sign<T>(this ETAMPModel<T> model, ISignWrapper sign) where T : Token
+    public static async Task<ETAMPModel<T>> Sign<T>(this ETAMPModel<T> model, ISignWrapper? sign) where T : Token
     {
-        ArgumentNullException.ThrowIfNull(model);
         ArgumentNullException.ThrowIfNull(sign);
-
         return await sign.SignEtampModel(model);
     }
 }

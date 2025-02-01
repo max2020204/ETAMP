@@ -19,7 +19,7 @@ public sealed class SignatureValidator : ISignatureValidator
     private readonly ILogger<SignatureValidator> _logger;
     private readonly IStructureValidator _structureValidator;
     private readonly IVerifyWrapper _verifyWrapper;
-    private ECDsa _ecdsa;
+    private ECDsa? _ecdsa;
 
 
     /// <summary>
@@ -90,7 +90,7 @@ public sealed class SignatureValidator : ISignatureValidator
     /// <param name="algorithmName">
     ///     The hash algorithm name to be used during the validation process.
     /// </param>
-    public void Initialize(ECDsa provider, HashAlgorithmName algorithmName)
+    public void Initialize(ECDsa? provider, HashAlgorithmName algorithmName)
     {
         _ecdsa = provider;
         _verifyWrapper.Initialize(provider, algorithmName);

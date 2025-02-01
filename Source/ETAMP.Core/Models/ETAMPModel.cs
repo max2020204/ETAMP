@@ -72,37 +72,28 @@ public struct ETAMPModel<T> where T : Token
     }
 
 
-    public string ToJson()
+    public async Task<Stream> ToJsonStreamAsync()
     {
-        using var stream = new MemoryStream();
-
-        using var writer = new Utf8JsonWriter(stream, new JsonWriterOptions
-        {
-            Indented = false
-        });
-
-        WriteJson(writer);
-        writer.Flush();
-
-
-        return Encoding.UTF8.GetString(stream.ToArray());
-    }
-
-    public async Task<string> ToJsonAsync()
-    {
-        await using var stream = new MemoryStream();
+        var stream = new MemoryStream();
         await using var writer = new Utf8JsonWriter(stream, new JsonWriterOptions
         {
             Indented = false
         });
 
-        WriteJson(writer);
+        await WriteJson(writer);
+        stream.Position = 0;
         await writer.FlushAsync();
-
-        return Encoding.UTF8.GetString(stream.ToArray());
+        return stream;
     }
 
-    private void WriteJson(Utf8JsonWriter writer)
+    public async Task<string> ToJsonAsync()
+    {
+        var stream = await ToJsonStreamAsync();
+        using StreamReader reader = new(stream);
+        return await reader.ReadToEndAsync();
+    }
+
+    private async Task WriteJson(Utf8JsonWriter writer)
     {
         writer.WriteStartObject();
         writer.WriteString(nameof(Id), Id.ToString());
@@ -112,7 +103,7 @@ public struct ETAMPModel<T> where T : Token
         if (Token != null)
         {
             writer.WritePropertyName(nameof(Token));
-            writer.WriteRawValue(Token.ToJson(), true);
+            writer.WriteRawValue(await Token.ToJsonAsync(), true);
         }
 
         if (!string.IsNullOrEmpty(UpdateType))
@@ -142,19 +133,15 @@ public struct ETAMPModel<T> where T : Token
         return HashCode.Combine(Id, Version, Token, UpdateType, CompressionType, SignatureMessage);
     }
 
-    /// <summary>
-    ///     Returns a string that represents the current ETAMPModel object.
-    /// </summary>
-    /// <returns>
-    ///     A string that represents the current object.
-    /// </returns>
     public override string ToString()
     {
-        return ToJson();
-    }
-
-    public Task<string> ToStringAsync()
-    {
-        return ToJsonAsync();
+        StringBuilder sb = new();
+        sb.Append("Id: ").Append(Id)
+            .Append(", Version: ").Append(Version)
+            .Append(", UpdateType: ").Append(UpdateType)
+            .Append(", CompressionType: ")
+            .Append(CompressionType)
+            .Append(", SignatureMessage: ").Append(SignatureMessage);
+        return sb.ToString();
     }
 }
