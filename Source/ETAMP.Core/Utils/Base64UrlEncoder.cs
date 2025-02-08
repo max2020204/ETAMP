@@ -1,9 +1,5 @@
-﻿#region
-
-using System.Globalization;
+﻿using System.Globalization;
 using System.Text;
-
-#endregion
 
 namespace ETAMP.Core.Utils;
 
@@ -58,19 +54,14 @@ public static class Base64UrlEncoder
         {
             s.AsSpan().CopyTo(span);
             for (var i = 0; i < span.Length; i++)
-            {
                 if (span[i] == base64UrlCharacter62)
                     span[i] = base64Character62;
                 else if (span[i] == base64UrlCharacter63)
                     span[i] = base64Character63;
-            }
         });
 
         var mod = fixedStr.Length % 4;
-        if (mod > 0)
-        {
-            fixedStr = fixedStr.PadRight(fixedStr.Length + (4 - mod), base64PadCharacter);
-        }
+        if (mod > 0) fixedStr = fixedStr.PadRight(fixedStr.Length + (4 - mod), base64PadCharacter);
 
         return Convert.FromBase64String(fixedStr);
     }

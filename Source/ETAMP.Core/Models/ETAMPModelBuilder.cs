@@ -74,25 +74,13 @@ public class ETAMPModelBuilder
         writer.WriteNumber(nameof(Version), Version);
 
 
-        if (!string.IsNullOrEmpty(Token))
-        {
-            writer.WriteString(nameof(Token), Token);
-        }
+        if (!string.IsNullOrEmpty(Token)) writer.WriteString(nameof(Token), Token);
 
-        if (!string.IsNullOrEmpty(UpdateType))
-        {
-            writer.WriteString(nameof(UpdateType), UpdateType);
-        }
+        if (!string.IsNullOrEmpty(UpdateType)) writer.WriteString(nameof(UpdateType), UpdateType);
 
-        if (!string.IsNullOrEmpty(CompressionType))
-        {
-            writer.WriteString(nameof(CompressionType), CompressionType);
-        }
+        if (!string.IsNullOrEmpty(CompressionType)) writer.WriteString(nameof(CompressionType), CompressionType);
 
-        if (!string.IsNullOrEmpty(SignatureMessage))
-        {
-            writer.WriteString(nameof(SignatureMessage), SignatureMessage);
-        }
+        if (!string.IsNullOrEmpty(SignatureMessage)) writer.WriteString(nameof(SignatureMessage), SignatureMessage);
 
         writer.WriteEndObject();
     }

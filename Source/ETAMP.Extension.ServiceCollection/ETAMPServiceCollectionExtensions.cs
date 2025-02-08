@@ -1,7 +1,7 @@
-﻿#region
-
+﻿using ETAMP.Compression;
 using ETAMP.Compression.Codec;
 using ETAMP.Compression.Factory;
+using ETAMP.Compression.Interfaces;
 using ETAMP.Compression.Interfaces.Factory;
 using ETAMP.Core;
 using ETAMP.Core.Interfaces;
@@ -17,8 +17,6 @@ using ETAMP.Wrapper.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Serilog;
-
-#endregion
 
 namespace ETAMP.Extension.ServiceCollection;
 
@@ -101,6 +99,7 @@ public static class ETAMPServiceCollectionExtensions
         services.AddScoped<DeflateCompressionService>();
         services.AddScoped<GZipCompressionService>();
         services.AddScoped<ICompressionServiceFactory, CompressionServiceFactory>();
+        services.AddScoped<ICompressionManager, CompressionManager>();
     }
 
     /// <summary>

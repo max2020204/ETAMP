@@ -14,6 +14,7 @@
         <ProjectReference Include="..\ETAMP.Compression\ETAMP.Compression.csproj"/>
         <ProjectReference Include="..\ETAMP.Encryption\ETAMP.Encryption.csproj"/>
         <ProjectReference Include="..\ETAMP.Validation\ETAMP.Validation.csproj"/>
+        <ProjectReference Include="..\ETAMP.Wrapper\ETAMP.Wrapper.csproj"/>
     </ItemGroup>
     <ItemGroup>
         <None Include="../../README.md">

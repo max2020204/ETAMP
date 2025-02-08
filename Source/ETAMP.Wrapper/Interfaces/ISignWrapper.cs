@@ -1,9 +1,5 @@
-﻿#region
-
-using ETAMP.Core.Interfaces;
+﻿using ETAMP.Core.Interfaces;
 using ETAMP.Core.Models;
-
-#endregion
 
 namespace ETAMP.Wrapper.Interfaces;
 

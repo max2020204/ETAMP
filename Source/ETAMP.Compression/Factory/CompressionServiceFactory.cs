@@ -1,14 +1,10 @@
-﻿#region
-
-using System.Collections.Concurrent;
+﻿using System.Collections.Concurrent;
 using ETAMP.Compression.Codec;
 using ETAMP.Compression.Interfaces;
 using ETAMP.Compression.Interfaces.Factory;
 using ETAMP.Core.Management;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-
-#endregion
 
 namespace ETAMP.Compression.Factory;
 
@@ -49,13 +45,11 @@ public sealed class CompressionServiceFactory : ICompressionServiceFactory
     /// <exception cref="KeyNotFoundException">Thrown if the specified compression type is not recognized or supported.</exception>
     public ICompressionService Create(string compressionType)
     {
-        if (!Factory.TryGetValue(compressionType, out var serviceFactory))
-        {
-            _logger.LogError("ETAMPBuilder service '{0}' not recognized.", compressionType);
-            throw new KeyNotFoundException($"ETAMPBuilder service '{compressionType}' not recognized.");
-        }
+        if (Factory.TryGetValue(compressionType, out var serviceFactory))
+            return serviceFactory;
 
-        return serviceFactory;
+        _logger.LogError("ETAMPBuilder service '{0}' not recognized.", compressionType);
+        throw new KeyNotFoundException($"ETAMPBuilder service '{compressionType}' not recognized.");
     }
 
 

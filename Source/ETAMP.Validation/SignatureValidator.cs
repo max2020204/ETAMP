@@ -1,13 +1,9 @@
-﻿#region
-
-using System.Security.Cryptography;
+﻿using System.Security.Cryptography;
 using System.Text;
 using ETAMP.Core.Models;
 using ETAMP.Validation.Interfaces;
 using ETAMP.Wrapper.Interfaces;
 using Microsoft.Extensions.Logging;
-
-#endregion
 
 namespace ETAMP.Validation;
 
@@ -62,7 +58,7 @@ public sealed class SignatureValidator : ISignatureValidator
 
         await using (var stream = new MemoryStream())
         {
-            await using (var writer = new StreamWriter(stream, Encoding.UTF8, bufferSize: 1024, leaveOpen: true))
+            await using (var writer = new StreamWriter(stream, Encoding.UTF8, 1024, true))
             {
                 await writer.WriteAsync(etamp.Id.ToString());
                 await writer.WriteAsync(etamp.Version.ToString());

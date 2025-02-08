@@ -1,10 +1,6 @@
-﻿#region
-
-using ETAMP.Core.Models;
+﻿using ETAMP.Core.Models;
 using ETAMP.Validation.Interfaces;
 using Microsoft.Extensions.Logging;
-
-#endregion
 
 namespace ETAMP.Validation;
 
@@ -46,7 +42,8 @@ public class TokenValidator : ITokenValidator
             return new ValidationResult(false, "MessageId does not match the model Id.");
         }
 
-        if (model.Token.Id != Guid.Empty) return new ValidationResult(true);
+        if (model.Token.Id != Guid.Empty)
+            return new ValidationResult(true);
 
         _logger.LogError("Token Id cannot be empty.");
         return new ValidationResult(false, "Token Id cannot be empty.");

@@ -1,8 +1,4 @@
-﻿#region
-
-#endregion
-
-namespace ETAMP.Core.Models;
+﻿namespace ETAMP.Core.Models;
 
 /// <summary>
 ///     Provides storage for public and private keys in a model, typically used in cryptographic operations.
