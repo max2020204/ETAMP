@@ -1,11 +1,7 @@
-﻿#region
-
-using System.Collections.Concurrent;
+﻿using System.Collections.Concurrent;
 using System.Security.Cryptography;
 using ETAMP.Encryption.Interfaces.ECDSAManager;
 using Microsoft.Extensions.Logging;
-
-#endregion
 
 namespace ETAMP.Encryption.ECDsaManager;
 
@@ -21,13 +17,13 @@ public class ECDSAStore : IECDSAStore
     /// </summary>
     private readonly ConcurrentDictionary<Guid, ECDsa> _guidStore;
 
+    private readonly ILogger<ECDSAStore> _logger;
+
     /// <summary>
     ///     A private dictionary that maps string-based names to instances of <see cref="ECDSAProviderBase" />.
     ///     This collection is used to store and manage ECDSA cryptographic providers by their associated names.
     /// </summary>
     private readonly ConcurrentDictionary<string, ECDsa> _nameStore;
-
-    private readonly ILogger<ECDSAStore> _logger;
 
     /// <summary>
     ///     An implementation of the <see cref="IECDSAStore" /> interface.

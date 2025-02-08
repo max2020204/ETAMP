@@ -1,10 +1,7 @@
-﻿#region
-
-using System.IO.Compression;
+﻿using System.IO.Compression;
+using System.IO.Pipelines;
 using ETAMP.Compression.Interfaces;
 using Microsoft.Extensions.Logging;
-
-#endregion
 
 namespace ETAMP.Compression.Codec;
 
@@ -24,67 +21,82 @@ public sealed class GZipCompressionService : ICompressionService
     }
 
 
-    public async Task<Stream> CompressStream(Stream data, CancellationToken cancellationToken = default)
+    public async Task CompressAsync(PipeReader inputReader, PipeWriter outputWriter,
+        CancellationToken cancellationToken = default)
     {
-        if (data is not { CanRead: true })
-        {
-            _logger.LogError("The input stream must not be null and must be readable.");
-            throw new ArgumentException("The input stream must not be null and must be readable.", nameof(data));
-        }
-
-        var outputStream = new MemoryStream();
-        await using (var compressor = new GZipStream(outputStream, CompressionMode.Compress, true))
-        {
-            _logger.LogDebug("Compressing data stream...");
-            await data.CopyToAsync(compressor, cancellationToken);
-        }
-
-        _logger.LogDebug("Data stream compressed.");
-        outputStream.Position = 0;
-
-        return outputStream;
-    }
-
-
-    public async Task<Stream> DecompressStream(Stream compressedStream, CancellationToken cancellationToken = default)
-    {
-        if (compressedStream is not { CanRead: true })
-        {
-            _logger.LogError("The input stream must not be null and must be readable.");
-            throw new ArgumentException("The input stream must not be null and must be readable.",
-                nameof(compressedStream));
-        }
-
-        var outputStream = new MemoryStream();
-
         try
         {
-            await using var decompressor = new GZipStream(compressedStream, CompressionMode.Decompress);
-            _logger.LogDebug("Decompressing data stream...");
-            await decompressor.CopyToAsync(outputStream, cancellationToken);
-        }
-        catch (InvalidDataException ex)
-        {
-            _logger.LogError(ex, "Failed to decompress the stream.");
-            throw new InvalidDataException(
-                "Failed to decompress the stream. The input data may be invalid or corrupted.", ex);
+            await using var compressor =
+                new GZipStream(outputWriter.AsStream(), CompressionMode.Compress, leaveOpen: true);
+
+            while (true)
+            {
+                var readResult = await inputReader.ReadAsync(cancellationToken);
+                var buffer = readResult.Buffer;
+
+                foreach (var segment in buffer)
+                {
+                    await compressor.WriteAsync(segment, cancellationToken);
+                }
+
+                inputReader.AdvanceTo(buffer.End);
+
+                if (readResult.IsCompleted)
+                    break;
+            }
+
+            await compressor.FlushAsync(cancellationToken);
+            await outputWriter.CompleteAsync();
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "An unexpected error occurred during decompression.");
-            throw new InvalidOperationException("An unexpected error occurred during decompression.", ex);
+            _logger.LogError(ex, "Compression failed.");
+            await outputWriter.CompleteAsync(ex);
+            throw;
         }
-
-        if (outputStream.Length == 0)
+        finally
         {
-            _logger.LogError("The decompressed data is empty.");
-            throw new InvalidOperationException(
-                "The decompressed data is empty. This may indicate invalid or corrupted input data.");
+            await inputReader.CompleteAsync();
         }
+    }
 
-        outputStream.Position = 0;
 
-        _logger.LogDebug("Data stream decompressed successfully.");
-        return outputStream;
+    public async Task DecompressAsync(PipeReader inputData, PipeWriter outputData,
+        CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            await using var compressor =
+                new GZipStream(outputData.AsStream(), CompressionMode.Compress, leaveOpen: true);
+
+            while (true)
+            {
+                var readResult = await inputData.ReadAsync(cancellationToken);
+                var buffer = readResult.Buffer;
+
+                foreach (var segment in buffer)
+                {
+                    await compressor.WriteAsync(segment, cancellationToken);
+                }
+
+                inputData.AdvanceTo(buffer.End);
+
+                if (readResult.IsCompleted)
+                    break;
+            }
+
+            await compressor.FlushAsync(cancellationToken);
+            await outputData.CompleteAsync();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Compression failed.");
+            await outputData.CompleteAsync(ex);
+            throw;
+        }
+        finally
+        {
+            await inputData.CompleteAsync();
+        }
     }
 }

@@ -1,8 +1,4 @@
-﻿#region
-
-using System.Security.Cryptography;
-
-#endregion
+﻿using System.Security.Cryptography;
 
 namespace ETAMP.Core.Interfaces;
 

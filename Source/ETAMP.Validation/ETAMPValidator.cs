@@ -1,11 +1,9 @@
-﻿#region
-
-using System.Security.Cryptography;
+﻿using System.Security.Cryptography;
 using ETAMP.Core.Models;
 using ETAMP.Validation.Interfaces;
 using Microsoft.Extensions.Logging;
+using ValidationResult = ETAMP.Core.Models.ValidationResult;
 
-#endregion
 
 namespace ETAMP.Validation;
 

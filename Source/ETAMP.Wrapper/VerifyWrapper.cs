@@ -1,11 +1,7 @@
-﻿#region
-
-using System.Security.Cryptography;
+﻿using System.Security.Cryptography;
 using ETAMP.Core.Utils;
 using ETAMP.Wrapper.Interfaces;
 using Microsoft.Extensions.Logging;
-
-#endregion
 
 namespace ETAMP.Wrapper;
 
@@ -39,10 +35,7 @@ public sealed class VerifyWrapper : IVerifyWrapper
 
         var isValid = _ecdsa!.VerifyData(data, Base64UrlEncoder.DecodeBytes(signature), _algorithmName);
 
-        if (!isValid)
-        {
-            _logger.LogWarning("Signature verification failed for data stream.");
-        }
+        if (!isValid) _logger.LogWarning("Signature verification failed for data stream.");
 
         return isValid;
     }
@@ -62,10 +55,7 @@ public sealed class VerifyWrapper : IVerifyWrapper
 
         var isValid = _ecdsa!.VerifyData(data, signature, _algorithmName);
 
-        if (!isValid)
-        {
-            _logger.LogWarning("Signature verification failed for data stream.");
-        }
+        if (!isValid) _logger.LogWarning("Signature verification failed for data stream.");
 
         return isValid;
     }
@@ -101,14 +91,8 @@ public sealed class VerifyWrapper : IVerifyWrapper
 
     private static void EnsureStreamIsReadable(Stream stream)
     {
-        if (!stream.CanRead)
-        {
-            throw new ArgumentException("Stream is not readable.", nameof(stream));
-        }
+        if (!stream.CanRead) throw new ArgumentException("Stream is not readable.", nameof(stream));
 
-        if (stream.CanSeek)
-        {
-            stream.Position = 0;
-        }
+        if (stream.CanSeek) stream.Position = 0;
     }
 }

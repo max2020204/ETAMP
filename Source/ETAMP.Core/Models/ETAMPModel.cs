@@ -1,9 +1,5 @@
-﻿#region
-
-using System.Text;
+﻿using System.Text;
 using System.Text.Json;
-
-#endregion
 
 namespace ETAMP.Core.Models;
 
@@ -106,20 +102,11 @@ public struct ETAMPModel<T> where T : Token
             writer.WriteRawValue(await Token.ToJsonAsync(), true);
         }
 
-        if (!string.IsNullOrEmpty(UpdateType))
-        {
-            writer.WriteString(nameof(UpdateType), UpdateType);
-        }
+        if (!string.IsNullOrEmpty(UpdateType)) writer.WriteString(nameof(UpdateType), UpdateType);
 
-        if (!string.IsNullOrEmpty(CompressionType))
-        {
-            writer.WriteString(nameof(CompressionType), CompressionType);
-        }
+        if (!string.IsNullOrEmpty(CompressionType)) writer.WriteString(nameof(CompressionType), CompressionType);
 
-        if (!string.IsNullOrEmpty(SignatureMessage))
-        {
-            writer.WriteString(nameof(SignatureMessage), SignatureMessage);
-        }
+        if (!string.IsNullOrEmpty(SignatureMessage)) writer.WriteString(nameof(SignatureMessage), SignatureMessage);
 
         writer.WriteEndObject();
     }

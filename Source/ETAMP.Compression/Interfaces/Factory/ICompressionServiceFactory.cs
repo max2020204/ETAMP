@@ -1,8 +1,4 @@
-﻿#region
-
-using System.Collections.Concurrent;
-
-#endregion
+﻿using System.Collections.Concurrent;
 
 namespace ETAMP.Compression.Interfaces.Factory;
 
