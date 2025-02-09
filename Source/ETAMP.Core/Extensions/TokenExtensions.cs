@@ -22,7 +22,7 @@ public static class TokenExtensions
         }
 
         var result = await pipe.Reader.ReadAsync();
-        var json = Encoding.UTF8.GetString(result.Buffer.ToArray());
+        var json = Encoding.UTF8.GetString(result.Buffer);
 
         pipe.Reader.AdvanceTo(result.Buffer.End);
         await pipe.Reader.CompleteAsync();

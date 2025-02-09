@@ -1,5 +1,6 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
+using ETAMP.Core.Extensions;
 using ETAMP.Core.Models;
 using ETAMP.Core.Utils;
 using ETAMP.Wrapper.Interfaces;
@@ -31,7 +32,7 @@ public sealed class SignWrapper : ISignWrapper
         {
             await writer.WriteAsync(etamp.Id.ToString());
             await writer.WriteAsync(etamp.Version.ToString());
-            await writer.WriteAsync(await etamp.Token.ToJsonAsync(cancellationToken));
+            await writer.WriteAsync(await etamp.Token.ToJsonAsync());
             await writer.WriteAsync(etamp.UpdateType);
             await writer.WriteAsync(etamp.CompressionType);
 

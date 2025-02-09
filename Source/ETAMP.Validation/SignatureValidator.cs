@@ -1,5 +1,6 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
+using ETAMP.Core.Extensions;
 using ETAMP.Core.Models;
 using ETAMP.Validation.Interfaces;
 using ETAMP.Wrapper.Interfaces;

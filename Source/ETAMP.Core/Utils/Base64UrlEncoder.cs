@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using System.Buffers;
+using System.Globalization;
 using System.Text;
 
 namespace ETAMP.Core.Utils;
@@ -25,6 +26,25 @@ public static class Base64UrlEncoder
         return Encode(Encoding.UTF8.GetBytes(arg));
     }
 
+    public static string Encode(ReadOnlySequence<byte> sequence)
+    {
+        if (sequence.IsEmpty)
+            return string.Empty;
+
+        var buffer = ArrayPool<byte>.Shared.Rent((int)sequence.Length);
+
+        try
+        {
+            sequence.CopyTo(buffer);
+            return Encode(buffer);
+        }
+        finally
+        {
+            ArrayPool<byte>.Shared.Return(buffer);
+        }
+    }
+
+
     public static string Encode(byte[] arg)
     {
         ArgumentNullException.ThrowIfNull(arg);
@@ -49,7 +69,6 @@ public static class Base64UrlEncoder
     {
         ArgumentNullException.ThrowIfNull(str);
 
-        // Оптимизированная замена с `string.Create`
         var fixedStr = string.Create(str.Length, str, (span, s) =>
         {
             s.AsSpan().CopyTo(span);
