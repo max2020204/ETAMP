@@ -12,7 +12,7 @@ namespace ETAMP.Compression.Factory;
 ///     Factory for creating compression service instances based on the specified compression type.
 ///     Utilizes the service provider to resolve the requested compression service dynamically at runtime.
 /// </summary>
-public sealed class CompressionServiceFactory : ICompressionServiceFactory
+public sealed record CompressionServiceFactory : ICompressionServiceFactory
 {
     private readonly ILogger<CompressionServiceFactory> _logger;
 

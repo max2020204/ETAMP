@@ -1,13 +1,13 @@
 ﻿using System.IO.Pipelines;
-using System.Text;
 using System.Text.Json;
 using ETAMP.Compression.Interfaces;
 using ETAMP.Compression.Interfaces.Factory;
 using ETAMP.Core.Models;
+using ETAMP.Core.Utils;
 
 namespace ETAMP.Compression;
 
-public class CompressionManager : ICompressionManager
+public record CompressionManager : ICompressionManager
 {
     private readonly ICompressionServiceFactory _compressionServiceFactory;
 
@@ -37,15 +37,15 @@ public class CompressionManager : ICompressionManager
 
         await compression.CompressAsync(dataPipe.Reader, outputData.Writer, cancellationToken);
 
-        using var tokenBuffer = new MemoryStream();
-        await outputData.Reader.CopyToAsync(tokenBuffer, cancellationToken);
-        tokenBuffer.Position = 0;
+        var read = await outputData.Reader.ReadAsync(cancellationToken);
+        outputData.Reader.AdvanceTo(read.Buffer.End);
+
 
         return new ETAMPModelBuilder
         {
             Id = model.Id,
             Version = model.Version,
-            Token = Encoding.UTF8.GetString(tokenBuffer.GetBuffer(), 0, (int)tokenBuffer.Length),
+            Token = Base64UrlEncoder.Encode(read.Buffer),
             CompressionType = model.CompressionType,
             SignatureMessage = model.SignatureMessage
         };

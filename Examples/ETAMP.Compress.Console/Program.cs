@@ -1,23 +1,17 @@
-﻿using BenchmarkDotNet.Attributes;
-using ETAMP.Compression.Interfaces;
+﻿using ETAMP.Compression.Interfaces;
 using ETAMP.Core.Management;
 using ETAMP.Core.Models;
 using ETAMP.Extension.ServiceCollection;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace ETAMP.Compress.Benchmark;
+namespace ETAMP.Compress.Console;
 
-[MemoryDiagnoser]
-[ThreadingDiagnoser]
-[GcServer]
-//[HardwareCounters(HardwareCounter.CacheMisses, HardwareCounter.BranchMispredictions)]
-public class CompressBench
+internal class Program
 {
-    private ICompressionManager _compressionManager;
-    private ETAMPModel<Token> _model;
+    private static ICompressionManager _compressionManager;
+    private static ETAMPModel<Token> _model;
 
-    [GlobalSetup]
-    public void Setup()
+    private static async Task Main(string[] args)
     {
         ServiceCollection services = new();
         services.AddCompositionServices();
@@ -32,11 +26,7 @@ public class CompressBench
                 Data = "string"
             }
         };
-    }
 
-    [Benchmark]
-    public async Task Compress()
-    {
         await _compressionManager.CompressAsync(_model);
     }
 }

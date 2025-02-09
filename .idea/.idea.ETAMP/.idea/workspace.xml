@@ -6,6 +6,7 @@
     <projectFile>Benchmark/ETAMP.Create.Benchmark/ETAMP.Create.Benchmark.csproj</projectFile>
     <projectFile>Benchmark/ETAMP.Sign.Benchmark/ETAMP.Sign.Benchmark.csproj</projectFile>
     <projectFile>ETAMP.Console.CreateSignETAMP/ETAMP.Console.CreateSignETAMP.csproj</projectFile>
+    <projectFile>Examples/ETAMP.Compress.Console/ETAMP.Compress.Console.csproj</projectFile>
     <projectFile>Examples/ETAMP.Console.CreateETAMP/ETAMP.Console.CreateETAMP.csproj</projectFile>
     <projectFile>Examples/ETAMP.Console.CreateETAMPService/ETAMP.Console.CreateETAMPService.csproj</projectFile>
     <projectFile>Examples/ETAMP.Console.CreateSignETAMPService/ETAMP.Console.CreateSignETAMPService.csproj</projectFile>
@@ -17,76 +18,24 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="8b44219d-6ab5-4022-b5c1-0f01c450f8f2" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/Benchmark/ETAMP.Compress.Benchmark/CompressBench.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.ETAMP/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.ETAMP/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Benchmark/ETAMP.Create.Benchmark/ETAMP.Create.Benchmark.csproj" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Benchmark/ETAMP.Create.Benchmark/ETAMPBenchmark.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Benchmark/ETAMP.Create.Benchmark/Program.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Benchmark/ETAMP.Sign.Benchmark/ETAMP.Sign.Benchmark.csproj" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Benchmark/ETAMP.Sign.Benchmark/ETAMPSignBenchmark.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Benchmark/ETAMP.Sign.Benchmark/Program.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Benchmark/ETAMP.Compress.Benchmark/CompressBench.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Benchmark/ETAMP.Compress.Benchmark/CompressBench.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Benchmark/ETAMP.Compress.Benchmark/ETAMP.Compress.Benchmark.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/Benchmark/ETAMP.Compress.Benchmark/ETAMP.Compress.Benchmark.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Benchmark/ETAMP.Compress.Benchmark/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Benchmark/ETAMP.Compress.Benchmark/Program.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ETAMP.sln" beforeDir="false" afterPath="$PROJECT_DIR$/ETAMP.sln" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ETAMP.sln.DotSettings.user" beforeDir="false" afterPath="$PROJECT_DIR$/ETAMP.sln.DotSettings.user" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Examples/ETAMP.CreateETAMP.Console/CreateETAMP.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Examples/ETAMP.CreateETAMP.Console/ETAMP.CreateETAMP.Console.csproj" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Examples/ETAMP.CreateETAMP.Console/Models/TokenModel.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Examples/ETAMP.SignETAMP.Console/CreateSignETAMP.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Examples/ETAMP.SignETAMP.Console/ETAMP.SignETAMP.Console.csproj" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Examples/ETAMP.ValidateETAMP.Console/ETAMP.ValidateETAMP.Console.csproj" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Examples/ETAMP.ValidateETAMP.Console/ValidateETAMP.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ETAMP.sln.DotSettings.user" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/ETAMP.Compression/Codec/DeflateCompressionService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Compression/Codec/DeflateCompressionService.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/ETAMP.Compression/Codec/GZipCompressionService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Compression/Codec/GZipCompressionService.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ETAMP.Compression/CompressionManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Compression/CompressionManager.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/ETAMP.Compression/Factory/CompressionServiceFactory.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Compression/Factory/CompressionServiceFactory.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ETAMP.Compression/Interfaces/Factory/ICompressionServiceFactory.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Compression/Interfaces/Factory/ICompressionServiceFactory.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ETAMP.Compression/Interfaces/ICompressionService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Compression/Interfaces/ICompressionService.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ETAMP.Core/ETAMP.Core.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Core/ETAMP.Core.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ETAMP.Core/ETAMPProtocol.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Core/ETAMPProtocol.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ETAMP.Core/Interfaces/IETAMPBase.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Core/Interfaces/IETAMPBase.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ETAMP.Core/Interfaces/IInitialize.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Core/Interfaces/IInitialize.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ETAMP.Core/Extensions/TokenExtensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Core/Extensions/TokenExtensions.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/ETAMP.Core/Models/ECDKeyModelProvider.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Core/Models/ECDKeyModelProvider.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/ETAMP.Core/Models/ETAMPModel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Core/Models/ETAMPModel.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/ETAMP.Core/Models/ETAMPModelBuilder.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Core/Models/ETAMPModelBuilder.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/ETAMP.Core/Models/Token.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Core/Models/Token.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/ETAMP.Core/Utils/Base64UrlEncoder.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Core/Utils/Base64UrlEncoder.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ETAMP.Core/Utils/VersionInfo.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Core/Utils/VersionInfo.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ETAMP.Encryption/AESEncryptionService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Encryption/AESEncryptionService.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ETAMP.Encryption/ECDsaManager/ECDSAStore.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Encryption/ECDsaManager/ECDSAStore.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ETAMP.Encryption/ECIESEncryptionService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Encryption/ECIESEncryptionService.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ETAMP.Encryption/Interfaces/ECDSAManager/IECDSAStore.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Encryption/Interfaces/ECDSAManager/IECDSAStore.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ETAMP.Encryption/Interfaces/IECIESEncryptionService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Encryption/Interfaces/IECIESEncryptionService.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ETAMP.Extension.ServiceCollection/ETAMP.Extension.ServiceCollection.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Extension.ServiceCollection/ETAMP.Extension.ServiceCollection.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ETAMP.Extension.ServiceCollection/ETAMPServiceCollectionExtensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Extension.ServiceCollection/ETAMPServiceCollectionExtensions.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ETAMP.Extension/Builder/ETAMPBuilder.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ETAMP.Extension/Builder/ETAMPEncryption.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ETAMP.Extension/Builder/ETAMPSign.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ETAMP.Extension/ETAMP.Extension.csproj" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ETAMP.Validation/ETAMP.Validation.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Validation/ETAMP.Validation.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ETAMP.Validation/ETAMPValidator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Validation/ETAMPValidator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ETAMP.Validation/Interfaces/IETAMPValidator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Validation/Interfaces/IETAMPValidator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ETAMP.Validation/Interfaces/ISignatureValidator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Validation/Interfaces/ISignatureValidator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ETAMP.Validation/Interfaces/IStructureValidator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Validation/Interfaces/IStructureValidator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ETAMP.Validation/Interfaces/ITokenValidator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Validation/Interfaces/ITokenValidator.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/ETAMP.Validation/SignatureValidator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Validation/SignatureValidator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ETAMP.Validation/StructureValidator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Validation/StructureValidator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ETAMP.Validation/TokenValidator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Validation/TokenValidator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ETAMP.Wrapper/Interfaces/ISignWrapper.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Wrapper/Interfaces/ISignWrapper.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ETAMP.Wrapper/Interfaces/IVerifyWrapper.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Wrapper/Interfaces/IVerifyWrapper.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/ETAMP.Wrapper/SignWrapper.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Wrapper/SignWrapper.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ETAMP.Wrapper/VerifyWrapper.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Wrapper/VerifyWrapper.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Tests/ETAMP.Compression.Tests/Codec/FaultyStream.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Tests/ETAMP.Compression.Tests/Codec/GZipCompressionServiceTest.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Tests/ETAMP.Compression.Tests/ETAMP.Compression.Tests.csproj" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Tests/ETAMP.Compression.Tests/Factory/CompressionServiceFactoryTests.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Tests/ETAMP.Core.Tests/ETAMP.Core.Tests.csproj" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Tests/ETAMP.Core.Tests/Utils/Base64UrlEncoderTest.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Tests/ETAMP.Encryption.Tests/AESEncryptionServiceTests.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Tests/ETAMP.Encryption.Tests/ECIESEncryptionServiceTests.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Tests/ETAMP.Encryption.Tests/ETAMP.Encryption.Tests.csproj" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Tests/ETAMP.Extension.Tests/Builder/ETAMPBuilderTests.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Tests/ETAMP.Extension.Tests/ETAMP.Extension.Tests.csproj" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Tests/ETAMP.Validation.Tests/ETAMP.Validation.Tests.csproj" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Tests/ETAMP.Validation.Tests/ETAMPValidatorTests.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Tests/ETAMP.Validation.Tests/LoggerExtensions.cs" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -102,7 +51,13 @@
         <option value="Axi &lt;maksymnikitiuk2014@gmail.com&gt;" />
       </list>
     </option>
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="master" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="SIGN_OFF_COMMIT" value="true" />
   </component>
   <component name="GitHubPullRequestSearchHistory">{
   &quot;lastFilter&quot;: {
@@ -113,13 +68,13 @@
   <component name="GithubPullRequestsUISettings">{
   &quot;selectedUrlAndAccountId&quot;: {
     &quot;url&quot;: &quot;https://github.com/max2020204/ETAMP.git&quot;,
-    &quot;accountId&quot;: &quot;92422c20-f676-4556-a256-7ffee92151ad&quot;
+    &quot;accountId&quot;: &quot;09aaedba-8ca5-4c37-9f14-d4924c668d2f&quot;
   }
 }</component>
   <component name="HighlightingSettingsPerFile">
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/c4df319e7a6b4eafe890fea08520cf9412a8d289df8bfa8057fc4621f45f6892/ValidationResult.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/black/RiderProjects/ETAMP/Source/ETAMP.Core/Utils/Base64UrlEncoder.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/black/RiderProjects/ETAMP/Source/ETAMP.Encryption/AESEncryptionService.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/d4a8f8d5219d57524ca89ff2dc8bdc5a23996aa3913260a7142bfd992c393a4/ServiceCollectionContainerBuilderExtensions.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/black/RiderProjects/ETAMP/Benchmark/ETAMP.Compress.Benchmark/CompressBench.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/black/RiderProjects/ETAMP/Source/ETAMP.Compression/Codec/DeflateCompressionService.cs" root0="SKIP_HIGHLIGHTING" />
   </component>
   <component name="KubernetesApiPersistence">{}</component>
   <component name="KubernetesApiProvider">{
@@ -142,7 +97,7 @@
   </component>
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
-    &quot;.NET Project.ETAMP.Compress.Benchmark.executor&quot;: &quot;Debug&quot;,
+    &quot;.NET Project.ETAMP.Compress.Benchmark.executor&quot;: &quot;Run&quot;,
     &quot;.NET Project.ETAMP.Console.CreateETAMP.executor&quot;: &quot;Run&quot;,
     &quot;.NET Project.ETAMP.Console.CreateETAMPService.executor&quot;: &quot;Debug&quot;,
     &quot;.NET Project.ETAMP.Console.CreateSignETAMP.executor&quot;: &quot;Run&quot;,
@@ -156,14 +111,14 @@
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
     &quot;c762ceee-8ff5-402e-b6d9-fbb316d19fb8.executor&quot;: &quot;Debug&quot;,
     &quot;d8965117-eb1a-42c8-b314-86c3ae8583f1.executor&quot;: &quot;Debug&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;pip__dev&quot;,
     &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;ml.llm.LLMConfigurable&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.sourceCode.C#&quot;,
     &quot;settings.editor.splitter.proportion&quot;: &quot;0.3058104&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   },
@@ -175,6 +130,24 @@
 }</component>
   <component name="RunManager" selected=".NET Project.ETAMP.Compress.Benchmark">
     <configuration name="ETAMP.Compress.Benchmark" type="DotNetProject" factoryName=".NET Project">
+      <option name="EXE_PATH" value="$PROJECT_DIR$/Benchmark/ETAMP.Compress.Benchmark/bin/Release/net9.0/ETAMP.Compress.Benchmark.exe" />
+      <option name="PROGRAM_PARAMETERS" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Benchmark/ETAMP.Compress.Benchmark/bin/Release/net9.0" />
+      <option name="PASS_PARENT_ENVS" value="1" />
+      <option name="USE_EXTERNAL_CONSOLE" value="0" />
+      <option name="USE_MONO" value="0" />
+      <option name="RUNTIME_ARGUMENTS" value="" />
+      <option name="PROJECT_PATH" value="$PROJECT_DIR$/Benchmark/ETAMP.Compress.Benchmark/ETAMP.Compress.Benchmark.csproj" />
+      <option name="PROJECT_EXE_PATH_TRACKING" value="1" />
+      <option name="PROJECT_ARGUMENTS_TRACKING" value="1" />
+      <option name="PROJECT_WORKING_DIRECTORY_TRACKING" value="1" />
+      <option name="PROJECT_KIND" value="DotNetCore" />
+      <option name="PROJECT_TFM" value="net9.0" />
+      <method v="2">
+        <option name="Build" />
+      </method>
+    </configuration>
+    <configuration name="ETAMP.Compress.Console" type="DotNetProject" factoryName=".NET Project">
       <option name="EXE_PATH" value="" />
       <option name="PROGRAM_PARAMETERS" value="" />
       <option name="WORKING_DIRECTORY" value="" />
@@ -182,7 +155,7 @@
       <option name="USE_EXTERNAL_CONSOLE" value="0" />
       <option name="USE_MONO" value="0" />
       <option name="RUNTIME_ARGUMENTS" value="" />
-      <option name="PROJECT_PATH" value="$PROJECT_DIR$/Benchmark/ETAMP.Compress.Benchmark/ETAMP.Compress.Benchmark.csproj" />
+      <option name="PROJECT_PATH" value="$PROJECT_DIR$/Examples/ETAMP.Compress.Console/ETAMP.Compress.Console.csproj" />
       <option name="PROJECT_EXE_PATH_TRACKING" value="1" />
       <option name="PROJECT_ARGUMENTS_TRACKING" value="1" />
       <option name="PROJECT_WORKING_DIRECTORY_TRACKING" value="1" />
@@ -288,7 +261,10 @@
       <workItem from="1738195762537" duration="1723000" />
       <workItem from="1738354795755" duration="156000" />
       <workItem from="1738355640465" duration="12875000" />
-      <workItem from="1739028097427" duration="5301000" />
+      <workItem from="1739038953649" duration="93000" />
+      <workItem from="1739054791110" duration="1866000" />
+      <workItem from="1739059798580" duration="2686000" />
+      <workItem from="1739098378021" duration="8303000" />
     </task>
     <task id="LOCAL-00001" summary="Refactor and reorganize ETAMP example projects&#10;&#10;Moved and restructured ETAMP example project files for better modularity and project clarity. Updated project references and dependencies to align with the new structure. Removed redundant files and added missing configurations where necessary.">
       <option name="closed" value="true" />
@@ -572,7 +548,7 @@
                   <entry key="branch">
                     <value>
                       <list>
-                        <option value="master" />
+                        <option value="pip_dev" />
                       </list>
                     </value>
                   </entry>
@@ -633,10 +609,30 @@
           <option name="timeStamp" value="13" />
         </breakpoint>
         <line-breakpoint enabled="true" type="DotNet Breakpoints">
-          <url>file://$PROJECT_DIR$/Examples/ETAMP.CreateETAMP.Console/CreateETAMP.cs</url>
-          <line>22</line>
-          <properties documentPath="C:\Users\black\RiderProjects\ETAMP\Examples\ETAMP.CreateETAMP.Console\CreateETAMP.cs" containingFunctionPresentation="Method 'Main'" />
-          <option name="timeStamp" value="21" />
+          <url>file://$PROJECT_DIR$/Examples/ETAMP.Compress.Console/Program.cs</url>
+          <line>18</line>
+          <properties documentPath="C:\Users\black\RiderProjects\ETAMP\Examples\ETAMP.Compress.Console\Program.cs" containingFunctionPresentation="Method 'Main'">
+            <startOffsets>
+              <option value="553" />
+            </startOffsets>
+            <endOffsets>
+              <option value="626" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="14" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/Source/ETAMP.Compression/CompressionManager.cs</url>
+          <line>21</line>
+          <properties documentPath="C:\Users\black\RiderProjects\ETAMP\Source\ETAMP.Compression\CompressionManager.cs" containingFunctionPresentation="Method 'CompressAsync'">
+            <startOffsets>
+              <option value="670" />
+            </startOffsets>
+            <endOffsets>
+              <option value="692" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="15" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
