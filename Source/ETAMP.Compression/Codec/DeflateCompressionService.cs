@@ -15,50 +15,47 @@ public sealed record DeflateCompressionService : ICompressionService
     }
 
 
-    public async Task CompressAsync(PipeReader inputData, PipeWriter outputData,
+    public async Task CompressAsync(PipeReader inputReader, PipeWriter outputWriter,
         CancellationToken cancellationToken = default)
     {
         try
         {
-            await using var compressor =
-                new DeflateStream(outputData.AsStream(), CompressionMode.Compress, true);
+            await using var compressor = new DeflateStream(outputWriter.AsStream(), CompressionMode.Compress, true);
             _logger.LogDebug("Compressing data stream...");
-            await inputData.CopyToAsync(compressor, cancellationToken);
+            await inputReader.CopyToAsync(compressor, cancellationToken);
+            await compressor.FlushAsync(cancellationToken);
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Compression failed.");
-            await outputData.CompleteAsync(ex);
         }
         finally
         {
-            await outputData.FlushAsync(cancellationToken);
-            await outputData.CompleteAsync();
-            await inputData.CompleteAsync();
+            await outputWriter.FlushAsync(cancellationToken);
+            await outputWriter.CompleteAsync();
+            await inputReader.CompleteAsync();
         }
     }
 
-
-    public async Task DecompressAsync(PipeReader inputData, PipeWriter outputData,
+    public async Task DecompressAsync(PipeReader inputReader, PipeWriter outputWriter,
         CancellationToken cancellationToken = default)
     {
         try
         {
-            await using var compressor =
-                new DeflateStream(outputData.AsStream(), CompressionMode.Decompress, true);
-            _logger.LogDebug("Compressing data stream...");
-            await inputData.CopyToAsync(compressor, cancellationToken);
+            await using var decompressor =
+                new DeflateStream(inputReader.AsStream(), CompressionMode.Decompress, true);
+            _logger.LogDebug("Decompressing data stream...");
+            await decompressor.CopyToAsync(outputWriter.AsStream(), cancellationToken);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Compression failed.");
-            await outputData.CompleteAsync(ex);
+            _logger.LogError(ex, "Decompression failed.");
         }
         finally
         {
-            await outputData.FlushAsync(cancellationToken);
-            await outputData.CompleteAsync();
-            await inputData.CompleteAsync();
+            await outputWriter.FlushAsync(cancellationToken);
+            await outputWriter.CompleteAsync();
+            await inputReader.CompleteAsync();
         }
     }
 }

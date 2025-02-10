@@ -12,8 +12,8 @@ internal class Program
     private static void Main(string[] args)
     {
         var config = new MultiRuntimeConfig()
-            .AddLogger(ConsoleLogger.Default) // Добавляем консольный логгер
-            .AddColumnProvider(DefaultColumnProviders.Instance); // Улучшенный вывод
+            .AddLogger(ConsoleLogger.Default)
+            .AddColumnProvider(DefaultColumnProviders.Instance);
         BenchmarkRunner.Run<CompressBench>(config);
     }
 }
