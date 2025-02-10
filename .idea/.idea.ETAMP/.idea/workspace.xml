@@ -19,23 +19,13 @@
   <component name="ChangeListManager">
     <list default="true" id="8b44219d-6ab5-4022-b5c1-0f01c450f8f2" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.ETAMP/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.ETAMP/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Benchmark/ETAMP.Compress.Benchmark/CompressBench.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Benchmark/ETAMP.Compress.Benchmark/CompressBench.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Benchmark/ETAMP.Compress.Benchmark/ETAMP.Compress.Benchmark.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/Benchmark/ETAMP.Compress.Benchmark/ETAMP.Compress.Benchmark.csproj" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Benchmark/ETAMP.Compress.Benchmark/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Benchmark/ETAMP.Compress.Benchmark/Program.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ETAMP.sln" beforeDir="false" afterPath="$PROJECT_DIR$/ETAMP.sln" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ETAMP.sln.DotSettings.user" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ETAMP.sln.DotSettings.user" beforeDir="false" afterPath="$PROJECT_DIR$/ETAMP.sln.DotSettings.user" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Examples/ETAMP.Compress.Console/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Examples/ETAMP.Compress.Console/Program.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/ETAMP.Compression/Codec/DeflateCompressionService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Compression/Codec/DeflateCompressionService.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/ETAMP.Compression/Codec/GZipCompressionService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Compression/Codec/GZipCompressionService.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/ETAMP.Compression/CompressionManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Compression/CompressionManager.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ETAMP.Compression/Factory/CompressionServiceFactory.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Compression/Factory/CompressionServiceFactory.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ETAMP.Core/Extensions/TokenExtensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Core/Extensions/TokenExtensions.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ETAMP.Core/Models/ECDKeyModelProvider.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Core/Models/ECDKeyModelProvider.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ETAMP.Core/Models/ETAMPModel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Core/Models/ETAMPModel.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ETAMP.Core/Models/ETAMPModelBuilder.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Core/Models/ETAMPModelBuilder.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ETAMP.Core/Models/Token.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Core/Models/Token.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/ETAMP.Core/Utils/Base64UrlEncoder.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Core/Utils/Base64UrlEncoder.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ETAMP.Validation/SignatureValidator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Validation/SignatureValidator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ETAMP.Wrapper/SignWrapper.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Wrapper/SignWrapper.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -69,12 +59,34 @@
   &quot;selectedUrlAndAccountId&quot;: {
     &quot;url&quot;: &quot;https://github.com/max2020204/ETAMP.git&quot;,
     &quot;accountId&quot;: &quot;09aaedba-8ca5-4c37-9f14-d4924c668d2f&quot;
+  },
+  &quot;recentNewPullRequestHead&quot;: {
+    &quot;server&quot;: {
+      &quot;useHttp&quot;: false,
+      &quot;host&quot;: &quot;github.com&quot;,
+      &quot;port&quot;: null,
+      &quot;suffix&quot;: null
+    },
+    &quot;owner&quot;: &quot;max2020204&quot;,
+    &quot;repository&quot;: &quot;ETAMP&quot;
   }
 }</component>
   <component name="HighlightingSettingsPerFile">
+    <setting file="mock:///AIAssistantSnippet." root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///AIAssistantSnippet." root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///AIAssistantSnippet." root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///AIAssistantSnippet." root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///AIAssistantSnippet." root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///AIAssistantSnippet." root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///AIAssistantSnippet." root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///AIAssistantSnippet." root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///AIAssistantSnippet." root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/24bdcc69acdece342cf3936ea4fd90f56470da92963a5b716eddc93db340b5/Pipe.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/621526284d3e4868b98948aff942206525763e57e194a27623b66c384466/ServiceProviderServiceExtensions.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/ae476ed175fd2828746f511ec85aed67c2ff89bfec3965c26aac472bec3d8/PipeReader.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/bc12665a75bf1c583d5d436735a364589d923dc8c284fe751c4bd4f977f5f75/ReadResult.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/c7102cd0ffb8973777e61b1942c3fffac7e14016a511d055c3adf73ff91748/ThrowHelper.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/d4a8f8d5219d57524ca89ff2dc8bdc5a23996aa3913260a7142bfd992c393a4/ServiceCollectionContainerBuilderExtensions.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/black/RiderProjects/ETAMP/Benchmark/ETAMP.Compress.Benchmark/CompressBench.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/black/RiderProjects/ETAMP/Source/ETAMP.Compression/Codec/DeflateCompressionService.cs" root0="SKIP_HIGHLIGHTING" />
   </component>
   <component name="KubernetesApiPersistence">{}</component>
   <component name="KubernetesApiProvider">{
@@ -95,39 +107,40 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;.NET Project.ETAMP.Compress.Benchmark.executor&quot;: &quot;Run&quot;,
-    &quot;.NET Project.ETAMP.Console.CreateETAMP.executor&quot;: &quot;Run&quot;,
-    &quot;.NET Project.ETAMP.Console.CreateETAMPService.executor&quot;: &quot;Debug&quot;,
-    &quot;.NET Project.ETAMP.Console.CreateSignETAMP.executor&quot;: &quot;Run&quot;,
-    &quot;.NET Project.ETAMP.Console.CreateSignETAMPService.executor&quot;: &quot;Debug&quot;,
-    &quot;.NET Project.ETAMP.Console.ValidateETAMP.executor&quot;: &quot;Run&quot;,
-    &quot;.NET Project.ETAMP.Console.ValidateETAMPService.executor&quot;: &quot;Debug&quot;,
-    &quot;.NET Project.ETAMP.Create.Benchmark.executor&quot;: &quot;Run&quot;,
-    &quot;.NET Project.ETAMP.Sign.Benchmark.executor&quot;: &quot;Run&quot;,
-    &quot;5c53a9ec-5001-4a38-9545-ad7f91d669ad.executor&quot;: &quot;Debug&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;c762ceee-8ff5-402e-b6d9-fbb316d19fb8.executor&quot;: &quot;Debug&quot;,
-    &quot;d8965117-eb1a-42c8-b314-86c3ae8583f1.executor&quot;: &quot;Debug&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;pip__dev&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.sourceCode.C#&quot;,
-    &quot;settings.editor.splitter.proportion&quot;: &quot;0.3058104&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    ".NET Project.ETAMP.Compress.Benchmark.executor": "Run",
+    ".NET Project.ETAMP.Compress.Console.executor": "Run",
+    ".NET Project.ETAMP.Console.CreateETAMP.executor": "Run",
+    ".NET Project.ETAMP.Console.CreateETAMPService.executor": "Debug",
+    ".NET Project.ETAMP.Console.CreateSignETAMP.executor": "Run",
+    ".NET Project.ETAMP.Console.CreateSignETAMPService.executor": "Debug",
+    ".NET Project.ETAMP.Console.ValidateETAMP.executor": "Run",
+    ".NET Project.ETAMP.Console.ValidateETAMPService.executor": "Debug",
+    ".NET Project.ETAMP.Create.Benchmark.executor": "Run",
+    ".NET Project.ETAMP.Sign.Benchmark.executor": "Run",
+    "5c53a9ec-5001-4a38-9545-ad7f91d669ad.executor": "Debug",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "c762ceee-8ff5-402e-b6d9-fbb316d19fb8.executor": "Debug",
+    "d8965117-eb1a-42c8-b314-86c3ae8583f1.executor": "Debug",
+    "git-widget-placeholder": "pipe__dev",
+    "ignore.virus.scanning.warn.message": "true",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "preferences.sourceCode.C#",
+    "settings.editor.splitter.proportion": "0.3058104",
+    "vue.rearranger.settings.migration": "true"
   },
-  &quot;keyToStringList&quot;: {
-    &quot;com.intellij.ide.scratch.ScratchImplUtil$2/New Scratch File&quot;: [
-      &quot;PLAIN_TEXT&quot;
+  "keyToStringList": {
+    "com.intellij.ide.scratch.ScratchImplUtil$2/New Scratch File": [
+      "PLAIN_TEXT"
     ]
   }
-}</component>
+}]]></component>
   <component name="RunManager" selected=".NET Project.ETAMP.Compress.Benchmark">
     <configuration name="ETAMP.Compress.Benchmark" type="DotNetProject" factoryName=".NET Project">
       <option name="EXE_PATH" value="$PROJECT_DIR$/Benchmark/ETAMP.Compress.Benchmark/bin/Release/net9.0/ETAMP.Compress.Benchmark.exe" />
@@ -148,9 +161,9 @@
       </method>
     </configuration>
     <configuration name="ETAMP.Compress.Console" type="DotNetProject" factoryName=".NET Project">
-      <option name="EXE_PATH" value="" />
+      <option name="EXE_PATH" value="$PROJECT_DIR$/Examples/ETAMP.Compress.Console/bin/Release/net9.0/ETAMP.Compress.Console.exe" />
       <option name="PROGRAM_PARAMETERS" value="" />
-      <option name="WORKING_DIRECTORY" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Examples/ETAMP.Compress.Console/bin/Release/net9.0" />
       <option name="PASS_PARENT_ENVS" value="1" />
       <option name="USE_EXTERNAL_CONSOLE" value="0" />
       <option name="USE_MONO" value="0" />
@@ -160,65 +173,15 @@
       <option name="PROJECT_ARGUMENTS_TRACKING" value="1" />
       <option name="PROJECT_WORKING_DIRECTORY_TRACKING" value="1" />
       <option name="PROJECT_KIND" value="DotNetCore" />
-      <option name="PROJECT_TFM" value="" />
-      <method v="2">
-        <option name="Build" />
-      </method>
-    </configuration>
-    <configuration name="ETAMP.Console.CreateETAMP" type="DotNetProject" factoryName=".NET Project">
-      <option name="EXE_PATH" value="$PROJECT_DIR$/Examples/ETAMP.Console.CreateETAMP/bin/Debug/net9.0/ETAMP.Console.CreateETAMP.exe" />
-      <option name="PROGRAM_PARAMETERS" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Examples/ETAMP.Console.CreateETAMP/bin/Debug/net9.0" />
-      <option name="PASS_PARENT_ENVS" value="1" />
-      <option name="USE_EXTERNAL_CONSOLE" value="0" />
-      <option name="USE_MONO" value="0" />
-      <option name="RUNTIME_ARGUMENTS" value="" />
-      <option name="PROJECT_PATH" value="$PROJECT_DIR$/Examples/ETAMP.Console.CreateETAMP/ETAMP.Console.CreateETAMP.csproj" />
-      <option name="PROJECT_EXE_PATH_TRACKING" value="1" />
-      <option name="PROJECT_ARGUMENTS_TRACKING" value="1" />
-      <option name="PROJECT_WORKING_DIRECTORY_TRACKING" value="1" />
-      <option name="PROJECT_KIND" value="DotNetCore" />
       <option name="PROJECT_TFM" value="net9.0" />
       <method v="2">
         <option name="Build" />
       </method>
     </configuration>
-    <configuration name="ETAMP.Console.CreateSignETAMP" type="DotNetProject" factoryName=".NET Project">
-      <option name="EXE_PATH" value="$PROJECT_DIR$/Examples/ETAMP.Console.SignETAMP/bin/Debug/net9.0/ETAMP.Console.SignETAMP.exe" />
-      <option name="PROGRAM_PARAMETERS" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Examples/ETAMP.Console.SignETAMP/bin/Debug/net9.0" />
-      <option name="PASS_PARENT_ENVS" value="1" />
-      <option name="USE_EXTERNAL_CONSOLE" value="0" />
-      <option name="USE_MONO" value="0" />
-      <option name="RUNTIME_ARGUMENTS" value="" />
-      <option name="PROJECT_PATH" value="$PROJECT_DIR$/Examples/ETAMP.Console.SignETAMP/ETAMP.Console.SignETAMP.csproj" />
-      <option name="PROJECT_EXE_PATH_TRACKING" value="1" />
-      <option name="PROJECT_ARGUMENTS_TRACKING" value="1" />
-      <option name="PROJECT_WORKING_DIRECTORY_TRACKING" value="1" />
-      <option name="PROJECT_KIND" value="DotNetCore" />
-      <option name="PROJECT_TFM" value="net9.0" />
-      <method v="2">
-        <option name="Build" />
-      </method>
-    </configuration>
-    <configuration name="ETAMP.Console.ValidateETAMP" type="DotNetProject" factoryName=".NET Project">
-      <option name="EXE_PATH" value="$PROJECT_DIR$/Examples/ETAMP.Console.ValidateETAMP/bin/Debug/net9.0/ETAMP.Console.ValidateETAMP.exe" />
-      <option name="PROGRAM_PARAMETERS" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Examples/ETAMP.Console.ValidateETAMP/bin/Debug/net9.0" />
-      <option name="PASS_PARENT_ENVS" value="1" />
-      <option name="USE_EXTERNAL_CONSOLE" value="0" />
-      <option name="USE_MONO" value="0" />
-      <option name="RUNTIME_ARGUMENTS" value="" />
-      <option name="PROJECT_PATH" value="$PROJECT_DIR$/Examples/ETAMP.Console.ValidateETAMP/ETAMP.Console.ValidateETAMP.csproj" />
-      <option name="PROJECT_EXE_PATH_TRACKING" value="1" />
-      <option name="PROJECT_ARGUMENTS_TRACKING" value="1" />
-      <option name="PROJECT_WORKING_DIRECTORY_TRACKING" value="1" />
-      <option name="PROJECT_KIND" value="DotNetCore" />
-      <option name="PROJECT_TFM" value="net9.0" />
-      <method v="2">
-        <option name="Build" />
-      </method>
-    </configuration>
+    <list>
+      <item itemvalue=".NET Project.ETAMP.Compress.Benchmark" />
+      <item itemvalue=".NET Project.ETAMP.Compress.Console" />
+    </list>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
@@ -264,7 +227,8 @@
       <workItem from="1739038953649" duration="93000" />
       <workItem from="1739054791110" duration="1866000" />
       <workItem from="1739059798580" duration="2686000" />
-      <workItem from="1739098378021" duration="8303000" />
+      <workItem from="1739098378021" duration="9615000" />
+      <workItem from="1739138353164" duration="7161000" />
     </task>
     <task id="LOCAL-00001" summary="Refactor and reorganize ETAMP example projects&#10;&#10;Moved and restructured ETAMP example project files for better modularity and project clarity. Updated project references and dependencies to align with the new structure. Removed redundant files and added missing configurations where necessary.">
       <option name="closed" value="true" />
@@ -482,7 +446,15 @@
       <option name="project" value="LOCAL" />
       <updated>1738197491517</updated>
     </task>
-    <option name="localTasksCounter" value="28" />
+    <task id="LOCAL-00028" summary="Add a console example project and refactor settings  &#10;&#10;Introduced a new console example project to demonstrate compression functionalities. Refactored user-specific `.DotSettings` and IDE-related files for cleanup and consistency.">
+      <option name="closed" value="true" />
+      <created>1739136422168</created>
+      <option name="number" value="00028" />
+      <option name="presentableId" value="LOCAL-00028" />
+      <option name="project" value="LOCAL" />
+      <updated>1739136422168</updated>
+    </task>
+    <option name="localTasksCounter" value="29" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -563,7 +535,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_CLEANUP_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
-    <MESSAGE value="Refactor and reorganize ETAMP example projects.&#10;&#10;Restructured and cleaned up ETAMP example project files for improved clarity and maintainability. Updated project references, adjusted configurations, and removed redundant code. Minor formatting fixes and consistency improvements were also applied." />
     <MESSAGE value="Add CreateSignETAMPService project and update dependencies&#10;&#10;Introduced the CreateSignETAMPService project to the solution for improved modularity. Updated related configurations, project dependencies, and code to support the new functionality. Minor adjustments were made to existing services for consistency." />
     <MESSAGE value="Add CreateSignETAMPService project for modularity&#10;&#10;Introduced the CreateSignETAMPService project to enhance solution structure and maintainability. Updated dependencies, project configurations, and integrated related services. Minor changes were made to existing components for consistency." />
     <MESSAGE value="Add region directives and ECDsaRegistration implementation&#10;&#10;Region directives were introduced across multiple files to improve code organization and readability. An `ECDsaRegistration` class was implemented for better management of ECDsa providers. The changes also include minor adjustments to parameters and accessibility levels for consistency and maintainability." />
@@ -588,7 +559,8 @@
     <MESSAGE value="Remove redundant ECDSA-related classes and enhance compression logging.&#10;&#10;Deleted unused ECDSA-related classes and interfaces to clean up the codebase. Enhanced compression services by adding proper logging, input validation, and `CancellationToken` support. Also added new benchmarks for large data and resolved logger instantiation issues." />
     <MESSAGE value="Refactor compression services and add ETAMP.Sign.Benchmark.&#10;&#10;Updated compression services to use streams instead of strings for better flexibility and performance. Removed unnecessary logging and constructors, and improved serialization handling in core models. Added the ETAMP.Sign.Benchmark project and streamlined benchmarks for the ETAMP.Create.Benchmark." />
     <MESSAGE value="Add tests for compression services and multi-target frameworks&#10;&#10;Implemented unit tests for Deflate and GZipCompression services with various test cases including valid inputs, exceptions, and edge cases. Introduced multi-targeting for test projects to support .NET 8.0 and 9.0, improving compatibility and validation." />
-    <option name="LAST_COMMIT_MESSAGE" value="Add tests for compression services and multi-target frameworks&#10;&#10;Implemented unit tests for Deflate and GZipCompression services with various test cases including valid inputs, exceptions, and edge cases. Introduced multi-targeting for test projects to support .NET 8.0 and 9.0, improving compatibility and validation." />
+    <MESSAGE value="Add a console example project and refactor settings  &#10;&#10;Introduced a new console example project to demonstrate compression functionalities. Refactored user-specific `.DotSettings` and IDE-related files for cleanup and consistency." />
+    <option name="LAST_COMMIT_MESSAGE" value="Add a console example project and refactor settings  &#10;&#10;Introduced a new console example project to demonstrate compression functionalities. Refactored user-specific `.DotSettings` and IDE-related files for cleanup and consistency." />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REARRANGE_BEFORE_PROJECT_COMMIT" value="true" />
@@ -609,30 +581,17 @@
           <option name="timeStamp" value="13" />
         </breakpoint>
         <line-breakpoint enabled="true" type="DotNet Breakpoints">
-          <url>file://$PROJECT_DIR$/Examples/ETAMP.Compress.Console/Program.cs</url>
-          <line>18</line>
-          <properties documentPath="C:\Users\black\RiderProjects\ETAMP\Examples\ETAMP.Compress.Console\Program.cs" containingFunctionPresentation="Method 'Main'">
-            <startOffsets>
-              <option value="553" />
-            </startOffsets>
-            <endOffsets>
-              <option value="626" />
-            </endOffsets>
-          </properties>
-          <option name="timeStamp" value="14" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DotNet Breakpoints">
           <url>file://$PROJECT_DIR$/Source/ETAMP.Compression/CompressionManager.cs</url>
-          <line>21</line>
+          <line>40</line>
           <properties documentPath="C:\Users\black\RiderProjects\ETAMP\Source\ETAMP.Compression\CompressionManager.cs" containingFunctionPresentation="Method 'CompressAsync'">
             <startOffsets>
-              <option value="670" />
+              <option value="1330" />
             </startOffsets>
             <endOffsets>
-              <option value="692" />
+              <option value="1417" />
             </endOffsets>
           </properties>
-          <option name="timeStamp" value="15" />
+          <option name="timeStamp" value="26" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
@@ -641,6 +600,11 @@
         <PinnedItemInfo parentTag="Type#System.RuntimeType" memberName="Module" />
       </pinned-members>
     </pin-to-top-manager>
+    <watches-manager>
+      <configuration name="DotNetProject">
+        <watch expression="outputData" />
+      </configuration>
+    </watches-manager>
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

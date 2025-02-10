@@ -1,4 +1,5 @@
 ﻿using ETAMP.Compression.Interfaces;
+using ETAMP.Core.Interfaces;
 using ETAMP.Core.Management;
 using ETAMP.Core.Models;
 using ETAMP.Extension.ServiceCollection;
@@ -15,18 +16,16 @@ internal class Program
     {
         ServiceCollection services = new();
         services.AddCompositionServices();
+        services.AddBaseServices();
         var provider = services.BuildServiceProvider();
         _compressionManager = provider.GetRequiredService<ICompressionManager>();
-        _model = new ETAMPModel<Token>
-        {
-            Version = 2,
-            CompressionType = CompressionNames.Deflate,
-            Token = new Token
-            {
-                Data = "string"
-            }
-        };
 
+        var protocol = provider.GetRequiredService<IETAMPBase>();
+        var token = new Token
+        {
+            Data = "string"
+        };
+        _model = protocol.CreateETAMPModel("update", token, CompressionNames.Deflate);
         await _compressionManager.CompressAsync(_model);
     }
 }

@@ -21,31 +21,34 @@ public record CompressionManager : ICompressionManager
     {
         Pipe dataPipe = new();
         Pipe outputData = new();
+
         var compression = _compressionServiceFactory.Create(model.CompressionType);
 
         try
         {
             var jsonBytes = JsonSerializer.SerializeToUtf8Bytes(model.Token);
             await dataPipe.Writer.WriteAsync(jsonBytes, cancellationToken);
+            await dataPipe.Writer.FlushAsync(cancellationToken);
             await dataPipe.Writer.CompleteAsync();
         }
         catch (Exception ex)
         {
             await dataPipe.Writer.CompleteAsync(ex);
-            throw;
+            throw new InvalidOperationException("Failed to serialize token.", ex);
         }
 
         await compression.CompressAsync(dataPipe.Reader, outputData.Writer, cancellationToken);
 
-        var read = await outputData.Reader.ReadAsync(cancellationToken);
-        outputData.Reader.AdvanceTo(read.Buffer.End);
+        var result = await outputData.Reader.ReadAsync(cancellationToken);
 
+        var data = result.Buffer.FirstSpan;
+        var token = Base64UrlEncoder.Encode(data);
 
         return new ETAMPModelBuilder
         {
             Id = model.Id,
             Version = model.Version,
-            Token = Base64UrlEncoder.Encode(read.Buffer),
+            Token = token,
             CompressionType = model.CompressionType,
             SignatureMessage = model.SignatureMessage
         };
