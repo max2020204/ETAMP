@@ -1,5 +1,4 @@
-﻿using System.Collections.Concurrent;
-using ETAMP.Compression.Codec;
+﻿using ETAMP.Compression.Codec;
 using ETAMP.Compression.Interfaces;
 using ETAMP.Compression.Interfaces.Factory;
 using ETAMP.Core.Management;
@@ -16,7 +15,6 @@ public sealed record CompressionServiceFactory : ICompressionServiceFactory
 {
     private readonly ILogger<CompressionServiceFactory> _logger;
 
-
     /// <summary>
     /// Provides a factory for managing and creating instances of compression services. This factory supports
     /// registering and retrieving compression services by a specified type.
@@ -24,15 +22,18 @@ public sealed record CompressionServiceFactory : ICompressionServiceFactory
     public CompressionServiceFactory(IServiceProvider serviceProvider, ILogger<CompressionServiceFactory> logger)
     {
         _logger = logger;
-        Factory = new ConcurrentDictionary<string, ICompressionService>();
-        Factory.TryAdd(CompressionNames.Deflate, serviceProvider.GetRequiredService<DeflateCompressionService>());
-        Factory.TryAdd(CompressionNames.GZip, serviceProvider.GetRequiredService<GZipCompressionService>());
+        Factory = new Dictionary<string, ICompressionService>
+        {
+            { CompressionNames.Deflate, serviceProvider.GetRequiredService<DeflateCompressionService>() },
+            { CompressionNames.GZip, serviceProvider.GetRequiredService<GZipCompressionService>() }
+        };
     }
 
     /// <summary>
     ///     Gets the dictionary mapping compression types to their corresponding compression service instances.
     /// </summary>
-    public ConcurrentDictionary<string, ICompressionService> Factory { get; }
+    public IDictionary<string, ICompressionService> Factory { get; }
+
 
     /// <summary>
     ///     Creates and returns an instance of a compression service based on the specified compression type.
@@ -70,15 +71,9 @@ public sealed record CompressionServiceFactory : ICompressionServiceFactory
         Factory.TryAdd(compressionType, serviceFactory);
     }
 
-    /// <summary>
-    ///     Unregisters an existing compression service for a specified compression type.
-    /// </summary>
-    /// <param name="compressionType">The type of compression to unregister.</param>
-    /// <returns>True if the service was successfully unregistered; otherwise, false.</returns>
-    /// <exception cref="ArgumentNullException">Thrown if <paramref name="compressionType" /> is null.</exception>
     public bool UnregisterCompressionService(string compressionType)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(compressionType, nameof(compressionType));
-        return Factory.TryRemove(compressionType, out _);
+        return Factory.Remove(compressionType, out _);
     }
 }

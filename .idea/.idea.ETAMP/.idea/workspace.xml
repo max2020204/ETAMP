@@ -17,16 +17,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8b44219d-6ab5-4022-b5c1-0f01c450f8f2" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.ETAMP/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.ETAMP/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Benchmark/ETAMP.Compress.Benchmark/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Benchmark/ETAMP.Compress.Benchmark/Program.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ETAMP.sln.DotSettings.user" beforeDir="false" afterPath="$PROJECT_DIR$/ETAMP.sln.DotSettings.user" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Examples/ETAMP.Compress.Console/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Examples/ETAMP.Compress.Console/Program.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ETAMP.Compression/Codec/DeflateCompressionService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Compression/Codec/DeflateCompressionService.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ETAMP.Compression/Codec/GZipCompressionService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Compression/Codec/GZipCompressionService.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ETAMP.Compression/CompressionManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Compression/CompressionManager.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ETAMP.Core/Utils/Base64UrlEncoder.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Core/Utils/Base64UrlEncoder.cs" afterDir="false" />
-    </list>
+    <list default="true" id="8b44219d-6ab5-4022-b5c1-0f01c450f8f2" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -228,7 +219,7 @@
       <workItem from="1739054791110" duration="1866000" />
       <workItem from="1739059798580" duration="2686000" />
       <workItem from="1739098378021" duration="9615000" />
-      <workItem from="1739138353164" duration="7161000" />
+      <workItem from="1739138353164" duration="7200000" />
     </task>
     <task id="LOCAL-00001" summary="Refactor and reorganize ETAMP example projects&#10;&#10;Moved and restructured ETAMP example project files for better modularity and project clarity. Updated project references and dependencies to align with the new structure. Removed redundant files and added missing configurations where necessary.">
       <option name="closed" value="true" />
@@ -454,7 +445,15 @@
       <option name="project" value="LOCAL" />
       <updated>1739136422168</updated>
     </task>
-    <option name="localTasksCounter" value="29" />
+    <task id="LOCAL-00029" summary="Add console example project and clean up settings&#10;&#10;Introduced a new console project to demonstrate compression functionalities. Refactored `.DotSettings` and IDE-related workspace configurations for better clarity and consistency. Updated example project dependencies and streamlined redundant configurations.">
+      <option name="closed" value="true" />
+      <created>1739146550569</created>
+      <option name="number" value="00029" />
+      <option name="presentableId" value="LOCAL-00029" />
+      <option name="project" value="LOCAL" />
+      <updated>1739146550569</updated>
+    </task>
+    <option name="localTasksCounter" value="30" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -535,7 +534,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_CLEANUP_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
-    <MESSAGE value="Add CreateSignETAMPService project and update dependencies&#10;&#10;Introduced the CreateSignETAMPService project to the solution for improved modularity. Updated related configurations, project dependencies, and code to support the new functionality. Minor adjustments were made to existing services for consistency." />
     <MESSAGE value="Add CreateSignETAMPService project for modularity&#10;&#10;Introduced the CreateSignETAMPService project to enhance solution structure and maintainability. Updated dependencies, project configurations, and integrated related services. Minor changes were made to existing components for consistency." />
     <MESSAGE value="Add region directives and ECDsaRegistration implementation&#10;&#10;Region directives were introduced across multiple files to improve code organization and readability. An `ECDsaRegistration` class was implemented for better management of ECDsa providers. The changes also include minor adjustments to parameters and accessibility levels for consistency and maintainability." />
     <MESSAGE value="Refactor ECDsa management and remove deprecated classes.&#10;&#10;Removed ECDsaCreator and ECDsaKeyManager classes along with their interfaces. Introduced ECDsaStore and refactored ECDsaProviderBase with support for flexible ECDsa management. Updated dependencies and adjusted implementations where necessary." />
@@ -560,7 +558,8 @@
     <MESSAGE value="Refactor compression services and add ETAMP.Sign.Benchmark.&#10;&#10;Updated compression services to use streams instead of strings for better flexibility and performance. Removed unnecessary logging and constructors, and improved serialization handling in core models. Added the ETAMP.Sign.Benchmark project and streamlined benchmarks for the ETAMP.Create.Benchmark." />
     <MESSAGE value="Add tests for compression services and multi-target frameworks&#10;&#10;Implemented unit tests for Deflate and GZipCompression services with various test cases including valid inputs, exceptions, and edge cases. Introduced multi-targeting for test projects to support .NET 8.0 and 9.0, improving compatibility and validation." />
     <MESSAGE value="Add a console example project and refactor settings  &#10;&#10;Introduced a new console example project to demonstrate compression functionalities. Refactored user-specific `.DotSettings` and IDE-related files for cleanup and consistency." />
-    <option name="LAST_COMMIT_MESSAGE" value="Add a console example project and refactor settings  &#10;&#10;Introduced a new console example project to demonstrate compression functionalities. Refactored user-specific `.DotSettings` and IDE-related files for cleanup and consistency." />
+    <MESSAGE value="Add console example project and clean up settings&#10;&#10;Introduced a new console project to demonstrate compression functionalities. Refactored `.DotSettings` and IDE-related workspace configurations for better clarity and consistency. Updated example project dependencies and streamlined redundant configurations." />
+    <option name="LAST_COMMIT_MESSAGE" value="Add console example project and clean up settings&#10;&#10;Introduced a new console project to demonstrate compression functionalities. Refactored `.DotSettings` and IDE-related workspace configurations for better clarity and consistency. Updated example project dependencies and streamlined redundant configurations." />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REARRANGE_BEFORE_PROJECT_COMMIT" value="true" />
@@ -582,13 +581,13 @@
         </breakpoint>
         <line-breakpoint enabled="true" type="DotNet Breakpoints">
           <url>file://$PROJECT_DIR$/Source/ETAMP.Compression/CompressionManager.cs</url>
-          <line>40</line>
+          <line>39</line>
           <properties documentPath="C:\Users\black\RiderProjects\ETAMP\Source\ETAMP.Compression\CompressionManager.cs" containingFunctionPresentation="Method 'CompressAsync'">
             <startOffsets>
-              <option value="1330" />
+              <option value="1308" />
             </startOffsets>
             <endOffsets>
-              <option value="1417" />
+              <option value="1395" />
             </endOffsets>
           </properties>
           <option name="timeStamp" value="26" />

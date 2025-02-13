@@ -22,6 +22,9 @@ public record CompressionManager : ICompressionManager
         Pipe dataPipe = new();
         Pipe outputData = new();
 
+        if (string.IsNullOrWhiteSpace(model.CompressionType))
+            throw new ArgumentException("Compression type is required.");
+
         var compression = _compressionServiceFactory.Create(model.CompressionType);
 
         try
