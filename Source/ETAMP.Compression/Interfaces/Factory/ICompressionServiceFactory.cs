@@ -1,6 +1,4 @@
-﻿using System.Collections.Concurrent;
-
-namespace ETAMP.Compression.Interfaces.Factory;
+﻿namespace ETAMP.Compression.Interfaces.Factory;
 
 /// <summary>
 ///     Defines a factory interface for creating instances of compression services based on a specified type.
@@ -10,7 +8,7 @@ public interface ICompressionServiceFactory
     /// <summary>
     ///     Represents a factory for creating instances of compression services based on a specified type.
     /// </summary>
-    ConcurrentDictionary<string, ICompressionService> Factory { get; }
+    IDictionary<string, ICompressionService> Factory { get; }
 
     /// <summary>
     ///     Creates an instance of a compression service based on the specified compression type.

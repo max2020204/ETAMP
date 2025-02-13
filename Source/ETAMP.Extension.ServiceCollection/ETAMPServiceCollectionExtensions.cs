@@ -3,7 +3,7 @@ using ETAMP.Compression.Codec;
 using ETAMP.Compression.Factory;
 using ETAMP.Compression.Interfaces;
 using ETAMP.Compression.Interfaces.Factory;
-using ETAMP.Core;
+using ETAMP.Core.Factories;
 using ETAMP.Core.Interfaces;
 using ETAMP.Core.Utils;
 using ETAMP.Encryption;
@@ -167,7 +167,7 @@ public static class ETAMPServiceCollectionExtensions
         Action<ILoggingBuilder>? configureLogging = null)
     {
         AddLogging(services, addlogger, configureLogging);
-        services.AddScoped<IETAMPBase, ETAMPProtocol>();
+        services.AddScoped<IETAMPBase, ETAMPModelFactory>();
         services.AddSingleton<VersionInfo>(_ =>
         {
             var versionInfo = new VersionInfo();
