@@ -5,8 +5,6 @@ using ETAMP.Core.Models;
 using ETAMP.Extension.ServiceCollection;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace ETAMP.Compress.Console;
-
 internal class Program
 {
     private static ICompressionManager _compressionManager;
@@ -26,6 +24,7 @@ internal class Program
             Data = "string"
         };
         _model = protocol.CreateETAMPModel("update", token, CompressionNames.Deflate);
-        await _compressionManager.CompressAsync(_model);
+        var model = await _compressionManager.CompressAsync(_model);
+        Console.WriteLine(model);
     }
 }

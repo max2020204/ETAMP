@@ -1,6 +1,4 @@
-﻿using System.Buffers;
-using System.IO.Pipelines;
-using System.Text;
+﻿using System.Text;
 using System.Text.Json;
 using ETAMP.Core.Models;
 
@@ -8,45 +6,41 @@ namespace ETAMP.Core.Extensions;
 
 public static class TokenExtensions
 {
-    private static async Task<string> SerializeToJsonAsync<T>(T data)
+    private static async Task<string> SerializeToJsonAsync<T>(T data, CancellationToken cancellationToken = default)
     {
-        Pipe pipe = new();
-        await pipe.Writer.WriteAsync(JsonSerializer.SerializeToUtf8Bytes(data));
-        await pipe.Writer.CompleteAsync();
-        var result = await pipe.Reader.ReadAsync();
-        var json = Encoding.UTF8.GetString(result.Buffer);
-        pipe.Reader.AdvanceTo(result.Buffer.End);
-        return json;
+        using var ms = new MemoryStream();
+        await JsonSerializer.SerializeAsync(ms, data, cancellationToken: cancellationToken);
+        ms.Position = 0;
+
+        using var sr = new StreamReader(ms, Encoding.UTF8);
+        return await sr.ReadToEndAsync(cancellationToken);
     }
 
-    private static async Task<T> DeserializeFromJsonAsync<T>(string json) where T : class
+    private static async Task<T?> DeserializeFromJsonAsync<T>(string json,
+        CancellationToken cancellationToken = default)
+        where T : class
     {
-        var pipe = new Pipe();
-        await pipe.Writer.WriteAsync(Encoding.UTF8.GetBytes(json));
-        await pipe.Writer.CompleteAsync();
+        var jsonBytes = Encoding.UTF8.GetBytes(json);
+        using var stream = new MemoryStream(jsonBytes);
 
-        var result = await pipe.Reader.ReadAsync();
-        var obj = JsonSerializer.Deserialize<T>(result.Buffer.ToArray());
-
-        pipe.Reader.AdvanceTo(result.Buffer.End);
-        await pipe.Reader.CompleteAsync();
-
-        return obj!;
+        return await JsonSerializer.DeserializeAsync<T>(stream, cancellationToken: cancellationToken);
     }
 
-    public static async Task SetData<T>(this Token token, T dataObject) where T : class
+    public static async Task SetData<T>(this Token token, T dataObject, CancellationToken cancellationToken = default)
+        where T : class
     {
-        token.Data = await SerializeToJsonAsync(dataObject);
+        token.Data = await SerializeToJsonAsync(dataObject, cancellationToken);
     }
 
-    public static async Task<T> GetData<T>(this Token token) where T : class
+    public static async Task<T?> GetData<T>(this Token token, CancellationToken cancellationToken = default)
+        where T : class
     {
         ArgumentNullException.ThrowIfNull(token.Data);
-        return await DeserializeFromJsonAsync<T>(token.Data);
+        return await DeserializeFromJsonAsync<T>(token.Data, cancellationToken);
     }
 
-    public static async Task<string> ToJsonAsync(this Token token)
+    public static async Task<string> ToJsonAsync(this Token token, CancellationToken cancellationToken = default)
     {
-        return await SerializeToJsonAsync(token);
+        return await SerializeToJsonAsync(token, cancellationToken);
     }
 }

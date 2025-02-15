@@ -17,7 +17,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8b44219d-6ab5-4022-b5c1-0f01c450f8f2" name="Changes" comment="" />
+    <list default="true" id="8b44219d-6ab5-4022-b5c1-0f01c450f8f2" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.ETAMP/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.ETAMP/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -32,6 +34,7 @@
         <option value="Axi &lt;maksymnikitiuk2014@gmail.com&gt;" />
       </list>
     </option>
+    <option name="PUSH_AUTO_UPDATE" value="true" />
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
         <entry key="$PROJECT_DIR$" value="master" />
@@ -63,21 +66,15 @@
   }
 }</component>
   <component name="HighlightingSettingsPerFile">
-    <setting file="mock:///AIAssistantSnippet." root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///AIAssistantSnippet." root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///AIAssistantSnippet." root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///AIAssistantSnippet." root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///AIAssistantSnippet." root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///AIAssistantSnippet." root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///AIAssistantSnippet." root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///AIAssistantSnippet." root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///AIAssistantSnippet." root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/24bdcc69acdece342cf3936ea4fd90f56470da92963a5b716eddc93db340b5/Pipe.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/621526284d3e4868b98948aff942206525763e57e194a27623b66c384466/ServiceProviderServiceExtensions.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/8d7a996932951dc929c6c3855f98f0c58cae8ac5b0d0bbf223f97c6388b3b61f/ConcurrentDictionary.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/ae476ed175fd2828746f511ec85aed67c2ff89bfec3965c26aac472bec3d8/PipeReader.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/bc12665a75bf1c583d5d436735a364589d923dc8c284fe751c4bd4f977f5f75/ReadResult.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/c7102cd0ffb8973777e61b1942c3fffac7e14016a511d055c3adf73ff91748/ThrowHelper.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/d4a8f8d5219d57524ca89ff2dc8bdc5a23996aa3913260a7142bfd992c393a4/ServiceCollectionContainerBuilderExtensions.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/black/RiderProjects/ETAMP/Source/ETAMP.Compression/Codec/GZipCompressionService.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/black/RiderProjects/ETAMP/Source/ETAMP.Compression/CompressionManager.cs" root0="SKIP_HIGHLIGHTING" />
   </component>
   <component name="KubernetesApiPersistence">{}</component>
   <component name="KubernetesApiProvider">{
@@ -100,7 +97,7 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
-    ".NET Project.ETAMP.Compress.Benchmark.executor": "Run",
+    ".NET Project.ETAMP.Compress.Benchmark.executor": "dotMemory",
     ".NET Project.ETAMP.Compress.Console.executor": "Run",
     ".NET Project.ETAMP.Console.CreateETAMP.executor": "Run",
     ".NET Project.ETAMP.Console.CreateETAMPService.executor": "Debug",
@@ -122,7 +119,7 @@
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "preferences.sourceCode.C#",
+    "settings.editor.selected.configurable": "preferences.pluginManager",
     "settings.editor.splitter.proportion": "0.3058104",
     "vue.rearranger.settings.migration": "true"
   },
@@ -175,6 +172,9 @@
     </list>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="SvnConfiguration">
+    <configuration>C:\Users\black\AppData\Roaming\Subversion</configuration>
+  </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
       <changelist id="8b44219d-6ab5-4022-b5c1-0f01c450f8f2" name="Changes" comment="" />
@@ -220,6 +220,8 @@
       <workItem from="1739059798580" duration="2686000" />
       <workItem from="1739098378021" duration="9615000" />
       <workItem from="1739138353164" duration="7200000" />
+      <workItem from="1739488074877" duration="1717000" />
+      <workItem from="1739609638250" duration="3016000" />
     </task>
     <task id="LOCAL-00001" summary="Refactor and reorganize ETAMP example projects&#10;&#10;Moved and restructured ETAMP example project files for better modularity and project clarity. Updated project references and dependencies to align with the new structure. Removed redundant files and added missing configurations where necessary.">
       <option name="closed" value="true" />
@@ -453,7 +455,15 @@
       <option name="project" value="LOCAL" />
       <updated>1739146550569</updated>
     </task>
-    <option name="localTasksCounter" value="30" />
+    <task id="LOCAL-00030" summary="Refactor ETAMP core and services for improved modularity.&#10;&#10;Replaced `ETAMPProtocol` with `ETAMPModelFactory` in service registration for clearer responsibility segregation. Simplified Pipe-based JSON serialization across extensions and resolved redundancies in compression service factory design by using `IDictionary`. Improved error handling and streamlined code for better maintainability.">
+      <option name="closed" value="true" />
+      <created>1739489770119</created>
+      <option name="number" value="00030" />
+      <option name="presentableId" value="LOCAL-00030" />
+      <option name="project" value="LOCAL" />
+      <updated>1739489770119</updated>
+    </task>
+    <option name="localTasksCounter" value="31" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -534,7 +544,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_CLEANUP_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
-    <MESSAGE value="Add CreateSignETAMPService project for modularity&#10;&#10;Introduced the CreateSignETAMPService project to enhance solution structure and maintainability. Updated dependencies, project configurations, and integrated related services. Minor changes were made to existing components for consistency." />
     <MESSAGE value="Add region directives and ECDsaRegistration implementation&#10;&#10;Region directives were introduced across multiple files to improve code organization and readability. An `ECDsaRegistration` class was implemented for better management of ECDsa providers. The changes also include minor adjustments to parameters and accessibility levels for consistency and maintainability." />
     <MESSAGE value="Refactor ECDsa management and remove deprecated classes.&#10;&#10;Removed ECDsaCreator and ECDsaKeyManager classes along with their interfaces. Introduced ECDsaStore and refactored ECDsaProviderBase with support for flexible ECDsa management. Updated dependencies and adjusted implementations where necessary." />
     <MESSAGE value="Refactor ECDsa management and add comprehensive documentation.&#10;&#10;Replaced deprecated ECDsa key management classes with modular implementations like `ECDsaStore` and enhanced `ECDsaProviderBase`. Improved flexibility in ECDsa handling by integrating named and GUID-based storage mechanisms. Updated codebase with extensive XML documentation for better code clarity and maintainability." />
@@ -559,7 +568,8 @@
     <MESSAGE value="Add tests for compression services and multi-target frameworks&#10;&#10;Implemented unit tests for Deflate and GZipCompression services with various test cases including valid inputs, exceptions, and edge cases. Introduced multi-targeting for test projects to support .NET 8.0 and 9.0, improving compatibility and validation." />
     <MESSAGE value="Add a console example project and refactor settings  &#10;&#10;Introduced a new console example project to demonstrate compression functionalities. Refactored user-specific `.DotSettings` and IDE-related files for cleanup and consistency." />
     <MESSAGE value="Add console example project and clean up settings&#10;&#10;Introduced a new console project to demonstrate compression functionalities. Refactored `.DotSettings` and IDE-related workspace configurations for better clarity and consistency. Updated example project dependencies and streamlined redundant configurations." />
-    <option name="LAST_COMMIT_MESSAGE" value="Add console example project and clean up settings&#10;&#10;Introduced a new console project to demonstrate compression functionalities. Refactored `.DotSettings` and IDE-related workspace configurations for better clarity and consistency. Updated example project dependencies and streamlined redundant configurations." />
+    <MESSAGE value="Refactor ETAMP core and services for improved modularity.&#10;&#10;Replaced `ETAMPProtocol` with `ETAMPModelFactory` in service registration for clearer responsibility segregation. Simplified Pipe-based JSON serialization across extensions and resolved redundancies in compression service factory design by using `IDictionary`. Improved error handling and streamlined code for better maintainability." />
+    <option name="LAST_COMMIT_MESSAGE" value="Refactor ETAMP core and services for improved modularity.&#10;&#10;Replaced `ETAMPProtocol` with `ETAMPModelFactory` in service registration for clearer responsibility segregation. Simplified Pipe-based JSON serialization across extensions and resolved redundancies in compression service factory design by using `IDictionary`. Improved error handling and streamlined code for better maintainability." />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REARRANGE_BEFORE_PROJECT_COMMIT" value="true" />
@@ -579,19 +589,6 @@
           </properties>
           <option name="timeStamp" value="13" />
         </breakpoint>
-        <line-breakpoint enabled="true" type="DotNet Breakpoints">
-          <url>file://$PROJECT_DIR$/Source/ETAMP.Compression/CompressionManager.cs</url>
-          <line>39</line>
-          <properties documentPath="C:\Users\black\RiderProjects\ETAMP\Source\ETAMP.Compression\CompressionManager.cs" containingFunctionPresentation="Method 'CompressAsync'">
-            <startOffsets>
-              <option value="1308" />
-            </startOffsets>
-            <endOffsets>
-              <option value="1395" />
-            </endOffsets>
-          </properties>
-          <option name="timeStamp" value="26" />
-        </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
     <pin-to-top-manager>
