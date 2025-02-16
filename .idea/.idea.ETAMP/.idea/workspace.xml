@@ -17,8 +17,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8b44219d-6ab5-4022-b5c1-0f01c450f8f2" name="Changes" comment="">
+    <list default="true" id="8b44219d-6ab5-4022-b5c1-0f01c450f8f2" name="Changes" comment="Replace Pipe usage with MemoryStream and streamline compression  &#10;&#10;Refactored serialization and compression logic to use `MemoryStream` instead of `Pipe`, improving simplicity and maintainability. Added logging to track compression and decompression processes, and integrated `CancellationToken` support for better performance management. Enhanced error handling and ensured consistent checks for compression type validity.">
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.ETAMP/.idea/shelf/Uncommitted_changes_before_rebase__Changes_.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.ETAMP/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.ETAMP/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Examples/ETAMP.Compress.Console/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Examples/ETAMP.Compress.Console/Program.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ETAMP.Compression/Codec/DeflateCompressionService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Compression/Codec/DeflateCompressionService.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ETAMP.Compression/CompressionManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Compression/CompressionManager.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -73,8 +77,8 @@
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/bc12665a75bf1c583d5d436735a364589d923dc8c284fe751c4bd4f977f5f75/ReadResult.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/c7102cd0ffb8973777e61b1942c3fffac7e14016a511d055c3adf73ff91748/ThrowHelper.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/d4a8f8d5219d57524ca89ff2dc8bdc5a23996aa3913260a7142bfd992c393a4/ServiceCollectionContainerBuilderExtensions.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/black/RiderProjects/ETAMP/Source/ETAMP.Compression/Codec/GZipCompressionService.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="mock://C:/Users/black/RiderProjects/ETAMP/Source/ETAMP.Compression/CompressionManager.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/black/RiderProjects/ETAMP/Source/ETAMP.Core/Extensions/TokenExtensions.cs" root0="SKIP_HIGHLIGHTING" />
   </component>
   <component name="KubernetesApiPersistence">{}</component>
   <component name="KubernetesApiProvider">{
@@ -97,8 +101,8 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
-    ".NET Project.ETAMP.Compress.Benchmark.executor": "dotMemory",
-    ".NET Project.ETAMP.Compress.Console.executor": "Run",
+    ".NET Project.ETAMP.Compress.Benchmark.executor": "Run",
+    ".NET Project.ETAMP.Compress.Console.executor": "Debug",
     ".NET Project.ETAMP.Console.CreateETAMP.executor": "Run",
     ".NET Project.ETAMP.Console.CreateETAMPService.executor": "Debug",
     ".NET Project.ETAMP.Console.CreateSignETAMP.executor": "Run",
@@ -110,6 +114,7 @@
     "5c53a9ec-5001-4a38-9545-ad7f91d669ad.executor": "Debug",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
+    "XThreadsFramesViewSplitterKey": "0.5015625",
     "c762ceee-8ff5-402e-b6d9-fbb316d19fb8.executor": "Debug",
     "d8965117-eb1a-42c8-b314-86c3ae8583f1.executor": "Debug",
     "git-widget-placeholder": "pipe__dev",
@@ -129,7 +134,7 @@
     ]
   }
 }]]></component>
-  <component name="RunManager" selected=".NET Project.ETAMP.Compress.Benchmark">
+  <component name="RunManager" selected=".NET Project.ETAMP.Compress.Console">
     <configuration name="ETAMP.Compress.Benchmark" type="DotNetProject" factoryName=".NET Project">
       <option name="EXE_PATH" value="$PROJECT_DIR$/Benchmark/ETAMP.Compress.Benchmark/bin/Release/net9.0/ETAMP.Compress.Benchmark.exe" />
       <option name="PROGRAM_PARAMETERS" value="" />
@@ -222,6 +227,7 @@
       <workItem from="1739138353164" duration="7200000" />
       <workItem from="1739488074877" duration="1717000" />
       <workItem from="1739609638250" duration="3016000" />
+      <workItem from="1739657060111" duration="5948000" />
     </task>
     <task id="LOCAL-00001" summary="Refactor and reorganize ETAMP example projects&#10;&#10;Moved and restructured ETAMP example project files for better modularity and project clarity. Updated project references and dependencies to align with the new structure. Removed redundant files and added missing configurations where necessary.">
       <option name="closed" value="true" />
@@ -463,7 +469,15 @@
       <option name="project" value="LOCAL" />
       <updated>1739489770119</updated>
     </task>
-    <option name="localTasksCounter" value="31" />
+    <task id="LOCAL-00031" summary="Replace Pipe usage with MemoryStream and streamline compression  &#10;&#10;Refactored serialization and compression logic to use `MemoryStream` instead of `Pipe`, improving simplicity and maintainability. Added logging to track compression and decompression processes, and integrated `CancellationToken` support for better performance management. Enhanced error handling and ensured consistent checks for compression type validity.">
+      <option name="closed" value="true" />
+      <created>1739660579879</created>
+      <option name="number" value="00031" />
+      <option name="presentableId" value="LOCAL-00031" />
+      <option name="project" value="LOCAL" />
+      <updated>1739660579879</updated>
+    </task>
+    <option name="localTasksCounter" value="32" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -544,10 +558,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_CLEANUP_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
-    <MESSAGE value="Add region directives and ECDsaRegistration implementation&#10;&#10;Region directives were introduced across multiple files to improve code organization and readability. An `ECDsaRegistration` class was implemented for better management of ECDsa providers. The changes also include minor adjustments to parameters and accessibility levels for consistency and maintainability." />
-    <MESSAGE value="Refactor ECDsa management and remove deprecated classes.&#10;&#10;Removed ECDsaCreator and ECDsaKeyManager classes along with their interfaces. Introduced ECDsaStore and refactored ECDsaProviderBase with support for flexible ECDsa management. Updated dependencies and adjusted implementations where necessary." />
-    <MESSAGE value="Refactor ECDsa management and add comprehensive documentation.&#10;&#10;Replaced deprecated ECDsa key management classes with modular implementations like `ECDsaStore` and enhanced `ECDsaProviderBase`. Improved flexibility in ECDsa handling by integrating named and GUID-based storage mechanisms. Updated codebase with extensive XML documentation for better code clarity and maintainability." />
-    <MESSAGE value="Refactor ETAMP services and enhance ECDsa management.&#10;&#10;Renamed service implementations for better readability and modularity, aligning class names with their respective functionalities. Refactored ECDsa handling by introducing modular components like `ECDsaStore` and improving `ECDsaProviderBase`. Improved flexibility, added comprehensive XML documentation for maintainability, and updated dependencies accordingly." />
     <MESSAGE value="Remove obsolete ETAMP example projects and refactor structure.&#10;&#10;Deleted outdated ETAMP example projects, including CreateETAMP, CreateSignETAMP, and ValidateETAMP. This change streamlines the codebase by removing redundant files and unused dependencies. Updated structure and configurations to improve clarity and maintainability." />
     <MESSAGE value="Refactor project structure and rename key components.&#10;&#10;Reorganized namespaces, classes, and files for better alignment and clarity. Renamed &quot;CreateETAMPService&quot; to &quot;CreateETAMP&quot;, &quot;CreateSignETAMPService&quot; to &quot;SignETAMP&quot;, and adjusted all references accordingly. Updated solution and project files to reflect the new structure." />
     <MESSAGE value="Refactor ETAMP project structure and update README.&#10;&#10;Reorganized namespaces, classes, and project files for better alignment and clarity. Renamed key components like `CreateETAMPService` to `CreateETAMP` and updated solution references. Overhauled README to reflect the changes and provide updated usage examples." />
@@ -569,7 +579,11 @@
     <MESSAGE value="Add a console example project and refactor settings  &#10;&#10;Introduced a new console example project to demonstrate compression functionalities. Refactored user-specific `.DotSettings` and IDE-related files for cleanup and consistency." />
     <MESSAGE value="Add console example project and clean up settings&#10;&#10;Introduced a new console project to demonstrate compression functionalities. Refactored `.DotSettings` and IDE-related workspace configurations for better clarity and consistency. Updated example project dependencies and streamlined redundant configurations." />
     <MESSAGE value="Refactor ETAMP core and services for improved modularity.&#10;&#10;Replaced `ETAMPProtocol` with `ETAMPModelFactory` in service registration for clearer responsibility segregation. Simplified Pipe-based JSON serialization across extensions and resolved redundancies in compression service factory design by using `IDictionary`. Improved error handling and streamlined code for better maintainability." />
-    <option name="LAST_COMMIT_MESSAGE" value="Refactor ETAMP core and services for improved modularity.&#10;&#10;Replaced `ETAMPProtocol` with `ETAMPModelFactory` in service registration for clearer responsibility segregation. Simplified Pipe-based JSON serialization across extensions and resolved redundancies in compression service factory design by using `IDictionary`. Improved error handling and streamlined code for better maintainability." />
+    <MESSAGE value="Remove unnecessary `.idea` configuration files.&#10;&#10;This commit deletes redundant `.idea` and Rider-generated configuration files, which are not needed for version control. Cleaning up these files improves repository hygiene and avoids clutter." />
+    <MESSAGE value="Remove unnecessary shelved changes and IDE settings files.&#10;&#10;This commit deletes leftover shelved files and IDE-specific settings that are no longer needed, resulting in a cleaner workspace. These changes help reduce unnecessary clutter in the repository." />
+    <MESSAGE value="Remove shelved patch and user-specific settings file&#10;&#10;Deleted unused shelved patch and a settings file containing user-specific configurations. This cleanup removes unnecessary files and improves repository integrity." />
+    <MESSAGE value="Replace Pipe usage with MemoryStream and streamline compression  &#10;&#10;Refactored serialization and compression logic to use `MemoryStream` instead of `Pipe`, improving simplicity and maintainability. Added logging to track compression and decompression processes, and integrated `CancellationToken` support for better performance management. Enhanced error handling and ensured consistent checks for compression type validity." />
+    <option name="LAST_COMMIT_MESSAGE" value="Replace Pipe usage with MemoryStream and streamline compression  &#10;&#10;Refactored serialization and compression logic to use `MemoryStream` instead of `Pipe`, improving simplicity and maintainability. Added logging to track compression and decompression processes, and integrated `CancellationToken` support for better performance management. Enhanced error handling and ensured consistent checks for compression type validity." />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REARRANGE_BEFORE_PROJECT_COMMIT" value="true" />
@@ -589,6 +603,71 @@
           </properties>
           <option name="timeStamp" value="13" />
         </breakpoint>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/Examples/ETAMP.Compress.Console/Program.cs</url>
+          <line>28</line>
+          <properties documentPath="C:\Users\black\RiderProjects\ETAMP\Examples\ETAMP.Compress.Console\Program.cs" containingFunctionPresentation="Method 'Main'">
+            <startOffsets>
+              <option value="1044" />
+            </startOffsets>
+            <endOffsets>
+              <option value="1069" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="16" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/Examples/ETAMP.Compress.Console/Program.cs</url>
+          <line>27</line>
+          <properties documentPath="C:\Users\black\RiderProjects\ETAMP\Examples\ETAMP.Compress.Console\Program.cs" containingFunctionPresentation="Method 'Main'">
+            <startOffsets>
+              <option value="967" />
+            </startOffsets>
+            <endOffsets>
+              <option value="1035" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="17" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/Examples/ETAMP.Compress.Console/Program.cs</url>
+          <line>26</line>
+          <properties documentPath="C:\Users\black\RiderProjects\ETAMP\Examples\ETAMP.Compress.Console\Program.cs" containingFunctionPresentation="Method 'Main'">
+            <startOffsets>
+              <option value="898" />
+            </startOffsets>
+            <endOffsets>
+              <option value="958" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="18" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/Source/ETAMP.Compression/CompressionManager.cs</url>
+          <line>89</line>
+          <properties documentPath="C:\Users\black\RiderProjects\ETAMP\Source\ETAMP.Compression\CompressionManager.cs" containingFunctionPresentation="Method 'DecompressAsync'">
+            <startOffsets>
+              <option value="3766" />
+            </startOffsets>
+            <endOffsets>
+              <option value="3809" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="19" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/Source/ETAMP.Compression/Codec/DeflateCompressionService.cs</url>
+          <line>44</line>
+          <properties documentPath="C:\Users\black\RiderProjects\ETAMP\Source\ETAMP.Compression\Codec\DeflateCompressionService.cs" containingFunctionPresentation="Method 'DecompressAsync'">
+            <startOffsets>
+              <option value="1399" />
+            </startOffsets>
+            <endOffsets>
+              <option value="1522" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="20" />
+        </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
     <pin-to-top-manager>

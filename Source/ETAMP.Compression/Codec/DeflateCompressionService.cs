@@ -45,7 +45,7 @@ public sealed record DeflateCompressionService : ICompressionService
             await using var decompressor =
                 new DeflateStream(inputReader.AsStream(), CompressionMode.Decompress, true);
             _logger.LogDebug("Decompressing data stream...");
-            await decompressor.CopyToAsync(outputWriter.AsStream(), cancellationToken);
+            await decompressor.CopyToAsync(outputWriter, cancellationToken);
         }
         catch (Exception ex)
         {
