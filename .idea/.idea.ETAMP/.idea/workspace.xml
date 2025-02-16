@@ -18,11 +18,23 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="8b44219d-6ab5-4022-b5c1-0f01c450f8f2" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/Source/ETAMP.Core/Extensions/ECDKeyModelProviderExtensions.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Source/ETAMP.Core/Extensions/ETAMPModelBuilderExtensions.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.ETAMP/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.ETAMP/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ETAMP.sln.DotSettings.user" beforeDir="false" afterPath="$PROJECT_DIR$/ETAMP.sln.DotSettings.user" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ETAMP.Compression/Codec/DeflateCompressionService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Compression/Codec/DeflateCompressionService.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ETAMP.Compression/Codec/GZipCompressionService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Compression/Codec/GZipCompressionService.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/ETAMP.Compression/CompressionManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Compression/CompressionManager.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/ETAMP.Compression/Factory/CompressionServiceFactory.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Compression/Factory/CompressionServiceFactory.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/ETAMP.Compression/Interfaces/Factory/ICompressionServiceFactory.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Compression/Interfaces/Factory/ICompressionServiceFactory.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ETAMP.Extension.ServiceCollection/ETAMPServiceCollectionExtensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Extension.ServiceCollection/ETAMPServiceCollectionExtensions.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ETAMP.Compression/Interfaces/ICompressionManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Compression/Interfaces/ICompressionManager.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ETAMP.Compression/Interfaces/ICompressionService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Compression/Interfaces/ICompressionService.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ETAMP.Core/Extensions/ETAMPModelBuilderExtension.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ETAMP.Core/Extensions/ETAMPModelExtensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Core/Extensions/ETAMPModelExtensions.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ETAMP.Core/Extensions/TokenExtensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Core/Extensions/TokenExtensions.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ETAMP.Core/Interfaces/IInitialize.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Core/Interfaces/IInitialize.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ETAMP.Core/Models/ECDKeyModelProvider.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Core/Models/ECDKeyModelProvider.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ETAMP.Wrapper/SignWrapper.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Wrapper/SignWrapper.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -70,8 +82,7 @@
   }
 }</component>
   <component name="HighlightingSettingsPerFile">
-    <setting file="mock:///AIAssistantSnippet." root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///AIAssistantSnippet." root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/194f116b9139be4638488f32d8b917e5fa17de5f0ead57ef8532f7244b8b5f4/StringBuilder.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/24bdcc69acdece342cf3936ea4fd90f56470da92963a5b716eddc93db340b5/Pipe.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/621526284d3e4868b98948aff942206525763e57e194a27623b66c384466/ServiceProviderServiceExtensions.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/8d7a996932951dc929c6c3855f98f0c58cae8ac5b0d0bbf223f97c6388b3b61f/ConcurrentDictionary.cs" root0="FORCE_HIGHLIGHTING" />
@@ -228,7 +239,9 @@
       <workItem from="1739488074877" duration="1717000" />
       <workItem from="1739609638250" duration="3016000" />
       <workItem from="1739657060111" duration="6599000" />
-      <workItem from="1739702361773" duration="1476000" />
+      <workItem from="1739702361773" duration="2175000" />
+      <workItem from="1739740858517" duration="886000" />
+      <workItem from="1739741764816" duration="1806000" />
     </task>
     <task id="LOCAL-00001" summary="Refactor and reorganize ETAMP example projects&#10;&#10;Moved and restructured ETAMP example project files for better modularity and project clarity. Updated project references and dependencies to align with the new structure. Removed redundant files and added missing configurations where necessary.">
       <option name="closed" value="true" />
@@ -486,7 +499,15 @@
       <option name="project" value="LOCAL" />
       <updated>1739666925203</updated>
     </task>
-    <option name="localTasksCounter" value="33" />
+    <task id="LOCAL-00033" summary="Refactor compression service implementation.&#10;&#10;Replaced compression factory pattern with DI-based keyed services for improved maintainability. Introduced a helper method to streamline pipe data reading, reducing code duplication. Enhanced error handling, logging, and modularity across compression and decompression logic.">
+      <option name="closed" value="true" />
+      <created>1739703949069</created>
+      <option name="number" value="00033" />
+      <option name="presentableId" value="LOCAL-00033" />
+      <option name="project" value="LOCAL" />
+      <updated>1739703949069</updated>
+    </task>
+    <option name="localTasksCounter" value="34" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -567,7 +588,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_CLEANUP_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
-    <MESSAGE value="Refactor project structure and rename key components.&#10;&#10;Reorganized namespaces, classes, and files for better alignment and clarity. Renamed &quot;CreateETAMPService&quot; to &quot;CreateETAMP&quot;, &quot;CreateSignETAMPService&quot; to &quot;SignETAMP&quot;, and adjusted all references accordingly. Updated solution and project files to reflect the new structure." />
     <MESSAGE value="Refactor ETAMP project structure and update README.&#10;&#10;Reorganized namespaces, classes, and project files for better alignment and clarity. Renamed key components like `CreateETAMPService` to `CreateETAMP` and updated solution references. Overhauled README to reflect the changes and provide updated usage examples." />
     <MESSAGE value="Add NuGet packaging support and update ETAMP project details&#10;&#10;Enabled automatic NuGet package generation for all ETAMP projects with output to a unified `nupkgs` directory. Updated copyright year to 2025 and adjusted project metadata for clarity and consistency. Prepared the solution for streamlined deployment and distribution." />
     <MESSAGE value="Add NuGet packaging support and update project metadata.&#10;&#10;Enabled automatic NuGet package generation for all ETAMP projects, outputting to a unified `nupkgs` directory. Updated project files to include README linking and adjusted metadata for consistency. Prepared the solution for streamlined deployment and better package clarity." />
@@ -592,7 +612,8 @@
     <MESSAGE value="Remove shelved patch and user-specific settings file&#10;&#10;Deleted unused shelved patch and a settings file containing user-specific configurations. This cleanup removes unnecessary files and improves repository integrity." />
     <MESSAGE value="Replace Pipe usage with MemoryStream and streamline compression  &#10;&#10;Refactored serialization and compression logic to use `MemoryStream` instead of `Pipe`, improving simplicity and maintainability. Added logging to track compression and decompression processes, and integrated `CancellationToken` support for better performance management. Enhanced error handling and ensured consistent checks for compression type validity." />
     <MESSAGE value="Refactor compression logic and improve maintainability.&#10;&#10;Replaced `Pipe` with `MemoryStream` for improved simplicity and maintainability. Added decompression functionality in the console example and updated `DeflateCompressionService` and `CompressionManager` to enhance error handling, logging, and token management. These changes ensure better performance, modularity, and consistency across the compression service implementation." />
-    <option name="LAST_COMMIT_MESSAGE" value="Refactor compression logic and improve maintainability.&#10;&#10;Replaced `Pipe` with `MemoryStream` for improved simplicity and maintainability. Added decompression functionality in the console example and updated `DeflateCompressionService` and `CompressionManager` to enhance error handling, logging, and token management. These changes ensure better performance, modularity, and consistency across the compression service implementation." />
+    <MESSAGE value="Refactor compression service implementation.&#10;&#10;Replaced compression factory pattern with DI-based keyed services for improved maintainability. Introduced a helper method to streamline pipe data reading, reducing code duplication. Enhanced error handling, logging, and modularity across compression and decompression logic." />
+    <option name="LAST_COMMIT_MESSAGE" value="Refactor compression service implementation.&#10;&#10;Replaced compression factory pattern with DI-based keyed services for improved maintainability. Introduced a helper method to streamline pipe data reading, reducing code duplication. Enhanced error handling, logging, and modularity across compression and decompression logic." />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REARRANGE_BEFORE_PROJECT_COMMIT" value="true" />
@@ -612,32 +633,6 @@
           </properties>
           <option name="timeStamp" value="13" />
         </breakpoint>
-        <line-breakpoint enabled="true" type="DotNet Breakpoints">
-          <url>file://$PROJECT_DIR$/Source/ETAMP.Compression/CompressionManager.cs</url>
-          <line>82</line>
-          <properties documentPath="C:\Users\black\RiderProjects\ETAMP\Source\ETAMP.Compression\CompressionManager.cs" containingFunctionPresentation="Method 'DecompressAsync'">
-            <startOffsets>
-              <option value="3345" />
-            </startOffsets>
-            <endOffsets>
-              <option value="3388" />
-            </endOffsets>
-          </properties>
-          <option name="timeStamp" value="19" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DotNet Breakpoints">
-          <url>file://$PROJECT_DIR$/Source/ETAMP.Compression/Codec/DeflateCompressionService.cs</url>
-          <line>44</line>
-          <properties documentPath="C:\Users\black\RiderProjects\ETAMP\Source\ETAMP.Compression\Codec\DeflateCompressionService.cs" containingFunctionPresentation="Method 'DecompressAsync'">
-            <startOffsets>
-              <option value="1399" />
-            </startOffsets>
-            <endOffsets>
-              <option value="1522" />
-            </endOffsets>
-          </properties>
-          <option name="timeStamp" value="20" />
-        </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
     <pin-to-top-manager>
