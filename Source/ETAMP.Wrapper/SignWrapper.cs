@@ -30,9 +30,11 @@ public sealed class SignWrapper : ISignWrapper
         await using var stream = new MemoryStream();
         await using (var writer = new StreamWriter(stream, Encoding.UTF8, 1024, true))
         {
-            await writer.WriteAsync(etamp.Id.ToString());
-            await writer.WriteAsync(etamp.Version.ToString());
-            await writer.WriteAsync(await etamp.Token.ToJsonAsync());
+            StringBuilder sb = new();
+            sb.Append(etamp.Id);
+            sb.Append(etamp.Version);
+            await writer.WriteAsync(sb.ToString());
+            await writer.WriteAsync(await etamp.Token.ToJsonAsync(cancellationToken));
             await writer.WriteAsync(etamp.UpdateType);
             await writer.WriteAsync(etamp.CompressionType);
 
