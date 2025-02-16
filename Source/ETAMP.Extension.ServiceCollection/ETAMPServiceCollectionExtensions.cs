@@ -5,6 +5,7 @@ using ETAMP.Compression.Interfaces;
 using ETAMP.Compression.Interfaces.Factory;
 using ETAMP.Core.Factories;
 using ETAMP.Core.Interfaces;
+using ETAMP.Core.Management;
 using ETAMP.Core.Utils;
 using ETAMP.Encryption;
 using ETAMP.Encryption.ECDsaManager;
@@ -96,8 +97,8 @@ public static class ETAMPServiceCollectionExtensions
         Action<ILoggingBuilder>? configureLogging = null)
     {
         AddLogging(services, addlogger, configureLogging);
-        services.AddScoped<DeflateCompressionService>();
-        services.AddScoped<GZipCompressionService>();
+        services.AddKeyedScoped<ICompressionService, DeflateCompressionService>(CompressionNames.Deflate);
+        services.AddKeyedScoped<ICompressionService, GZipCompressionService>(CompressionNames.GZip);
         services.AddScoped<ICompressionServiceFactory, CompressionServiceFactory>();
         services.AddScoped<ICompressionManager, CompressionManager>();
     }
