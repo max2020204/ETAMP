@@ -66,6 +66,7 @@ public record CompressionManager : ICompressionManager
         {
             Id = model.Id,
             Version = model.Version,
+            UpdateType = model.UpdateType,
             Token = token,
             CompressionType = model.CompressionType,
             SignatureMessage = model.SignatureMessage
@@ -92,7 +93,8 @@ public record CompressionManager : ICompressionManager
             throw new ArgumentException("Token is required.");
         }
 
-        await dataPipe.Writer.WriteAsync(Base64UrlEncoder.DecodeBytes(model.Token), cancellationToken);
+        var tokenBytes = Base64UrlEncoder.DecodeBytes(model.Token);
+        await dataPipe.Writer.WriteAsync(tokenBytes, cancellationToken);
 
         await compression.DecompressAsync(dataPipe.Reader, outputData.Writer, cancellationToken);
         _logger.LogDebug("Decompression service finished decompressing data.");
@@ -124,6 +126,7 @@ public record CompressionManager : ICompressionManager
         {
             Id = model.Id,
             Version = model.Version,
+            UpdateType = model.UpdateType,
             Token = token,
             CompressionType = model.CompressionType,
             SignatureMessage = model.SignatureMessage
