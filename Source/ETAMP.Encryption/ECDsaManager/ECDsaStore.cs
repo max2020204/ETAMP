@@ -9,7 +9,7 @@ namespace ETAMP.Encryption.ECDsaManager;
 ///     Manages storage of ECDSA providers, allowing registration, retrieval, and removal
 ///     by unique identifiers or names.
 /// </summary>
-public class ECDSAStore : IECDSAStore
+public class ECDsaStore : IECDsaStore
 {
     /// <summary>
     ///     A concurrent dictionary for storing ECDSAProviderBase instances indexed by their unique Guid identifiers.
@@ -17,7 +17,7 @@ public class ECDSAStore : IECDSAStore
     /// </summary>
     private readonly ConcurrentDictionary<Guid, ECDsa> _guidStore;
 
-    private readonly ILogger<ECDSAStore> _logger;
+    private readonly ILogger<ECDsaStore> _logger;
 
     /// <summary>
     ///     A private dictionary that maps string-based names to instances of <see cref="ECDSAProviderBase" />.
@@ -26,11 +26,11 @@ public class ECDSAStore : IECDSAStore
     private readonly ConcurrentDictionary<string, ECDsa> _nameStore;
 
     /// <summary>
-    ///     An implementation of the <see cref="IECDSAStore" /> interface.
+    ///     An implementation of the <see cref="IECDsaStore" /> interface.
     ///     Provides functionality to manage and store instances of ECDSA cryptographic providers
     ///     using unique identifiers or string-based names.
     /// </summary>
-    public ECDSAStore(ILogger<ECDSAStore> logger)
+    public ECDsaStore(ILogger<ECDsaStore> logger)
     {
         _logger = logger;
         _guidStore = new ConcurrentDictionary<Guid, ECDsa>();

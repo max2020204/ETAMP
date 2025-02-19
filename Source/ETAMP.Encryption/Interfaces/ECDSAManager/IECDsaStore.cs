@@ -7,7 +7,7 @@ namespace ETAMP.Encryption.Interfaces.ECDSAManager;
 ///     This interface defines the contract for adding, retrieving, and removing
 ///     ECDsa providers using unique identifiers or names.
 /// </summary>
-public interface IECDSAStore
+public interface IECDsaStore
 {
     /// <summary>
     ///     Adds a new ECDSA provider to the store.

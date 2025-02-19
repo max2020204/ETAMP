@@ -3,19 +3,19 @@ using ETAMP.Core.Utils;
 using ETAMP.Wrapper.Interfaces;
 using Microsoft.Extensions.Logging;
 
-namespace ETAMP.Wrapper;
+namespace ETAMP.Provider;
 
 /// <summary>
 ///     Provides cryptographic verification using ECDsa, supporting both string and byte array data formats.
 /// </summary>
 /// >
-public sealed class VerifyWrapper : IVerifyWrapper
+public sealed class ECDsaVerificationProvider : IECDsaVerificationProvider
 {
-    private readonly ILogger<VerifyWrapper> _logger;
+    private readonly ILogger<ECDsaVerificationProvider> _logger;
     private HashAlgorithmName _algorithmName;
     private ECDsa? _ecdsa;
 
-    public VerifyWrapper(ILogger<VerifyWrapper> logger)
+    public ECDsaVerificationProvider(ILogger<ECDsaVerificationProvider> logger)
     {
         _logger = logger;
     }
@@ -35,7 +35,8 @@ public sealed class VerifyWrapper : IVerifyWrapper
 
         var isValid = _ecdsa!.VerifyData(data, Base64UrlEncoder.DecodeBytes(signature), _algorithmName);
 
-        if (!isValid) _logger.LogWarning("Signature verification failed for data stream.");
+        if (!isValid)
+            _logger.LogWarning("Signature verification failed for data stream.");
 
         return isValid;
     }
@@ -52,10 +53,10 @@ public sealed class VerifyWrapper : IVerifyWrapper
         EnsureStreamIsReadable(data);
 
         _logger.LogDebug("Verifying data stream of length {Length}", data.Length);
-
         var isValid = _ecdsa!.VerifyData(data, signature, _algorithmName);
 
-        if (!isValid) _logger.LogWarning("Signature verification failed for data stream.");
+        if (!isValid)
+            _logger.LogWarning("Signature verification failed for data stream.");
 
         return isValid;
     }
@@ -91,8 +92,10 @@ public sealed class VerifyWrapper : IVerifyWrapper
 
     private static void EnsureStreamIsReadable(Stream stream)
     {
-        if (!stream.CanRead) throw new ArgumentException("Stream is not readable.", nameof(stream));
+        if (!stream.CanRead)
+            throw new ArgumentException("Stream is not readable.", nameof(stream));
 
-        if (stream.CanSeek) stream.Position = 0;
+        if (stream.CanSeek)
+            stream.Position = 0;
     }
 }

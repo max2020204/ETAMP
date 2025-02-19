@@ -5,7 +5,7 @@ namespace ETAMP.Wrapper.Interfaces;
 /// <summary>
 ///     Verifies signatures using ECDsa.
 /// </summary>
-public interface IVerifyWrapper : IInitialize
+public interface IECDsaVerificationProvider : IInitialize
 {
     /// <summary>
     ///     Verifies the signature of string data.

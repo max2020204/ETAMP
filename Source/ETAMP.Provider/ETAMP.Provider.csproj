@@ -7,7 +7,9 @@
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <Title>ETAMP.Wrapper</Title>
         <PackageReadmeFile>README.md</PackageReadmeFile>
-        <TargetFrameworks>net9.0;net8.0</TargetFrameworks>
+        <TargetFramework>net9.0</TargetFramework>
+        <AssemblyName>ETAMP.Provider</AssemblyName>
+        <RootNamespace>ETAMP.Provider</RootNamespace>
     </PropertyGroup>
     <ItemGroup>
         <None Include="../../README.md">

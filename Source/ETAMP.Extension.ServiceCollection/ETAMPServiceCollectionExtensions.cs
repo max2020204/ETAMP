@@ -11,9 +11,10 @@ using ETAMP.Encryption;
 using ETAMP.Encryption.ECDsaManager;
 using ETAMP.Encryption.Interfaces;
 using ETAMP.Encryption.Interfaces.ECDSAManager;
+using ETAMP.Provider;
+using ETAMP.Provider.Interfaces;
 using ETAMP.Validation;
 using ETAMP.Validation.Interfaces;
-using ETAMP.Wrapper;
 using ETAMP.Wrapper.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -121,8 +122,8 @@ public static class ETAMPServiceCollectionExtensions
         Action<ILoggingBuilder>? configureLogging = null)
     {
         AddLogging(services, addlogger, configureLogging);
-        services.AddScoped<ISignWrapper, SignWrapper>();
-        services.AddScoped<IVerifyWrapper, VerifyWrapper>();
+        services.AddScoped<IECDsaSignatureProvider, ECDsaSignatureProvider>();
+        services.AddScoped<IECDsaVerificationProvider, ECDsaVerificationProvider>();
     }
 
     /// <summary>
@@ -146,7 +147,7 @@ public static class ETAMPServiceCollectionExtensions
         AddLogging(services, addlogger, configureLogging);
         services.AddScoped<IEncryptionService, AESEncryptionService>();
         services.AddScoped<IECIESEncryptionService, ECIESEncryptionService>();
-        services.AddSingleton<IECDSAStore, ECDSAStore>();
+        services.AddSingleton<IECDsaStore, ECDsaStore>();
     }
 
     /// <summary>
@@ -196,12 +197,14 @@ public static class ETAMPServiceCollectionExtensions
     private static void AddLogging(IServiceCollection services, bool addlogger = true,
         Action<ILoggingBuilder>? configureLogging = null)
     {
-        if (!addlogger) return;
+        if (!addlogger)
+            return;
         Log.Logger = new LoggerConfiguration()
             .MinimumLevel.Warning()
             .WriteTo.Async(a => a.Console(
                 outputTemplate: "[{Timestamp:yyyy-MM-dd HH:mm:ss.fff} {Level:u3}] {Message:lj}{NewLine}{Exception}"))
             .CreateLogger();
+
         services.AddLogging(builder =>
         {
             if (configureLogging != null)

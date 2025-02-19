@@ -13,19 +13,20 @@ namespace ETAMP.Validation;
 /// </summary>
 public sealed class SignatureValidator : ISignatureValidator
 {
+    private readonly IECDsaVerificationProvider _iecDsaVerificationProvider;
     private readonly ILogger<SignatureValidator> _logger;
     private readonly IStructureValidator _structureValidator;
-    private readonly IVerifyWrapper _verifyWrapper;
     private ECDsa? _ecdsa;
 
 
     /// <summary>
     /// Provides functionality to validate signatures in ETAMP messages.
     /// </summary>
-    public SignatureValidator(IVerifyWrapper verifyWrapper, IStructureValidator structureValidator,
+    public SignatureValidator(IECDsaVerificationProvider iecDsaVerificationProvider,
+        IStructureValidator structureValidator,
         ILogger<SignatureValidator> logger)
     {
-        _verifyWrapper = verifyWrapper;
+        _iecDsaVerificationProvider = iecDsaVerificationProvider;
         _structureValidator = structureValidator
                               ?? throw new ArgumentNullException(nameof(structureValidator));
         _logger = logger;
@@ -68,7 +69,7 @@ public sealed class SignatureValidator : ISignatureValidator
                 await writer.WriteAsync(etamp.CompressionType);
             }
 
-            var isVerified = _verifyWrapper.VerifyData(stream, etamp.SignatureMessage);
+            var isVerified = _iecDsaVerificationProvider.VerifyData(stream, etamp.SignatureMessage);
 
             if (isVerified)
                 return new ValidationResult(true);
@@ -90,7 +91,7 @@ public sealed class SignatureValidator : ISignatureValidator
     public void Initialize(ECDsa? provider, HashAlgorithmName algorithmName)
     {
         _ecdsa = provider;
-        _verifyWrapper.Initialize(provider, algorithmName);
+        _iecDsaVerificationProvider.Initialize(provider, algorithmName);
     }
 
     /// <summary>
@@ -99,7 +100,7 @@ public sealed class SignatureValidator : ISignatureValidator
     /// </summary>
     public void Dispose()
     {
-        _verifyWrapper.Dispose();
-        _ecdsa.Dispose();
+        _iecDsaVerificationProvider.Dispose();
+        _ecdsa?.Dispose();
     }
 }

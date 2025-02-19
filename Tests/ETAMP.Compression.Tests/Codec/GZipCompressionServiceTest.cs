@@ -3,8 +3,8 @@ using JetBrains.Annotations;
 
 namespace ETAMP.Compression.Tests.Codec;
 
-[TestSubject(typeof(DeflateCompressionService))]
-public class DeflateCompressionServiceTest
+[TestSubject(typeof(GZipCompressionService))]
+public class GZipCompressionServiceTest
 {
     [Fact]
     public void METHOD()
