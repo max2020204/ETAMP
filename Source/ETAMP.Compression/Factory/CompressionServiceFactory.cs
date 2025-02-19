@@ -39,6 +39,9 @@ public sealed record CompressionServiceFactory : ICompressionServiceFactory
     /// </returns>
     public ICompressionService? Get(string compressionType)
     {
+        if (string.IsNullOrWhiteSpace(compressionType))
+            return null;
+
         return _serviceProvider.GetKeyedService<ICompressionService>(compressionType);
     }
 }

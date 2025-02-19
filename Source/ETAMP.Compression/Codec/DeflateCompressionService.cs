@@ -47,6 +47,7 @@ public sealed record DeflateCompressionService : ICompressionService
         catch (Exception ex)
         {
             _logger.LogError(ex, "Compression failed.");
+            throw new InvalidOperationException("Compression failed.", ex);
         }
         finally
         {
@@ -79,6 +80,7 @@ public sealed record DeflateCompressionService : ICompressionService
         catch (Exception ex)
         {
             _logger.LogError(ex, "Decompression failed.");
+            throw new InvalidOperationException("Decompression failed.", ex);
         }
         finally
         {
