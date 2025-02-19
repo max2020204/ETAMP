@@ -52,9 +52,23 @@ public sealed record GZipCompressionService : ICompressionService
             await inputData.CopyToAsync(compressor, cancellationToken);
             await compressor.FlushAsync(cancellationToken);
         }
+        catch (ArgumentNullException argNullException)
+        {
+            var errorMsg = "One of the streams (input or output) is null. Please verify the provided parameters.";
+            _logger.LogError(argNullException, errorMsg);
+            throw new ArgumentNullException(errorMsg, argNullException);
+        }
+        catch (OperationCanceledException canceledException)
+        {
+            var warningMsg = "Compression operation was canceled.";
+            _logger.LogWarning(canceledException, warningMsg);
+            throw; // Rethrow to allow the cancellation to be handled by the caller.
+        }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Compression failed.");
+            var errorMsg = "An error occurred during the compression process.";
+            _logger.LogError(ex, errorMsg);
+            throw new InvalidOperationException(errorMsg, ex);
         }
         finally
         {
@@ -83,9 +97,22 @@ public sealed record GZipCompressionService : ICompressionService
             _logger.LogDebug("Decompressing data stream...");
             await decompressor.CopyToAsync(outputData.AsStream(), cancellationToken);
         }
+        catch (ArgumentNullException argNullException)
+        {
+            var errorMsg = "One of the streams (input or output) is null. Please verify the provided parameters.";
+            _logger.LogError(argNullException, errorMsg);
+            throw new ArgumentNullException(errorMsg, argNullException);
+        }
+        catch (OperationCanceledException canceledException)
+        {
+            _logger.LogWarning(canceledException, "Decompression operation was canceled.");
+            throw;
+        }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Decompression failed.");
+            var errorMsg = "An error occurred during the decompression process.";
+            _logger.LogError(ex, errorMsg);
+            throw new InvalidOperationException(errorMsg, ex);
         }
         finally
         {

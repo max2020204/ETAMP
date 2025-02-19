@@ -130,7 +130,7 @@ public record CompressionManager : ICompressionManager
         if (string.IsNullOrWhiteSpace(model.Token))
         {
             _logger.LogError("Decompression failed: token is missing for model Id: {ModelId}", model.Id);
-            throw new ArgumentException("Token is required.");
+            throw new ArgumentException($"Decompression failed: token is missing for model Id: {model.Id}");
         }
 
         var tokenBytes = Base64UrlEncoder.DecodeBytes(model.Token);
@@ -166,7 +166,8 @@ public record CompressionManager : ICompressionManager
     /// </param>
     private void CheckCompressionType(string compressionType)
     {
-        if (string.IsNullOrWhiteSpace(compressionType)) throw new ArgumentException("Compression type is required.");
+        if (string.IsNullOrWhiteSpace(compressionType))
+            throw new ArgumentException("Compression type is required.");
     }
 
     /// Reads all bytes from a specified pipe and returns them in a memory stream.
