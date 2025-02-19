@@ -7,14 +7,14 @@
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <Title>ETAMP.Extension.ServiceCollection</Title>
         <PackageReadmeFile>README.md</PackageReadmeFile>
-        <TargetFrameworks>net9.0;net8.0</TargetFrameworks>
+        <TargetFramework>net9.0</TargetFramework>
     </PropertyGroup>
 
     <ItemGroup>
         <ProjectReference Include="..\ETAMP.Compression\ETAMP.Compression.csproj"/>
         <ProjectReference Include="..\ETAMP.Encryption\ETAMP.Encryption.csproj"/>
         <ProjectReference Include="..\ETAMP.Validation\ETAMP.Validation.csproj"/>
-        <ProjectReference Include="..\ETAMP.Wrapper\ETAMP.Wrapper.csproj"/>
+        <ProjectReference Include="..\ETAMP.Provider\ETAMP.Provider.csproj"/>
     </ItemGroup>
     <ItemGroup>
         <None Include="../../README.md">

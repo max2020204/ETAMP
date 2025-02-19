@@ -1,12 +1,12 @@
 ﻿using ETAMP.Core.Interfaces;
 using ETAMP.Core.Models;
 
-namespace ETAMP.Wrapper.Interfaces;
+namespace ETAMP.Provider.Interfaces;
 
 /// <summary>
 ///     Provides functionality for signing ETAMP messages.
 /// </summary>
-public interface ISignWrapper : IInitialize
+public interface IECDsaSignatureProvider : IInitialize
 {
     /// <summary>
     /// Signs an ETAMP model using the provided signing implementation.

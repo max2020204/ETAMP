@@ -31,12 +31,18 @@ public sealed class StructureValidator : IStructureValidator
             return new ValidationResult(false, "ETAMP model is uninitialized (default).");
         }
 
-        if (model.Id != Guid.Empty &&
-            !string.IsNullOrWhiteSpace(model.UpdateType) &&
-            !string.IsNullOrWhiteSpace(model.CompressionType) &&
-            model.Token != null &&
-            (validateLite || !string.IsNullOrWhiteSpace(model.SignatureMessage)))
+        var hasValidId = model.Id != Guid.Empty;
+        var hasValidUpdateType = !string.IsNullOrWhiteSpace(model.UpdateType);
+        var hasValidCompressionType = !string.IsNullOrWhiteSpace(model.CompressionType);
+        var hasToken = model.Token != null;
+        var hasValidSignature = !string.IsNullOrWhiteSpace(model.SignatureMessage);
+
+        if (hasValidId && hasValidUpdateType && hasValidCompressionType && hasToken &&
+            (validateLite || hasValidSignature))
+        {
             return new ValidationResult(true);
+        }
+
 
         _logger.LogError("ETAMP model has empty/missing fields or contains invalid values.");
         return new ValidationResult(false, "ETAMP model has empty/missing fields or contains invalid values.");

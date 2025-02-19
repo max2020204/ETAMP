@@ -33,7 +33,6 @@ public class AESEncryptionService : IEncryptionService
         aes.Key = key;
         aes.GenerateIV();
 
-        // Write IV to the output Pipe
         await outputWriter.WriteAsync(aes.IV, cancellationToken);
 
         try
@@ -80,7 +79,7 @@ public class AESEncryptionService : IEncryptionService
         ValidateKey(key);
 
         using var aes = Aes.Create();
-        byte[] iv = await ReadIVAsync(inputReader, aes.BlockSize / 8, cancellationToken);
+        var iv = await ReadIVAsync(inputReader, aes.BlockSize / 8, cancellationToken);
         aes.Key = key;
         aes.IV = iv;
 
@@ -123,13 +122,13 @@ public class AESEncryptionService : IEncryptionService
     /// </summary>
     private async Task<byte[]> ReadIVAsync(PipeReader inputReader, int ivLength, CancellationToken cancellationToken)
     {
-        ReadResult result = await inputReader.ReadAsync(cancellationToken);
-        ReadOnlySequence<byte> buffer = result.Buffer;
+        var result = await inputReader.ReadAsync(cancellationToken);
+        var buffer = result.Buffer;
 
         if (buffer.Length < ivLength)
             throw new CryptographicException("Failed to read the IV (initialization vector).");
 
-        byte[] iv = buffer.Slice(0, ivLength).ToArray();
+        var iv = buffer.Slice(0, ivLength).ToArray();
         inputReader.AdvanceTo(buffer.GetPosition(ivLength));
 
         return iv;

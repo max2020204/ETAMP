@@ -37,7 +37,7 @@ public class ValidationResult
     /// <value>
     ///     The exception related to the validation failure, or <c>null</c> if no exception occurred.
     /// </value>
-    public Exception Exception { get; set; }
+    public Exception? Exception { get; set; }
 
 
     /// <summary>
