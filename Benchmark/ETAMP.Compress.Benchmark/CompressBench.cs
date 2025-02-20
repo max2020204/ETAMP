@@ -13,11 +13,12 @@ namespace ETAMP.Compress.Benchmark;
 //[HardwareCounters(HardwareCounter.CacheMisses, HardwareCounter.BranchMispredictions)]
 public class CompressBench
 {
+    private ETAMPModelBuilder _builder;
     private ICompressionManager _compressionManager;
     private ETAMPModel<Token> _model;
 
     [GlobalSetup]
-    public void Setup()
+    public async Task Setup()
     {
         ServiceCollection services = new();
         services.AddCompositionServices();
@@ -32,11 +33,18 @@ public class CompressBench
                 Data = "string"
             }
         };
+        _builder = await _compressionManager.CompressAsync(_model);
     }
 
     [Benchmark]
     public async Task Compress()
     {
         await _compressionManager.CompressAsync(_model);
+    }
+
+    [Benchmark]
+    public async Task Decompress()
+    {
+        await _compressionManager.DecompressAsync<Token>(_builder);
     }
 }
