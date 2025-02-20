@@ -15,7 +15,7 @@ public sealed class ECIESEncryptionService : IECIESEncryptionService
     ///     An instance of the encryption service implementing the <see cref="IEncryptionService" /> interface.
     ///     Used to perform encryption and decryption operations with cryptographic keys derived during the ECIES process.
     /// </summary>
-    private readonly IEncryptionService? _encryptionService;
+    private readonly IEncryptionService _encryptionService;
 
     /// <summary>
     ///     The logger instance used for logging messages, errors, and informational data
@@ -54,7 +54,7 @@ public sealed class ECIESEncryptionService : IECIESEncryptionService
         ECDiffieHellmanPublicKey publicKey, CancellationToken cancellationToken = default)
     {
         EnsureArgumentsAreNotNull(inputReader, outputWriter);
-        await GetSharedKey(inputReader, outputWriter, privateKey, publicKey, cancellationToken);
+        await DiffieHellmanEncryptAsync(inputReader, outputWriter, privateKey, publicKey, cancellationToken);
     }
 
     /// <summary>
@@ -73,7 +73,7 @@ public sealed class ECIESEncryptionService : IECIESEncryptionService
         CancellationToken cancellationToken = default)
     {
         EnsureArgumentsAreNotNull(inputReader, outputWriter);
-        await GetSharedKey(inputReader, outputWriter, privateKey, publicKey, cancellationToken);
+        await DiffieHellmanEncryptAsync(inputReader, outputWriter, privateKey, publicKey, cancellationToken);
     }
 
     /// <summary>
@@ -90,7 +90,7 @@ public sealed class ECIESEncryptionService : IECIESEncryptionService
         ECDiffieHellmanPublicKey publicKey, CancellationToken cancellationToken = default)
     {
         EnsureArgumentsAreNotNull(inputReader, outputWriter);
-        await GetSharedKey(inputReader, outputWriter, privateKey, publicKey, cancellationToken);
+        await DiffieHellmanDecryptAsync(inputReader, outputWriter, privateKey, publicKey, cancellationToken);
     }
 
     /// <summary>
@@ -107,7 +107,7 @@ public sealed class ECIESEncryptionService : IECIESEncryptionService
         byte[] publicKey, CancellationToken cancellationToken = default)
     {
         EnsureArgumentsAreNotNull(inputReader, outputWriter);
-        await GetSharedKey(inputReader, outputWriter, privateKey, publicKey, cancellationToken);
+        await DiffieHellmanDecryptAsync(inputReader, outputWriter, privateKey, publicKey, cancellationToken);
     }
 
     /// <summary>
@@ -119,11 +119,11 @@ public sealed class ECIESEncryptionService : IECIESEncryptionService
     /// <param name="publicKey">The public key used for deriving the shared key.</param>
     /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>A <see cref="Task" /> that represents the asynchronous operation.</returns>
-    private async Task GetSharedKey(PipeReader inputReader, PipeWriter outputWriter,
+    private async Task DiffieHellmanDecryptAsync(PipeReader inputReader, PipeWriter outputWriter,
         ECDiffieHellman privateKey, ECDiffieHellmanPublicKey publicKey, CancellationToken cancellationToken = default)
     {
         var sharedSecret = DeriveSharedSecret(privateKey, publicKey);
-        await _encryptionService!.DecryptAsync(inputReader, outputWriter, sharedSecret, cancellationToken);
+        await _encryptionService.DecryptAsync(inputReader, outputWriter, sharedSecret, cancellationToken);
     }
 
     /// <summary>
@@ -136,12 +136,53 @@ public sealed class ECIESEncryptionService : IECIESEncryptionService
     /// <param name="publicKey">The public key used to derive the shared secret in conjunction with the private key.</param>
     /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>A task that represents the asynchronous operation.</returns>
-    private async Task GetSharedKey(PipeReader inputReader, PipeWriter outputWriter,
+    private async Task DiffieHellmanDecryptAsync(PipeReader inputReader, PipeWriter outputWriter,
         ECDiffieHellman privateKey, byte[] publicKey, CancellationToken cancellationToken = default)
     {
         var sharedSecret = DeriveSharedSecret(privateKey, publicKey);
-        await _encryptionService!.DecryptAsync(inputReader, outputWriter, sharedSecret, cancellationToken);
+        await _encryptionService.DecryptAsync(inputReader, outputWriter, sharedSecret, cancellationToken);
     }
+
+
+    /// <summary>
+    ///     Performs encryption using the Diffie-Hellman key exchange to derive a shared secret for securing the data.
+    ///     This method combines the private key of the sender and the public key of the recipient to produce
+    ///     a shared secret used for encryption of the data being transmitted.
+    /// </summary>
+    /// <param name="inputReader">The <see cref="PipeReader" /> for reading the input data to be encrypted.</param>
+    /// <param name="outputWriter">The <see cref="PipeWriter" /> for writing the encrypted output data.</param>
+    /// <param name="privateKey">The private <see cref="ECDiffieHellman" /> key used to compute the shared secret.</param>
+    /// <param name="publicKey">The public <see cref="ECDiffieHellmanPublicKey" /> key used to compute the shared secret.</param>
+    /// <param name="cancellationToken">
+    ///     A <see cref="CancellationToken" /> to observe while waiting for the operation to
+    ///     complete.
+    /// </param>
+    /// <returns>A <see cref="Task" /> representing the asynchronous encryption operation.</returns>
+    private async Task DiffieHellmanEncryptAsync(PipeReader inputReader, PipeWriter outputWriter,
+        ECDiffieHellman privateKey, ECDiffieHellmanPublicKey publicKey, CancellationToken cancellationToken = default)
+    {
+        var sharedSecret = DeriveSharedSecret(privateKey, publicKey);
+        await _encryptionService.EncryptAsync(inputReader, outputWriter, sharedSecret, cancellationToken);
+    }
+
+    /// <summary>
+    ///     Performs encryption of data using ECDiffieHellman keys to derive a shared secret.
+    ///     This encapsulates the encryption process to securely create a shared key between
+    ///     two parties for subsequent data encryption.
+    /// </summary>
+    /// <param name="inputReader">The <see cref="PipeReader" /> providing the input data to be encrypted.</param>
+    /// <param name="outputWriter">The <see cref="PipeWriter" /> where the encrypted output data will be written.</param>
+    /// <param name="privateKey">The private key used by the sender to derive the shared secret.</param>
+    /// <param name="publicKey">The public key of the recipient used to derive the shared secret.</param>
+    /// <param name="cancellationToken">An optional token to observe for cancellation of the operation.</param>
+    /// <returns>A <see cref="Task" /> representing the asynchronous operation of encrypting the data.</returns>
+    private async Task DiffieHellmanEncryptAsync(PipeReader inputReader, PipeWriter outputWriter,
+        ECDiffieHellman privateKey, byte[] publicKey, CancellationToken cancellationToken = default)
+    {
+        var sharedSecret = DeriveSharedSecret(privateKey, publicKey);
+        await _encryptionService.EncryptAsync(inputReader, outputWriter, sharedSecret, cancellationToken);
+    }
+
 
     /// <summary>
     ///     Ensures that the provided arguments are not null.
