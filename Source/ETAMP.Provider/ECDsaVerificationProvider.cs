@@ -31,6 +31,7 @@ public sealed class ECDsaVerificationProvider : IECDsaVerificationProvider
         ValidateState();
         EnsureStreamIsReadable(data);
 
+
         _logger.LogDebug("Verifying data stream of length {Length}", data.Length);
 
         var isValid = _ecdsa!.VerifyData(data, Base64UrlEncoder.DecodeBytes(signature), _algorithmName);

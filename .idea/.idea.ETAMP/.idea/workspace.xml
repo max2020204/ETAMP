@@ -20,11 +20,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="8b44219d-6ab5-4022-b5c1-0f01c450f8f2" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.ETAMP/.idea/shelf/Uncommitted_changes_before_rebase__Changes_.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.ETAMP/.idea/shelf/Uncommitted_changes_before_rebase__Changes_.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.ETAMP/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.ETAMP/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Benchmark/ETAMP.Compress.Benchmark/CompressBench.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Benchmark/ETAMP.Compress.Benchmark/CompressBench.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Benchmark/ETAMP.Compress.Benchmark/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Benchmark/ETAMP.Compress.Benchmark/Program.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ETAMP.sln" beforeDir="false" afterPath="$PROJECT_DIR$/ETAMP.sln" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ETAMP.sln.DotSettings.user" beforeDir="false" afterPath="$PROJECT_DIR$/ETAMP.sln.DotSettings.user" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Examples/ETAMP.Encryption.Console/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Examples/ETAMP.Encryption.Console/Program.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ETAMP.Core/Utils/Base64UrlEncoder.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Core/Utils/Base64UrlEncoder.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ETAMP.Encryption/AESEncryptionService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Encryption/AESEncryptionService.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ETAMP.Provider/ECDsaVerificationProvider.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ETAMP.Provider/ECDsaVerificationProvider.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -57,35 +58,28 @@
   <component name="GithubPullRequestsUISettings">{
   &quot;selectedUrlAndAccountId&quot;: {
     &quot;url&quot;: &quot;https://github.com/max2020204/ETAMP.git&quot;,
-    &quot;accountId&quot;: &quot;82b8494e-c6a6-4a09-9baf-fb32d1148b62&quot;
+    &quot;accountId&quot;: &quot;09aaedba-8ca5-4c37-9f14-d4924c668d2f&quot;
   }
 }</component>
   <component name="HighlightingSettingsPerFile">
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/c73b3c6c598640c592fd3c6fa226c286e90908/f0/6324d8c9/String.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/3163d85a46619569f2cabf13c4ab1f6b1c576c72d14b7329ad58d9499777a/FormatException.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/47921adef6414a816a08bfc17edfc0ef70baa3a6d7a6c94f9e56682a1d1c/ExceptionAsserts.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/5e14a4e27990972fa4ae94975603bd298aaf328ee083c03b10569ee4724d57/TestInvoker.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/5ed31abcb28174b321885e46ba3a003a882030a6f66e30121f9f4e582f4cfd/Convert.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/194f116b9139be4638488f32d8b917e5fa17de5f0ead57ef8532f7244b8b5f4/StringBuilder.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/24bdcc69acdece342cf3936ea4fd90f56470da92963a5b716eddc93db340b5/Pipe.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/2565b9d99fdde488bc7801b84387b2cc864959cfb63212e1ff576fc9c6bb7e/CancellationToken.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/621526284d3e4868b98948aff942206525763e57e194a27623b66c384466/ServiceProviderServiceExtensions.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/65fa89658abb6af822f197bec3e5896de11f474cef5b57673a3b2c7d4e60fde4/Inflater.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/7e3d58dfc7978169d9159d0a921ccc35a1ec6f1b9c80adc04938f801fb42/ECDsa.Create.Windows.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/b3575a2f41d7c2dbfaa36e866b8a361e11dd7223ff82bc574c1d5d4b7522f735/Future.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/6ac86c9dc41095d29bfe7627a93fc5a39c3648ac7a785862dff273a21baa4/Convert.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/753a4b39fe19e943d15eccbbf6ba2b92979a3f811410b1965997743fdb1276/ThrowHelper.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/8d7a996932951dc929c6c3855f98f0c58cae8ac5b0d0bbf223f97c6388b3b61f/ConcurrentDictionary.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/ae476ed175fd2828746f511ec85aed67c2ff89bfec3965c26aac472bec3d8/PipeReader.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/bc12665a75bf1c583d5d436735a364589d923dc8c284fe751c4bd4f977f5f75/ReadResult.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/bd1d5c50194fea68ff3559c160230b0ab50f5acf4ce3061bffd6d62958e2182/ExceptionDispatchInfo.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/bea8c41514fe19b15a2e9a98f2116d6d3effa32491c5349cfda989bc9f393/Record.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/f7781240c143fda5f8c75278b0407053ef32cb15e71a1c3765dc5aacc131/SHA3_256.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/fc2027f7e776fc105cddb56b1a25eeb3895b3ae6f3aac854d786e63bd01f75e2/CallSiteFactory.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Benchmark/ETAMP.Create.Benchmark/ETAMPBenchmark.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/black/RiderProjects/ETAMP/Benchmark/ETAMP.Create.Benchmark/ETAMPBenchmark.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/black/RiderProjects/ETAMP/Benchmark/ETAMP.Sign.Benchmark/Program.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Examples/ETAMP.CreateETAMP.Console/obj/Debug/net9.0/ETAMP.Console.CreateETAMP.AssemblyInfo.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Examples/ETAMP.SignETAMP.Console/CreateSignETAMP.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Examples/ETAMP.ValidateETAMP.Console/ValidateETAMP.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/black/RiderProjects/ETAMP/Source/ETAMP.Core/Interfaces/IInitialize.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/black/RiderProjects/ETAMP/Source/ETAMP.Core/Models/ETAMPModel.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/black/RiderProjects/ETAMP/Source/ETAMP.Extension/Builder/ETAMPBuilder.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/black/RiderProjects/ETAMP/Source/ETAMP.Extension/Builder/ETAMPSign.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/black/RiderProjects/ETAMP/Source/ETAMP.Validation/ETAMPValidator.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/black/RiderProjects/ETAMP/Source/ETAMP.Validation/SignatureValidator.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/c4df319e7a6b4eafe890fea08520cf9412a8d289df8bfa8057fc4621f45f6892/ValidationResult.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/c7102cd0ffb8973777e61b1942c3fffac7e14016a511d055c3adf73ff91748/ThrowHelper.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/d2d7151489f5a525070f5ecbb927d272527a1c075d92621dd6bde435d215/Base64UrlDecoder.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/d4a8f8d5219d57524ca89ff2dc8bdc5a23996aa3913260a7142bfd992c393a4/ServiceCollectionContainerBuilderExtensions.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Source/ETAMP.Compression/CompressionManager.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/black/RiderProjects/ETAMP/Source/ETAMP.Core/Utils/Base64UrlEncoder.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Source/ETAMP.Provider/ECDsaSignatureProvider.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Source/ETAMP.Provider/ECDsaVerificationProvider.cs" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="KubernetesApiPersistence">{}</component>
   <component name="KubernetesApiProvider">{
@@ -116,6 +110,7 @@
     ".NET Project.ETAMP.Console.ValidateETAMP.executor": "Run",
     ".NET Project.ETAMP.Console.ValidateETAMPService.executor": "Debug",
     ".NET Project.ETAMP.Create.Benchmark.executor": "Run",
+    ".NET Project.ETAMP.Encryption.Console.executor": "Run",
     ".NET Project.ETAMP.Sign.Benchmark.executor": "Run",
     "5c53a9ec-5001-4a38-9545-ad7f91d669ad.executor": "Debug",
     "RunOnceActivity.ShowReadmeOnStart": "true",
@@ -139,7 +134,7 @@
     ]
   }
 }]]></component>
-  <component name="RunManager" selected=".NET Project.ETAMP.Compress.Benchmark">
+  <component name="RunManager" selected=".NET Project.ETAMP.Encryption.Console">
     <configuration name="ETAMP.Compress.Benchmark" type="DotNetProject" factoryName=".NET Project">
       <option name="EXE_PATH" value="$PROJECT_DIR$/Benchmark/ETAMP.Compress.Benchmark/bin/Release/net9.0/ETAMP.Compress.Benchmark.exe" />
       <option name="PROGRAM_PARAMETERS" value="" />
@@ -244,6 +239,9 @@
       <workItem from="1739954769736" duration="4326000" />
       <workItem from="1740038359376" duration="171000" />
       <workItem from="1740038547140" duration="2080000" />
+      <workItem from="1740180060644" duration="255000" />
+      <workItem from="1740180334763" duration="975000" />
+      <workItem from="1740219639085" duration="8513000" />
     </task>
     <task id="LOCAL-00001" summary="Refactor and reorganize ETAMP example projects&#10;&#10;Moved and restructured ETAMP example project files for better modularity and project clarity. Updated project references and dependencies to align with the new structure. Removed redundant files and added missing configurations where necessary.">
       <option name="closed" value="true" />
@@ -469,7 +467,15 @@
       <option name="project" value="LOCAL" />
       <updated>1739959677985</updated>
     </task>
-    <option name="localTasksCounter" value="29" />
+    <task id="LOCAL-00029" summary="Add ETAMP.Encryption.Console project and enhance encryption&#10;&#10;Introduced a new ETAMP.Encryption.Console project with necessary configurations and dependencies. Refactored encryption services to include Diffie-Hellman encryption and decryption methods for enhanced security. Improved benchmarking setup and added decompression logic to ETAMP.Compress.Benchmark.">
+      <option name="closed" value="true" />
+      <created>1740090688011</created>
+      <option name="number" value="00029" />
+      <option name="presentableId" value="LOCAL-00029" />
+      <option name="project" value="LOCAL" />
+      <updated>1740090688011</updated>
+    </task>
+    <option name="localTasksCounter" value="30" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -550,7 +556,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_CLEANUP_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
-    <MESSAGE value="Add CreateSignETAMPService project and update dependencies&#10;&#10;Introduced the CreateSignETAMPService project to the solution for improved modularity. Updated related configurations, project dependencies, and code to support the new functionality. Minor adjustments were made to existing services for consistency." />
     <MESSAGE value="Add CreateSignETAMPService project for modularity&#10;&#10;Introduced the CreateSignETAMPService project to enhance solution structure and maintainability. Updated dependencies, project configurations, and integrated related services. Minor changes were made to existing components for consistency." />
     <MESSAGE value="Add region directives and ECDsaRegistration implementation&#10;&#10;Region directives were introduced across multiple files to improve code organization and readability. An `ECDsaRegistration` class was implemented for better management of ECDsa providers. The changes also include minor adjustments to parameters and accessibility levels for consistency and maintainability." />
     <MESSAGE value="Refactor ECDsa management and remove deprecated classes.&#10;&#10;Removed ECDsaCreator and ECDsaKeyManager classes along with their interfaces. Introduced ECDsaStore and refactored ECDsaProviderBase with support for flexible ECDsa management. Updated dependencies and adjusted implementations where necessary." />
@@ -575,7 +580,8 @@
     <MESSAGE value="Refactor compression services and add ETAMP.Sign.Benchmark.&#10;&#10;Updated compression services to use streams instead of strings for better flexibility and performance. Removed unnecessary logging and constructors, and improved serialization handling in core models. Added the ETAMP.Sign.Benchmark project and streamlined benchmarks for the ETAMP.Create.Benchmark." />
     <MESSAGE value="Add tests for compression services and multi-target frameworks&#10;&#10;Implemented unit tests for Deflate and GZipCompression services with various test cases including valid inputs, exceptions, and edge cases. Introduced multi-targeting for test projects to support .NET 8.0 and 9.0, improving compatibility and validation." />
     <MESSAGE value="Refactor compression error handling and validation.&#10;&#10;Enhanced exception handling for compression services, adding specific cases for null arguments and operation cancellations. Improved readability of error messages and updated validations for compression type and model tokens. Minor structural updates to project configuration files were also included." />
-    <option name="LAST_COMMIT_MESSAGE" value="Refactor compression error handling and validation.&#10;&#10;Enhanced exception handling for compression services, adding specific cases for null arguments and operation cancellations. Improved readability of error messages and updated validations for compression type and model tokens. Minor structural updates to project configuration files were also included." />
+    <MESSAGE value="Add ETAMP.Encryption.Console project and enhance encryption&#10;&#10;Introduced a new ETAMP.Encryption.Console project with necessary configurations and dependencies. Refactored encryption services to include Diffie-Hellman encryption and decryption methods for enhanced security. Improved benchmarking setup and added decompression logic to ETAMP.Compress.Benchmark." />
+    <option name="LAST_COMMIT_MESSAGE" value="Add ETAMP.Encryption.Console project and enhance encryption&#10;&#10;Introduced a new ETAMP.Encryption.Console project with necessary configurations and dependencies. Refactored encryption services to include Diffie-Hellman encryption and decryption methods for enhanced security. Improved benchmarking setup and added decompression logic to ETAMP.Compress.Benchmark." />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REARRANGE_BEFORE_PROJECT_COMMIT" value="true" />
@@ -595,6 +601,19 @@
           </properties>
           <option name="timeStamp" value="13" />
         </breakpoint>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/Source/ETAMP.Encryption/AESEncryptionService.cs</url>
+          <line>82</line>
+          <properties documentPath="C:\Users\black\RiderProjects\ETAMP\Source\ETAMP.Encryption\AESEncryptionService.cs" containingFunctionPresentation="Method 'DecryptAsync'">
+            <startOffsets>
+              <option value="2495" />
+            </startOffsets>
+            <endOffsets>
+              <option value="2524" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="18" />
+        </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
     <pin-to-top-manager>

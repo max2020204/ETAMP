@@ -37,25 +37,24 @@ public class AESEncryptionService : IEncryptionService
 
         try
         {
-            await using var cryptoStream = new CryptoStream(outputWriter.AsStream(), aes.CreateEncryptor(),
-                CryptoStreamMode.Write, true);
-
-            var readResult = await inputReader.ReadAsync(cancellationToken);
-            var buffer = readResult.Buffer;
-            while (true)
+            await using (var cryptoStream = new CryptoStream(outputWriter.AsStream(), aes.CreateEncryptor(),
+                             CryptoStreamMode.Write, true))
             {
-                foreach (var segment in buffer)
+                var readResult = await inputReader.ReadAsync(cancellationToken);
+                var buffer = readResult.Buffer;
+                while (true)
                 {
-                    await cryptoStream.WriteAsync(segment, cancellationToken);
+                    foreach (var segment in buffer) await cryptoStream.WriteAsync(segment, cancellationToken);
+
+                    inputReader.AdvanceTo(buffer.End);
+
+                    if (readResult.IsCompleted)
+                        break;
                 }
 
-                inputReader.AdvanceTo(buffer.End);
-
-                if (readResult.IsCompleted)
-                    break;
+                await cryptoStream.FlushAsync(cancellationToken);
             }
 
-            await cryptoStream.FlushAsync(cancellationToken);
             await outputWriter.CompleteAsync();
         }
         catch (Exception ex)
@@ -103,7 +102,6 @@ public class AESEncryptionService : IEncryptionService
             }
 
             await cryptoStream.FlushAsync(cancellationToken);
-            await outputWriter.CompleteAsync();
         }
         catch (Exception ex)
         {
