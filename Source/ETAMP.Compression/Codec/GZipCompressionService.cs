@@ -6,11 +6,11 @@ using Microsoft.Extensions.Logging;
 namespace ETAMP.Compression.Codec;
 
 /// <summary>
-/// Provides GZip compression and decompression functionality for data streams.
+///     Provides GZip compression and decompression functionality for data streams.
 /// </summary>
 /// <remarks>
-/// Implements the <see cref="ICompressionService"/> interface to handle GZip-based
-/// compression and decompression of streams using the System.IO.Compression.GZipStream.
+///     Implements the <see cref="ICompressionService" /> interface to handle GZip-based
+///     compression and decompression of streams using the System.IO.Compression.GZipStream.
 /// </remarks>
 public sealed record GZipCompressionService : ICompressionService
 {

@@ -3,7 +3,7 @@
 namespace ETAMP.Compression.Interfaces;
 
 /// <summary>
-/// Interface for services that provide methods to compress and decompress data streams.
+///     Interface for services that provide methods to compress and decompress data streams.
 /// </summary>
 public interface ICompressionService
 {

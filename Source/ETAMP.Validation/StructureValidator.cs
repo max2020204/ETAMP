@@ -39,9 +39,7 @@ public sealed class StructureValidator : IStructureValidator
 
         if (hasValidId && hasValidUpdateType && hasValidCompressionType && hasToken &&
             (validateLite || hasValidSignature))
-        {
             return new ValidationResult(true);
-        }
 
 
         _logger.LogError("ETAMP model has empty/missing fields or contains invalid values.");

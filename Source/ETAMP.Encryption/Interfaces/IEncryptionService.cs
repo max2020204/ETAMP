@@ -3,8 +3,8 @@
 namespace ETAMP.Encryption.Interfaces;
 
 /// <summary>
-/// Represents a service for performing encryption and decryption operations.
-/// Defines methods for processing data streams using a specified cryptographic algorithm and key.
+///     Represents a service for performing encryption and decryption operations.
+///     Defines methods for processing data streams using a specified cryptographic algorithm and key.
 /// </summary>
 public interface IEncryptionService
 {

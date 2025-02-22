@@ -3,7 +3,7 @@
 namespace ETAMP.Core.Models;
 
 /// <summary>
-/// Represents a model used in the ETAMP protocol with generic support for token types.
+///     Represents a model used in the ETAMP protocol with generic support for token types.
 /// </summary>
 /// <typeparam name="T">The type of token associated with the model, constrained to inherit from Token.</typeparam>
 public record ETAMPModel<T> where T : Token
