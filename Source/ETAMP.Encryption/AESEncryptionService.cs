@@ -23,7 +23,7 @@ public class AESEncryptionService : IEncryptionService
     }
 
     /// <summary>
-    /// Encrypts the provided data using AES encryption and Pipe.
+    ///     Encrypts the provided data using AES encryption and Pipe.
     /// </summary>
     public async Task EncryptAsync(PipeReader inputReader, PipeWriter outputWriter, byte[] key,
         CancellationToken cancellationToken = default)
@@ -70,7 +70,7 @@ public class AESEncryptionService : IEncryptionService
     }
 
     /// <summary>
-    /// Decrypts the provided encrypted data using AES and Pipe.
+    ///     Decrypts the provided encrypted data using AES and Pipe.
     /// </summary>
     public async Task DecryptAsync(PipeReader inputReader, PipeWriter outputWriter, byte[] key,
         CancellationToken cancellationToken = default)
@@ -90,10 +90,7 @@ public class AESEncryptionService : IEncryptionService
             var buffer = readResult.Buffer;
             while (true)
             {
-                foreach (var segment in buffer)
-                {
-                    await cryptoStream.WriteAsync(segment, cancellationToken);
-                }
+                foreach (var segment in buffer) await cryptoStream.WriteAsync(segment, cancellationToken);
 
                 inputReader.AdvanceTo(buffer.End);
 
@@ -116,7 +113,7 @@ public class AESEncryptionService : IEncryptionService
     }
 
     /// <summary>
-    /// Reads the IV (initialization vector) from the input Pipe.
+    ///     Reads the IV (initialization vector) from the input Pipe.
     /// </summary>
     private async Task<byte[]> ReadIVAsync(PipeReader inputReader, int ivLength, CancellationToken cancellationToken)
     {
@@ -133,7 +130,7 @@ public class AESEncryptionService : IEncryptionService
     }
 
     /// <summary>
-    /// Validates the encryption key size.
+    ///     Validates the encryption key size.
     /// </summary>
     private void ValidateKey(byte[] key)
     {

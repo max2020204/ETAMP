@@ -18,7 +18,7 @@ public sealed class ECDsaSignatureProvider : IECDsaSignatureProvider
 
 
     /// <summary>
-    /// Signs the specified ETAMP model of type T, generating a signature message.
+    ///     Signs the specified ETAMP model of type T, generating a signature message.
     /// </summary>
     /// <param name="etamp">The ETAMP model to be signed, containing the token and metadata.</param>
     /// <param name="cancellationToken">The token to monitor for cancellation requests.</param>

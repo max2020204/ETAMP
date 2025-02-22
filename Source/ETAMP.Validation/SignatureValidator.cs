@@ -10,7 +10,7 @@ using Microsoft.Extensions.Logging;
 namespace ETAMP.Validation;
 
 /// <summary>
-/// Provides functionality to validate signatures in ETAMP messages.
+///     Provides functionality to validate signatures in ETAMP messages.
 /// </summary>
 public sealed class SignatureValidator : ISignatureValidator
 {
@@ -21,7 +21,7 @@ public sealed class SignatureValidator : ISignatureValidator
 
 
     /// <summary>
-    /// Provides functionality to validate signatures in ETAMP messages.
+    ///     Provides functionality to validate signatures in ETAMP messages.
     /// </summary>
     public SignatureValidator(IECDsaVerificationProvider iecDsaVerificationProvider,
         IStructureValidator structureValidator,
@@ -35,13 +35,23 @@ public sealed class SignatureValidator : ISignatureValidator
 
 
     /// <summary>
-    /// Asynchronously validates the ETAMP message by checking the structure of the ETAMP model,
-    /// verifying the presence of required fields, and validating the signature of the message.
+    ///     Asynchronously validates the ETAMP message by checking the structure of the ETAMP model,
+    ///     verifying the presence of required fields, and validating the signature of the message.
     /// </summary>
-    /// <typeparam name="T">The type of the token associated with the ETAMP model, which must derive from the <see cref="Token"/> class.</typeparam>
+    /// <typeparam name="T">
+    ///     The type of the token associated with the ETAMP model, which must derive from the
+    ///     <see cref="Token" /> class.
+    /// </typeparam>
     /// <param name="etamp">The ETAMP model containing the token, signature message, and related data to be validated.</param>
-    /// <param name="cancellationToken">An optional token to observe while waiting for the task to complete. Defaults to <see cref="default"/>.</param>
-    /// <returns>A task that represents the asynchronous validation operation. The task result is a <see cref="ValidationResult"/> indicating whether the validation succeeded or failed, along with error details if applicable.</returns>
+    /// <param name="cancellationToken">
+    ///     An optional token to observe while waiting for the task to complete. Defaults to
+    ///     <see cref="default" />.
+    /// </param>
+    /// <returns>
+    ///     A task that represents the asynchronous validation operation. The task result is a
+    ///     <see cref="ValidationResult" /> indicating whether the validation succeeded or failed, along with error details if
+    ///     applicable.
+    /// </returns>
     public async Task<ValidationResult> ValidateETAMPMessageAsync<T>(ETAMPModel<T> etamp,
         CancellationToken cancellationToken = default) where T : Token
     {

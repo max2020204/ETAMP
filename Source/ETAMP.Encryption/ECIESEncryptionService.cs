@@ -6,8 +6,8 @@ using Microsoft.Extensions.Logging;
 namespace ETAMP.Encryption;
 
 /// <summary>
-/// A service for performing encryption and decryption using Elliptic Curve Integrated Encryption Scheme (ECIES).
-/// Implements asynchronous methods for encrypting and decrypting data streams.
+///     A service for performing encryption and decryption using Elliptic Curve Integrated Encryption Scheme (ECIES).
+///     Implements asynchronous methods for encrypting and decrypting data streams.
 /// </summary>
 public sealed class ECIESEncryptionService : IECIESEncryptionService
 {
@@ -29,9 +29,9 @@ public sealed class ECIESEncryptionService : IECIESEncryptionService
     private readonly ILogger<ECIESEncryptionService> _logger;
 
     /// <summary>
-    /// Provides an implementation of the IECIESEncryptionService interface, enabling ECIES
-    /// (Elliptic Curve Integrated Encryption Scheme) encryption and decryption functionality.
-    /// This service uses elliptic curve cryptography to securely encrypt and decrypt data streams.
+    ///     Provides an implementation of the IECIESEncryptionService interface, enabling ECIES
+    ///     (Elliptic Curve Integrated Encryption Scheme) encryption and decryption functionality.
+    ///     This service uses elliptic curve cryptography to securely encrypt and decrypt data streams.
     /// </summary>
     public ECIESEncryptionService(IEncryptionService encryptionService, ILogger<ECIESEncryptionService> logger)
     {

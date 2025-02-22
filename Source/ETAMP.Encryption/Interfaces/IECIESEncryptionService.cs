@@ -4,8 +4,8 @@ using System.Security.Cryptography;
 namespace ETAMP.Encryption.Interfaces;
 
 /// <summary>
-/// Represents a contract for services implementing encryption and decryption using the Elliptic Curve Integrated
-/// Encryption Scheme (ECIES). Provides asynchronous methods for handling secure data streams.
+///     Represents a contract for services implementing encryption and decryption using the Elliptic Curve Integrated
+///     Encryption Scheme (ECIES). Provides asynchronous methods for handling secure data streams.
 /// </summary>
 public interface IECIESEncryptionService
 {

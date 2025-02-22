@@ -1,8 +1,8 @@
 ﻿namespace ETAMP.Compression.Interfaces.Factory;
 
 /// <summary>
-/// Defines a factory interface for creating and retrieving instances of
-/// compression services based on the specified compression type.
+///     Defines a factory interface for creating and retrieving instances of
+///     compression services based on the specified compression type.
 /// </summary>
 public interface ICompressionServiceFactory
 {
