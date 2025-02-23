@@ -52,6 +52,15 @@ public static class Base64UrlEncoder
         return destination;
     }
 
+    /// Encodes the specified byte array into a Base64Url encoded byte array.
+    /// <param name="arg">The input byte array to be encoded. It must not be null.</param>
+    /// <returns>A byte array containing the Base64Url encoded representation of the input byte array.</returns>
+    /// <exception cref="ArgumentNullException">Thrown if the input byte array <paramref name="arg" /> is null.</exception>
+    public static byte[] EncodeBytes(byte[] arg)
+    {
+        ArgumentNullException.ThrowIfNull(arg);
+        return Encode(arg.AsSpan()).ToArray();
+    }
 
     /// Decodes a Base64 URL-encoded string into a byte array.
     /// <param name="str">
@@ -70,6 +79,16 @@ public static class Base64UrlEncoder
         return dataSpan.ToArray();
     }
 
+    /// Decodes the specified byte array, interpreting it as Base64Url encoded data, and returns the decoded byte array.
+    /// <param name="bytes">The input byte array to be decoded. It must not be null.</param>
+    /// <returns>The decoded byte array corresponding to the Base64Url encoded input.</returns>
+    /// <exception cref="ArgumentNullException">Thrown if the input byte array <paramref name="bytes" /> is null.</exception>
+    public static byte[] DecodeBytes(byte[] bytes)
+    {
+        ArgumentNullException.ThrowIfNull(bytes);
+        var dataSpan = DecodeAsSpan(bytes.AsSpan());
+        return dataSpan.ToArray();
+    }
 
     /// Decodes a Base64Url-encoded byte array into a UTF-8 encoded string.
     /// <param name="encodedBytes">The byte array that contains the Base64Url-encoded data. Cannot be null.</param>

@@ -52,7 +52,7 @@ public static class ETAMPServiceCollectionExtensions
         AddCompositionServices(services, false);
         AddEncryptionServices(services, false);
         AddValidationServices(services, false);
-        AddWrapperServices(services, false);
+        AddProviders(services, false);
     }
 
     /// <summary>
@@ -118,7 +118,7 @@ public static class ETAMPServiceCollectionExtensions
     ///     An optional action to configure logging using <see cref="ILoggingBuilder" />.
     ///     If not provided, the default logging configuration is applied.
     /// </param>
-    public static void AddWrapperServices(this IServiceCollection services, bool addlogger = true,
+    public static void AddProviders(this IServiceCollection services, bool addlogger = true,
         Action<ILoggingBuilder>? configureLogging = null)
     {
         AddLogging(services, addlogger, configureLogging);
@@ -147,6 +147,7 @@ public static class ETAMPServiceCollectionExtensions
         AddLogging(services, addlogger, configureLogging);
         services.AddScoped<IEncryptionService, AESEncryptionService>();
         services.AddScoped<IECIESEncryptionService, ECIESEncryptionService>();
+        services.AddScoped<IECIESEncryptionManager, ECIESEncryptionManager>();
         services.AddSingleton<IECDsaStore, ECDsaStore>();
     }
 
