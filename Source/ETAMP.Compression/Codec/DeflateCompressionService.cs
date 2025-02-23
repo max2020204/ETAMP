@@ -25,15 +25,13 @@ public sealed record DeflateCompressionService : ICompressionService
         _logger = logger;
     }
 
-
     /// <summary>
-    ///     Asynchronously compresses data from a <see cref="PipeReader" /> to a <see cref="PipeWriter" /> using Deflate
-    ///     compression.
+    /// Compresses the input data stream and writes the compressed data to the output stream.
     /// </summary>
-    /// <param name="inputData">The <see cref="PipeReader" /> from which to read the uncompressed input data.</param>
-    /// <param name="outputData">The <see cref="PipeWriter" /> to which the compressed data will be written.</param>
+    /// <param name="inputData">The input stream of data to be compressed.</param>
+    /// <param name="outputData">The output stream where the compressed data is written to.</param>
     /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
-    /// <returns>A <see cref="Task" /> that represents the asynchronous compression operation.</returns>
+    /// <returns>A task that represents the asynchronous compression operation.</returns>
     public async Task CompressAsync(PipeReader inputData, PipeWriter outputData,
         CancellationToken cancellationToken = default)
     {
@@ -51,22 +49,26 @@ public sealed record DeflateCompressionService : ICompressionService
         }
         finally
         {
-            await outputData.FlushAsync(cancellationToken);
-            await outputData.CompleteAsync();
-            await inputData.CompleteAsync();
+            await CompleteFlushAsync(inputData, outputData, cancellationToken);
         }
     }
 
     /// <summary>
-    ///     Asynchronously decompresses data from the input stream and writes the decompressed data to the output stream.
+    /// Asynchronously decompresses data from the specified input stream and writes the decompressed data
+    /// to the specified output stream using the Deflate decompression algorithm.
     /// </summary>
-    /// <param name="inputData">The <see cref="PipeReader" /> representing the compressed input stream.</param>
-    /// <param name="outputData">The <see cref="PipeWriter" /> to which the decompressed data will be written.</param>
-    /// <param name="cancellationToken">
-    ///     An optional <see cref="CancellationToken" /> to observe while waiting for the operation
-    ///     to complete.
+    /// <param name="inputData">
+    /// The <see cref="PipeReader" /> representing the compressed input data stream to decompress.
     /// </param>
-    /// <returns>A <see cref="Task" /> representing the asynchronous decompression operation.</returns>
+    /// <param name="outputData">
+    /// The <see cref="PipeWriter" /> where the decompressed data will be written.
+    /// </param>
+    /// <param name="cancellationToken">
+    /// An optional <see cref="CancellationToken" /> to observe while waiting for the operation to complete.
+    /// </param>
+    /// <returns>
+    /// A task that represents the asynchronous decompression operation.
+    /// </returns>
     public async Task DecompressAsync(PipeReader inputData, PipeWriter outputData,
         CancellationToken cancellationToken = default)
     {
@@ -84,9 +86,30 @@ public sealed record DeflateCompressionService : ICompressionService
         }
         finally
         {
-            await outputData.FlushAsync(cancellationToken);
-            await outputData.CompleteAsync();
-            await inputData.CompleteAsync();
+            await CompleteFlushAsync(inputData, outputData, cancellationToken);
         }
+    }
+
+    /// <summary>
+    ///     Completes the flushing and finalization of both the input and output data pipelines.
+    /// </summary>
+    /// <param name="inputData">
+    ///     The <see cref="PipeReader" /> representing the input data stream to be finalized.
+    /// </param>
+    /// <param name="outputData">
+    ///     The <see cref="PipeWriter" /> representing the output data stream to be finalized and flushed.
+    /// </param>
+    /// <param name="cancellationToken">
+    ///     A <see cref="CancellationToken" /> to observe while waiting for the operation to complete.
+    /// </param>
+    /// <returns>
+    ///     A <see cref="Task" /> that represents the asynchronous operation.
+    /// </returns>
+    private async Task CompleteFlushAsync(PipeReader inputData, PipeWriter outputData,
+        CancellationToken cancellationToken)
+    {
+        await outputData.FlushAsync(cancellationToken);
+        await outputData.CompleteAsync();
+        await inputData.CompleteAsync();
     }
 }

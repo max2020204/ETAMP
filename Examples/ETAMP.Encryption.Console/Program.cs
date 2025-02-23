@@ -40,10 +40,13 @@ internal class Program
         await outputPipe.Reader.CompleteAsync();
         Console.WriteLine(encryptedData);
 
+
+        //Decrypt
         var decryptionPipe = new Pipe();
         var decryptionOutputPipe = new Pipe();
         await decryptionPipe.Writer.WriteAsync(Base64UrlEncoder.DecodeBytes(encryptedData));
         await decryptionPipe.Writer.CompleteAsync();
+
 
         await _ecies.DecryptAsync(decryptionPipe.Reader, decryptionOutputPipe.Writer, person2, person1.PublicKey);
         var result2 = await decryptionOutputPipe.Reader.ReadAsync();
