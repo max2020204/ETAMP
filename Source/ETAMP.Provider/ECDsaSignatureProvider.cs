@@ -1,4 +1,5 @@
-﻿using System.IO.Pipelines;
+﻿using System.Buffers;
+using System.IO.Pipelines;
 using System.Security.Cryptography;
 using System.Text;
 using ETAMP.Core.Extensions;
@@ -47,7 +48,7 @@ public sealed class ECDsaSignatureProvider : IECDsaSignatureProvider
 
         var result = await pipe.Reader.ReadAsync(cancellationToken);
         pipe.Reader.AdvanceTo(result.Buffer.End);
-        var signature = Sign(result.Buffer.FirstSpan);
+        var signature = Sign(result.Buffer.ToArray());
         etamp.SignatureMessage = Base64UrlEncoder.Encode(signature);
         return etamp;
     }

@@ -72,9 +72,7 @@ public sealed record GZipCompressionService : ICompressionService
         }
         finally
         {
-            await outputData.FlushAsync(cancellationToken);
-            await outputData.CompleteAsync();
-            await inputData.CompleteAsync();
+            await CompleteFlushAsync(inputData, outputData, cancellationToken);
         }
     }
 
@@ -116,9 +114,32 @@ public sealed record GZipCompressionService : ICompressionService
         }
         finally
         {
-            await outputData.FlushAsync(cancellationToken);
-            await outputData.CompleteAsync();
-            await inputData.CompleteAsync();
+            await CompleteFlushAsync(inputData, outputData, cancellationToken);
         }
+    }
+
+    /// <summary>
+    ///     Completes flushing and finalization of the PipeWriter and PipeReader to ensure proper
+    ///     handling of the data stream and resource cleanup.
+    /// </summary>
+    /// <param name="inputData">
+    ///     The <see cref="PipeReader" /> representing the input data that has been read and processed.
+    /// </param>
+    /// <param name="outputData">
+    ///     The <see cref="PipeWriter" /> representing the output data where the processed content is written.
+    /// </param>
+    /// <param name="cancellationToken">
+    ///     A <see cref="CancellationToken" /> which can be used to signal cancellation of the operation.
+    /// </param>
+    /// <returns>
+    ///     A <see cref="Task" /> representing the asynchronous operation of finalizing and completing both the reader and
+    ///     writer.
+    /// </returns>
+    private async Task CompleteFlushAsync(PipeReader inputData, PipeWriter outputData,
+        CancellationToken cancellationToken)
+    {
+        await outputData.FlushAsync(cancellationToken);
+        await outputData.CompleteAsync();
+        await inputData.CompleteAsync();
     }
 }
