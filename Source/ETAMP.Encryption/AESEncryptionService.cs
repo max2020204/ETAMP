@@ -86,11 +86,13 @@ public class AESEncryptionService : IEncryptionService
         {
             await using var cryptoStream = new CryptoStream(outputWriter.AsStream(), aes.CreateDecryptor(),
                 CryptoStreamMode.Write, true);
+
             var readResult = await inputReader.ReadAsync(cancellationToken);
             var buffer = readResult.Buffer;
             while (true)
             {
-                foreach (var segment in buffer) await cryptoStream.WriteAsync(segment, cancellationToken);
+                foreach (var segment in buffer)
+                    await cryptoStream.WriteAsync(segment, cancellationToken);
 
                 inputReader.AdvanceTo(buffer.End);
 
@@ -123,10 +125,10 @@ public class AESEncryptionService : IEncryptionService
         if (buffer.Length < ivLength)
             throw new CryptographicException("Failed to read the IV (initialization vector).");
 
-        var iv = buffer.Slice(0, ivLength).ToArray();
+        var iv = buffer.Slice(0, ivLength);
         inputReader.AdvanceTo(buffer.GetPosition(ivLength));
 
-        return iv;
+        return iv.ToArray();
     }
 
     /// <summary>

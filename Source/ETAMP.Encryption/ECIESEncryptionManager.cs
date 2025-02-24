@@ -100,8 +100,7 @@ public class ECIESEncryptionManager : IECIESEncryptionManager
         var dataPipe = new Pipe();
         var outputPipe = new Pipe();
 
-        var base64 = Base64UrlEncoder.EncodeBytes(data);
-        await dataPipe.Writer.WriteAsync(base64);
+        await dataPipe.Writer.WriteAsync(data);
         await dataPipe.Writer.CompleteAsync();
         _logger.LogInformation("Data written to pipe");
 
@@ -128,7 +127,8 @@ public class ECIESEncryptionManager : IECIESEncryptionManager
         var decryptionPipe = new Pipe();
         var decryptionOutputPipe = new Pipe();
 
-        await decryptionPipe.Writer.WriteAsync(Base64UrlEncoder.DecodeBytes(data));
+        var base64 = Base64UrlEncoder.DecodeBytes(data);
+        await decryptionPipe.Writer.WriteAsync(base64);
         await decryptionPipe.Writer.CompleteAsync();
         _logger.LogInformation("Data written to pipe");
 
