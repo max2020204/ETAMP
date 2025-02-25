@@ -4,7 +4,7 @@
 ///     Represents a data model builder for the ETAMP framework.
 ///     This class is used to encapsulate the properties required for building or reconstructing ETAMP-related data models.
 /// </summary>
-public record ETAMPModelBuilder
+public struct ETAMPModelBuilder
 {
     /// <summary>
     ///     Represents a unique identifier that is used to distinguish individual instances of the type.

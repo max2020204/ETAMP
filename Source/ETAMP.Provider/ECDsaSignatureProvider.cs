@@ -1,7 +1,5 @@
-﻿using System.Buffers;
-using System.IO.Pipelines;
+﻿using System.Runtime.InteropServices;
 using System.Security.Cryptography;
-using System.Text;
 using ETAMP.Core.Extensions;
 using ETAMP.Core.Models;
 using ETAMP.Core.Utils;
@@ -30,25 +28,18 @@ public sealed class ECDsaSignatureProvider : IECDsaSignatureProvider
     {
         ArgumentNullException.ThrowIfNull(etamp.Token, nameof(etamp.Token));
 
-        Pipe pipe = new();
-
-        StringBuilder sb = new();
-        sb.Append(etamp.Id);
-        sb.Append(etamp.Version);
-
-        await using (var writer = new StreamWriter(pipe.Writer.AsStream(), Encoding.UTF8))
+        var etampModel = new ETAMPModelBuilder()
         {
-            await writer.WriteAsync(sb.ToString());
-            await writer.WriteAsync(await etamp.Token.ToJsonAsync(cancellationToken));
-            await writer.WriteAsync(etamp.UpdateType);
-            await writer.WriteAsync(etamp.CompressionType);
+            Id = etamp.Id,
+            Version = etamp.Version,
+            Token = await etamp.Token.ToJsonAsync(cancellationToken),
+            UpdateType = etamp.UpdateType,
+            CompressionType = etamp.CompressionType,
+        };
 
-            await writer.FlushAsync(cancellationToken);
-        }
-
-        var result = await pipe.Reader.ReadAsync(cancellationToken);
-        pipe.Reader.AdvanceTo(result.Buffer.End);
-        var signature = Sign(result.Buffer.ToArray());
+        var modelSpan = MemoryMarshal.CreateSpan(ref etampModel, 1);
+        var byteModel = MemoryMarshal.AsBytes(modelSpan);
+        var signature = Sign(byteModel);
         etamp.SignatureMessage = Base64UrlEncoder.Encode(signature);
         return etamp;
     }
