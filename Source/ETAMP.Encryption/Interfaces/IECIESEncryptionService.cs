@@ -1,70 +1,75 @@
-﻿#region
-
+﻿using System.IO.Pipelines;
 using System.Security.Cryptography;
-
-#endregion
 
 namespace ETAMP.Encryption.Interfaces;
 
 /// <summary>
-///     Defines a service for encrypting and decrypting messages using Elliptic Curve Integrated ETAMPEncryption Scheme
-///     (ECIES).
+///     Represents a contract for services implementing encryption and decryption using the Elliptic Curve Integrated
+///     Encryption Scheme (ECIES). Provides asynchronous methods for handling secure data streams.
 /// </summary>
 public interface IECIESEncryptionService
 {
     /// <summary>
-    /// Encrypts a given message stream using the specified private and public keys.
+    ///     Asynchronously encrypts data from the input reader and writes the encrypted data to the output writer
+    ///     using the Elliptic Curve Integrated Encryption Scheme (ECIES).
     /// </summary>
-    /// <param name="message">The stream containing the message to be encrypted.</param>
-    /// <param name="privateKey">The private ECDiffieHellman key used for encryption.</param>
-    /// <param name="publicKey">The public key used for encryption, represented either as an ECDiffieHellmanPublicKey or a byte array.</param>
-    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
-    /// <returns>A task that represents the asynchronous encryption operation, with a stream containing the encrypted message as its result.</returns>
-    Task<Stream> EncryptAsync(Stream message, ECDiffieHellman privateKey, ECDiffieHellmanPublicKey publicKey,
-        CancellationToken cancellationToken = default);
-
-    /// <summary>
-    /// Encrypts a message using the ECIES (Elliptic Curve Integrated Encryption Scheme).
-    /// </summary>
-    /// <param name="message">The input stream containing the message to be encrypted.</param>
-    /// <param name="privateKey">The sender's private ECDiffieHellman key used in the encryption process.</param>
-    /// <param name="publicKey">The receiver's public key used in the encryption process.</param>
-    /// <param name="cancellationToken">A token to observe while waiting for the task to complete.</param>
-    /// <returns>A stream containing the encrypted message data.</returns>
-    Task<Stream> EncryptAsync(Stream message, ECDiffieHellman privateKey, byte[] publicKey,
-        CancellationToken cancellationToken = default);
-
-    /// <summary>
-    /// Decrypts an encrypted message using the Elliptic Curve Integrated Encryption Scheme (ECIES).
-    /// </summary>
-    /// <param name="encryptedMessageBase64">
-    /// A stream containing the base64-encoded encrypted message to be decrypted.
-    /// </param>
-    /// <param name="privateKey">
-    /// The ECDiffieHellman private key used for decryption.
-    /// </param>
+    /// <param name="inputReader">The <see cref="PipeReader" /> from which the plaintext data is read.</param>
+    /// <param name="outputWriter">The <see cref="PipeWriter" /> to which the encrypted data is written.</param>
+    /// <param name="privateKey">The <see cref="ECDiffieHellman" /> private key used for encryption operations.</param>
     /// <param name="publicKey">
-    /// The ECDiffieHellmanPublicKey corresponding to the sender's public key.
+    ///     The <see cref="ECDiffieHellmanPublicKey" /> of the recipient used for key agreement during
+    ///     encryption.
     /// </param>
     /// <param name="cancellationToken">
-    /// The cancellation token to cancel the operation, if necessary. Optional.
+    ///     An optional <see cref="CancellationToken" /> to cancel the asynchronous encryption
+    ///     operation.
     /// </param>
-    /// <returns>
-    /// A task that represents the asynchronous decryption operation. The task result contains a stream with the decrypted message.
-    /// </returns>
-    Task<Stream> DecryptAsync(Stream encryptedMessageBase64, ECDiffieHellman privateKey,
+    /// <returns>A <see cref="Task" /> that represents the asynchronous operation of encrypting the data.</returns>
+    Task EncryptAsync(PipeReader inputReader, PipeWriter outputWriter, ECDiffieHellman privateKey,
+        ECDiffieHellmanPublicKey publicKey,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>
+    ///     Encrypts data asynchronously using ECIES (Elliptic Curve Integrated Encryption Scheme) with the provided private
+    ///     key
+    ///     and public key. Reads the input data from the specified <see cref="PipeReader" /> and writes the encrypted data
+    ///     to the specified <see cref="PipeWriter" />.
+    /// </summary>
+    /// <param name="inputReader">The <see cref="PipeReader" /> from which the plaintext data is read.</param>
+    /// <param name="outputWriter">The <see cref="PipeWriter" /> to which the encrypted data is written.</param>
+    /// <param name="privateKey">
+    ///     The private key of type <see cref="ECDiffieHellman" /> used in encryption to generate a shared
+    ///     secret.
+    /// </param>
+    /// <param name="publicKey">The public key as a byte array used in encryption to establish a shared secret.</param>
+    /// <param name="cancellationToken">A <see cref="CancellationToken" /> used to observe cancellation requests.</param>
+    /// <returns>A <see cref="Task" /> that represents the asynchronous operation of encrypting the data.</returns>
+    Task EncryptAsync(PipeReader inputReader, PipeWriter outputWriter, ECDiffieHellman privateKey, byte[] publicKey,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>
+    ///     Asynchronously decrypts data from the input stream and writes the decrypted data to the output stream
+    ///     using the given private key and peer's public key for the ECIES scheme.
+    /// </summary>
+    /// <param name="inputReader">The reader for the encrypted input stream.</param>
+    /// <param name="outputWriter">The writer for the decrypted output stream.</param>
+    /// <param name="privateKey">The ECDiffieHellman private key for decryption.</param>
+    /// <param name="publicKey">The ECDiffieHellmanPublicKey from the peer for shared key computation.</param>
+    /// <param name="cancellationToken">The token used to cancel the decryption operation, if needed.</param>
+    /// <returns>A Task representing the asynchronous decryption operation.</returns>
+    Task DecryptAsync(PipeReader inputReader, PipeWriter outputWriter, ECDiffieHellman privateKey,
         ECDiffieHellmanPublicKey publicKey, CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// Decrypts an encrypted message represented as a base64 stream using the provided private key and a public key.
+    ///     Decrypts the data read from the input reader using the specified private key and the public key,
+    ///     and writes the decrypted data to the output writer.
     /// </summary>
-    /// <param name="encryptedMessageBase64">The encrypted message as a base64-encoded stream to decrypt.</param>
-    /// <param name="privateKey">The ECDiffieHellman private key used for the decryption process.</param>
-    /// <param name="publicKey">The public key in byte array format associated with the encryption process.</param>
-    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
-    /// <returns>
-    /// A task that represents the asynchronous decryption operation. The task result is a stream containing the decrypted message.
-    /// </returns>
-    Task<Stream> DecryptAsync(Stream encryptedMessageBase64, ECDiffieHellman privateKey, byte[] publicKey,
+    /// <param name="inputReader">The <see cref="PipeReader" /> to read the encrypted data from.</param>
+    /// <param name="outputWriter">The <see cref="PipeWriter" /> to write the decrypted data to.</param>
+    /// <param name="privateKey">The <see cref="ECDiffieHellman" /> private key used for decryption.</param>
+    /// <param name="publicKey">The public key as a byte array used for key agreement during decryption.</param>
+    /// <param name="cancellationToken">The token to monitor for cancellation requests.</param>
+    /// <returns>A <see cref="Task" /> representing the asynchronous operation.</returns>
+    Task DecryptAsync(PipeReader inputReader, PipeWriter outputWriter, ECDiffieHellman privateKey, byte[] publicKey,
         CancellationToken cancellationToken = default);
 }

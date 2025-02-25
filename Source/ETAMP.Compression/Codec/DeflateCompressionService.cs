@@ -1,87 +1,115 @@
-﻿#region
-
-using System.IO.Compression;
+﻿using System.IO.Compression;
+using System.IO.Pipelines;
 using ETAMP.Compression.Interfaces;
 using Microsoft.Extensions.Logging;
-
-#endregion
 
 namespace ETAMP.Compression.Codec;
 
 /// <summary>
-///     Provides functionality for compressing and decompressing string data using Deflate compression.
+///     Provides methods for compressing and decompressing data streams using the Deflate compression algorithm.
+///     This class implements the <see cref="ICompressionService" /> interface.
 /// </summary>
-public sealed class DeflateCompressionService : ICompressionService
+public sealed record DeflateCompressionService : ICompressionService
 {
+    /// <summary>
+    ///     Represents the logger instance used for logging informational messages, debugging details,
+    ///     and error reports related to compression and decompression operations.
+    /// </summary>
     private readonly ILogger<DeflateCompressionService> _logger;
 
+    /// <summary>
+    ///     Provides a service for compressing and decompressing data streams using the Deflate algorithm.
+    /// </summary>
     public DeflateCompressionService(ILogger<DeflateCompressionService> logger)
     {
         _logger = logger;
     }
 
-
-    public async Task<Stream> CompressStream(Stream data, CancellationToken cancellationToken = default)
+    /// <summary>
+    /// Compresses the input data stream and writes the compressed data to the output stream.
+    /// </summary>
+    /// <param name="inputData">The input stream of data to be compressed.</param>
+    /// <param name="outputData">The output stream where the compressed data is written to.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
+    /// <returns>A task that represents the asynchronous compression operation.</returns>
+    public async Task CompressAsync(PipeReader inputData, PipeWriter outputData,
+        CancellationToken cancellationToken = default)
     {
-        if (data is not { CanRead: true })
-        {
-            _logger.LogError("The input stream must not be null and must be readable.");
-            throw new ArgumentException("The input stream must not be null and must be readable.", nameof(data));
-        }
-
-        var outputStream = new MemoryStream();
-        await using (var compressor = new DeflateStream(outputStream, CompressionMode.Compress, true))
-        {
-            _logger.LogDebug("Compressing data stream...");
-            await data.CopyToAsync(compressor, cancellationToken);
-        }
-
-        _logger.LogDebug("Data stream compressed.");
-        outputStream.Position = 0;
-
-        return outputStream;
-    }
-
-
-    public async Task<Stream> DecompressStream(Stream compressedStream, CancellationToken cancellationToken = default)
-    {
-        if (compressedStream is not { CanRead: true })
-        {
-            _logger.LogError("The input stream must not be null and must be readable.");
-            throw new ArgumentException("The input stream must not be null and must be readable.",
-                nameof(compressedStream));
-        }
-
-        var outputStream = new MemoryStream();
-
         try
         {
-            await using var decompressor = new DeflateStream(compressedStream, CompressionMode.Decompress);
-            _logger.LogDebug("Decompressing data stream...");
-            await decompressor.CopyToAsync(outputStream, cancellationToken);
-        }
-        catch (InvalidDataException ex)
-        {
-            _logger.LogError(ex, "Failed to decompress the stream.");
-            throw new InvalidDataException(
-                "Failed to decompress the stream. The input data may be invalid or corrupted.", ex);
+            await using var compressor = new DeflateStream(outputData.AsStream(), CompressionMode.Compress, true);
+            _logger.LogDebug("Compressing data stream...");
+            await inputData.CopyToAsync(compressor, cancellationToken);
+            await compressor.FlushAsync(cancellationToken);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "An unexpected error occurred during decompression.");
-            throw new InvalidOperationException("An unexpected error occurred during decompression.", ex);
+            _logger.LogError(ex, "Compression failed.");
+            throw new InvalidOperationException("Compression failed.", ex);
         }
-
-        if (outputStream.Length == 0)
+        finally
         {
-            _logger.LogError("The decompressed data is empty.");
-            throw new InvalidOperationException(
-                "The decompressed data is empty. This may indicate invalid or corrupted input data.");
+            await CompleteFlushAsync(inputData, outputData, cancellationToken);
         }
+    }
 
-        outputStream.Position = 0;
+    /// <summary>
+    /// Asynchronously decompresses data from the specified input stream and writes the decompressed data
+    /// to the specified output stream using the Deflate decompression algorithm.
+    /// </summary>
+    /// <param name="inputData">
+    /// The <see cref="PipeReader" /> representing the compressed input data stream to decompress.
+    /// </param>
+    /// <param name="outputData">
+    /// The <see cref="PipeWriter" /> where the decompressed data will be written.
+    /// </param>
+    /// <param name="cancellationToken">
+    /// An optional <see cref="CancellationToken" /> to observe while waiting for the operation to complete.
+    /// </param>
+    /// <returns>
+    /// A task that represents the asynchronous decompression operation.
+    /// </returns>
+    public async Task DecompressAsync(PipeReader inputData, PipeWriter outputData,
+        CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            await using var decompressor =
+                new DeflateStream(inputData.AsStream(), CompressionMode.Decompress, true);
+            _logger.LogDebug("Decompressing data stream...");
+            await decompressor.CopyToAsync(outputData, cancellationToken);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Decompression failed.");
+            throw new InvalidOperationException("Decompression failed.", ex);
+        }
+        finally
+        {
+            await CompleteFlushAsync(inputData, outputData, cancellationToken);
+        }
+    }
 
-        _logger.LogDebug("Data stream decompressed successfully.");
-        return outputStream;
+    /// <summary>
+    ///     Completes the flushing and finalization of both the input and output data pipelines.
+    /// </summary>
+    /// <param name="inputData">
+    ///     The <see cref="PipeReader" /> representing the input data stream to be finalized.
+    /// </param>
+    /// <param name="outputData">
+    ///     The <see cref="PipeWriter" /> representing the output data stream to be finalized and flushed.
+    /// </param>
+    /// <param name="cancellationToken">
+    ///     A <see cref="CancellationToken" /> to observe while waiting for the operation to complete.
+    /// </param>
+    /// <returns>
+    ///     A <see cref="Task" /> that represents the asynchronous operation.
+    /// </returns>
+    private async Task CompleteFlushAsync(PipeReader inputData, PipeWriter outputData,
+        CancellationToken cancellationToken)
+    {
+        await outputData.FlushAsync(cancellationToken);
+        await outputData.CompleteAsync();
+        await inputData.CompleteAsync();
     }
 }
