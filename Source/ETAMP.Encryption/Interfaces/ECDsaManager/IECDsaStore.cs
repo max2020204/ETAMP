@@ -1,6 +1,6 @@
 ﻿using System.Security.Cryptography;
 
-namespace ETAMP.Encryption.Interfaces.ECDSAManager;
+namespace ETAMP.Encryption.Interfaces.ECDsaManager;
 
 /// <summary>
 ///     Represents a storage mechanism for managing ECDsa cryptographic providers.

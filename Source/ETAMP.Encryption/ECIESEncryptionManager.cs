@@ -9,24 +9,24 @@ using Microsoft.Extensions.Logging;
 namespace ETAMP.Encryption;
 
 /// <summary>
-/// Manages encryption and decryption using the Elliptic Curve Integrated Encryption Scheme (ECIES).
-/// Provides asynchronous methods for encrypting and decrypting data in both string and byte array formats.
+///     Manages encryption and decryption using the Elliptic Curve Integrated Encryption Scheme (ECIES).
+///     Provides asynchronous methods for encrypting and decrypting data in both string and byte array formats.
 /// </summary>
 public class ECIESEncryptionManager : IECIESEncryptionManager
 {
     /// <summary>
-    /// Represents a private dependency of type <see cref="IECIESEncryptionService"/> used to perform
-    /// Elliptic Curve Integrated Encryption Scheme (ECIES) operations, such as encryption and decryption of data streams.
+    ///     Represents a private dependency of type <see cref="IECIESEncryptionService" /> used to perform
+    ///     Elliptic Curve Integrated Encryption Scheme (ECIES) operations, such as encryption and decryption of data streams.
     /// </summary>
     private readonly IECIESEncryptionService _ecies;
 
-    private ILogger<ECIESEncryptionManager> _logger;
+    private readonly ILogger<ECIESEncryptionManager> _logger;
 
     /// <summary>
-    /// Provides encryption and decryption functionalities using the Elliptic Curve Integrated Encryption Scheme (ECIES).
-    /// This class serves as a manager to handle operations for encrypting and decrypting data using ECIES with
-    /// support for both string and byte array formats asynchronously.
-    /// Implements the <see cref="IECIESEncryptionManager"/> interface.
+    ///     Provides encryption and decryption functionalities using the Elliptic Curve Integrated Encryption Scheme (ECIES).
+    ///     This class serves as a manager to handle operations for encrypting and decrypting data using ECIES with
+    ///     support for both string and byte array formats asynchronously.
+    ///     Implements the <see cref="IECIESEncryptionManager" /> interface.
     /// </summary>
     public ECIESEncryptionManager(IECIESEncryptionService ecies, ILogger<ECIESEncryptionManager> logger)
     {
@@ -36,8 +36,8 @@ public class ECIESEncryptionManager : IECIESEncryptionManager
 
 
     /// <summary>
-    /// Encrypts data asynchronously using the Elliptic Curve Integrated Encryption Scheme (ECIES).
-    /// Supports encryption of string or byte array data using the specified private and public keys.
+    ///     Encrypts data asynchronously using the Elliptic Curve Integrated Encryption Scheme (ECIES).
+    ///     Supports encryption of string or byte array data using the specified private and public keys.
     /// </summary>
     /// <param name="data">The input string data to encrypt.</param>
     /// <param name="privateKey">The ECDiffieHellman private key to use for encryption.</param>
@@ -49,7 +49,7 @@ public class ECIESEncryptionManager : IECIESEncryptionManager
     }
 
     /// <summary>
-    /// Encrypts data asynchronously using ECIES (Elliptic Curve Integrated Encryption Scheme).
+    ///     Encrypts data asynchronously using ECIES (Elliptic Curve Integrated Encryption Scheme).
     /// </summary>
     /// <param name="data">The byte array representing the plaintext data to be encrypted.</param>
     /// <param name="privateKey">The ECDiffieHellman private key to be used for encryption.</param>
@@ -61,7 +61,7 @@ public class ECIESEncryptionManager : IECIESEncryptionManager
     }
 
     /// <summary>
-    /// Decrypts the specified encrypted data string using the provided private and public keys asynchronously.
+    ///     Decrypts the specified encrypted data string using the provided private and public keys asynchronously.
     /// </summary>
     /// <param name="data">The encrypted data string to be decrypted.</param>
     /// <param name="privateKey">The private ECDiffieHellman key for decryption.</param>
@@ -73,8 +73,8 @@ public class ECIESEncryptionManager : IECIESEncryptionManager
     }
 
     /// <summary>
-    /// Decrypts the specified byte array using the Elliptic Curve Integrated Encryption Scheme (ECIES).
-    /// The operation is performed asynchronously and requires the private key and public key for decryption.
+    ///     Decrypts the specified byte array using the Elliptic Curve Integrated Encryption Scheme (ECIES).
+    ///     The operation is performed asynchronously and requires the private key and public key for decryption.
     /// </summary>
     /// <param name="data">The encrypted data to be decrypted in byte array format.</param>
     /// <param name="privateKey">The ECDiffieHellman private key used for decryption.</param>
@@ -86,13 +86,15 @@ public class ECIESEncryptionManager : IECIESEncryptionManager
     }
 
     /// <summary>
-    /// Encrypts data using the specified private and public ECDH keys and returns the encrypted data as a byte array.
+    ///     Encrypts data using the specified private and public ECDH keys and returns the encrypted data as a byte array.
     /// </summary>
     /// <param name="data">The byte array containing the data to be encrypted.</param>
     /// <param name="privateKey">The private ECDiffieHellman key used for encryption.</param>
     /// <param name="publicKey">The public ECDiffieHellman key used for encryption.</param>
-    /// <returns>A task representing the asynchronous operation,
-    /// with a byte array containing the encrypted data as the result.</returns>
+    /// <returns>
+    ///     A task representing the asynchronous operation,
+    ///     with a byte array containing the encrypted data as the result.
+    /// </returns>
     private async Task<byte[]> EncryptData(byte[] data, ECDiffieHellman privateKey,
         ECDiffieHellmanPublicKey publicKey)
     {

@@ -108,7 +108,7 @@ public sealed class ETAMPValidator : IETAMPValidator
         }
 
 
-        var signatureValidationResult = await _signature.ValidateETAMPMessageAsync(etamp, cancellationToken);
+        var signatureValidationResult = await _signature.ValidateETAMPSignatureAsync(etamp, cancellationToken);
         _logger.LogInformation(signatureValidationResult.IsValid ? "Signature is valid" : "Signature is invalid");
 
         return !signatureValidationResult.IsValid

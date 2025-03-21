@@ -9,15 +9,21 @@ namespace ETAMP.Validation.Interfaces;
 public interface ISignatureValidator : IInitialize
 {
     /// <summary>
-    ///     Asynchronously validates the signature of an ETAMP message.
+    ///     Asynchronously validates the signature of an ETAMP model.
     /// </summary>
-    /// <typeparam name="T">The type of token associated with the ETAMP message.</typeparam>
-    /// <param name="etamp">The ETAMP model containing the message and signature to validate.</param>
+    /// <typeparam name="T">
+    ///     The type of token associated with the ETAMP model. Must inherit from <see cref="Token" />.
+    /// </typeparam>
+    /// <param name="etamp">
+    ///     The ETAMP model containing the signature to validate.
+    /// </param>
     /// <param name="cancellationToken">
-    ///     The cancellation token used to cancel the operation if needed. Defaults to
+    ///     A cancellation token that can be used to signal the asynchronous operation should be canceled. Defaults to
     ///     <see cref="CancellationToken.None" />.
     /// </param>
-    /// <returns>A <see cref="ValidationResult" /> that indicates whether the validation was successful or not.</returns>
-    Task<ValidationResult> ValidateETAMPMessageAsync<T>(ETAMPModel<T> etamp,
+    /// <returns>
+    ///     A <see cref="ValidationResult" /> indicating whether the signature validation succeeded or failed.
+    /// </returns>
+    Task<ValidationResult> ValidateETAMPSignatureAsync<T>(ETAMPModel<T> etamp,
         CancellationToken cancellationToken = default) where T : Token;
 }

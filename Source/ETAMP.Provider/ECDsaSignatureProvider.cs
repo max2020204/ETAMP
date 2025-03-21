@@ -28,18 +28,20 @@ public sealed class ECDsaSignatureProvider : IECDsaSignatureProvider
     {
         ArgumentNullException.ThrowIfNull(etamp.Token, nameof(etamp.Token));
 
-        var etampModel = new ETAMPModelBuilder()
+        var etampModel = new ETAMPModelBuilder
         {
             Id = etamp.Id,
             Version = etamp.Version,
             Token = await etamp.Token.ToJsonAsync(cancellationToken),
             UpdateType = etamp.UpdateType,
-            CompressionType = etamp.CompressionType,
+            CompressionType = etamp.CompressionType
         };
-
+        //Create ReadOnlySpan<byte> from model
         var modelSpan = MemoryMarshal.CreateSpan(ref etampModel, 1);
         var byteModel = MemoryMarshal.AsBytes(modelSpan);
+
         var signature = Sign(byteModel);
+
         etamp.SignatureMessage = Base64UrlEncoder.Encode(signature);
         return etamp;
     }

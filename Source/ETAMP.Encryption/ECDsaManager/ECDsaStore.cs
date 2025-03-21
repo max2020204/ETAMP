@@ -1,6 +1,6 @@
 ﻿using System.Collections.Concurrent;
 using System.Security.Cryptography;
-using ETAMP.Encryption.Interfaces.ECDSAManager;
+using ETAMP.Encryption.Interfaces.ECDsaManager;
 using Microsoft.Extensions.Logging;
 
 namespace ETAMP.Encryption.ECDsaManager;

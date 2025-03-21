@@ -26,7 +26,7 @@ public sealed record DeflateCompressionService : ICompressionService
     }
 
     /// <summary>
-    /// Compresses the input data stream and writes the compressed data to the output stream.
+    ///     Compresses the input data stream and writes the compressed data to the output stream.
     /// </summary>
     /// <param name="inputData">The input stream of data to be compressed.</param>
     /// <param name="outputData">The output stream where the compressed data is written to.</param>
@@ -54,20 +54,20 @@ public sealed record DeflateCompressionService : ICompressionService
     }
 
     /// <summary>
-    /// Asynchronously decompresses data from the specified input stream and writes the decompressed data
-    /// to the specified output stream using the Deflate decompression algorithm.
+    ///     Asynchronously decompresses data from the specified input stream and writes the decompressed data
+    ///     to the specified output stream using the Deflate decompression algorithm.
     /// </summary>
     /// <param name="inputData">
-    /// The <see cref="PipeReader" /> representing the compressed input data stream to decompress.
+    ///     The <see cref="PipeReader" /> representing the compressed input data stream to decompress.
     /// </param>
     /// <param name="outputData">
-    /// The <see cref="PipeWriter" /> where the decompressed data will be written.
+    ///     The <see cref="PipeWriter" /> where the decompressed data will be written.
     /// </param>
     /// <param name="cancellationToken">
-    /// An optional <see cref="CancellationToken" /> to observe while waiting for the operation to complete.
+    ///     An optional <see cref="CancellationToken" /> to observe while waiting for the operation to complete.
     /// </param>
     /// <returns>
-    /// A task that represents the asynchronous decompression operation.
+    ///     A task that represents the asynchronous decompression operation.
     /// </returns>
     public async Task DecompressAsync(PipeReader inputData, PipeWriter outputData,
         CancellationToken cancellationToken = default)

@@ -21,43 +21,26 @@ public sealed class ECDsaVerificationProvider : IECDsaVerificationProvider
     }
 
     /// <summary>
-    ///     Verifies the signature of string data.
+    /// Verifies the specified data against a signature using the current ECDsa and hash algorithm.
     /// </summary>
-    /// <param name="data">Data to verify, in string format.</param>
-    /// <param name="signature">Base64-encoded signature to verify against.</param>
-    /// <returns>True if the signature is valid; otherwise, false.</returns>
-    public bool VerifyData(Stream data, string signature)
+    /// <param name="data">
+    /// The data to verify, provided as a read-only span of bytes.
+    /// </param>
+    /// <param name="signature">
+    /// The signature to verify against, provided as a read-only span of bytes.
+    /// </param>
+    /// <returns>
+    /// Returns true if the signature is valid for the provided data; otherwise, false.
+    /// </returns>
+    public bool VerifyData(ReadOnlySpan<byte> data, ReadOnlySpan<byte> signature)
     {
         ValidateState();
-        EnsureStreamIsReadable(data);
 
-
-        _logger.LogDebug("Verifying data stream of length {Length}", data.Length);
-
-        var isValid = _ecdsa!.VerifyData(data, Base64UrlEncoder.DecodeBytes(signature), _algorithmName);
-
-        if (!isValid)
-            _logger.LogWarning("Signature verification failed for data stream.");
-
-        return isValid;
-    }
-
-    /// <summary>
-    ///     Verifies the signature of byte array data.
-    /// </summary>
-    /// <param name="data">Data to verify, as a byte array.</param>
-    /// <param name="signature">Signature to verify against, as a byte array.</param>
-    /// <returns>True if the signature is valid; otherwise, false.</returns>
-    public bool VerifyData(Stream data, byte[] signature)
-    {
-        ValidateState();
-        EnsureStreamIsReadable(data);
-
-        _logger.LogDebug("Verifying data stream of length {Length}", data.Length);
+        _logger.LogDebug("Verifying data with signature.");
         var isValid = _ecdsa!.VerifyData(data, signature, _algorithmName);
 
         if (!isValid)
-            _logger.LogWarning("Signature verification failed for data stream.");
+            _logger.LogWarning("Signature verification failed.");
 
         return isValid;
     }
@@ -89,14 +72,5 @@ public sealed class ECDsaVerificationProvider : IECDsaVerificationProvider
             return;
         _logger.LogError("ECDsa is not initialized. Call Initialize before verifying data.");
         throw new InvalidOperationException("ECDsa is not initialized.");
-    }
-
-    private static void EnsureStreamIsReadable(Stream stream)
-    {
-        if (!stream.CanRead)
-            throw new ArgumentException("Stream is not readable.", nameof(stream));
-
-        if (stream.CanSeek)
-            stream.Position = 0;
     }
 }

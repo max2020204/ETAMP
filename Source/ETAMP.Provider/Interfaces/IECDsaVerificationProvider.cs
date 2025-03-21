@@ -8,18 +8,10 @@ namespace ETAMP.Wrapper.Interfaces;
 public interface IECDsaVerificationProvider : IInitialize
 {
     /// <summary>
-    ///     Verifies the signature of string data.
+    ///     Verifies the signature of the provided data using ECDsa.
     /// </summary>
-    /// <param name="data">The data to verify.</param>
-    /// <param name="signature">The signature to check against.</param>
-    /// <returns>True if valid; otherwise, false.</returns>
-    bool VerifyData(Stream data, string signature);
-
-    /// <summary>
-    ///     Verifies the signature of byte array data.
-    /// </summary>
-    /// <param name="data">The data to verify.</param>
-    /// <param name="signature">The signature to check against.</param>
-    /// <returns>True if valid; otherwise, false.</returns>
-    bool VerifyData(Stream data, byte[] signature);
+    /// <param name="data">The data to be verified, represented as a read-only byte span.</param>
+    /// <param name="signature">The signature to validate the data against, represented as a read-only byte span.</param>
+    /// <returns>A boolean value indicating whether the signature validation is successful (true) or not (false).</returns>
+    bool VerifyData(ReadOnlySpan<byte> data, ReadOnlySpan<byte> signature);
 }

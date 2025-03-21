@@ -10,7 +10,7 @@ using ETAMP.Core.Utils;
 using ETAMP.Encryption;
 using ETAMP.Encryption.ECDsaManager;
 using ETAMP.Encryption.Interfaces;
-using ETAMP.Encryption.Interfaces.ECDSAManager;
+using ETAMP.Encryption.Interfaces.ECDsaManager;
 using ETAMP.Provider;
 using ETAMP.Provider.Interfaces;
 using ETAMP.Validation;
