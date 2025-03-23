@@ -1,28 +1,30 @@
-﻿using ETAMP.Compression.Interfaces;
+﻿using ETAMP.Compression.Codec;
 using ETAMP.Compression.Interfaces.Factory;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ETAMP.Compression.Factory;
 
 /// <summary>
-///     Represents a factory for creating and retrieving instances of compression services
-///     based on a specified compression type.
+/// Provides a factory implementation for creating and retrieving instances of
+/// <see cref="StreamCompressionService"/> based on a specified compression type.
 /// </summary>
 /// <remarks>
-///     This class utilizes an <see cref="IServiceProvider" /> to resolve keyed services
-///     implementing the <see cref="ICompressionService" /> interface for different compression types.
+/// This class is designed to work with the dependency injection container and leverages keyed service
+/// resolution to retrieve the appropriate compression service.
 /// </remarks>
 public sealed record CompressionServiceFactory : ICompressionServiceFactory
 {
     /// <summary>
-    ///     Represents an instance of <see cref="IServiceProvider" /> used to resolve and provide
-    ///     dependencies for creating or retrieving compression services within the factory.
+    /// Represents the service provider used to resolve dependencies within the compression service factory.
     /// </summary>
+    /// <remarks>
+    /// This variable holds an instance of <see cref="IServiceProvider" />, which is used to dynamically retrieve
+    /// keyed or non-keyed compression services based on the requested compression type.
+    /// </remarks>
     private readonly IServiceProvider _serviceProvider;
 
     /// <summary>
-    ///     A factory implementation responsible for creating and retrieving instances of
-    ///     <see cref="ICompressionService" /> based on the specified compression type.
+    /// A factory class to create and retrieve instances of StreamCompressionService based on the compression type.
     /// </summary>
     public CompressionServiceFactory(IServiceProvider serviceProvider)
     {
@@ -30,18 +32,21 @@ public sealed record CompressionServiceFactory : ICompressionServiceFactory
     }
 
     /// <summary>
-    ///     Retrieves an instance of <see cref="ICompressionService" /> based on the specified compression type.
+    /// Retrieves an instance of the StreamCompressionService based on the specified compression type.
+    /// Returns null if the compression type is null, empty, or whitespace.
     /// </summary>
-    /// <param name="compressionType">The type of compression service to retrieve (e.g., Deflate, GZip).</param>
+    /// <param name="compressionType">
+    /// The type of compression for which the StreamCompressionService instance is required.
+    /// </param>
     /// <returns>
-    ///     An instance of <see cref="ICompressionService" /> corresponding to the given compression type, or null if no
-    ///     matching service is found.
+    /// An instance of <see cref="StreamCompressionService"/> corresponding to the specified compression type,
+    /// or null if the compression type is invalid.
     /// </returns>
-    public ICompressionService? Get(string compressionType)
+    public StreamCompressionService? Get(string compressionType)
     {
         if (string.IsNullOrWhiteSpace(compressionType))
             return null;
 
-        return _serviceProvider.GetKeyedService<ICompressionService>(compressionType);
+        return _serviceProvider.GetKeyedService<StreamCompressionService>(compressionType);
     }
 }

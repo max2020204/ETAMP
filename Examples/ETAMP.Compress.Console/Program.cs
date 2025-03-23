@@ -26,6 +26,6 @@ internal class Program
         _model = protocol.CreateETAMPModel("update", token, CompressionNames.Deflate);
         var model = await _compressionManager.CompressAsync(_model);
         var etamp = await _compressionManager.DecompressAsync<Token>(model);
-        Console.WriteLine(model);
+        Console.WriteLine(etamp);
     }
 }

@@ -98,8 +98,8 @@ public static class ETAMPServiceCollectionExtensions
         Action<ILoggingBuilder>? configureLogging = null)
     {
         AddLogging(services, addlogger, configureLogging);
-        services.AddKeyedScoped<ICompressionService, DeflateCompressionService>(CompressionNames.Deflate);
-        services.AddKeyedScoped<ICompressionService, GZipCompressionService>(CompressionNames.GZip);
+        services.AddKeyedScoped<StreamCompressionService, DeflateCompressionService>(CompressionNames.Deflate);
+        services.AddKeyedScoped<StreamCompressionService, GZipCompressionService>(CompressionNames.GZip);
         services.AddScoped<ICompressionServiceFactory, CompressionServiceFactory>();
         services.AddScoped<ICompressionManager, CompressionManager>();
     }

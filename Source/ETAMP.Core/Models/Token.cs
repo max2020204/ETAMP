@@ -1,4 +1,7 @@
-﻿namespace ETAMP.Core.Models;
+﻿using System.Reflection;
+using System.Text;
+
+namespace ETAMP.Core.Models;
 
 /// <summary>
 ///     Represents a token object.
@@ -13,7 +16,7 @@ public record Token
     /// <summary>
     ///     Represents the unique identifier of a message.
     /// </summary>
-    public Guid MessageId { get; protected internal set; }
+    public Guid MessageId { get; set; }
 
     /// <summary>
     ///     Gets or sets a value indicating whether the data for this token is encrypted.
@@ -30,4 +33,15 @@ public record Token
     ///     Represents a timestamp associated with a token.
     /// </summary>
     public DateTimeOffset TimeStamp { get; } = DateTimeOffset.Now.ToUniversalTime();
+
+    public override string ToString()
+    {
+        var type = typeof(Token);
+        var properties = type.GetProperties(BindingFlags.Public | BindingFlags.Instance);
+        StringBuilder sb = new();
+        foreach (var property in properties)
+            sb.Append(property.Name).Append(": ").Append(property.GetValue(this)).Append(", ");
+
+        return sb.ToString();
+    }
 }

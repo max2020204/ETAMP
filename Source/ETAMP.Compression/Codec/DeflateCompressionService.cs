@@ -1,115 +1,50 @@
 ﻿using System.IO.Compression;
-using System.IO.Pipelines;
-using ETAMP.Compression.Interfaces;
 using Microsoft.Extensions.Logging;
 
 namespace ETAMP.Compression.Codec;
 
 /// <summary>
-///     Provides methods for compressing and decompressing data streams using the Deflate compression algorithm.
-///     This class implements the <see cref="ICompressionService" /> interface.
+/// Provides data compression and decompression services using the Deflate algorithm.
 /// </summary>
-public sealed record DeflateCompressionService : ICompressionService
+/// <remarks>
+/// This class inherits from <see cref="StreamCompressionService"/> and implements the methods
+/// required to create compression and decompression streams based on the `DeflateStream` class.
+/// </remarks>
+public sealed class DeflateCompressionService : StreamCompressionService
 {
     /// <summary>
-    ///     Represents the logger instance used for logging informational messages, debugging details,
-    ///     and error reports related to compression and decompression operations.
+    /// A compression service implementing Deflate-based stream compression and decompression.
     /// </summary>
-    private readonly ILogger<DeflateCompressionService> _logger;
-
-    /// <summary>
-    ///     Provides a service for compressing and decompressing data streams using the Deflate algorithm.
-    /// </summary>
+    /// <remarks>
+    /// This class utilizes the DeflateStream implementation provided by .NET for compression and decompression of streams.
+    /// It inherits from the <see cref="StreamCompressionService" />, which provides the core capabilities for handling
+    /// input and output streams, and compressing or decompressing data asynchronously.
+    /// </remarks>
     public DeflateCompressionService(ILogger<DeflateCompressionService> logger)
+        : base(logger)
     {
-        _logger = logger;
+    }
+
+
+    /// <summary>
+    /// Creates a compression stream using the Deflate algorithm.
+    /// </summary>
+    /// <param name="output">The output stream where compressed data will be written.</param>
+    /// <param name="mode">The <see cref="CompressionMode"/> indicating whether to compress or decompress the data.</param>
+    /// <returns>A <see cref="Stream"/> instance configured for compression or decompression based on the specified mode.</returns>
+    protected override Stream CreateCompressionStream(Stream output, CompressionMode mode)
+    {
+        return new DeflateStream(output, mode, true);
     }
 
     /// <summary>
-    ///     Compresses the input data stream and writes the compressed data to the output stream.
+    /// Creates a decompression stream that uses the Deflate algorithm for decompressing data.
     /// </summary>
-    /// <param name="inputData">The input stream of data to be compressed.</param>
-    /// <param name="outputData">The output stream where the compressed data is written to.</param>
-    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
-    /// <returns>A task that represents the asynchronous compression operation.</returns>
-    public async Task CompressAsync(PipeReader inputData, PipeWriter outputData,
-        CancellationToken cancellationToken = default)
+    /// <param name="input">The input stream to be decompressed.</param>
+    /// <param name="mode">The compression mode specifying that the stream is to be used for decompression.</param>
+    /// <returns>A decompression stream using the Deflate algorithm for the given input stream.</returns>
+    protected override Stream CreateDecompressionStream(Stream input, CompressionMode mode)
     {
-        try
-        {
-            await using var compressor = new DeflateStream(outputData.AsStream(), CompressionMode.Compress, true);
-            _logger.LogDebug("Compressing data stream...");
-            await inputData.CopyToAsync(compressor, cancellationToken);
-            await compressor.FlushAsync(cancellationToken);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Compression failed.");
-            throw new InvalidOperationException("Compression failed.", ex);
-        }
-        finally
-        {
-            await CompleteFlushAsync(inputData, outputData, cancellationToken);
-        }
-    }
-
-    /// <summary>
-    ///     Asynchronously decompresses data from the specified input stream and writes the decompressed data
-    ///     to the specified output stream using the Deflate decompression algorithm.
-    /// </summary>
-    /// <param name="inputData">
-    ///     The <see cref="PipeReader" /> representing the compressed input data stream to decompress.
-    /// </param>
-    /// <param name="outputData">
-    ///     The <see cref="PipeWriter" /> where the decompressed data will be written.
-    /// </param>
-    /// <param name="cancellationToken">
-    ///     An optional <see cref="CancellationToken" /> to observe while waiting for the operation to complete.
-    /// </param>
-    /// <returns>
-    ///     A task that represents the asynchronous decompression operation.
-    /// </returns>
-    public async Task DecompressAsync(PipeReader inputData, PipeWriter outputData,
-        CancellationToken cancellationToken = default)
-    {
-        try
-        {
-            await using var decompressor =
-                new DeflateStream(inputData.AsStream(), CompressionMode.Decompress, true);
-            _logger.LogDebug("Decompressing data stream...");
-            await decompressor.CopyToAsync(outputData, cancellationToken);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Decompression failed.");
-            throw new InvalidOperationException("Decompression failed.", ex);
-        }
-        finally
-        {
-            await CompleteFlushAsync(inputData, outputData, cancellationToken);
-        }
-    }
-
-    /// <summary>
-    ///     Completes the flushing and finalization of both the input and output data pipelines.
-    /// </summary>
-    /// <param name="inputData">
-    ///     The <see cref="PipeReader" /> representing the input data stream to be finalized.
-    /// </param>
-    /// <param name="outputData">
-    ///     The <see cref="PipeWriter" /> representing the output data stream to be finalized and flushed.
-    /// </param>
-    /// <param name="cancellationToken">
-    ///     A <see cref="CancellationToken" /> to observe while waiting for the operation to complete.
-    /// </param>
-    /// <returns>
-    ///     A <see cref="Task" /> that represents the asynchronous operation.
-    /// </returns>
-    private async Task CompleteFlushAsync(PipeReader inputData, PipeWriter outputData,
-        CancellationToken cancellationToken)
-    {
-        await outputData.FlushAsync(cancellationToken);
-        await outputData.CompleteAsync();
-        await inputData.CompleteAsync();
+        return new DeflateStream(input, mode, true);
     }
 }

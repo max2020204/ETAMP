@@ -1,4 +1,6 @@
-﻿namespace ETAMP.Compression.Interfaces.Factory;
+﻿using ETAMP.Compression.Codec;
+
+namespace ETAMP.Compression.Interfaces.Factory;
 
 /// <summary>
 ///     Defines a factory interface for creating and retrieving instances of
@@ -14,5 +16,5 @@ public interface ICompressionServiceFactory
     ///     An instance of <see cref="ICompressionService" /> that matches the specified compression type, or null if no
     ///     matching service is found.
     /// </returns>
-    ICompressionService? Get(string compressionType);
+    StreamCompressionService? Get(string compressionType);
 }

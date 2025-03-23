@@ -15,10 +15,6 @@ namespace ETAMP.Compression;
 /// </summary>
 public record CompressionManager : ICompressionManager
 {
-    /// <summary>
-    ///     A private readonly instance of <see cref="ICompressionServiceFactory" /> used to create compression service
-    ///     instances based on the required compression type.
-    /// </summary>
     private readonly ICompressionServiceFactory _compressionServiceFactory;
 
     /// <summary>

@@ -60,7 +60,8 @@ public record ETAMPModel<T> where T : Token
         sb.Append("Id: ").Append(Id)
             .Append(", Version: ").Append(Version)
             .Append(", UpdateType: ").Append(UpdateType)
-            .Append(", CompressionType: ").Append(CompressionType)
+            .Append(", Token: ").Append(Token)
+            .Append("CompressionType: ").Append(CompressionType)
             .Append(", SignatureMessage: ").Append(SignatureMessage);
         return sb.ToString();
     }
