@@ -1,9 +1,5 @@
-﻿#region
-
-using System.Reflection;
+﻿using System.Reflection;
 using ETAMP.Core.Attributes;
-
-#endregion
 
 namespace ETAMP.Core.Utils;
 

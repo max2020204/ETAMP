@@ -1,24 +1,24 @@
-﻿#region
-
+﻿using ETAMP.Compression;
 using ETAMP.Compression.Codec;
 using ETAMP.Compression.Factory;
+using ETAMP.Compression.Interfaces;
 using ETAMP.Compression.Interfaces.Factory;
-using ETAMP.Core;
+using ETAMP.Core.Factories;
 using ETAMP.Core.Interfaces;
+using ETAMP.Core.Management;
 using ETAMP.Core.Utils;
 using ETAMP.Encryption;
 using ETAMP.Encryption.ECDsaManager;
 using ETAMP.Encryption.Interfaces;
-using ETAMP.Encryption.Interfaces.ECDSAManager;
+using ETAMP.Encryption.Interfaces.ECDsaManager;
+using ETAMP.Provider;
+using ETAMP.Provider.Interfaces;
 using ETAMP.Validation;
 using ETAMP.Validation.Interfaces;
-using ETAMP.Wrapper;
 using ETAMP.Wrapper.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Serilog;
-
-#endregion
 
 namespace ETAMP.Extension.ServiceCollection;
 
@@ -52,7 +52,7 @@ public static class ETAMPServiceCollectionExtensions
         AddCompositionServices(services, false);
         AddEncryptionServices(services, false);
         AddValidationServices(services, false);
-        AddWrapperServices(services, false);
+        AddProviders(services, false);
     }
 
     /// <summary>
@@ -98,9 +98,10 @@ public static class ETAMPServiceCollectionExtensions
         Action<ILoggingBuilder>? configureLogging = null)
     {
         AddLogging(services, addlogger, configureLogging);
-        services.AddScoped<DeflateCompressionService>();
-        services.AddScoped<GZipCompressionService>();
+        services.AddKeyedScoped<StreamCompressionService, DeflateCompressionService>(CompressionNames.Deflate);
+        services.AddKeyedScoped<StreamCompressionService, GZipCompressionService>(CompressionNames.GZip);
         services.AddScoped<ICompressionServiceFactory, CompressionServiceFactory>();
+        services.AddScoped<ICompressionManager, CompressionManager>();
     }
 
     /// <summary>
@@ -117,12 +118,12 @@ public static class ETAMPServiceCollectionExtensions
     ///     An optional action to configure logging using <see cref="ILoggingBuilder" />.
     ///     If not provided, the default logging configuration is applied.
     /// </param>
-    public static void AddWrapperServices(this IServiceCollection services, bool addlogger = true,
+    public static void AddProviders(this IServiceCollection services, bool addlogger = true,
         Action<ILoggingBuilder>? configureLogging = null)
     {
         AddLogging(services, addlogger, configureLogging);
-        services.AddScoped<ISignWrapper, SignWrapper>();
-        services.AddScoped<IVerifyWrapper, VerifyWrapper>();
+        services.AddScoped<IECDsaSignatureProvider, ECDsaSignatureProvider>();
+        services.AddScoped<IECDsaVerificationProvider, ECDsaVerificationProvider>();
     }
 
     /// <summary>
@@ -146,7 +147,8 @@ public static class ETAMPServiceCollectionExtensions
         AddLogging(services, addlogger, configureLogging);
         services.AddScoped<IEncryptionService, AESEncryptionService>();
         services.AddScoped<IECIESEncryptionService, ECIESEncryptionService>();
-        services.AddSingleton<IECDSAStore, ECDSAStore>();
+        services.AddScoped<IECIESEncryptionManager, ECIESEncryptionManager>();
+        services.AddSingleton<IECDsaStore, ECDsaStore>();
     }
 
     /// <summary>
@@ -168,7 +170,7 @@ public static class ETAMPServiceCollectionExtensions
         Action<ILoggingBuilder>? configureLogging = null)
     {
         AddLogging(services, addlogger, configureLogging);
-        services.AddScoped<IETAMPBase, ETAMPProtocol>();
+        services.AddScoped<IETAMPBase, ETAMPModelFactory>();
         services.AddSingleton<VersionInfo>(_ =>
         {
             var versionInfo = new VersionInfo();
@@ -196,12 +198,14 @@ public static class ETAMPServiceCollectionExtensions
     private static void AddLogging(IServiceCollection services, bool addlogger = true,
         Action<ILoggingBuilder>? configureLogging = null)
     {
-        if (!addlogger) return;
+        if (!addlogger)
+            return;
         Log.Logger = new LoggerConfiguration()
             .MinimumLevel.Warning()
             .WriteTo.Async(a => a.Console(
                 outputTemplate: "[{Timestamp:yyyy-MM-dd HH:mm:ss.fff} {Level:u3}] {Message:lj}{NewLine}{Exception}"))
             .CreateLogger();
+
         services.AddLogging(builder =>
         {
             if (configureLogging != null)

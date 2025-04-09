@@ -1,90 +1,52 @@
-﻿#region
-
-using System.IO.Compression;
-using ETAMP.Compression.Interfaces;
+﻿using System.IO.Compression;
 using Microsoft.Extensions.Logging;
-
-#endregion
 
 namespace ETAMP.Compression.Codec;
 
 /// <summary>
-///     Provides functionality for compressing and decompressing string data using GZip compression.
-///     This class implements the <c>ICompressionService</c> interface and provides methods
-///     to compress a string into a compressed Base64-encoded format and to decompress
-///     a Base64-encoded compressed string back to its original format.
+/// Provides GZip-based compression and decompression services by extending the functionality
+/// of the <see cref="StreamCompressionService"/> class.
 /// </summary>
-public sealed class GZipCompressionService : ICompressionService
+/// <remarks>
+/// This service uses <see cref="System.IO.Compression.GZipStream"/> for compressing and decompressing data streams.
+/// It is designed to work with the ETAMP compression framework and implements the <see cref="ICompressionService"/> interface.
+/// </remarks>
+public sealed class GZipCompressionService : StreamCompressionService
 {
-    private readonly ILogger<GZipCompressionService> _logger;
-
+    /// <summary>
+    /// Provides GZip-based compression and decompression services for data streams.
+    /// </summary>
+    /// <remarks>
+    /// This service uses the GZipStream class to implement the compression and decompression logic
+    /// by creating streams with the specified compression mode.
+    /// </remarks>
     public GZipCompressionService(ILogger<GZipCompressionService> logger)
+        : base(logger)
     {
-        _logger = logger;
     }
 
-
-    public async Task<Stream> CompressStream(Stream data, CancellationToken cancellationToken = default)
+    /// <summary>
+    /// Creates a compression stream for handling data compression or decompression.
+    /// </summary>
+    /// <param name="output">The stream to which the compressed data will be written.</param>
+    /// <param name="mode">The compression mode, either Compress or Decompress, indicating the operation.</param>
+    /// <returns>A stream that performs compression or decompression based on the specified mode.</returns>
+    protected override Stream CreateCompressionStream(Stream output, CompressionMode mode)
     {
-        if (data is not { CanRead: true })
-        {
-            _logger.LogError("The input stream must not be null and must be readable.");
-            throw new ArgumentException("The input stream must not be null and must be readable.", nameof(data));
-        }
-
-        var outputStream = new MemoryStream();
-        await using (var compressor = new GZipStream(outputStream, CompressionMode.Compress, true))
-        {
-            _logger.LogDebug("Compressing data stream...");
-            await data.CopyToAsync(compressor, cancellationToken);
-        }
-
-        _logger.LogDebug("Data stream compressed.");
-        outputStream.Position = 0;
-
-        return outputStream;
+        return new GZipStream(output, mode, true);
     }
 
-
-    public async Task<Stream> DecompressStream(Stream compressedStream, CancellationToken cancellationToken = default)
+    /// <summary>
+    /// Creates a decompression stream for decompressing data using GZip compression.
+    /// </summary>
+    /// <param name="input">The input stream containing compressed data.</param>
+    /// <param name="mode">
+    /// The compression mode specifying whether the stream is used for compression or decompression.
+    /// Should typically be set to <see cref="CompressionMode.Decompress"/>.
+    /// </param>
+    /// <returns>A <see cref="Stream"/> configured for decompressing data.</returns>
+    protected override Stream CreateDecompressionStream(Stream input, CompressionMode mode)
     {
-        if (compressedStream is not { CanRead: true })
-        {
-            _logger.LogError("The input stream must not be null and must be readable.");
-            throw new ArgumentException("The input stream must not be null and must be readable.",
-                nameof(compressedStream));
-        }
-
-        var outputStream = new MemoryStream();
-
-        try
-        {
-            await using var decompressor = new GZipStream(compressedStream, CompressionMode.Decompress);
-            _logger.LogDebug("Decompressing data stream...");
-            await decompressor.CopyToAsync(outputStream, cancellationToken);
-        }
-        catch (InvalidDataException ex)
-        {
-            _logger.LogError(ex, "Failed to decompress the stream.");
-            throw new InvalidDataException(
-                "Failed to decompress the stream. The input data may be invalid or corrupted.", ex);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "An unexpected error occurred during decompression.");
-            throw new InvalidOperationException("An unexpected error occurred during decompression.", ex);
-        }
-
-        if (outputStream.Length == 0)
-        {
-            _logger.LogError("The decompressed data is empty.");
-            throw new InvalidOperationException(
-                "The decompressed data is empty. This may indicate invalid or corrupted input data.");
-        }
-
-        outputStream.Position = 0;
-
-        _logger.LogDebug("Data stream decompressed successfully.");
-        return outputStream;
+        return new GZipStream(input, mode, true);
     }
 }

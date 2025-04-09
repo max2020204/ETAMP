@@ -1,8 +1,4 @@
-﻿#region
-
-using ETAMP.Core.Models;
-
-#endregion
+﻿using ETAMP.Core.Models;
 
 namespace ETAMP.Validation.Interfaces;
 

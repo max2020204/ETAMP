@@ -1,87 +1,50 @@
-﻿#region
-
-using System.IO.Compression;
-using ETAMP.Compression.Interfaces;
+﻿using System.IO.Compression;
 using Microsoft.Extensions.Logging;
-
-#endregion
 
 namespace ETAMP.Compression.Codec;
 
 /// <summary>
-///     Provides functionality for compressing and decompressing string data using Deflate compression.
+/// Provides data compression and decompression services using the Deflate algorithm.
 /// </summary>
-public sealed class DeflateCompressionService : ICompressionService
+/// <remarks>
+/// This class inherits from <see cref="StreamCompressionService"/> and implements the methods
+/// required to create compression and decompression streams based on the `DeflateStream` class.
+/// </remarks>
+public sealed class DeflateCompressionService : StreamCompressionService
 {
-    private readonly ILogger<DeflateCompressionService> _logger;
-
+    /// <summary>
+    /// A compression service implementing Deflate-based stream compression and decompression.
+    /// </summary>
+    /// <remarks>
+    /// This class utilizes the DeflateStream implementation provided by .NET for compression and decompression of streams.
+    /// It inherits from the <see cref="StreamCompressionService" />, which provides the core capabilities for handling
+    /// input and output streams, and compressing or decompressing data asynchronously.
+    /// </remarks>
     public DeflateCompressionService(ILogger<DeflateCompressionService> logger)
+        : base(logger)
     {
-        _logger = logger;
     }
 
 
-    public async Task<Stream> CompressStream(Stream data, CancellationToken cancellationToken = default)
+    /// <summary>
+    /// Creates a compression stream using the Deflate algorithm.
+    /// </summary>
+    /// <param name="output">The output stream where compressed data will be written.</param>
+    /// <param name="mode">The <see cref="CompressionMode"/> indicating whether to compress or decompress the data.</param>
+    /// <returns>A <see cref="Stream"/> instance configured for compression or decompression based on the specified mode.</returns>
+    protected override Stream CreateCompressionStream(Stream output, CompressionMode mode)
     {
-        if (data is not { CanRead: true })
-        {
-            _logger.LogError("The input stream must not be null and must be readable.");
-            throw new ArgumentException("The input stream must not be null and must be readable.", nameof(data));
-        }
-
-        var outputStream = new MemoryStream();
-        await using (var compressor = new DeflateStream(outputStream, CompressionMode.Compress, true))
-        {
-            _logger.LogDebug("Compressing data stream...");
-            await data.CopyToAsync(compressor, cancellationToken);
-        }
-
-        _logger.LogDebug("Data stream compressed.");
-        outputStream.Position = 0;
-
-        return outputStream;
+        return new DeflateStream(output, mode, true);
     }
 
-
-    public async Task<Stream> DecompressStream(Stream compressedStream, CancellationToken cancellationToken = default)
+    /// <summary>
+    /// Creates a decompression stream that uses the Deflate algorithm for decompressing data.
+    /// </summary>
+    /// <param name="input">The input stream to be decompressed.</param>
+    /// <param name="mode">The compression mode specifying that the stream is to be used for decompression.</param>
+    /// <returns>A decompression stream using the Deflate algorithm for the given input stream.</returns>
+    protected override Stream CreateDecompressionStream(Stream input, CompressionMode mode)
     {
-        if (compressedStream is not { CanRead: true })
-        {
-            _logger.LogError("The input stream must not be null and must be readable.");
-            throw new ArgumentException("The input stream must not be null and must be readable.",
-                nameof(compressedStream));
-        }
-
-        var outputStream = new MemoryStream();
-
-        try
-        {
-            await using var decompressor = new DeflateStream(compressedStream, CompressionMode.Decompress);
-            _logger.LogDebug("Decompressing data stream...");
-            await decompressor.CopyToAsync(outputStream, cancellationToken);
-        }
-        catch (InvalidDataException ex)
-        {
-            _logger.LogError(ex, "Failed to decompress the stream.");
-            throw new InvalidDataException(
-                "Failed to decompress the stream. The input data may be invalid or corrupted.", ex);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "An unexpected error occurred during decompression.");
-            throw new InvalidOperationException("An unexpected error occurred during decompression.", ex);
-        }
-
-        if (outputStream.Length == 0)
-        {
-            _logger.LogError("The decompressed data is empty.");
-            throw new InvalidOperationException(
-                "The decompressed data is empty. This may indicate invalid or corrupted input data.");
-        }
-
-        outputStream.Position = 0;
-
-        _logger.LogDebug("Data stream decompressed successfully.");
-        return outputStream;
+        return new DeflateStream(input, mode, true);
     }
 }

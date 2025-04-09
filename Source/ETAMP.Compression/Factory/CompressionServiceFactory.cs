@@ -1,90 +1,52 @@
-﻿#region
-
-using System.Collections.Concurrent;
-using ETAMP.Compression.Codec;
-using ETAMP.Compression.Interfaces;
+﻿using ETAMP.Compression.Codec;
 using ETAMP.Compression.Interfaces.Factory;
-using ETAMP.Core.Management;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-
-#endregion
 
 namespace ETAMP.Compression.Factory;
 
 /// <summary>
-///     Factory for creating compression service instances based on the specified compression type.
-///     Utilizes the service provider to resolve the requested compression service dynamically at runtime.
+/// Provides a factory implementation for creating and retrieving instances of
+/// <see cref="StreamCompressionService"/> based on a specified compression type.
 /// </summary>
-public sealed class CompressionServiceFactory : ICompressionServiceFactory
+/// <remarks>
+/// This class is designed to work with the dependency injection container and leverages keyed service
+/// resolution to retrieve the appropriate compression service.
+/// </remarks>
+public sealed record CompressionServiceFactory : ICompressionServiceFactory
 {
-    private readonly ILogger<CompressionServiceFactory> _logger;
-
+    /// <summary>
+    /// Represents the service provider used to resolve dependencies within the compression service factory.
+    /// </summary>
+    /// <remarks>
+    /// This variable holds an instance of <see cref="IServiceProvider" />, which is used to dynamically retrieve
+    /// keyed or non-keyed compression services based on the requested compression type.
+    /// </remarks>
+    private readonly IServiceProvider _serviceProvider;
 
     /// <summary>
-    /// Provides a factory for managing and creating instances of compression services. This factory supports
-    /// registering and retrieving compression services by a specified type.
+    /// A factory class to create and retrieve instances of StreamCompressionService based on the compression type.
     /// </summary>
-    public CompressionServiceFactory(IServiceProvider serviceProvider, ILogger<CompressionServiceFactory> logger)
+    public CompressionServiceFactory(IServiceProvider serviceProvider)
     {
-        _logger = logger;
-        Factory = new ConcurrentDictionary<string, ICompressionService>();
-        Factory.TryAdd(CompressionNames.Deflate, serviceProvider.GetRequiredService<DeflateCompressionService>());
-        Factory.TryAdd(CompressionNames.GZip, serviceProvider.GetRequiredService<GZipCompressionService>());
+        _serviceProvider = serviceProvider;
     }
 
     /// <summary>
-    ///     Gets the dictionary mapping compression types to their corresponding compression service instances.
-    /// </summary>
-    public ConcurrentDictionary<string, ICompressionService> Factory { get; }
-
-    /// <summary>
-    ///     Creates and returns an instance of a compression service based on the specified compression type.
+    /// Retrieves an instance of the StreamCompressionService based on the specified compression type.
+    /// Returns null if the compression type is null, empty, or whitespace.
     /// </summary>
     /// <param name="compressionType">
-    ///     The type of compression service to create. This should match one of the predefined
-    ///     constants in <see cref="CompressionNames" />.
+    /// The type of compression for which the StreamCompressionService instance is required.
     /// </param>
-    /// <returns>An instance of the requested compression service.</returns>
-    /// <exception cref="KeyNotFoundException">Thrown if the specified compression type is not recognized or supported.</exception>
-    public ICompressionService Create(string compressionType)
+    /// <returns>
+    /// An instance of <see cref="StreamCompressionService"/> corresponding to the specified compression type,
+    /// or null if the compression type is invalid.
+    /// </returns>
+    public StreamCompressionService? Get(string compressionType)
     {
-        if (!Factory.TryGetValue(compressionType, out var serviceFactory))
-        {
-            _logger.LogError("ETAMPBuilder service '{0}' not recognized.", compressionType);
-            throw new KeyNotFoundException($"ETAMPBuilder service '{compressionType}' not recognized.");
-        }
+        if (string.IsNullOrWhiteSpace(compressionType))
+            return null;
 
-        return serviceFactory;
-    }
-
-
-    /// <summary>
-    ///     Registers a new compression service under a specified compression type.
-    /// </summary>
-    /// <param name="compressionType">The type of compression to register.</param>
-    /// <param name="serviceFactory">The compression service instance to be registered.</param>
-    /// <exception cref="ArgumentNullException">
-    ///     Thrown if either <paramref name="compressionType" /> or
-    ///     <paramref name="serviceFactory" /> is null.
-    /// </exception>
-    public void RegisterCompressionService(string compressionType, ICompressionService serviceFactory)
-    {
-        ArgumentException.ThrowIfNullOrWhiteSpace(compressionType, nameof(compressionType));
-        ArgumentNullException.ThrowIfNull(serviceFactory, nameof(serviceFactory));
-
-        Factory.TryAdd(compressionType, serviceFactory);
-    }
-
-    /// <summary>
-    ///     Unregisters an existing compression service for a specified compression type.
-    /// </summary>
-    /// <param name="compressionType">The type of compression to unregister.</param>
-    /// <returns>True if the service was successfully unregistered; otherwise, false.</returns>
-    /// <exception cref="ArgumentNullException">Thrown if <paramref name="compressionType" /> is null.</exception>
-    public bool UnregisterCompressionService(string compressionType)
-    {
-        ArgumentException.ThrowIfNullOrWhiteSpace(compressionType, nameof(compressionType));
-        return Factory.TryRemove(compressionType, out _);
+        return _serviceProvider.GetKeyedService<StreamCompressionService>(compressionType);
     }
 }

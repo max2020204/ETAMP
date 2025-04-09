@@ -1,22 +1,20 @@
-﻿#region
-
-using System.Security.Cryptography;
+﻿using System.Security.Cryptography;
 using ETAMP.Core.Models;
 using ETAMP.Validation.Interfaces;
 using Microsoft.Extensions.Logging;
+using ValidationResult = ETAMP.Core.Models.ValidationResult;
 
-#endregion
 
 namespace ETAMP.Validation;
 
 /// <summary>
-/// Provides validation services for the ETAMP model including structure validation,
-/// token validation, and signature validation.
+///     Provides validation services for the ETAMP model including structure validation,
+///     token validation, and signature validation.
 /// </summary>
 /// <remarks>
-/// This class implements the IETAMPValidator interface and encapsulates
-/// the process of validating an ETAMP model in a sequential manner: structure validation,
-/// token validation, and signature validation.
+///     This class implements the IETAMPValidator interface and encapsulates
+///     the process of validating an ETAMP model in a sequential manner: structure validation,
+///     token validation, and signature validation.
 /// </remarks>
 public sealed class ETAMPValidator : IETAMPValidator
 {
@@ -58,8 +56,9 @@ public sealed class ETAMPValidator : IETAMPValidator
     private readonly ITokenValidator _tokenValidator;
 
     /// <summary>
-    /// ETAMPValidator provides the functionality to validate ETAMP models, tokens, and their associated signatures
-    /// using the injected validators and logger. Implements the IETAMPValidator interface along with IDisposable and IInitialize.
+    ///     ETAMPValidator provides the functionality to validate ETAMP models, tokens, and their associated signatures
+    ///     using the injected validators and logger. Implements the IETAMPValidator interface along with IDisposable and
+    ///     IInitialize.
     /// </summary>
     public ETAMPValidator(ITokenValidator tokenValidator, IStructureValidator structureValidator,
         ISignatureValidator signature, ILogger<ETAMPValidator> logger)
@@ -72,24 +71,24 @@ public sealed class ETAMPValidator : IETAMPValidator
 
 
     /// <summary>
-    /// Asynchronously validates an ETAMP model, including its structure, token, and associated signature.
-    /// Combines multiple validation steps to ensure all parts of the ETAMP model are valid before returning
-    /// the overall validation result.
+    ///     Asynchronously validates an ETAMP model, including its structure, token, and associated signature.
+    ///     Combines multiple validation steps to ensure all parts of the ETAMP model are valid before returning
+    ///     the overall validation result.
     /// </summary>
     /// <typeparam name="T">
-    /// The type of the token associated with the ETAMP model. Must inherit from the <see cref="Token"/> class.
+    ///     The type of the token associated with the ETAMP model. Must inherit from the <see cref="Token" /> class.
     /// </typeparam>
     /// <param name="etamp">The ETAMP model to be validated, which contains the necessary data and token.</param>
     /// <param name="validateLite">
-    /// A boolean value indicating whether a lightweight validation should be performed. When set to true,
-    /// fewer validation checks may be conducted.
+    ///     A boolean value indicating whether a lightweight validation should be performed. When set to true,
+    ///     fewer validation checks may be conducted.
     /// </param>
     /// <param name="cancellationToken">
-    /// A token to monitor for cancellation requests. Allows the asynchronous operation to be canceled if requested.
+    ///     A token to monitor for cancellation requests. Allows the asynchronous operation to be canceled if requested.
     /// </param>
     /// <returns>
-    /// A <see cref="ValidationResult"/> instance representing the outcome of the validation. Contains details about
-    /// whether the ETAMP model is valid and any associated error messages.
+    ///     A <see cref="ValidationResult" /> instance representing the outcome of the validation. Contains details about
+    ///     whether the ETAMP model is valid and any associated error messages.
     /// </returns>
     public async Task<ValidationResult> ValidateETAMPAsync<T>(ETAMPModel<T> etamp, bool validateLite,
         CancellationToken cancellationToken = default) where T : Token
@@ -109,7 +108,7 @@ public sealed class ETAMPValidator : IETAMPValidator
         }
 
 
-        var signatureValidationResult = await _signature.ValidateETAMPMessageAsync(etamp, cancellationToken);
+        var signatureValidationResult = await _signature.ValidateETAMPSignatureAsync(etamp, cancellationToken);
         _logger.LogInformation(signatureValidationResult.IsValid ? "Signature is valid" : "Signature is invalid");
 
         return !signatureValidationResult.IsValid

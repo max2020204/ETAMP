@@ -1,13 +1,10 @@
-﻿using System.Text;
-using System.Text.Json;
-
-namespace ETAMP.Core.Models;
+﻿namespace ETAMP.Core.Models;
 
 /// <summary>
 ///     Represents a data model builder for the ETAMP framework.
 ///     This class is used to encapsulate the properties required for building or reconstructing ETAMP-related data models.
 /// </summary>
-public class ETAMPModelBuilder
+public record struct ETAMPModelBuilder
 {
     /// <summary>
     ///     Represents a unique identifier that is used to distinguish individual instances of the type.
@@ -52,48 +49,4 @@ public class ETAMPModelBuilder
     ///     or other forms of validation/verification messages.
     /// </summary>
     public string? SignatureMessage { get; set; }
-
-    public async Task<string> ToJsonAsync()
-    {
-        await using var stream = new MemoryStream();
-        await using var writer = new Utf8JsonWriter(stream, new JsonWriterOptions
-        {
-            Indented = false
-        });
-
-        WriteJson(writer);
-        await writer.FlushAsync();
-
-        return Encoding.UTF8.GetString(stream.ToArray());
-    }
-
-    private void WriteJson(Utf8JsonWriter writer)
-    {
-        writer.WriteStartObject();
-        writer.WriteString(nameof(Id), Id.ToString());
-        writer.WriteNumber(nameof(Version), Version);
-
-
-        if (!string.IsNullOrEmpty(Token))
-        {
-            writer.WriteString(nameof(Token), Token);
-        }
-
-        if (!string.IsNullOrEmpty(UpdateType))
-        {
-            writer.WriteString(nameof(UpdateType), UpdateType);
-        }
-
-        if (!string.IsNullOrEmpty(CompressionType))
-        {
-            writer.WriteString(nameof(CompressionType), CompressionType);
-        }
-
-        if (!string.IsNullOrEmpty(SignatureMessage))
-        {
-            writer.WriteString(nameof(SignatureMessage), SignatureMessage);
-        }
-
-        writer.WriteEndObject();
-    }
 }

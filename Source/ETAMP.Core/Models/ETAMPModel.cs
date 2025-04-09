@@ -1,18 +1,12 @@
-﻿#region
-
-using System.Text;
-using System.Text.Json;
-
-#endregion
+﻿using System.Text;
 
 namespace ETAMP.Core.Models;
 
 /// <summary>
-///     Represents the model for the ETAMP (Encrypted Token And Message Protocol) structure.
-///     This model is designed to facilitate secure and efficient exchanges of messages and transactions within a network,
-///     by leveraging the ETAMP framework which encapsulates data in a secure and structured manner.
+///     Represents a model used in the ETAMP protocol with generic support for token types.
 /// </summary>
-public struct ETAMPModel<T> where T : Token
+/// <typeparam name="T">The type of token associated with the model, constrained to inherit from Token.</typeparam>
+public record ETAMPModel<T> where T : Token
 {
     /// <summary>
     ///     Gets or sets the unique identifier for the ETAMP model instance.
@@ -52,79 +46,6 @@ public struct ETAMPModel<T> where T : Token
 
 
     /// <summary>
-    ///     Determines whether the specified object is equal to the current object.
-    /// </summary>
-    /// <param name="obj">The object to compare with the current object.</param>
-    /// <returns>
-    ///     <c>true</c> if the specified object is equal to the current object; otherwise, <c>false</c>.
-    /// </returns>
-    public override bool Equals(object? obj)
-    {
-        if (obj is ETAMPModel<T> other)
-            return Id == other.Id
-                   && Version.Equals(other.Version)
-                   && UpdateType == other.UpdateType
-                   && Token == other.Token
-                   && CompressionType == other.CompressionType
-                   && SignatureMessage == other.SignatureMessage;
-
-        return false;
-    }
-
-
-    public async Task<Stream> ToJsonStreamAsync()
-    {
-        var stream = new MemoryStream();
-        await using var writer = new Utf8JsonWriter(stream, new JsonWriterOptions
-        {
-            Indented = false
-        });
-
-        await WriteJson(writer);
-        stream.Position = 0;
-        await writer.FlushAsync();
-        return stream;
-    }
-
-    public async Task<string> ToJsonAsync()
-    {
-        var stream = await ToJsonStreamAsync();
-        using StreamReader reader = new(stream);
-        return await reader.ReadToEndAsync();
-    }
-
-    private async Task WriteJson(Utf8JsonWriter writer)
-    {
-        writer.WriteStartObject();
-        writer.WriteString(nameof(Id), Id.ToString());
-        writer.WriteNumber(nameof(Version), Version);
-
-
-        if (Token != null)
-        {
-            writer.WritePropertyName(nameof(Token));
-            writer.WriteRawValue(await Token.ToJsonAsync(), true);
-        }
-
-        if (!string.IsNullOrEmpty(UpdateType))
-        {
-            writer.WriteString(nameof(UpdateType), UpdateType);
-        }
-
-        if (!string.IsNullOrEmpty(CompressionType))
-        {
-            writer.WriteString(nameof(CompressionType), CompressionType);
-        }
-
-        if (!string.IsNullOrEmpty(SignatureMessage))
-        {
-            writer.WriteString(nameof(SignatureMessage), SignatureMessage);
-        }
-
-        writer.WriteEndObject();
-    }
-
-    /// <summary>
     ///     Serves as the default hash function.
     /// </summary>
     /// <returns>A hash code for the current object.</returns>
@@ -139,8 +60,8 @@ public struct ETAMPModel<T> where T : Token
         sb.Append("Id: ").Append(Id)
             .Append(", Version: ").Append(Version)
             .Append(", UpdateType: ").Append(UpdateType)
-            .Append(", CompressionType: ")
-            .Append(CompressionType)
+            .Append(", Token: ").Append(Token)
+            .Append("CompressionType: ").Append(CompressionType)
             .Append(", SignatureMessage: ").Append(SignatureMessage);
         return sb.ToString();
     }
