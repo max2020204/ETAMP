@@ -6,7 +6,7 @@ using ETAMP.Core.Utils;
 using ETAMP.Encryption.Interfaces;
 using Microsoft.Extensions.Logging;
 
-namespace ETAMP.Encryption;
+namespace ETAMP.Encryption.ECIES;
 
 /// <summary>
 ///     Manages encryption and decryption using the Elliptic Curve Integrated Encryption Scheme (ECIES).

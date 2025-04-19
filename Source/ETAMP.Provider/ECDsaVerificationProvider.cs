@@ -1,6 +1,6 @@
 ﻿using System.Security.Cryptography;
 using ETAMP.Core.Utils;
-using ETAMP.Wrapper.Interfaces;
+using ETAMP.Provider.Interfaces;
 using Microsoft.Extensions.Logging;
 
 namespace ETAMP.Provider;

@@ -8,14 +8,15 @@ using ETAMP.Core.Interfaces;
 using ETAMP.Core.Management;
 using ETAMP.Core.Utils;
 using ETAMP.Encryption;
+using ETAMP.Encryption.AES;
 using ETAMP.Encryption.ECDsaManager;
+using ETAMP.Encryption.ECIES;
 using ETAMP.Encryption.Interfaces;
 using ETAMP.Encryption.Interfaces.ECDsaManager;
 using ETAMP.Provider;
 using ETAMP.Provider.Interfaces;
 using ETAMP.Validation;
 using ETAMP.Validation.Interfaces;
-using ETAMP.Wrapper.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Serilog;
@@ -145,7 +146,8 @@ public static class ETAMPServiceCollectionExtensions
         Action<ILoggingBuilder>? configureLogging = null)
     {
         AddLogging(services, addlogger, configureLogging);
-        services.AddScoped<IEncryptionService, AESEncryptionService>();
+        services.AddKeyedScoped<IEncryptionService, AESEncryptionService>(EncryptionNames.AES);
+        services.AddKeyedScoped<IEncryptionService, AESGcmEncryptionService>(EncryptionNames.AESGcm);
         services.AddScoped<IECIESEncryptionService, ECIESEncryptionService>();
         services.AddScoped<IECIESEncryptionManager, ECIESEncryptionManager>();
         services.AddSingleton<IECDsaStore, ECDsaStore>();

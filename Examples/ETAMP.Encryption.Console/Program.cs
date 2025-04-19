@@ -3,6 +3,8 @@ using ETAMP.Encryption.Interfaces;
 using ETAMP.Extension.ServiceCollection;
 using Microsoft.Extensions.DependencyInjection;
 
+namespace ETAMP.Encryption.Console;
+
 internal class Program
 {
     private static IServiceProvider _provider;
@@ -19,11 +21,11 @@ internal class Program
 
         var encrResult = await _encryptionManager.EncryptAsync(data, person1, person2.PublicKey);
 
-        Console.WriteLine(encrResult);
+        System.Console.WriteLine(encrResult);
 
 
         var decrResult = await _encryptionManager.DecryptAsync(encrResult, person2, person1.PublicKey);
-        Console.WriteLine(decrResult);
+        System.Console.WriteLine(decrResult);
     }
 
     private static void Setup()

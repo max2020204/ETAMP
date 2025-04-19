@@ -1,6 +1,6 @@
 ﻿using ETAMP.Core.Interfaces;
 
-namespace ETAMP.Wrapper.Interfaces;
+namespace ETAMP.Provider.Interfaces;
 
 /// <summary>
 ///     Verifies signatures using ECDsa.

@@ -4,7 +4,7 @@ using System.Security.Cryptography;
 using ETAMP.Encryption.Interfaces;
 using Microsoft.Extensions.Logging;
 
-namespace ETAMP.Encryption;
+namespace ETAMP.Encryption.AES;
 
 /// <summary>
 ///     Provides AES encryption and decryption services using Pipe for streaming.

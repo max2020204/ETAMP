@@ -3,7 +3,7 @@ using System.Security.Cryptography;
 using ETAMP.Encryption.Interfaces;
 using Microsoft.Extensions.Logging;
 
-namespace ETAMP.Encryption;
+namespace ETAMP.Encryption.ECIES;
 
 /// <summary>
 ///     A service for performing encryption and decryption using Elliptic Curve Integrated Encryption Scheme (ECIES).

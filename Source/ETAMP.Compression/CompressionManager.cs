@@ -65,10 +65,7 @@ public record CompressionManager : ICompressionManager
         var compression = _compressionServiceFactory.Get(model.CompressionType);
         _logger.LogDebug("Compression service created for type: {CompressionType}", model.CompressionType);
 
-        var jsonBytes = JsonSerializer.SerializeToUtf8Bytes(model.Token);
-        _logger.LogDebug("Serialized model.Token to JSON bytes, size: {Size} bytes", jsonBytes.Length);
-
-        await dataPipe.Writer.WriteAsync(jsonBytes, cancellationToken);
+        await JsonSerializer.SerializeAsync(dataPipe.Writer, model.Token, cancellationToken: cancellationToken);
         _logger.LogDebug("Written JSON bytes to data pipe writer.");
 
         await dataPipe.Writer.FlushAsync(cancellationToken);
@@ -136,12 +133,9 @@ public record CompressionManager : ICompressionManager
         await compression.DecompressAsync(dataPipe.Reader, outputData.Writer, cancellationToken);
         _logger.LogDebug("Decompression service finished decompressing data.");
 
-        await using var ms = await ReadAllBytesFromPipeAsync(outputData.Reader, cancellationToken);
-        _logger.LogDebug("Starting JSON deserialization from decompressed stream.");
-
-        var token = await JsonSerializer.DeserializeAsync<T>(ms, cancellationToken: cancellationToken);
-        _logger.LogInformation("Decompression and deserialization successful for model Id: {ModelId}", model.Id);
-
+        var read =  outputData.Reader.AsStream();
+        var token = await JsonSerializer.DeserializeAsync<T>(read, cancellationToken: cancellationToken); 
+        await outputData.Reader.CompleteAsync();  
         return new ETAMPModel<T>
         {
             Id = model.Id,
@@ -160,7 +154,7 @@ public record CompressionManager : ICompressionManager
     ///     The compression type to validate. Must not be null, empty, or whitespace.
     ///     Throws an <see cref="ArgumentException" /> if the input is invalid.
     /// </param>
-    private void CheckCompressionType(string compressionType)
+    private static void CheckCompressionType(string compressionType)
     {
         if (string.IsNullOrWhiteSpace(compressionType))
             throw new ArgumentException("Compression type is required.");

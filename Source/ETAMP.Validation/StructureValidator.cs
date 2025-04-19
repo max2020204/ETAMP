@@ -25,7 +25,7 @@ public sealed class StructureValidator : IStructureValidator
     /// <returns>A ValidationResult object indicating whether the model is valid or not.</returns>
     public ValidationResult ValidateETAMP<T>(ETAMPModel<T> model, bool validateLite = false) where T : Token
     {
-        if (EqualityComparer<ETAMPModel<T>>.Default.Equals(model, default))
+        if (EqualityComparer<ETAMPModel<T>>.Default.Equals(model, null))
         {
             _logger.LogError("ETAMP model is uninitialized (default).");
             return new ValidationResult(false, "ETAMP model is uninitialized (default).");

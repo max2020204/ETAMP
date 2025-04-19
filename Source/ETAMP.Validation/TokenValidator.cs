@@ -22,7 +22,7 @@ public class TokenValidator : ITokenValidator
     /// <typeparam name="T">The type of token to validate.</typeparam>
     /// <param name="model">The ETAMP model containing the token to validate.</param>
     /// <returns>The validation result, indicating whether the token is valid or not.</returns>
-    public ValidationResult ValidateToken<T>(ETAMPModel<T> model) where T : Token
+    public virtual ValidationResult ValidateToken<T>(ETAMPModel<T> model) where T : Token
     {
         if (model.CompressionType == null)
         {
